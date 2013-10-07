@@ -337,6 +337,12 @@ public class URaceListener implements Listener {
 			if(p.getName().equals(event.getPlayername())){
 			if(p!=null){
 				String msg = main.msgs.get("race.end.position");
+				if((i+1) <=4 && (i+1) != game.getPlayers().size()){
+					player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
+				}
+				else{
+					player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS, 1, 1);
+				}
 				String pos = ""+(i+1);
 				if(pos.endsWith("1")){
 					pos = pos+"st";
@@ -368,6 +374,12 @@ public class URaceListener implements Listener {
 				}
 			}
 			String msg = main.msgs.get("race.end.position");
+			if(position <=4 && position != game.getPlayers().size()){
+				player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
+			}
+			else{
+				player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS, 1, 1);
+			}
 			String pos = ""+position;
 			if(pos.endsWith("1")){
 				pos = pos+"st";
@@ -556,6 +568,9 @@ public class URaceListener implements Listener {
 							int lap = game.totalLaps - lapsLeft+1;
 							msg = msg.replaceAll(Pattern.quote("%lap%"), ""+lap);
 							msg = msg.replaceAll(Pattern.quote("%total%"), ""+game.totalLaps);
+							if(lap == game.totalLaps){
+								player.getWorld().playSound(player.getLocation(), Sound.NOTE_STICKS, 2, 1);
+							}
 						    player.sendMessage(main.colors.getInfo()+msg);
 						}
 					}
