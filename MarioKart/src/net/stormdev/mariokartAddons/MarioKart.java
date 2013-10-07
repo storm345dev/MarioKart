@@ -569,6 +569,15 @@ public class MarioKart {
 							else{
 								give = a;
 							}
+							Player ply = ((Player)car.getPassenger());
+							if(plugin.raceMethods.inAGame(ply.getName()) != null){
+								Race race = plugin.raceMethods.inAGame(ply.getName());
+						        if(ply.getName().equals(race.winning)){
+							         while(ItemStackFromId.equals(main.config.getString("mariokart.blueShell"), give.getTypeId(), give.getDurability())){ 
+							         give = this.getRandomPowerup();
+							         }
+						        }
+							}
 						}
 						else {
 							//Give mario items

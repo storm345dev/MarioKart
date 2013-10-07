@@ -201,7 +201,6 @@ public class RaceScheduler {
 					Player p=plugin.getServer().getPlayer(name);
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
 				}
-				//TODO Send resource pack to player
 				String rl = main.config.getString("mariokart.resourcePack");
 				Boolean valid = true;
 				try {
