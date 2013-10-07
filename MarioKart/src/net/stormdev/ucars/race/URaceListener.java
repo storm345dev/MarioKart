@@ -596,7 +596,11 @@ public class URaceListener implements Listener {
 		if(!ucars.listener.isACar((Minecart) event.getEntity())){
 			return;
 		}
-		if(plugin.raceMethods.inAGame(((Player) event.getEntity().getPassenger()).getName()) == null && !(event.getEntity().hasMetadata("kart.immune"))){
+		try {
+			if(plugin.raceMethods.inAGame(((Player) event.getEntity().getPassenger()).getName()) == null && !(event.getEntity().hasMetadata("kart.immune"))){
+				return;
+			}
+		} catch (Exception e) {
 			return;
 		}
 		event.setDamage(0);

@@ -15,6 +15,7 @@ import net.stormdev.ucars.utils.SerializableLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -197,6 +198,14 @@ public class RaceScheduler {
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
 				}
 				for(int i=10;i>0;i--){
+				if(i==10){
+					Player p=plugin.getServer().getPlayer(players.get(0));
+					p.getLocation().getWorld().playSound(p.getLocation(), Sound.BREATH, 8, 1);
+				}
+				if(i==3){
+					Player p=plugin.getServer().getPlayer(players.get(0));
+					p.getLocation().getWorld().playSound(p.getLocation(), Sound.NOTE_BASS_DRUM, 8, 1);
+				}
 				for(String name:players){
 				Player p=plugin.getServer().getPlayer(name);
 				p.sendMessage(main.colors.getInfo()+""+i);
