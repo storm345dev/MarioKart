@@ -1,0 +1,25 @@
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #	
+# This is the MarioKart plugin's configuration file. For more        #	
+# information visit                                                  #	
+# http://www.dev.bukkit.org/server-mods/mariokart/                   #	
+# Plugin by storm345	                                             #	
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #	
+
+# If you are viewing this on notepad then view it on a text editor designed for use with yaml files. Such as wordpad or notetab (Lite). 
+# Information on setting the config:
+
+# +----------------------------------------------------------------+ #	
+# |                                                                | #	
+# |                           -General-                            | #	
+# |                                                                | #	
+# +----------------------------------------------------------------+ #	
+# These are the settings for the plugin!
+# +----------------------------------------------------------------+ #	
+# |                                                                | #	
+# |                           -colorScheme-                        | #	
+# |                                                                | #	
+# +----------------------------------------------------------------+ #
+# This is where you pick the colours for the plugin to use.	
+# Dont know what the colours are? http://lpminecraft.com/wiki/lib/exe/fetch.php?w=429&media=lpminecraft:plugins:quicksign:minecraftcolorcodes.png	
+
+# Let's begin:
