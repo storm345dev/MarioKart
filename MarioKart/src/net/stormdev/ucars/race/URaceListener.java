@@ -1,5 +1,7 @@
 package net.stormdev.ucars.race;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -269,7 +271,7 @@ public class URaceListener implements Listener {
 		Map<String,Double> scores = new HashMap<String,Double>();
 		Boolean finished = false;
 		String playername = event.getPlayername();
-				Player player = plugin.getServer().getPlayer(playername);
+				final Player player = plugin.getServer().getPlayer(playername);
 				player.removeMetadata("car.stayIn", plugin);
 				player.setCustomName(ChatColor.stripColor(player.getCustomName()));
 				player.setCustomNameVisible(false);
@@ -406,6 +408,23 @@ public class URaceListener implements Listener {
 			game.ended = true;
 			game.end();
 		}
+		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				String rl = main.config.getString("mariokart.resourceNonMarioPack");
+				Boolean valid = true;
+				try {
+					new URL(rl);
+				} catch (MalformedURLException e2) {
+					valid = false;
+				}
+				if(valid){
+					player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.clear"));
+					player.setTexturePack(rl);
+				}
+				return;
+			}}, 150l);
 		return;
 	}
 	@EventHandler

@@ -1,5 +1,7 @@
 package net.stormdev.ucars.race;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,8 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.rosaloves.bitlyj.Bitly;
+import com.rosaloves.bitlyj.Url;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
@@ -196,6 +200,28 @@ public class RaceScheduler {
 				for(String name:players){
 					Player p=plugin.getServer().getPlayer(name);
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
+				}
+				//TODO Send resource pack to player
+				String rl = main.config.getString("mariokart.resourcePack");
+				Boolean valid = true;
+				try {
+					new URL(rl);
+				} catch (MalformedURLException e2) {
+					valid = false;
+				}
+				if(valid){
+					for(String name:players){
+						Player p=plugin.getServer().getPlayer(name);
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+						//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+						Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+url.getShortUrl());
+						p.setTexturePack(rl);
+					}
+				}
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e1) {
 				}
 				for(int i=10;i>0;i--){
 				if(i==10){

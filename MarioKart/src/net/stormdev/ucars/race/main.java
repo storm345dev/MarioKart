@@ -161,6 +161,15 @@ public class main extends JavaPlugin {
         	if(!lang.contains("race.que.starting")){
         		lang.set("race.que.starting", "Race starting in...");
         	}
+        	if(!lang.contains("resource.download")){
+        		lang.set("resource.download", "Downloading resources...");
+        	}
+        	if(!lang.contains("resource.downloadHelp")){
+        		lang.set("resource.downloadHelp", "If the resources aren't downloaded automatically. Download it at: ");
+        	}
+        	if(!lang.contains("resource.clear")){
+        		lang.set("resource.clear", "Switching back to default minecraft textures...");
+        	}
         	if(!lang.contains("race.que.go")){
         		lang.set("race.que.go", "Go!");
         	}
@@ -198,6 +207,12 @@ public class main extends JavaPlugin {
         	if (!config.contains("general.raceGracePeriod")) {
 				config.set("general.raceGracePeriod", (double)10.0);
 			}
+        	if(!config.contains("mariokart.resourcePack")){
+        		config.set("mariokart.resourcePack", "https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip");
+        	}
+        	if(!config.contains("mariokart.resourceNonMarioPack")){
+        		config.set("mariokart.resourceNonMarioPack", "https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/defaults.zip");
+        	}
         	if(!config.contains("mariokart.enable")){
         		config.set("mariokart.enable", true);
         	}
