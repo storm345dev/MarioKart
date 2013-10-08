@@ -225,11 +225,6 @@ public class RaceScheduler {
 					Player p=plugin.getServer().getPlayer(name);
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
 				}
-				
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e1) {
-				}
 				for(int i=10;i>0;i--){
 				if(i==10){
 					Player p=plugin.getServer().getPlayer(players.get(0));
@@ -242,6 +237,10 @@ public class RaceScheduler {
 				for(String name:players){
 				Player p=plugin.getServer().getPlayer(name);
 				p.sendMessage(main.colors.getInfo()+""+i);
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
 				}
 				}
 				for(Minecart car:cars){

@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -66,6 +67,9 @@ public class MarioKart {
 		if(event instanceof PlayerInteractEvent){
 			PlayerInteractEvent evt = (PlayerInteractEvent) event;
 			if(!ucars.listener.inACar(evt.getPlayer())){
+				return null;
+			}
+			if(player.hasMetadata("kart.rolling")){
 				return null;
 			}
 			final Minecart car = (Minecart) evt.getPlayer().getVehicle();
@@ -557,6 +561,9 @@ public class MarioKart {
 						if(ChatColor.stripColor(lines[3]).equalsIgnoreCase("wait")){
 							return null;
 						}
+						if(player.getInventory().getContents().length > 0){
+							player.getInventory().clear();
+						}
 						ItemStack give = null;
 						if(ChatColor.stripColor(lines[2]).equalsIgnoreCase("all")){
 							//Give all items
@@ -592,9 +599,37 @@ public class MarioKart {
 						        }
 							}
 						}
-						Player ply = ((Player)car.getPassenger());
-						ply.getInventory().addItem(give);
-						ply.updateInventory();
+						final Player ply = ((Player)car.getPassenger());
+						ply.setMetadata("kart.rolling", new StatValue(true, plugin));
+						final ItemStack get = give;
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+							public void run() {
+								int min = 0;
+								int max = 20;
+								int delay = 100;
+								World world = ply.getWorld();
+								int z = plugin.random.nextInt(max - min) + min;
+								for(int i=0;i<=z;i++){
+									ply.getInventory().clear();
+									ply.getInventory().addItem(getRandomPowerup());
+									ply.updateInventory();
+									world.playSound(ply.getLocation(), Sound.NOTE_PIANO, 0.2f, 1.5f);
+									try {
+										Thread.sleep(delay);
+									} catch (InterruptedException e) {
+									}
+									delay = delay + (z/100 * i);
+									if(delay > 1000){
+										delay = 1000;
+									}
+								}
+								ply.getInventory().clear();
+								ply.getInventory().addItem(get);
+								ply.removeMetadata("kart.rolling", plugin);
+								ply.updateInventory();
+								return;
+							}});
 						List<Entity> ents = ply.getNearbyEntities(2, 3, 2);
 						for(Entity ent:ents){
 							if(ent instanceof EnderCrystal){
