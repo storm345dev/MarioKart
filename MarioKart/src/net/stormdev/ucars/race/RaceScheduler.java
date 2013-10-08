@@ -208,13 +208,23 @@ public class RaceScheduler {
 				} catch (MalformedURLException e2) {
 					valid = false;
 				}
-				if(valid){
+				if(valid && main.config.getBoolean("bitlyUrlShortner")){
+					//Shorten url
 					for(String name:players){
 						Player p=plugin.getServer().getPlayer(name);
 						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
 						//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
 						Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
 						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+url.getShortUrl());
+						p.setTexturePack(rl);
+					}
+				}
+				else{
+					//Dont shorten url
+					for(String name:players){
+						Player p=plugin.getServer().getPlayer(name);
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
 						p.setTexturePack(rl);
 					}
 				}
