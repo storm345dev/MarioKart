@@ -71,6 +71,30 @@ public class RaceScheduler {
 				this.reCalculateQues();
 				plugin.getServer().getPlayer(playername).sendMessage(main.colors.getSuccess()+main.msgs.get("race.que.success"));
 				plugin.getServer().getPlayer(playername).teleport(track.getLobby(plugin.getServer()));
+				String rl = main.config.getString("mariokart.resourcePack");
+				Boolean valid = true;
+				try {
+					new URL(rl);
+				} catch (MalformedURLException e2) {
+					valid = false;
+				}
+				if(valid && main.config.getBoolean("bitlyUrlShortner")){
+					//Shorten url
+					    Player p = plugin.getServer().getPlayer(playername);
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+						//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+						Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+url.getShortUrl());
+						p.setTexturePack(rl);
+					
+				}
+				else{
+					//Dont shorten url
+						Player p=plugin.getServer().getPlayer(playername);
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
+						p.setTexturePack(rl);
+				}
 				return true;
 			}
 		}
@@ -201,33 +225,7 @@ public class RaceScheduler {
 					Player p=plugin.getServer().getPlayer(name);
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
 				}
-				String rl = main.config.getString("mariokart.resourcePack");
-				Boolean valid = true;
-				try {
-					new URL(rl);
-				} catch (MalformedURLException e2) {
-					valid = false;
-				}
-				if(valid && main.config.getBoolean("bitlyUrlShortner")){
-					//Shorten url
-					for(String name:players){
-						Player p=plugin.getServer().getPlayer(name);
-						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
-						//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
-						Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
-						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+url.getShortUrl());
-						p.setTexturePack(rl);
-					}
-				}
-				else{
-					//Dont shorten url
-					for(String name:players){
-						Player p=plugin.getServer().getPlayer(name);
-						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
-						p.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
-						p.setTexturePack(rl);
-					}
-				}
+				
 				try {
 					Thread.sleep(1500);
 				} catch (InterruptedException e1) {
@@ -244,10 +242,6 @@ public class RaceScheduler {
 				for(String name:players){
 				Player p=plugin.getServer().getPlayer(name);
 				p.sendMessage(main.colors.getInfo()+""+i);
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
 				}
 				}
 				for(Minecart car:cars){
