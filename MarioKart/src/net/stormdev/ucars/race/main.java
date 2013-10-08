@@ -207,6 +207,9 @@ public class main extends JavaPlugin {
         	if (!config.contains("general.raceGracePeriod")) {
 				config.set("general.raceGracePeriod", (double)10.0);
 			}
+	        if(!config.contains("bitlyUrlShortner")){
+        		config.set("bitlyUrlShortner", true);
+        	}
         	if(!config.contains("mariokart.resourcePack")){
         		config.set("mariokart.resourcePack", "https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip");
         	}
