@@ -1,6 +1,6 @@
 name: MarioKart
 main: net.stormdev.ucars.race.main
-version: 1
+version: 2
 softdepend: [Vault]
 depend: [uCars]
 commands:

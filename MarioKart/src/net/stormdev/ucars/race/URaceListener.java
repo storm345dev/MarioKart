@@ -199,7 +199,7 @@ public class URaceListener implements Listener {
 					}
 					Vector vel = new Vector(x, 0, z);
 					shell.setVelocity(vel);
-					if(pz < 1 && px < 1){
+					if(pz < 1.1 && px < 1.1){
 								String msg = main.msgs.get("mario.hit");
 								msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
 								target.getLocation().getWorld().playSound(target.getLocation(), Sound.ENDERDRAGON_HIT, 1, 0.8f);
@@ -410,7 +410,6 @@ public class URaceListener implements Listener {
 		}
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable(){
 
-			@Override
 			public void run() {
 				String rl = main.config.getString("mariokart.resourceNonMarioPack");
 				Boolean valid = true;
