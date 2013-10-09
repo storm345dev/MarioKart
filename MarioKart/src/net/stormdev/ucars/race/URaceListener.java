@@ -57,6 +57,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -926,6 +927,41 @@ public class URaceListener implements Listener {
 			return;
 		}
 	    event.setCancelled(true);
+	    return;
+	}
+	@EventHandler (priority = EventPriority.MONITOR)
+	void speedo(VehicleUpdateEvent event){
+		Entity veh = event.getVehicle();
+		if(!(veh instanceof Minecart)){
+			return;
+		}
+		if(!ucars.listener.isACar((Minecart) veh)){
+			return;
+		}
+		Minecart car = (Minecart) veh;
+	    Entity pass = car.getPassenger();
+	    if(!(pass instanceof Player)){
+	    	return;
+	    }
+	    Player player = (Player) pass;
+	    String playername = player.getName();
+	    if(plugin.raceMethods.inAGame(playername) == null){
+	    	return;
+	    }
+	    Vector Velocity = car.getVelocity();
+	    double speed = (Math.abs(Velocity.getX()) + Math.abs(Velocity.getZ())) * 40;
+	    if(speed < 1){
+	    	speed = Velocity.getY();
+	    }
+	    if(speed > 100){
+	    	speed = 100;
+	    }
+	    player.setLevel((int) speed);
+	    float xpBar = (float) (speed/100);
+	    if(xpBar >= 1){
+	    	xpBar = 0.999f;
+	    }
+	    player.setExp(xpBar);
 	    return;
 	}
 }

@@ -59,6 +59,7 @@ public class Race {
 	public Map<String, Integer> checkpoints = new HashMap<String, Integer>();
 	public Map<String, Integer> lapsLeft = new HashMap<String, Integer>();
 	public Map<String, ItemStack[]> oldInventories = new HashMap<String, ItemStack[]>();
+	public Map<String, Integer> oldLevels = new HashMap<String, Integer>();
 	public Race(RaceTrack track, String trackName){
 		this.gameId = UUID.randomUUID().toString();
 		this.track = track;
@@ -91,8 +92,13 @@ public class Race {
     	if(this.inplayers.contains(name)){
     	this.inplayers.remove(name);
     	}
+    	main.plugin.getServer().getPlayer(name).setLevel(this.oldLevels.get(name));
+    	main.plugin.getServer().getPlayer(name).setExp(0);
+    	return;
     }
 	public Boolean join(String playername){
+		int lvl = main.plugin.getServer().getPlayer(playername).getLevel();
+		this.oldLevels.put(playername, lvl);
 		if(players.size() < this.track.getMaxPlayers()){
 			players.add(playername);
 			return true;
@@ -100,6 +106,7 @@ public class Race {
 		return false;
 	}
 	public void leave(String playername, Boolean quit){
+		main.plugin.getServer().getPlayer(playername).setLevel(this.oldLevels.get(playername));;
 		if(quit){
 		this.getPlayers().remove(playername);
 		if(this.getPlayers().size() < 2){
@@ -336,6 +343,8 @@ public class Race {
         pls.addAll(this.inplayers);
     	for(String playername:pls){
     		main.plugin.getServer().getPlayer(playername).setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());	
+    		main.plugin.getServer().getPlayer(playername).setLevel(this.oldLevels.get(playername));
+    		main.plugin.getServer().getPlayer(playername).setExp(0);
     		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, playername));
     	}
     	RaceEndEvent evt = new RaceEndEvent(this);
@@ -347,6 +356,8 @@ public class Race {
     		startEndCount();
     	}
     	this.finished.add(playername);
+    	main.plugin.getServer().getPlayer(playername).setLevel(this.oldLevels.get(playername));
+    	main.plugin.getServer().getPlayer(playername).setExp(0);
     	main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, playername));
     }
     public CheckpointCheck playerAtCheckpoint(Integer[] checks, Player p, Server server){
