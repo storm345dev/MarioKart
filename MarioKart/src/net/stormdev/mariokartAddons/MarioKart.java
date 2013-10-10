@@ -505,7 +505,6 @@ public class MarioKart {
 				inHand.setAmount(inHand.getAmount()-1);
 			}
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.boo"), inHand.getTypeId(), inHand.getDurability())){
-				//TODO Use Boo item
 				PotionEffect effect = new PotionEffect(PotionEffectType.INVISIBILITY, 120, 10);
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
@@ -528,6 +527,7 @@ public class MarioKart {
 					pl.getInventory().addItem(PowerupMaker.getPowerup(Powerup.BOO, 1));
 					PotionEffect nausea = new PotionEffect(PotionEffectType.CONFUSION, 240, 10);
 					pl.addPotionEffect(nausea, true);
+					pl.getWorld().playSound(pl.getLocation(), Sound.AMBIENCE_CAVE, 1, 1);
 					pl.updateInventory();
 					String msg = main.msgs.get("mario.hit");
 					msg = msg.replaceAll("%name%", "ghost");
