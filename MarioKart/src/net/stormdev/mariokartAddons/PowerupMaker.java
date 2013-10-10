@@ -39,6 +39,9 @@ public class PowerupMaker {
    	    else if(powerup == Powerup.RANDOM){
 	    	power = main.config.getString("mariokart.random");
 	    }
+   	    else if(powerup == Powerup.BOO){
+   	    	power = main.config.getString("mariokart.boo");
+   	    }
    	    PowerupData toReturn = new PowerupData(powerup, ItemStackFromId.get(power));
    	    toReturn.raw.setAmount(amount);
    	    return toReturn;

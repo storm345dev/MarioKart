@@ -143,13 +143,7 @@ public class URaceListener implements Listener {
 		} catch (Exception e) {
 			return;
 		}
-	    KartAction action = main.marioKart.calculate(player, event);
-	    if(action == null){
-	    	return;
-	    }
-	    if(action.getAction()==net.stormdev.mariokartAddons.Action.UNKNOWN){
-	    	return;
-	    }
+	    main.marioKart.calculate(player, event);
 	    return;
 	}
 	@EventHandler (priority = EventPriority.LOWEST)

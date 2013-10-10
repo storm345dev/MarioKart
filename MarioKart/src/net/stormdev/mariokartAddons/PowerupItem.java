@@ -37,6 +37,11 @@ public class PowerupItem extends ItemStack{
     		 lore.add("+Throws an ignited bomb");
     		 lore.add("*Right click to deploy");
     	 }
+    	 else if(powerup==Powerup.BOO){
+    		 lore.add("+Invisible for 6s");
+    		 lore.add("+Apply nausea to racer ahead");
+    		 lore.add("*Right click to deploy");
+    	 }
     	 else if(powerup==Powerup.GREEN_SHELL){
     		 lore.add("+Slows down the victim");
     		 lore.add("*Left click to throw forwards");

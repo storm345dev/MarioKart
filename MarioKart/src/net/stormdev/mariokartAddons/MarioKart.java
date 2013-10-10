@@ -34,6 +34,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -51,14 +53,13 @@ public class MarioKart {
 		enabled = main.config.getBoolean("mariokart.enable");
 	}
 	@SuppressWarnings("deprecation")
-	public KartAction calculate(final Player player, Event event){
+	public void calculate(final Player player, Event event){
 		if(!enabled){
-			return null;
+			return;
 		}
 		if(plugin.raceMethods.inAGame(player.getName()) == null){
-			return null;
+			return;
 		}
-		KartAction kartAction = new KartAction(false, false, Action.UNKNOWN, new Object[]{});
 		Boolean freeze = false;
 		Boolean destroy = false;
 		Action action = Action.UNKNOWN;
@@ -67,10 +68,10 @@ public class MarioKart {
 		if(event instanceof PlayerInteractEvent){
 			PlayerInteractEvent evt = (PlayerInteractEvent) event;
 			if(!ucars.listener.inACar(evt.getPlayer())){
-				return null;
+				return;
 			}
 			if(player.hasMetadata("kart.rolling")){
-				return null;
+				return;
 			}
 			final Minecart car = (Minecart) evt.getPlayer().getVehicle();
 			if(evt.getAction()==org.bukkit.event.block.Action.LEFT_CLICK_AIR || evt.getAction()==org.bukkit.event.block.Action.LEFT_CLICK_BLOCK){
@@ -79,7 +80,7 @@ public class MarioKart {
 				if(ItemStackFromId.equals(main.config.getString("mariokart.greenShell"), inHand.getTypeId(), inHand.getDurability())){
 					Race race = plugin.raceMethods.inAGame(player.getName());
 					if(race == null){
-						return null;
+						return;
 					}
 					inHand.setAmount(inHand.getAmount()-1);
 					player.setItemInHand(inHand);
@@ -161,7 +162,7 @@ public class MarioKart {
 				}
 			}
 			if(!(evt.getAction()==org.bukkit.event.block.Action.RIGHT_CLICK_AIR || evt.getAction()==org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK)){
-				return null;
+				return;
 			}
 			ItemStack inHand = evt.getPlayer().getItemInHand();
 			Player ply = evt.getPlayer();
@@ -177,7 +178,6 @@ public class MarioKart {
 		            }
 			    }
 				evt.getPlayer().getInventory().addItem(give);
-				kartAction.action = Action.UNKNOWN; //ignore it
 			}
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.star"), inHand.getTypeId(), inHand.getDurability())){
 				inHand.setAmount(inHand.getAmount()-1);
@@ -216,7 +216,7 @@ public class MarioKart {
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.redShell"), inHand.getTypeId(), inHand.getDurability())){
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
-					return null;
+					return;
 				}
 		    	SortedMap<String, Double> sorted = race.getRaceOrder();
 		    	Set<String> keys = sorted.keySet();
@@ -231,7 +231,7 @@ public class MarioKart {
 				if(tpos < 0){
 					tpos = ppos+1;
 					if(tpos < 0 || tpos >= pls.length){
-					return null;
+					return;
 					}
 				}
 				final String targetName = (String) pls[tpos];
@@ -273,7 +273,7 @@ public class MarioKart {
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.blueShell"), inHand.getTypeId(), inHand.getDurability())){
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
-					return null;
+					return;
 				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 		    	Set<String> keys = sorted.keySet();
@@ -317,7 +317,7 @@ public class MarioKart {
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.greenShell"), inHand.getTypeId(), inHand.getDurability())){
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
-					return null;
+					return;
 				}
 				inHand.setAmount(inHand.getAmount()-1);
 				ItemStack toDrop = ItemStackFromId.get(main.config.getString("mariokart.greenShell"));
@@ -416,7 +416,7 @@ public class MarioKart {
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.lightning"), inHand.getTypeId(), inHand.getDurability())){
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
-					return null;
+					return;
 				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 		    	Set<String> keys = sorted.keySet();
@@ -451,7 +451,7 @@ public class MarioKart {
 			else if(ItemStackFromId.equals(main.config.getString("mariokart.pow"), inHand.getTypeId(), inHand.getDurability())){
 				Race race = plugin.raceMethods.inAGame(player.getName());
 				if(race == null){
-					return null;
+					return;
 				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 		    	Set<String> keys = sorted.keySet();
@@ -504,6 +504,45 @@ public class MarioKart {
 				loc.getWorld().dropItemNaturally(loc, ItemStackFromId.get(main.config.getString("mariokart.banana")));
 				inHand.setAmount(inHand.getAmount()-1);
 			}
+			else if(ItemStackFromId.equals(main.config.getString("mariokart.boo"), inHand.getTypeId(), inHand.getDurability())){
+				//TODO Use Boo item
+				PotionEffect effect = new PotionEffect(PotionEffectType.INVISIBILITY, 120, 10);
+				Race race = plugin.raceMethods.inAGame(player.getName());
+				if(race == null){
+					return;
+				}
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+		    	Set<String> keys = sorted.keySet();
+				final Object[] pls = (Object[]) keys.toArray();
+				int pppos = 0;
+				for(int i=0;i<pls.length;i++){
+					if(pls[i].equals(player.getName())){
+						pppos = i;
+					}
+				}
+				int pos = pppos - 1;
+				if(!(pos < 0)){
+					final Player pl = main.plugin.getServer().getPlayer((String) pls[pos]);
+					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
+					pl.getInventory().clear();
+					pl.getInventory().addItem(PowerupMaker.getPowerup(Powerup.BOO, 1));
+					PotionEffect nausea = new PotionEffect(PotionEffectType.CONFUSION, 240, 10);
+					pl.addPotionEffect(nausea, true);
+					pl.updateInventory();
+					String msg = main.msgs.get("mario.hit");
+					msg = msg.replaceAll("%name%", "ghost");
+					pl.sendMessage(main.colors.getInfo()+msg);
+					plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable(){
+
+						public void run() {
+							pl.removeMetadata("kart.rolling", plugin);
+							pl.getInventory().clear();
+							pl.updateInventory();
+						}}, 240l);
+				}
+				player.addPotionEffect(effect, true);
+				inHand.setAmount(inHand.getAmount()-1);
+			}
 			evt.getPlayer().setItemInHand(inHand);
 			evt.getPlayer().updateInventory(); //Fix 1.6 bug with inventory not updating
 		}
@@ -546,7 +585,7 @@ public class MarioKart {
 												uu = first.getBlock().getRelative(BlockFace.EAST).getLocation();
 												sign = (Sign) uu.getBlock().getState();
 											} catch (Exception e7) {
-                                                return null;
+                                                return;
 											}
 										}
 									}
@@ -558,8 +597,11 @@ public class MarioKart {
 				final String[] lines = sign.getLines();
 				if(ChatColor.stripColor(lines[0]).equalsIgnoreCase("[MarioKart]") || ChatColor.stripColor(lines[0]).equalsIgnoreCase("[uRace]")){
 					if(ChatColor.stripColor(lines[1]).equalsIgnoreCase("items")){
+						if(player.hasMetadata("kart.rolling")){
+							return;
+						}
 						if(ChatColor.stripColor(lines[3]).equalsIgnoreCase("wait")){
-							return null;
+							return;
 						}
 						if(player.getInventory().getContents().length > 0){
 							player.getInventory().clear();
@@ -655,11 +697,7 @@ public class MarioKart {
 			}
 		}
 		//End calculations
-		kartAction.action = action;
-		kartAction.args = args;
-		kartAction.freeze = freeze;
-		kartAction.destroy = destroy;
-		return kartAction;
+		return;
 	}
 	public ItemStack getRandomBoost(){
 		int type = 1;

@@ -240,6 +240,9 @@ public class main extends JavaPlugin {
         	if(!config.contains("mariokart.bomb")){
         		config.set("mariokart.bomb", "46");
         	}
+        	if(!config.contains("mariokart.boo")){
+        		config.set("mariokart.boo", "352");
+        	}
         	if(!config.contains("mariokart.pow")){
         		config.set("mariokart.pow", "79");
         	}
