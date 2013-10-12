@@ -73,6 +73,7 @@ public class Race {
 	    scores.setDisplaySlot(DisplaySlot.BELOW_NAME);
 	    this.scoresBoard = board.registerNewObjective(ChatColor.GOLD+"Race Positions", "dummy");
 	    scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
+	    main.plugin.gameScheduler.runningGames++;
 	}
 	public void setOldInventories(Map<String, ItemStack[]> inventories){
 		this.oldInventories = inventories;
@@ -338,6 +339,16 @@ public class Race {
 			this.scores.unregister();
 			this.scoresBoard.unregister();
 		} catch (IllegalStateException e) {
+		}
+    	try {
+			int current = main.plugin.gameScheduler.runningGames;
+			current--;
+			if(current < 0){
+				current = 0;
+			}
+			main.plugin.gameScheduler.runningGames = current;
+		} catch (Exception e) {
+			//Server reloaded when game ending
 		}
         ArrayList<String> pls = new ArrayList<String>();
         pls.addAll(this.inplayers);

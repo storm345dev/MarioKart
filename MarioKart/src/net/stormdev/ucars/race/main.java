@@ -201,6 +201,9 @@ public class main extends JavaPlugin {
         	if (!config.contains("general.logger.colour")) {
 				config.set("general.logger.colour", true);
 			}
+        	if (!config.contains("general.raceLimit")) {
+				config.set("general.raceLimit", 10);
+			}
         	if (!config.contains("general.raceTickrate")) {
 				config.set("general.raceTickrate", 6l);
 			}

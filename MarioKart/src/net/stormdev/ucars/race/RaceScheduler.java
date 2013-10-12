@@ -37,9 +37,12 @@ public class RaceScheduler {
 	private HashMap<String, Race> games = new HashMap<String, Race>();
 	private main plugin;
 	Random random = null;
+	public int runningGames = 0;
+	public int maxGames = 10;
 	public RaceScheduler(){
 		this.plugin = main.plugin;
 		random = new Random();
+		this.maxGames = main.config.getInt("general.raceLimit");
 	}
 	public Boolean joinGame(String playername, RaceTrack track, RaceQue que, String trackName){
 		que.validatePlayers();
@@ -116,7 +119,7 @@ public class RaceScheduler {
 			if(que.getTransitioning() == null){
 				que.setTransitioning(false);
 			}
-			if(!trackInUse(aname) && que.getHowManyPlayers() > 1 && !que.getTransitioning()){
+			if(!trackInUse(aname) && que.getHowManyPlayers() > 1 && !que.getTransitioning() && !(this.runningGames >= this.maxGames)){
 				que.setTransitioning(true);
 				plugin.raceQues.setQue(aname, que);
 				final String queName = aname;
