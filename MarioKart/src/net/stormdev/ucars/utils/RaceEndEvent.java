@@ -5,7 +5,7 @@ import net.stormdev.ucars.race.Race;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RaceEndEvent extends Event {
+public class RaceEndEvent extends Event { //Called when a race is ended
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
 	public RaceEndEvent(Race race){
