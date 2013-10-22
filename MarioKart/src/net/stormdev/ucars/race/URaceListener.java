@@ -817,28 +817,34 @@ public class URaceListener implements Listener {
 	}
 	@EventHandler (priority = EventPriority.MONITOR)
 	void playerFireProtection(EntityDamageEvent event){
-		if(event.getCause() != DamageCause.FIRE && event.getCause() != DamageCause.FIRE_TICK){
+		try {
+			if(event.getCause() != DamageCause.FIRE && event.getCause() != DamageCause.FIRE_TICK){
+				return;
+			}
+			if(!(event.getEntity() instanceof Player)){
+				return;
+			}
+			if(!ucars.listener.inACar((Player) event.getEntity())){
+				return;
+			}
+			if(plugin.raceMethods.inAGame(((HumanEntity) event.getEntity()).getName()) == null){
+				return;
+			}
+			Player player = ((Player)event.getEntity());
+			player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2, 100));
+			double health = player.getHealth();
+			health = health + event.getDamage();
+			if(health > 20){
+				health = 20;
+			}
+			player.setHealth(health);
+			player.setFireTicks(0);
+			event.setCancelled(true);
+			return;
+		} catch (Exception e) {
+			//Fire event error - Yes it happens
 			return;
 		}
-		if(!(event.getEntity() instanceof Player)){
-			return;
-		}
-		if(!ucars.listener.inACar((Player) event.getEntity())){
-			return;
-		}
-		if(plugin.raceMethods.inAGame(((HumanEntity) event.getEntity()).getName()) == null){
-			return;
-		}
-		Player player = ((Player)event.getEntity());
-		player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2, 100));
-		double health = player.getHealth();
-		health = health + event.getDamage();
-		if(health > 20){
-			health = 20;
-		}
-		player.setHealth(health);
-		player.setFireTicks(0);
-		return;
 	}
 	@EventHandler
 	void carDeath(VehicleDamageEvent event){
