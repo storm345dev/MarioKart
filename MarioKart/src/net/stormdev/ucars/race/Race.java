@@ -147,7 +147,11 @@ public class Race {
 		}
 		if(player != null){
 			player.setGameMode(GameMode.SURVIVAL);
-			player.teleport(player.getWorld().getSpawnLocation());
+			try {
+				player.teleport(this.track.getExit(main.plugin.getServer()));
+			} catch (Exception e) {
+				player.teleport(player.getWorld().getSpawnLocation());
+			}
 			player.sendMessage(ChatColor.GOLD+"Successfully quit the race!");
 		    player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());	
 		}
