@@ -205,7 +205,7 @@ public class main extends JavaPlugin {
 				config.set("general.raceLimit", 10);
 			}
         	if (!config.contains("general.raceTickrate")) {
-				config.set("general.raceTickrate", 6l);
+				config.set("general.raceTickrate", 2l);
 			}
         	if (!config.contains("general.raceGracePeriod")) {
 				config.set("general.raceGracePeriod", (double)10.0);
