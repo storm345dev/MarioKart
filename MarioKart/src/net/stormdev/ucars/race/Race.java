@@ -49,6 +49,7 @@ public class Race {
 	private BukkitTask scoreCalcs = null;
 	public int maxCheckpoints = 3;
 	public int totalLaps = 3;
+	public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
 	public ArrayList<String> finished = new ArrayList<String>();
 	public int finishCountdown = 60;
 	Boolean ending = false;

@@ -600,9 +600,19 @@ public class MarioKart {
 						if(player.hasMetadata("kart.rolling")){
 							return;
 						}
+						final Race r = plugin.raceMethods.inAGame(player.getName());
+						if(r == null){
+						    return;	
+						}
+						final Location signLoc = sign.getLocation();
+						if(r.reloadingItemBoxes.contains(signLoc)){
+							return; //Box is reloading
+						}
+						/*
 						if(ChatColor.stripColor(lines[3]).equalsIgnoreCase("wait")){
 							return;
 						}
+						*/
 						if(player.getInventory().getContents().length > 0){
 							player.getInventory().clear();
 						}
@@ -676,15 +686,14 @@ public class MarioKart {
 						for(Entity ent:ents){
 							if(ent instanceof EnderCrystal){
 								final Location loc = ent.getLocation();
-								lines[3] = "wait";
-								sign.setLine(3, "wait");
-								sign.update(true);
-								final Sign si = sign;
+								r.reloadingItemBoxes.add(signLoc);
+								main.plugin.gameScheduler.updateGame(r);
+								//final Sign si = sign;
 								plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable(){
 
 									public void run() {
-										si.setLine(3, "ready");
-										si.update(true);
+										r.reloadingItemBoxes.remove(signLoc);
+										main.plugin.gameScheduler.updateGame(r);
 										main.listener.spawnItemPickupBox(loc);
 										return;
 									}}, 200l);
