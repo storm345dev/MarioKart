@@ -1,5 +1,6 @@
 package net.stormdev.mariokartAddons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -48,9 +50,14 @@ public class MarioKart {
 	main plugin = null;
 	private HashMap<UUID, BukkitTask> tasks = new HashMap<UUID, BukkitTask>();
 	Boolean enabled = true;
+	public ItemStack respawn = null;
 	public MarioKart(main plugin){
 		this.plugin = plugin;
 		enabled = main.config.getBoolean("mariokart.enable");
+		this.respawn = new ItemStack(Material.EGG);
+		ItemMeta meta = this.respawn.getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN+"Respawn");
+		this.respawn.setItemMeta(meta);
 	}
 	@SuppressWarnings("deprecation")
 	public void calculate(final Player player, Event event){
@@ -166,7 +173,13 @@ public class MarioKart {
 			}
 			ItemStack inHand = evt.getPlayer().getItemInHand();
 			Player ply = evt.getPlayer();
-			if(ItemStackFromId.equals(main.config.getString("mariokart.random"), inHand.getTypeId(), inHand.getDurability())){
+			if(inHand.equals(this.respawn)){
+				player.sendMessage(ChatColor.GREEN+"Respawning...");
+				player.setHealth(0);
+				evt.setCancelled(true);
+				return;
+			}
+			else if(ItemStackFromId.equals(main.config.getString("mariokart.random"), inHand.getTypeId(), inHand.getDurability())){
 				inHand.setAmount(inHand.getAmount()-1);
 				ItemStack give = this.getRandomPowerup();
 			    if(plugin.raceMethods.inAGame(ply.getName()) != null){
@@ -524,6 +537,7 @@ public class MarioKart {
 					final Player pl = main.plugin.getServer().getPlayer((String) pls[pos]);
 					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
 					pl.getInventory().clear();
+					player.getInventory().setItem(8, this.respawn);
 					pl.getInventory().addItem(PowerupMaker.getPowerup(Powerup.BOO, 1));
 					PotionEffect nausea = new PotionEffect(PotionEffectType.CONFUSION, 240, 10);
 					pl.addPotionEffect(nausea, true);
@@ -537,6 +551,7 @@ public class MarioKart {
 						public void run() {
 							pl.removeMetadata("kart.rolling", plugin);
 							pl.getInventory().clear();
+							player.getInventory().setItem(8, respawn);
 							pl.updateInventory();
 						}}, 240l);
 				}
@@ -550,6 +565,7 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under  = car.getLocation().add(0, -1, 0).getBlock();
+			player.getInventory().setItem(8, this.respawn);
 			if(under.getType() == Material.COAL_BLOCK || under.getType() == Material.COAL_BLOCK || under.getType() == Material.COAL_BLOCK){
 				Sign sign = null;
 				Location uu = (Location) under.getRelative(BlockFace.DOWN).getLocation();
@@ -615,6 +631,7 @@ public class MarioKart {
 						*/
 						if(player.getInventory().getContents().length > 0){
 							player.getInventory().clear();
+							player.getInventory().setItem(8, this.respawn);
 						}
 						ItemStack give = null;
 						if(ChatColor.stripColor(lines[2]).equalsIgnoreCase("all")){
@@ -664,6 +681,7 @@ public class MarioKart {
 								int z = plugin.random.nextInt(max - min) + min;
 								for(int i=0;i<=z;i++){
 									ply.getInventory().clear();
+									ply.getInventory().setItem(8, respawn);
 									ply.getInventory().addItem(getRandomPowerup());
 									ply.updateInventory();
 									world.playSound(ply.getLocation(), Sound.NOTE_PIANO, 0.2f, 1.5f);
@@ -677,6 +695,7 @@ public class MarioKart {
 									}
 								}
 								ply.getInventory().clear();
+								ply.getInventory().setItem(8, respawn);
 								ply.getInventory().addItem(get);
 								ply.removeMetadata("kart.rolling", plugin);
 								ply.updateInventory();

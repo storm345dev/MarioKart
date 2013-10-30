@@ -18,7 +18,6 @@ import net.stormdev.ucars.utils.RaceTrack;
 import net.stormdev.ucars.utils.RaceUpdateEvent;
 import net.stormdev.ucars.utils.SerializableLocation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -270,7 +269,7 @@ public class Race {
 					int pos = i+1;
 				    Player pl = main.plugin.getServer().getPlayer(pname);
 				    game.scores.getScore(pl).setScore(pos);
-				    game.scoresBoard.getScore(pl).setScore(pos);
+				    game.scoresBoard.getScore(pl).setScore(-pos);
 				}
 				return;
 			}}, this.scorerate, this.scorerate);

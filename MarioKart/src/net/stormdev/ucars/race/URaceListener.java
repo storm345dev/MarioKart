@@ -50,12 +50,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
@@ -113,6 +115,48 @@ public class URaceListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+		return;
+	}
+	@EventHandler
+	void playerDeath(PlayerDeathEvent event){
+		if(plugin.raceMethods.inAGame(event.getEntity().getName()) == null){
+		    return;	
+		}
+		event.setDeathMessage(ChatColor.GREEN+event.getEntity().getName()+" respawned");
+		event.getDrops().clear();
+		return;
+	}
+	@EventHandler (priority = EventPriority.LOWEST)
+	void vehDestroy(VehicleDamageEvent event){ //Stops player's cars being broken in a race.
+		Vehicle veh = event.getVehicle();
+		if(veh.getPassenger() == null){
+			return;
+		}
+		Entity e = veh.getPassenger();
+		if(!(e instanceof Player)){
+			return;
+		}
+		Player player = (Player) e;
+		if(plugin.raceMethods.inAGame(player.getName()) == null){
+		    return;	
+		}
+		main.logger.info("Cancelling event");
+		event.setCancelled(true);
+		return;
+	}
+	@EventHandler
+	void invClick(InventoryClickEvent event){
+		HumanEntity player = event.getWhoClicked();
+		if(!(player instanceof Player)){
+			return;
+		}
+		if(!ucars.listener.inACar(player.getName())){
+			return;
+		}
+		if(plugin.raceMethods.inAGame(player.getName()) == null){
+			return;
+		}
+		event.setCancelled(true);
 		return;
 	}
 	@EventHandler
