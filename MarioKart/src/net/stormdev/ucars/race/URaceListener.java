@@ -140,7 +140,6 @@ public class URaceListener implements Listener {
 		if(plugin.raceMethods.inAGame(player.getName()) == null){
 		    return;	
 		}
-		main.logger.info("Cancelling event");
 		event.setCancelled(true);
 		return;
 	}
