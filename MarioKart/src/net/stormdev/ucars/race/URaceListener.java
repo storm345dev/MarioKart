@@ -950,6 +950,7 @@ public class URaceListener implements Listener {
 				return;
 			}});
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc, EntityType.MINECART);
+		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 	    cart.setPassenger(player);
 	    player.setMetadata("car.stayIn", new StatValue(null, plugin));
 	    return;
