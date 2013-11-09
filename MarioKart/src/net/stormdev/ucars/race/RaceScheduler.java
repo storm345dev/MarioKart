@@ -203,6 +203,7 @@ public class RaceScheduler {
 		p.teleport(loc.add(0, 2, 0));
 		Minecart car = (Minecart) loc.getWorld().spawnEntity(loc.add(0, 0.2, 0), EntityType.MINECART);
 		car.setMetadata("car.frozen", new StatValue(null, main.plugin));
+		car.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		car.setPassenger(p);
 		p.setMetadata("car.stayIn", new StatValue(null, plugin));
 		cars.add(car);
