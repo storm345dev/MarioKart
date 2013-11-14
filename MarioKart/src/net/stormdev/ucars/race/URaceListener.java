@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import net.stormdev.mariokartAddons.KartAction;
+import net.stormdev.mariokartAddons.MarioKart;
 import net.stormdev.ucars.utils.CheckpointCheck;
 import net.stormdev.ucars.utils.DoubleValueComparator;
 import net.stormdev.ucars.utils.RaceEndEvent;
@@ -520,6 +521,7 @@ public class URaceListener implements Listener {
 		}
 		event.setCancelled(true);
 	}
+	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.HIGHEST)
 	void RaceStart(RaceStartEvent event){
 		Race game = event.getRace();
@@ -527,6 +529,8 @@ public class URaceListener implements Listener {
 		for(String pname:players){
 			plugin.getServer().getPlayer(pname).setGameMode(GameMode.SURVIVAL);
 			plugin.getServer().getPlayer(pname).getInventory().clear();
+			plugin.getServer().getPlayer(pname).getInventory().setItem(8, main.marioKart.respawn);
+			plugin.getServer().getPlayer(pname).updateInventory();
 		}
 			for(int i=0;i<game.getPlayers().size();i++){
 				String pname = game.getPlayers().get(i);
@@ -930,6 +934,7 @@ public class URaceListener implements Listener {
 		}
 	    return;
 	}
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	void playerRespawnEvent(PlayerRespawnEvent event){
 		final Player player = event.getPlayer();
@@ -953,6 +958,8 @@ public class URaceListener implements Listener {
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 	    cart.setPassenger(player);
 	    player.setMetadata("car.stayIn", new StatValue(null, plugin));
+	    player.getInventory().setItem(8, main.marioKart.respawn);
+		player.updateInventory();
 	    return;
 	}
 	@EventHandler
