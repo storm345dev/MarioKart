@@ -286,8 +286,16 @@ public class URaceListener implements Listener {
 	void RaceEnd(RaceEndEvent event){
 		Race game = event.getRace();
 		game.running = false;
-		if(plugin.gameScheduler.trackInUse(game.getTrackName())){
-			plugin.gameScheduler.removeRace(game.getTrackName());
+		try {
+			if(plugin.gameScheduler.trackInUse(game.getTrackName())){
+				plugin.gameScheduler.removeRace(game.getTrackName());
+			}
+		} catch (Exception e1) {
+			try {
+				plugin.gameScheduler.removeRace(game.getTrackName());
+			} catch (Exception e) {
+				//Nothing
+			}
 		}
 		try {
 			plugin.gameScheduler.stopGame(game.getTrack(), game.getGameId());
@@ -712,8 +720,11 @@ public class URaceListener implements Listener {
 				    EntityType type = listent.getType();
 				    if(type == EntityType.MINECART){
 				    	if(ucars.listener.isACar((Minecart) listent)){
-				    		((Minecart) listent).setDamage(0);
-				    		penalty((Minecart) listent, 4);
+				    		try {
+								((Minecart) listent).setDamage(0);
+								penalty((Minecart) listent, 4);
+							} catch (Exception e) {
+							}
 				    	}
 				    }
 				}

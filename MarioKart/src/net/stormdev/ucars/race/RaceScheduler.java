@@ -312,7 +312,11 @@ public class RaceScheduler {
     		if(game.getTrackName().equalsIgnoreCase(trackName)){
     			for(String p:game.getPlayers()){
     				Player pl = plugin.getServer().getPlayer(p);
-    				pl.removeMetadata("car.stayIn", plugin);
+    				try {
+						pl.removeMetadata("car.stayIn", plugin);
+					} catch (Exception e) {
+						//MetaData not set?
+					}
     			}
     			this.games.remove(key);
     		}

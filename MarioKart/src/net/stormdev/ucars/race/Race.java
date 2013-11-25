@@ -363,7 +363,9 @@ public class Race {
     		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, playername));
     	}
     	RaceEndEvent evt = new RaceEndEvent(this);
-    	main.plugin.getServer().getPluginManager().callEvent(evt);
+    	if(evt != null){
+    		main.plugin.getServer().getPluginManager().callEvent(evt);
+    	}
     }
     public void finish(String playername){
     	if(!ending){
