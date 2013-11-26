@@ -10,11 +10,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import net.stormdev.ucars.race.Race;
-import net.stormdev.ucars.race.main;
-import net.stormdev.ucars.utils.ItemStackFromId;
-import net.stormdev.ucars.utils.ValueComparator;
-import net.stormdev.ucars.utils.shellUpdateEvent;
+import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.ItemStackFromId;
+import net.stormdev.mario.utils.ValueComparator;
+import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

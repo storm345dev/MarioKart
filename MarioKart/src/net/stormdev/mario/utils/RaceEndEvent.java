@@ -1,14 +1,14 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
-import net.stormdev.ucars.race.Race;
+import net.stormdev.mario.mariokart.Race;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RaceUpdateEvent extends Event {
+public class RaceEndEvent extends Event { //Called when a race is ended
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
-	public RaceUpdateEvent(Race race){
+	public RaceEndEvent(Race race){
 		this.race = race;
 	}
 	public Race getRace(){

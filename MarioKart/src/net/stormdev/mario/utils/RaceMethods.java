@@ -1,12 +1,12 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import net.stormdev.ucars.race.Race;
-import net.stormdev.ucars.race.main;
+import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.main;
 
 public class RaceMethods {
 	private main plugin = null;

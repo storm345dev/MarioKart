@@ -1,4 +1,4 @@
-package net.stormdev.ucars.race;
+package net.stormdev.mario.mariokart;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,9 +10,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.stormdev.ucars.utils.RaceQue;
-import net.stormdev.ucars.utils.RaceTrack;
-import net.stormdev.ucars.utils.SerializableLocation;
+import net.stormdev.mario.utils.RaceQue;
+import net.stormdev.mario.utils.RaceTrack;
+import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

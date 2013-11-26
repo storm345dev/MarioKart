@@ -1,4 +1,4 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
 public class CheckpointCheck {
 	public int checkpoint = 0;

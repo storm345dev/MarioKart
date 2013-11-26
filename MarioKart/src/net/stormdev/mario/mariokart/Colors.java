@@ -1,4 +1,4 @@
-package net.stormdev.ucars.race;
+package net.stormdev.mario.mariokart;
 
 public class Colors {
 	private String success = "";

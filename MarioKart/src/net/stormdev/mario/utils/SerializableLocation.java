@@ -1,4 +1,4 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
 import java.io.Serializable;
 import java.util.HashMap;

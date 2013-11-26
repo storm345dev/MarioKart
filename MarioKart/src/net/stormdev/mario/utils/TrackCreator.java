@@ -1,8 +1,8 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
 import java.util.regex.Pattern;
 
-import net.stormdev.ucars.race.main;
+import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.entity.Player;
 

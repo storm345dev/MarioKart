@@ -1,4 +1,4 @@
-package com.useful.ucarsCommon;
+package com.mario.ucarsCommon;
 
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;

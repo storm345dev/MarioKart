@@ -1,4 +1,4 @@
-package net.stormdev.ucars.race;
+package net.stormdev.mario.mariokart;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,17 +11,17 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.utils.CheckpointCheck;
+import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.RaceEndEvent;
+import net.stormdev.mario.utils.RaceFinishEvent;
+import net.stormdev.mario.utils.RaceQue;
+import net.stormdev.mario.utils.RaceStartEvent;
+import net.stormdev.mario.utils.RaceUpdateEvent;
+import net.stormdev.mario.utils.TrackCreator;
+import net.stormdev.mario.utils.shellUpdateEvent;
 import net.stormdev.mariokartAddons.KartAction;
 import net.stormdev.mariokartAddons.MarioKart;
-import net.stormdev.ucars.utils.CheckpointCheck;
-import net.stormdev.ucars.utils.DoubleValueComparator;
-import net.stormdev.ucars.utils.RaceEndEvent;
-import net.stormdev.ucars.utils.RaceFinishEvent;
-import net.stormdev.ucars.utils.RaceQue;
-import net.stormdev.ucars.utils.RaceStartEvent;
-import net.stormdev.ucars.utils.RaceUpdateEvent;
-import net.stormdev.ucars.utils.TrackCreator;
-import net.stormdev.ucars.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -890,7 +890,12 @@ public class URaceListener implements Listener {
 			}
 			Player player = ((Player)event.getEntity());
 			player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2, 100));
-			double health = player.getHealth();
+			double health = 5;
+			try {
+				health = player.getHealth();
+			} catch (Exception e) {
+				health = Double.MAX_VALUE;
+			}
 			health = health + event.getDamage();
 			if(health > 20){
 				health = 20;

@@ -4,7 +4,7 @@ package net.stormdev.mariokartAddons;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.ucars.race.main;
+import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

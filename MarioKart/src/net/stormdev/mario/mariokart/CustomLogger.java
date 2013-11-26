@@ -1,4 +1,4 @@
-package net.stormdev.ucars.race;
+package net.stormdev.mario.mariokart;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

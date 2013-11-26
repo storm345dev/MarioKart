@@ -1,4 +1,4 @@
-package net.stormdev.ucars.utils;
+package net.stormdev.mario.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import net.stormdev.ucars.race.main;
+import net.stormdev.mario.mariokart.main;
 
 public class RaceTrackManager {
 	main main = null;

@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.useful.ucars.ItemStackFromId;
 
-import net.stormdev.ucars.race.main;
+import net.stormdev.mario.mariokart.main;
 
 public class PowerupMaker {
 	public static PowerupData getPowerupRaw(Powerup powerup, int amount){

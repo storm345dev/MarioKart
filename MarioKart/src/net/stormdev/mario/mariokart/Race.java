@@ -1,4 +1,4 @@
-package net.stormdev.ucars.race;
+package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,14 +9,14 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import net.stormdev.ucars.utils.CheckpointCheck;
-import net.stormdev.ucars.utils.DoubleValueComparator;
-import net.stormdev.ucars.utils.RaceEndEvent;
-import net.stormdev.ucars.utils.RaceFinishEvent;
-import net.stormdev.ucars.utils.RaceStartEvent;
-import net.stormdev.ucars.utils.RaceTrack;
-import net.stormdev.ucars.utils.RaceUpdateEvent;
-import net.stormdev.ucars.utils.SerializableLocation;
+import net.stormdev.mario.utils.CheckpointCheck;
+import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.RaceEndEvent;
+import net.stormdev.mario.utils.RaceFinishEvent;
+import net.stormdev.mario.utils.RaceStartEvent;
+import net.stormdev.mario.utils.RaceTrack;
+import net.stormdev.mario.utils.RaceUpdateEvent;
+import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
