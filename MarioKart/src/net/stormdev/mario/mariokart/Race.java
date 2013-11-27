@@ -15,6 +15,7 @@ import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
 import net.stormdev.mario.utils.RaceStartEvent;
 import net.stormdev.mario.utils.RaceTrack;
+import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.SerializableLocation;
 
@@ -42,6 +43,8 @@ public class Race {
 	private String winner = null;
 	public String winning = "";
 	public Boolean running = false;
+	public long startTimeMS = 0;
+	public long endTimeMS = 0;
 	public long tickrate = 6;
 	public long scorerate = 15;
 	private BukkitTask task = null;
@@ -55,12 +58,14 @@ public class Race {
 	Boolean ended = false;
 	public Scoreboard board = null;
 	public Objective scores = null;
+	public RaceType type = RaceType.RACE;
 	public Objective scoresBoard = null;
 	public Map<String, Integer> checkpoints = new HashMap<String, Integer>();
 	public Map<String, Integer> lapsLeft = new HashMap<String, Integer>();
 	public Map<String, ItemStack[]> oldInventories = new HashMap<String, ItemStack[]>();
 	public Map<String, Integer> oldLevels = new HashMap<String, Integer>();
-	public Race(RaceTrack track, String trackName){
+	public Race(RaceTrack track, String trackName, RaceType type){
+		this.type = type;
 		this.gameId = UUID.randomUUID().toString();
 		this.track = track;
 		this.trackName = trackName;
@@ -71,9 +76,17 @@ public class Race {
 		this.board = main.plugin.getServer().getScoreboardManager().getNewScoreboard();
 		this.scores = board.registerNewObjective("", "dummy");
 	    scores.setDisplaySlot(DisplaySlot.BELOW_NAME);
+	    if(type!=RaceType.TIME_TRIAL){
 	    this.scoresBoard = board.registerNewObjective(ChatColor.GOLD+"Race Positions", "dummy");
+	    }
+	    else{ //Time Trial
+	    	this.scoresBoard = board.registerNewObjective(ChatColor.GOLD+"Race Time(s)", "dummy");
+	    }
 	    scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
 	    main.plugin.gameScheduler.runningGames++;
+	}
+	public RaceType getType(){
+		return this.type;
 	}
 	public void setOldInventories(Map<String, ItemStack[]> inventories){
 		this.oldInventories = inventories;
@@ -262,6 +275,7 @@ public class Race {
     	this.scoreCalcs = main.plugin.getServer().getScheduler().runTaskTimer(main.plugin, new Runnable(){
 
 			public void run() {
+				if(!(type == RaceType.TIME_TRIAL)){
 		    	SortedMap<String, Double> sorted = game.getRaceOrder();
 				Object[] keys = sorted.keySet().toArray();
 				for(int i=0;i<sorted.size();i++){
@@ -271,9 +285,25 @@ public class Race {
 				    game.scores.getScore(pl).setScore(pos);
 				    game.scoresBoard.getScore(pl).setScore(-pos);
 				}
+				}
+				else{ //Time trial
+					try {
+						String pname = game.getPlayers().get(0);
+						 Player pl = main.plugin.getServer().getPlayer(pname);
+					    long time = System.currentTimeMillis() - startTimeMS;
+					    time = time/1000; //In s
+					    game.scores.getScore(pl).setScore((int) time);
+					    game.scoresBoard.getScore(pl).setScore((int) time);
+					} catch (Exception e) {
+						//Game ended or something
+					}
+				}
 				return;
 			}}, this.scorerate, this.scorerate);
     	try {
+    		if(type == RaceType.TIME_TRIAL){
+    			this.startTimeMS = System.currentTimeMillis();
+    		}
 			main.plugin.getServer().getPluginManager().callEvent(new RaceStartEvent(this));
 		} catch (Exception e) {
 			main.logger.log("Error starting race!", Level.SEVERE);
@@ -356,6 +386,7 @@ public class Race {
 		}
         ArrayList<String> pls = new ArrayList<String>();
         pls.addAll(this.inplayers);
+        this.endTimeMS = System.currentTimeMillis();
     	for(String playername:pls){
     		main.plugin.getServer().getPlayer(playername).setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());	
     		main.plugin.getServer().getPlayer(playername).setLevel(this.oldLevels.get(playername));
@@ -366,6 +397,7 @@ public class Race {
     	if(evt != null){
     		main.plugin.getServer().getPluginManager().callEvent(evt);
     	}
+    	main.plugin.gameScheduler.reCalculateQues();
     }
     public void finish(String playername){
     	if(!ending){
@@ -375,6 +407,7 @@ public class Race {
     	this.finished.add(playername);
     	main.plugin.getServer().getPlayer(playername).setLevel(this.oldLevels.get(playername));
     	main.plugin.getServer().getPlayer(playername).setExp(0);
+    	this.endTimeMS = System.currentTimeMillis();
     	main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, playername));
     }
     public CheckpointCheck playerAtCheckpoint(Integer[] checks, Player p, Server server){

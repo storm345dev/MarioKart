@@ -17,6 +17,7 @@ import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
 import net.stormdev.mario.utils.RaceQue;
 import net.stormdev.mario.utils.RaceStartEvent;
+import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
@@ -308,6 +309,7 @@ public class URaceListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	void RaceEnd(RaceFinishEvent event){
 		Race game = event.getRace();
+		Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 		List<String> players = new ArrayList<String>();
 		players.addAll(game.getPlayers());
 		List<String> inplayers = game.getInPlayers();
@@ -385,7 +387,9 @@ public class URaceListener implements Listener {
 			Player p = plugin.getServer().getPlayer((String) pls[i]);
 			if(p.getName().equals(event.getPlayername())){
 			if(p!=null){
-				String msg = main.msgs.get("race.end.position");
+				String msg = "";
+				if(!timed){
+				msg = main.msgs.get("race.end.position");
 				if((i+1) <=4 && (i+1) != game.getPlayers().size()){
 					player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
 				}
@@ -406,6 +410,16 @@ public class URaceListener implements Listener {
 					pos = pos+"th";
 				}
 				msg = msg.replaceAll("%position%", ""+pos);
+				}
+				else{
+					long time = game.endTimeMS;
+					time = (game.endTimeMS-game.startTimeMS)/1000;
+					int ti = (int) (time*100);
+					double t = ti/100;
+					//TODO Save time for arena
+					msg = main.msgs.get("race.end.time");
+					msg = msg.replaceAll(Pattern.quote("%time%"), t+"");
+				}
 				p.sendMessage(main.colors.getSuccess()+msg);
 			}
 			}
@@ -422,7 +436,9 @@ public class URaceListener implements Listener {
 					position = i+1;
 				}
 			}
-			String msg = main.msgs.get("race.end.position");
+			String msg = "";
+			if(!timed){
+			msg = main.msgs.get("race.end.position");
 			if(position <=4 && position != game.getPlayers().size()){
 				player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
 			}
@@ -445,6 +461,17 @@ public class URaceListener implements Listener {
 			try {
 				msg = msg.replaceAll("%position%", ""+pos);
 			} catch (Exception e) {
+			}
+			}
+			else{
+				//Time trial
+				long time = game.endTimeMS;
+				time = (game.endTimeMS-game.startTimeMS)/1000;
+				int ti = (int) (time*100);
+				double t = ti/100;
+				//TODO Save time for arena
+				msg = main.msgs.get("race.end.time");
+				msg = msg.replaceAll(Pattern.quote("%time%"), t+"");
 			}
 			p.sendMessage(main.colors.getSuccess()+msg);
 			}

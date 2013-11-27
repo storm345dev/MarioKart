@@ -1,5 +1,5 @@
 name: MarioKart
-main: net.stormdev.ucars.race.main
+main: net.stormdev.mario.mariokart.main
 version: 2.3
 softdepend: [Vault]
 depend: [uCars]
@@ -13,7 +13,7 @@ commands:
         default: op
    race:
         description: This is the playing of race tracks
-        usage: /<command> [List (Page)] [Join <Track>] [Leave] [Queues]
+        usage: /<command> [List (Page)] [Join <Track> (GameType "Race"/"Timed"/"Cup")] [Leave] [Queues]
         permission: mariokart.race
         permission-message: You don't have access to this command
         default: true

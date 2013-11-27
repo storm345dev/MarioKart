@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.RaceQue;
 import net.stormdev.mario.utils.RaceTrack;
+import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
@@ -25,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Url;
-import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 /*
@@ -46,7 +46,7 @@ public class RaceScheduler {
 	}
 	public Boolean joinGame(String playername, RaceTrack track, RaceQue que, String trackName){
 		que.validatePlayers();
-		if(que.getHowManyPlayers() < que.getPlayerLimit() && plugin.getServer().getPlayer(playername).isOnline()){
+		if(que.getHowManyPlayers() < que.getPlayerLimit() && plugin.getServer().getPlayer(playername).isOnline() && !(que.getType() == RaceType.TIME_TRIAL && que.getHowManyPlayers() > 0)){
 			if(plugin.getServer().getPlayer(playername).isOnline()){
 				//que.addPlayer(playername);
 				List<String> arenaque = que.getPlayers();
@@ -119,7 +119,16 @@ public class RaceScheduler {
 			if(que.getTransitioning() == null){
 				que.setTransitioning(false);
 			}
-			if(!trackInUse(aname) && que.getHowManyPlayers() > 1 && !que.getTransitioning() && !(this.runningGames >= this.maxGames)){
+			Boolean timed_valid = false;
+			if(que.getType() == RaceType.TIME_TRIAL && que.getHowManyPlayers() > 0){
+				timed_valid = true;
+			}
+			if(!trackInUse(aname) && que.getHowManyPlayers() > 1 && !que.getTransitioning() 
+					&& !(this.runningGames >= this.maxGames) 
+					|| timed_valid && !trackInUse(aname)
+					&& !que.getTransitioning()
+					&& !(this.runningGames >= this.maxGames)){
+				Boolean timed = que.getType() == RaceType.TIME_TRIAL;
 				que.setTransitioning(true);
 				plugin.raceQues.setQue(aname, que);
 				final String queName = aname;
@@ -128,11 +137,14 @@ public class RaceScheduler {
 				double seconds = main.config.getDouble("general.raceGracePeriod");
 				double time = seconds*20;
 				long grace = (long) time;
+				if(!timed){
 				for(String name:pls){
 					String msg = main.msgs.get("race.que.players");
 					msg = msg.replaceAll(Pattern.quote("%time%"), ""+seconds);
 				plugin.getServer().getPlayer(name).sendMessage(main.colors.getInfo()+msg);
 				}
+				}
+				if(!timed){
 				plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable(){
 
 					public void run() {
@@ -143,7 +155,7 @@ public class RaceScheduler {
 							plugin.raceQues.setQue(aname, arena);
 							return;
 						}
-						Race game = new Race(arena.getTrack(), arena.getTrack().getTrackName()); //Add new stuff when the system is ready
+						Race game = new Race(arena.getTrack(), arena.getTrack().getTrackName(), arena.getType()); //Add new stuff when the system is ready
 						List<String> aquep = new ArrayList<String>();
 						aquep.addAll(arena.getPlayers());
 						for(String name:aquep){
@@ -151,11 +163,35 @@ public class RaceScheduler {
 						arena.removePlayer(name);
 						}
 						arena.setTransitioning(false);
-						plugin.raceQues.setQue(aname, arena);
+						plugin.raceQues.removeQue(aname);
 						startGame(arena, aname, game);
 						return;
 					}}, grace); //10 seconds
-				
+				}
+				else{
+					plugin.getServer().getScheduler().runTask(plugin, new Runnable(){
+
+						public void run() {
+							String aname = queName;
+							RaceQue arena = main.plugin.raceQues.getQue(aname);
+							if(arena.getHowManyPlayers() < 1){
+								arena.setTransitioning(false);
+								plugin.raceQues.removeQue(aname);
+								return;
+							}
+							Race game = new Race(arena.getTrack(), arena.getTrack().getTrackName(), arena.getType()); //Add new stuff when the system is ready
+							List<String> aquep = new ArrayList<String>();
+							aquep.addAll(arena.getPlayers());
+							for(String name:aquep){
+							game.join(name);
+							arena.removePlayer(name);
+							}
+							arena.setTransitioning(false);
+							plugin.raceQues.removeQue(aname);
+							startGame(arena, aname, game);
+							return;
+						}});
+				}
 			}
 		}
 		return;
@@ -230,13 +266,17 @@ public class RaceScheduler {
 					p.sendMessage(main.colors.getInfo()+main.msgs.get("race.que.starting"));
 				}
 				for(int i=10;i>0;i--){
-				if(i==10){
-					Player p=plugin.getServer().getPlayer(players.get(0));
-					p.getLocation().getWorld().playSound(p.getLocation(), Sound.BREATH, 8, 1);
-				}
-				if(i==3){
-					Player p=plugin.getServer().getPlayer(players.get(0));
-					p.getLocation().getWorld().playSound(p.getLocation(), Sound.NOTE_BASS_DRUM, 8, 1);
+				try {
+					if(i==10){
+						Player p=plugin.getServer().getPlayer(players.get(0));
+						p.getLocation().getWorld().playSound(p.getLocation(), Sound.BREATH, 8, 1);
+					}
+					if(i==3){
+						Player p=plugin.getServer().getPlayer(players.get(0));
+						p.getLocation().getWorld().playSound(p.getLocation(), Sound.NOTE_BASS_DRUM, 8, 1);
+					}
+				} catch (Exception e) {
+					//Game ended
 				}
 				for(String name:players){
 				Player p=plugin.getServer().getPlayer(name);

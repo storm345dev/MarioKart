@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.RaceQue;
 import net.stormdev.mario.utils.RaceTrack;
+import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.TrackCreator;
 
 import org.bukkit.ChatColor;
@@ -222,6 +223,23 @@ public class URaceCommandExecutor implements CommandExecutor {
 				trackName = "auto";
 			}
 			trackName = args[1];
+			RaceType type = RaceType.RACE;
+			// /race join test cup
+			if(args.length > 2){
+				String t = args[2];
+				if(t.equalsIgnoreCase("race")){
+					type = RaceType.RACE;
+				}
+				else if(t.equalsIgnoreCase("timed") || t.equalsIgnoreCase("time") 
+						|| t.equalsIgnoreCase("time_trial") || t.equalsIgnoreCase("time-trial")){
+					type = RaceType.TIME_TRIAL;
+				}
+				else if(t.equalsIgnoreCase("cup") || t.equalsIgnoreCase("championship")
+						|| t.equalsIgnoreCase("grand") || t.equalsIgnoreCase("grand-prix")
+						|| t.equalsIgnoreCase("grand_prix")){
+					type = RaceType.GRAND_PRIX;
+				}
+			}
 			if(trackName.equalsIgnoreCase("auto")){
 				if(main.plugin.raceMethods.inAGame(player.getName())!=null || main.plugin.raceMethods.inGameQue(player.getName())!=null){
 					sender.sendMessage(main.colors.getError()+main.msgs.get("race.que.existing"));
@@ -267,13 +285,13 @@ public class URaceCommandExecutor implements CommandExecutor {
 						}
 						int randomNumber = main.plugin.random.nextInt(max - min) + min;
 						RaceTrack track = main.plugin.trackManager.getRaceTracks().get(randomNumber);
-						RaceQue que = new RaceQue(track);
+						RaceQue que = new RaceQue(track, type);
 						plugin.gameScheduler.joinGame(player.getName(), track, que, track.getTrackName());
 						return true;
 					}
 					String name = order.get(0);
 					RaceQue arena = plugin.raceQues.getQue(name);
-					if(arena.getHowManyPlayers() < 1){
+					if(arena.getHowManyPlayers() < 1 || arena.getType() == RaceType.TIME_TRIAL){
 						int rand = 0 + (int)(Math.random() * ((order.size() - 0) + 0));
 						name = order.get(rand);
 						arena = plugin.raceQues.getQue(name);
@@ -297,10 +315,23 @@ public class URaceCommandExecutor implements CommandExecutor {
 		    sender.sendMessage(main.colors.getError()+main.msgs.get("general.cmd.delete.exists"));
 			return true;	
 			}
-			RaceQue que = new RaceQue(track);
+			RaceQue que = new RaceQue(track, type);
 			trackName = track.getTrackName();
 			if(main.plugin.raceQues.getQue(trackName) != null){
 				que = main.plugin.raceQues.getQue(trackName);
+			}
+			if(que.getType() != type){
+				if(que.getHowManyPlayers()<1){
+					plugin.raceQues.removeQue(que.getTrack().getTrackName());
+					que = new RaceQue(track, type);
+				}
+				else{
+					//Another queue for different RameType
+					String msg = main.msgs.get("race.que.other");
+					msg = msg.replaceAll(Pattern.quote("%type%"), que.getType().name().toLowerCase());
+					sender.sendMessage(main.colors.getError()+msg);
+					return true;
+				}
 			}
 			if(main.plugin.raceMethods.inAGame(player.getName())!=null || main.plugin.raceMethods.inGameQue(player.getName())!=null){
 				sender.sendMessage(main.colors.getError()+main.msgs.get("race.que.existing"));

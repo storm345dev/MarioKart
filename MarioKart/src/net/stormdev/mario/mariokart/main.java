@@ -140,6 +140,9 @@ public class main extends JavaPlugin {
         	if(!lang.contains("race.que.existing")){
         		lang.set("race.que.existing", "You are already in a game/que! Please leave it before joining this one!");
         	}
+        	if(!lang.contains("race.que.other")){
+        		lang.set("race.que.other", "Unavailable! Current queue race type: %type%");
+        	}
         	if(!lang.contains("race.que.full")){
         		lang.set("race.que.full", "Race que full!");
         	}
@@ -175,6 +178,9 @@ public class main extends JavaPlugin {
         	}
         	if(!lang.contains("race.end.won")){
         		lang.set("race.end.won", " won the race!");
+        	}
+        	if(!lang.contains("race.end.time")){
+        		lang.set("race.end.time", "Your time was %time% seconds!");
         	}
         	if(!lang.contains("race.mid.miss")){
         		lang.set("race.mid.miss", "You missed a section of the track! Please go back and do it!");

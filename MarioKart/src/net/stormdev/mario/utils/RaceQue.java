@@ -9,10 +9,15 @@ public class RaceQue {
 	RaceTrack track = null;
 	Boolean transitioning = false;
 	int playerLimit = 2;
+	RaceType type = RaceType.RACE;
 	List<String> players = new ArrayList<String>();
-	public RaceQue(RaceTrack track){
+	public RaceQue(RaceTrack track, RaceType type){
 		this.track = track;
 		this.playerLimit = track.maxplayers;
+		this.type = type;
+	}
+	public RaceType getType(){
+		return this.type;
 	}
 	public RaceTrack getTrack(){
 		return this.track;
@@ -38,12 +43,18 @@ public class RaceQue {
 	}
 	public void removePlayer(String name){
 		this.players.remove(name);
+		if(this.type == RaceType.TIME_TRIAL){
+			main.plugin.raceQues.removeQue(this.track.getTrackName());
+		}
 		return;
 	}
 	public void validatePlayers(){
 		for(String pname:this.players){
 			if(main.plugin.getServer().getPlayer(pname) == null){
 				this.players.remove(pname);
+				if(this.type == RaceType.TIME_TRIAL){
+					main.plugin.raceQues.removeQue(this.track.getTrackName());
+				}
 			}
 		}
 		return;
