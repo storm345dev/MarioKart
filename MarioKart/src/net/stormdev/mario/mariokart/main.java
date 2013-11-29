@@ -46,6 +46,7 @@ public class main extends JavaPlugin {
 	public RaceMethods raceMethods = null;
 	public Random random = null;
 	public static MarioKart marioKart = null;
+	public RaceTimes raceTimes = null;
 	public void onEnable(){
 		random = new Random();
 		plugin = this;
@@ -106,6 +107,9 @@ public class main extends JavaPlugin {
         	}
         	if(!lang.contains("general.cmd.delete.exists")){
         		lang.set("general.cmd.delete.exists", "That track doesn't exist!");
+        	}
+        	if(!lang.contains("general.cmd.racetimes")){
+        		lang.set("general.cmd.racetimes", "Top %n% times for track %track%:");
         	}
         	if(!lang.contains("setup.create.exists")){
         		lang.set("setup.create.exists", "This track already exists! Please do /urace delete %name% before proceeding!");
@@ -216,6 +220,9 @@ public class main extends JavaPlugin {
         	if (!config.contains("general.raceGracePeriod")) {
 				config.set("general.raceGracePeriod", (double)10.0);
 			}
+        	if(!config.contains("general.race.timed.log")){
+        		config.set("general.race.timed.log", true);
+        	}
 	        if(!config.contains("bitlyUrlShortner")){
         		config.set("bitlyUrlShortner", true);
         	}
@@ -329,6 +336,7 @@ public class main extends JavaPlugin {
 		this.gameScheduler = new RaceScheduler();
 		//Setup marioKart
 		marioKart = new MarioKart(this);
+		this.raceTimes = new RaceTimes(new File(getDataFolder()+File.separator+"Data"+File.separator+"raceTimes.uracetimes"), config.getBoolean("general.race.timed.log"));
 		logger.info("MarioKart v"+plugin.getDescription().getVersion()+" has been enabled!");
 	}
 	

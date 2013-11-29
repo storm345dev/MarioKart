@@ -17,3 +17,9 @@ commands:
         permission: mariokart.race
         permission-message: You don't have access to this command
         default: true
+   racetimes:
+        description: Shows the top X race times for a track.
+        usage: /<command> <TrackName> <Amount>
+        permission: mariokart.race
+        permission-message: You don't have access to this command
+        default: true

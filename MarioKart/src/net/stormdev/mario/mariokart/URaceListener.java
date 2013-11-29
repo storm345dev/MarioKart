@@ -412,13 +412,12 @@ public class URaceListener implements Listener {
 				msg = msg.replaceAll("%position%", ""+pos);
 				}
 				else{
-					long time = game.endTimeMS;
-					time = (game.endTimeMS-game.startTimeMS)/1000;
-					int ti = (int) (time*100);
+					double tim = (game.endTimeMS-game.startTimeMS)/10;
+					double ti = (int) tim;
 					double t = ti/100;
-					//TODO Save time for arena
 					msg = main.msgs.get("race.end.time");
 					msg = msg.replaceAll(Pattern.quote("%time%"), t+"");
+					plugin.raceTimes.addRaceTime(game.getTrack().getTrackName(), player.getName(), t);
 				}
 				p.sendMessage(main.colors.getSuccess()+msg);
 			}
@@ -465,13 +464,12 @@ public class URaceListener implements Listener {
 			}
 			else{
 				//Time trial
-				long time = game.endTimeMS;
-				time = (game.endTimeMS-game.startTimeMS)/1000;
-				int ti = (int) (time*100);
+				double tim = (game.endTimeMS-game.startTimeMS)/10;
+				double ti = (int) tim;
 				double t = ti/100;
-				//TODO Save time for arena
 				msg = main.msgs.get("race.end.time");
 				msg = msg.replaceAll(Pattern.quote("%time%"), t+"");
+				plugin.raceTimes.addRaceTime(game.getTrack().getTrackName(), player.getName(), t);
 			}
 			p.sendMessage(main.colors.getSuccess()+msg);
 			}

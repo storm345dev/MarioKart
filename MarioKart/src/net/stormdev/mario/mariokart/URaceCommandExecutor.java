@@ -2,7 +2,8 @@ package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.RaceQue;
@@ -159,7 +160,40 @@ public class URaceCommandExecutor implements CommandExecutor {
 		else if(cmd.getName().equalsIgnoreCase("race")){
             return urace(sender, args, player);
 		}
-		
+		else if(cmd.getName().equalsIgnoreCase("racetimes")){
+			if(args.length<2){
+				return false;
+			}
+			String trackName = args[0];
+			String amount = args[1];
+			@SuppressWarnings("unchecked")
+			List<String> names = (List<String>) plugin.trackManager.getRaceTrackNames().clone();
+			for(String n:names){
+				if(n.equalsIgnoreCase(trackName)){
+					trackName = n;
+				}
+			}
+			double d = 5;
+			try {
+				d = Double.parseDouble(amount);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			SortedMap<String, Double> topTimes = plugin.raceTimes.getTopTimes(d, trackName);
+			Map<String, Double> times = plugin.raceTimes.getTimes(trackName);
+			String msg = main.msgs.get("general.cmd.racetimes");
+			msg = msg.replaceAll(Pattern.quote("%n%"), d+"");
+			msg = msg.replaceAll(Pattern.quote("%track%"), trackName);
+			sender.sendMessage(main.colors.getTitle()+msg);
+			Object[] keys = topTimes.keySet().toArray();
+			int pos = 1;
+			for(Object o:keys){
+				String name = (String) o;
+				sender.sendMessage(main.colors.getTitle()+pos+")"+main.colors.getInfo()+name+"- "+times.get(name)+"s");
+				pos++;
+			}
+			return true;
+		}
 		return false;
 	}
     public Boolean urace(CommandSender sender, String[] args, Player player){
