@@ -21,8 +21,6 @@ import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
-import net.stormdev.mariokartAddons.KartAction;
-import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -59,7 +57,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
@@ -783,7 +780,13 @@ public class URaceListener implements Listener {
 			main.cmdExecutor.urace(event.getPlayer(), new String[]{"leave"}, event.getPlayer());
 		}
 		else if(cmd.equalsIgnoreCase("join")){
+			String mode = ChatColor.stripColor(lines[3]);
+			if(mode.length() > 0){
+				main.cmdExecutor.urace(event.getPlayer(), new String[]{"join", ChatColor.stripColor(lines[2]).toLowerCase(), mode}, event.getPlayer());
+			}
+			else{
 			main.cmdExecutor.urace(event.getPlayer(), new String[]{"join", ChatColor.stripColor(lines[2]).toLowerCase()}, event.getPlayer());
+			}
 		}
 		return;
 	}
@@ -807,6 +810,7 @@ public class URaceListener implements Listener {
 				if(lines[2].equalsIgnoreCase("auto")){
 				   lines[2] = main.colors.getTp() + "Auto";	
 				}
+				lines[3] = main.colors.getInfo()+lines[3];
 				text = false;
 			}
 			else if(cmd.equalsIgnoreCase("leave") || cmd.equalsIgnoreCase("exit") || cmd.equalsIgnoreCase("quit")){
