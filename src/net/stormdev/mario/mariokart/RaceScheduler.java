@@ -24,8 +24,6 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.rosaloves.bitlyj.Bitly;
-import com.rosaloves.bitlyj.Url;
 import com.useful.ucarsCommon.StatValue;
 
 /*
@@ -115,18 +113,12 @@ public class RaceScheduler {
 					valid = false;
 				}
 				if (valid && main.config.getBoolean("bitlyUrlShortner")) {
-					// Shorten url
 					Player p = plugin.getServer().getPlayer(playername);
-					p.sendMessage(main.colors.getInfo()
-							+ main.msgs.get("resource.download"));
-					// Generic access token:
-					// 3676e306c866a24e3586a109b9ddf36f3d177556
-					Url url = Bitly.as("storm345",
-							"R_b0fae26d68750227470cd06b23be70b7").call(
-							Bitly.shorten(rl));
+					p.sendMessage(main.colors.getInfo() + main.msgs.get("resource.download"));
+					
 					p.sendMessage(main.colors.getInfo()
 							+ main.msgs.get("resource.downloadHelp")
-							+ ChatColor.RESET + " " + url.getShortUrl());
+							+ ChatColor.RESET + " " + rl);
 					p.setTexturePack(rl);
 
 				} else {
