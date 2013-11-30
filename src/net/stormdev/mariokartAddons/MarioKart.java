@@ -704,6 +704,7 @@ public class MarioKart {
 							(String) pls[pos]);
 					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
 					pl.getInventory().clear();
+					player.getInventory().setItem(7, this.leave);
 					player.getInventory().setItem(8, this.respawn);
 					pl.getInventory().addItem(
 							PowerupMaker.getPowerup(Powerup.BOO, 1));
@@ -722,6 +723,7 @@ public class MarioKart {
 								public void run() {
 									pl.removeMetadata("kart.rolling", plugin);
 									pl.getInventory().clear();
+									player.getInventory().setItem(7, leave);
 									player.getInventory().setItem(8, respawn);
 									pl.updateInventory();
 								}
@@ -737,6 +739,7 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
+			player.getInventory().setItem(7, this.leave);
 			player.getInventory().setItem(8, this.respawn);
 			if (under.getType() == Material.COAL_BLOCK
 					|| under.getType() == Material.COAL_BLOCK
@@ -827,6 +830,7 @@ public class MarioKart {
 						 */
 						if (player.getInventory().getContents().length > 0) {
 							player.getInventory().clear();
+							player.getInventory().setItem(7, this.leave);
 							player.getInventory().setItem(8, this.respawn);
 						}
 						ItemStack give = null;
@@ -887,6 +891,7 @@ public class MarioKart {
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
 											ply.getInventory().clear();
+											player.getInventory().setItem(7, leave);
 											ply.getInventory().setItem(8,
 													respawn);
 											ply.getInventory().addItem(
@@ -905,6 +910,7 @@ public class MarioKart {
 											}
 										}
 										ply.getInventory().clear();
+										player.getInventory().setItem(7, leave);
 										ply.getInventory().setItem(8, respawn);
 										ply.getInventory().addItem(get);
 										ply.removeMetadata("kart.rolling",
