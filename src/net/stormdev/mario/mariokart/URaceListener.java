@@ -94,7 +94,7 @@ public class URaceListener implements Listener {
 
 			public void run() {
 				car.getLocation().getWorld()
-						.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
+				.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
 				car.removeMetadata("car.frozen", plugin);
 			}
 		}, (time * 20));
@@ -137,7 +137,7 @@ public class URaceListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	void vehDestroy(VehicleDamageEvent event) { // Stops player's cars being
-												// broken in a race.
+		// broken in a race.
 		Vehicle veh = event.getVehicle();
 		if (veh.getPassenger() == null) {
 			return;
@@ -256,9 +256,9 @@ public class URaceListener implements Listener {
 				String msg = main.msgs.get("mario.hit");
 				msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
 				target.getLocation()
-						.getWorld()
-						.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
-								1, 0.8f);
+				.getWorld()
+				.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
+						1, 0.8f);
 				target.sendMessage(ChatColor.RED + msg);
 				penalty(((Minecart) target.getVehicle()), 4);
 				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
@@ -287,9 +287,9 @@ public class URaceListener implements Listener {
 								msg = msg.replaceAll(Pattern.quote("%name%"),
 										"green shell");
 								pl.getLocation()
-										.getWorld()
-										.playSound(pl.getLocation(),
-												Sound.ENDERDRAGON_HIT, 1, 0.8f);
+								.getWorld()
+								.playSound(pl.getLocation(),
+										Sound.ENDERDRAGON_HIT, 1, 0.8f);
 								pl.sendMessage(ChatColor.RED + msg);
 								penalty(((Minecart) pl.getVehicle()), 4);
 								shell.setMetadata("shell.destroy",
@@ -370,11 +370,13 @@ public class URaceListener implements Listener {
 			HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
 			for (String pname : game.getPlayers()) {
 				Player pp = main.plugin.getServer().getPlayer(pname);
-				if (pp.hasMetadata("checkpoint.distance")) {
-					List<MetadataValue> metas = pp
-							.getMetadata("checkpoint.distance");
-					checkpointDists.put(pname,
-							(Double) ((StatValue) metas.get(0)).getValue());
+				if (pp != null){
+					if (pp.hasMetadata("checkpoint.distance")) {
+						List<MetadataValue> metas = pp
+								.getMetadata("checkpoint.distance");
+						checkpointDists.put(pname,
+								(Double) ((StatValue) metas.get(0)).getValue());
+					}
 				}
 			}
 			for (String pname : game.getPlayers()) {
@@ -494,8 +496,8 @@ public class URaceListener implements Listener {
 					msg = main.msgs.get("race.end.time");
 					msg = msg.replaceAll(Pattern.quote("%time%"), t + "");
 					plugin.raceTimes
-							.addRaceTime(game.getTrack().getTrackName(),
-									player.getName(), t);
+					.addRaceTime(game.getTrack().getTrackName(),
+							player.getName(), t);
 				}
 				p.sendMessage(main.colors.getSuccess() + msg);
 			}
@@ -594,7 +596,7 @@ public class URaceListener implements Listener {
 			plugin.getServer().getPlayer(pname).setGameMode(GameMode.SURVIVAL);
 			plugin.getServer().getPlayer(pname).getInventory().clear();
 			plugin.getServer().getPlayer(pname).getInventory()
-					.setItem(8, main.marioKart.respawn);
+			.setItem(8, main.marioKart.respawn);
 			plugin.getServer().getPlayer(pname).updateInventory();
 		}
 		for (int i = 0; i < game.getPlayers().size(); i++) {
@@ -610,7 +612,7 @@ public class URaceListener implements Listener {
 			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
 			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
 			plugin.getServer().getPlayer(pname)
-					.sendMessage(main.colors.getInfo() + msg);
+			.sendMessage(main.colors.getInfo() + msg);
 		}
 		plugin.gameScheduler.reCalculateQues();
 		return;
@@ -722,18 +724,18 @@ public class URaceListener implements Listener {
 										msg = msg.replaceAll("%name%",
 												playername);
 										plugin.getServer()
-												.getPlayer(pname)
-												.sendMessage(
-														main.colors
-																.getSuccess()
-																+ game.getWinner()
-																+ main.msgs
-																		.get("race.end.won"));
+										.getPlayer(pname)
+										.sendMessage(
+												main.colors
+												.getSuccess()
+												+ game.getWinner()
+												+ main.msgs
+												.get("race.end.won"));
 										plugin.getServer()
-												.getPlayer(pname)
-												.sendMessage(
-														main.colors.getInfo()
-																+ msg);
+										.getPlayer(pname)
+										.sendMessage(
+												main.colors.getInfo()
+												+ msg);
 									}
 								}
 							}
@@ -833,7 +835,7 @@ public class URaceListener implements Listener {
 			} catch (NumberFormatException e) {
 			}
 			main.cmdExecutor.urace(event.getPlayer(), new String[] { "list",
-					"" + page }, event.getPlayer());
+				"" + page }, event.getPlayer());
 		} else if (cmd.equalsIgnoreCase("leave")
 				|| cmd.equalsIgnoreCase("quit") || cmd.equalsIgnoreCase("exit")) {
 			main.cmdExecutor.urace(event.getPlayer(), new String[] { "leave" },
@@ -842,12 +844,12 @@ public class URaceListener implements Listener {
 			String mode = ChatColor.stripColor(lines[3]);
 			if (mode.length() > 0) {
 				main.cmdExecutor.urace(event.getPlayer(), new String[] {
-						"join", ChatColor.stripColor(lines[2]).toLowerCase(),
-						mode }, event.getPlayer());
+					"join", ChatColor.stripColor(lines[2]).toLowerCase(),
+					mode }, event.getPlayer());
 			} else {
 				main.cmdExecutor.urace(event.getPlayer(), new String[] {
-						"join", ChatColor.stripColor(lines[2]).toLowerCase() },
-						event.getPlayer());
+					"join", ChatColor.stripColor(lines[2]).toLowerCase() },
+					event.getPlayer());
 			}
 		}
 		return;
@@ -897,11 +899,11 @@ public class URaceListener implements Listener {
 						.spawnEntity(above, EntityType.ENDER_CRYSTAL);
 				above.getBlock().setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.WEST)
-						.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.NORTH)
-						.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.NORTH_WEST)
-						.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 				crystal.setFireTicks(0);
 				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
 				text = false;
@@ -936,11 +938,11 @@ public class URaceListener implements Listener {
 				EntityType.ENDER_CRYSTAL);
 		above.getBlock().setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.WEST)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH_WEST)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		newC.setFireTicks(0);
 		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 		// }
@@ -961,11 +963,11 @@ public class URaceListener implements Listener {
 				EntityType.ENDER_CRYSTAL);
 		above.getBlock().setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.WEST)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH_WEST)
-				.setType(Material.COAL_BLOCK);
+		.setType(Material.COAL_BLOCK);
 		newC.setFireTicks(0);
 		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 	}
