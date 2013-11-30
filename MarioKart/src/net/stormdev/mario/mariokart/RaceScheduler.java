@@ -29,7 +29,7 @@ import com.rosaloves.bitlyj.Url;
 import com.useful.ucarsCommon.StatValue;
 
 /*
- * An adaptation of my Minigamez plugin Arena game scheduler. -Code is messy and 
+ * An adaptation of a game scheduler written for Minigamez but was never released. -Code is messy and 
  * weirdly named as a result
  */
 public class RaceScheduler {
@@ -347,8 +347,11 @@ public class RaceScheduler {
     }
     public Boolean removeRace(String trackName){
     	Set<String> keys = this.games.keySet();
-    	for(String key:keys){
+    	ArrayList<String> kz = new ArrayList<String>();
+    	kz.addAll(keys);
+    	for(String key:kz){
     		Race game = this.games.get(key);
+                if(game != null){
     		if(game.getTrackName().equalsIgnoreCase(trackName)){
     			for(String p:game.getPlayers()){
     				Player pl = plugin.getServer().getPlayer(p);
@@ -360,6 +363,7 @@ public class RaceScheduler {
     			}
     			this.games.remove(key);
     		}
+                }
     	}
     	return false;
     }
