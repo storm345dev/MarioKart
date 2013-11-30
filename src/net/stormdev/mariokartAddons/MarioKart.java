@@ -1,19 +1,15 @@
 package net.stormdev.mariokartAddons;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.utils.ItemStackFromId;
-import net.stormdev.mario.utils.ValueComparator;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
@@ -51,6 +47,7 @@ public class MarioKart {
 	private HashMap<UUID, BukkitTask> tasks = new HashMap<UUID, BukkitTask>();
 	Boolean enabled = true;
 	public ItemStack respawn = null;
+	public ItemStack leave = null;
 
 	public MarioKart(main plugin) {
 		this.plugin = plugin;
@@ -59,6 +56,14 @@ public class MarioKart {
 		ItemMeta meta = this.respawn.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "Respawn");
 		this.respawn.setItemMeta(meta);
+		
+		leave = new ItemStack(Material.WOODEN_DOOR);
+		
+		meta = leave.getItemMeta();
+		
+		meta.setDisplayName(ChatColor.RED + "Leave");
+		
+		leave.setItemMeta(meta);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -208,7 +213,13 @@ public class MarioKart {
 				player.setHealth(0);
 				evt.setCancelled(true);
 				return;
-			} else if (ItemStackFromId.equals(
+			} else if (inHand.equals(this.leave)){
+				player.chat("/race leave");
+				
+				evt.setCancelled(true);
+				
+				return;
+			}else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.random"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				inHand.setAmount(inHand.getAmount() - 1);

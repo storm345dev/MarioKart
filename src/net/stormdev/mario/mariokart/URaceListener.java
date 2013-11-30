@@ -1090,6 +1090,7 @@ public class URaceListener implements Listener {
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		cart.setPassenger(player);
 		player.setMetadata("car.stayIn", new StatValue(null, plugin));
+		player.getInventory().setItem(7, main.marioKart.leave);
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
 		return;
