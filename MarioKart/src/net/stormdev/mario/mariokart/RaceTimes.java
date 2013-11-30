@@ -17,10 +17,11 @@ public class RaceTimes {
 	public File saveFile = null;
 	public HashMap<String, HashMap<String, Double>> times = new HashMap<String, HashMap<String, Double>>();
 	public Boolean saved = true;
-	public RaceTimes(File saveFile, Boolean saved){
+
+	public RaceTimes(File saveFile, Boolean saved) {
 		this.saveFile = saveFile;
 		this.saveFile.getParentFile().mkdirs();
-		if(this.saveFile.length()<1||!this.saveFile.exists()){
+		if (this.saveFile.length() < 1 || !this.saveFile.exists()) {
 			try {
 				this.saveFile.createNewFile();
 			} catch (IOException e) {
@@ -30,19 +31,20 @@ public class RaceTimes {
 		times = load(this.saveFile.getAbsolutePath());
 		this.saved = saved;
 	}
-	public void addRaceTime(String trackName, String playerName, double time){
-		if(saved){
+
+	public void addRaceTime(String trackName, String playerName, double time) {
+		if (saved) {
 			HashMap<String, Double> scores = new HashMap<String, Double>();
-			if(times.containsKey(trackName)){
+			if (times.containsKey(trackName)) {
 				scores = times.get(trackName);
 			}
 			Boolean prev = false;
 			double previous = Double.MAX_VALUE;
-			if(scores.containsKey(playerName)){
+			if (scores.containsKey(playerName)) {
 				prev = true;
 				previous = scores.get(playerName);
 			}
-			if(time<previous || !prev){
+			if (time < previous || !prev) {
 				scores.put(playerName, time);
 			}
 			times.put(trackName, scores);
@@ -51,60 +53,62 @@ public class RaceTimes {
 		}
 		return;
 	}
-	public void clearRaceTimes(String trackName){
-	    times.remove(trackName);
+
+	public void clearRaceTimes(String trackName) {
+		times.remove(trackName);
 		return;
 	}
-	public SortedMap<String, Double> getTopTimes(double topManyCount, String trackName){
+
+	public SortedMap<String, Double> getTopTimes(double topManyCount,
+			String trackName) {
 		HashMap<String, Double> t = new HashMap<String, Double>();
-	    if(times.containsKey(trackName)){
-	    	t = times.get(trackName);
-	    }
-	    LowHighDoubleValueComparator com = new LowHighDoubleValueComparator(t);
-    	SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
+		if (times.containsKey(trackName)) {
+			t = times.get(trackName);
+		}
+		LowHighDoubleValueComparator com = new LowHighDoubleValueComparator(t);
+		SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
 		sorted.putAll(t);
 		return sorted;
 	}
-	public Map<String, Double> getTimes(String trackName){
+
+	public Map<String, Double> getTimes(String trackName) {
 		HashMap<String, Double> t = new HashMap<String, Double>();
-	    if(times.containsKey(trackName)){
-	    	t = times.get(trackName);
-	    }
-	    return t;
-	}
-	@SuppressWarnings("unchecked")
-	public static HashMap<String, HashMap<String, Double>> load(String path)
-	{
-		try
-		{
-			System.out.println("Loading information!");
-	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
-	        Object result = ois.readObject();
-	        ois.close();
-			return (HashMap<String, HashMap<String, Double>>) result;
+		if (times.containsKey(trackName)) {
+			t = times.get(trackName);
 		}
-		catch(Exception e)
-		{
+		return t;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static HashMap<String, HashMap<String, Double>> load(String path) {
+		try {
+			System.out.println("Loading information!");
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
+					path));
+			Object result = ois.readObject();
+			ois.close();
+			return (HashMap<String, HashMap<String, Double>>) result;
+		} catch (Exception e) {
 			System.out.println("Information failed to load error:");
 			e.printStackTrace();
 			return null;
 		}
 	}
-	public void save(){
+
+	public void save() {
 		save(this.times, this.saveFile.getAbsolutePath());
 	}
-	public static void save(HashMap<String, HashMap<String, Double>> map, String path)
-	{
-		try
-		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
+
+	public static void save(HashMap<String, HashMap<String, Double>> map,
+			String path) {
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(
+					new FileOutputStream(path));
 			oos.writeObject(map);
 			oos.flush();
 			oos.close();
-			//Handle I/O exceptions
-		}
-		catch(Exception e)
-		{
+			// Handle I/O exceptions
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

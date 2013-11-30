@@ -20,114 +20,140 @@ public class RaceTrack implements Serializable {
 	SerializableLocation line2 = null;
 	ArrayList<SerializableLocation> startGrid = new ArrayList<SerializableLocation>();
 	Map<Integer, SerializableLocation> checkPoints = new HashMap<Integer, SerializableLocation>();
-	public RaceTrack(String trackname, int maxplayers, int minplayers, int laps){
+
+	public RaceTrack(String trackname, int maxplayers, int minplayers, int laps) {
 		this.trackname = trackname;
 		this.maxplayers = maxplayers;
 		this.minplayers = minplayers;
 		this.laps = laps;
 	}
-	public int getLaps(){
+
+	public int getLaps() {
 		return laps;
 	}
-	public void setLine1(Location loc){
+
+	public void setLine1(Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.line1 = sloc;
 	}
-	public Location getLine1(Server server){
+
+	public Location getLine1(Server server) {
 		return this.line1.getLocation(server);
 	}
-	public void setLine2(Location loc){
+
+	public void setLine2(Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.line2 = sloc;
 	}
-	public Location getLine2(Server server){
+
+	public Location getLine2(Server server) {
 		return this.line2.getLocation(server);
 	}
-	public void setLobby(Location loc){
+
+	public void setLobby(Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.lobby = sloc;
 	}
-	public Location getLobby(Server server){
+
+	public Location getLobby(Server server) {
 		return this.lobby.getLocation(server);
 	}
-	public void setExit(Location loc){
+
+	public void setExit(Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.exit = sloc;
 	}
-	public Location getExit(Server server){
+
+	public Location getExit(Server server) {
 		return this.exit.getLocation(server);
 	}
-	public void setTrackName(String trackname){
+
+	public void setTrackName(String trackname) {
 		this.trackname = trackname;
 		return;
 	}
-	public void setMaxPlayers(int maxplayers){
+
+	public void setMaxPlayers(int maxplayers) {
 		this.maxplayers = maxplayers;
 		return;
 	}
-	public void setMinPlayers(int minplayers){
+
+	public void setMinPlayers(int minplayers) {
 		this.minplayers = minplayers;
 		return;
 	}
-	public String getTrackName(){
+
+	public String getTrackName() {
 		return this.trackname;
 	}
-	public int getMaxPlayers(){
+
+	public int getMaxPlayers() {
 		return this.maxplayers;
 	}
-	public int getMinPlayers(){
+
+	public int getMinPlayers() {
 		return this.minplayers;
 	}
-	public ArrayList<SerializableLocation> getStartGrid(){
+
+	public ArrayList<SerializableLocation> getStartGrid() {
 		return this.startGrid;
 	}
-	public void setStartGrid(ArrayList<SerializableLocation> startGrid){
+
+	public void setStartGrid(ArrayList<SerializableLocation> startGrid) {
 		this.startGrid = startGrid;
 		calculateMaxMinPlayers();
 		return;
 	}
-	public void addToStartGrid(SerializableLocation loc){
+
+	public void addToStartGrid(SerializableLocation loc) {
 		this.startGrid.add(loc);
 		calculateMaxMinPlayers();
 	}
-	public void addToStartGrid(Location loc){
+
+	public void addToStartGrid(Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.startGrid.add(sloc);
 		calculateMaxMinPlayers();
 	}
-	public void RemoveFromStartGrid(SerializableLocation loc){
+
+	public void RemoveFromStartGrid(SerializableLocation loc) {
 		this.startGrid.remove(loc);
 		calculateMaxMinPlayers();
 	}
-	public Map<Integer, SerializableLocation> getCheckpoints(){
+
+	public Map<Integer, SerializableLocation> getCheckpoints() {
 		return this.checkPoints;
 	}
-	public void setCheckpoints(Map<Integer, SerializableLocation> checkpoints){
+
+	public void setCheckpoints(Map<Integer, SerializableLocation> checkpoints) {
 		this.checkPoints = checkpoints;
 		calculateMaxMinPlayers();
 		return;
 	}
-	public void addToCheckpoints(int num, SerializableLocation loc){
+
+	public void addToCheckpoints(int num, SerializableLocation loc) {
 		this.checkPoints.put(num, loc);
 		calculateMaxMinPlayers();
 	}
-	public void addToCheckpoints(int num, Location loc){
+
+	public void addToCheckpoints(int num, Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.checkPoints.put(num, sloc);
 		calculateMaxMinPlayers();
 	}
-	public void RemoveFromCheckpoints(SerializableLocation loc){
+
+	public void RemoveFromCheckpoints(SerializableLocation loc) {
 		this.checkPoints.remove(loc);
 		calculateMaxMinPlayers();
 	}
-    public void calculateMaxMinPlayers(){
-    	if(this.startGrid.size() > 1){
+
+	public void calculateMaxMinPlayers() {
+		if (this.startGrid.size() > 1) {
 			this.minplayers = 2;
-		}
-		else{
+		} else {
 			this.minplayers = 1;
 		}
 		this.maxplayers = this.startGrid.size();
 		return;
-    }
+	}
 }
