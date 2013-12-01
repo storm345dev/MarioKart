@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 public class RaceEndEvent extends Event { // Called when a race is ended
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
-
 	public RaceEndEvent(Race race) {
 		this.race = race;
 	}
