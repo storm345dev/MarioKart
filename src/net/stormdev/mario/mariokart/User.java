@@ -1,11 +1,15 @@
 package net.stormdev.mario.mariokart;
 
+import net.stormdev.mario.utils.PlayerQuitException;
+
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class User {
-	private final Player player;
+	private final String player;
 
 	private int checkpoint;
 
@@ -23,16 +27,16 @@ public class User {
 	
 	private Location location;
 
-	public User(Player player){
-		this.player = player;
+	public User(String playerName, int oldLevel, float oldExp){
+		this.player = playerName;
 
 		this.checkpoint = 0;
 
 		this.lapsLeft = 3;
 
-		this.oldLevel = player.getLevel();
+		this.oldLevel = oldLevel;
 		
-		this.oldExp = player.getExp();
+		this.oldExp = oldExp;
 		
 		inRace = false;
 		
@@ -41,8 +45,20 @@ public class User {
 		location = null;
 	}
 
-	public Player getPlayer(){
+	public String getPlayerName(){
 		return player;
+	}
+	
+	public Player getPlayer(Server server) throws PlayerQuitException{
+		Player p = server.getPlayer(player);
+		if(p==null || !p.isOnline()){
+			throw new PlayerQuitException(player);
+		}
+		return p;
+	}
+	
+	public OfflinePlayer getOfflinePlayer(Server server){
+		return server.getOfflinePlayer(player);
 	}
 
 	public void setCheckpoint(int checkpoint){
@@ -109,7 +125,7 @@ public class User {
 
 		User user = (User) object;
 
-		if (!user.getPlayer().equals(getPlayer())){
+		if (!user.getPlayerName().equals(getPlayerName())){
 			return false;
 		}
 
