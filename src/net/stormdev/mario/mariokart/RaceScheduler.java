@@ -68,7 +68,7 @@ public class RaceScheduler {
 							}
 						}
 					} else {
-						p.sendMessage(main.colors.getTitle() + "[MarioKart:] " + main.colors.getInfo() + p.getName() + main.msgs .get("race.que.joined"));
+						p.sendMessage(main.colors.getTitle() + "[MarioKart:] " + main.colors.getInfo() + player.getName() + main.msgs .get("race.que.joined"));
 					}
 				}
 				plugin.raceQues.setQue(trackName, que);
