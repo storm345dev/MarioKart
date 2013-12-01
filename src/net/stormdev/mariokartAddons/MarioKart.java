@@ -292,12 +292,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				int ppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						ppos = i;
 					}
 				}
@@ -364,8 +364,8 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				final String targetName = (String) pls[0];
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -546,12 +546,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				int ppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						ppos = i;
 					}
 				}
@@ -590,12 +590,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
 				int pppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						pppos = i;
 					}
 				}
@@ -685,12 +685,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
 				int pppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						pppos = i;
 					}
 				}
