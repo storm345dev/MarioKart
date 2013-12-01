@@ -3,17 +3,19 @@ package net.stormdev.mario.utils;
 import java.util.Comparator;
 import java.util.Map;
 
-public class DoubleValueComparator implements Comparator<String> {
+import org.bukkit.entity.Player;
 
-	Map<String, Double> base;
+public class DoubleValueComparator implements Comparator<Player> {
 
-	public DoubleValueComparator(Map<String, Double> base) {
-		this.base = base;
+	Map<Player, Double> base;
+
+	public DoubleValueComparator(Map<Player, Double> scores) {
+		this.base = scores;
 	}
 
 	// Note: this comparator imposes orderings that are inconsistent with
 	// equals.
-	public int compare(String a, String b) {
+	public int compare(Player a, Player b) {
 		if (base.get(a) >= base.get(b)) {
 			return -1;
 		} else {

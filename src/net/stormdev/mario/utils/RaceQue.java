@@ -3,6 +3,8 @@ package net.stormdev.mario.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.Player;
+
 import net.stormdev.mario.mariokart.main;
 
 public class RaceQue {
@@ -10,7 +12,7 @@ public class RaceQue {
 	Boolean transitioning = false;
 	int playerLimit = 2;
 	RaceType type = RaceType.RACE;
-	List<String> players = new ArrayList<String>();
+	List<Player> players = new ArrayList<Player>();
 
 	public RaceQue(RaceTrack track, RaceType type) {
 		this.track = track;
@@ -35,9 +37,9 @@ public class RaceQue {
 		return this.transitioning;
 	}
 
-	public Boolean addPlayer(String name) {
+	public Boolean addPlayer(Player player) {
 		if ((this.players.size() + 1) <= this.playerLimit) {
-			this.players.add(name);
+			this.players.add(player);
 			return true;
 		} else {
 			return false;
@@ -48,18 +50,21 @@ public class RaceQue {
 		return this.playerLimit;
 	}
 
-	public void removePlayer(String name) {
-		this.players.remove(name);
+	public void removePlayer(Player player) {
+		this.players.remove(player);
+		
 		if (this.type == RaceType.TIME_TRIAL) {
 			main.plugin.raceQues.removeQue(this.track.getTrackName());
 		}
+		
 		return;
 	}
 
 	public void validatePlayers() {
-		for (String pname : this.players) {
-			if (main.plugin.getServer().getPlayer(pname) == null) {
-				this.players.remove(pname);
+		for (Player player : this.players) {
+			if (player == null) {
+				this.players.remove(player);
+				
 				if (this.type == RaceType.TIME_TRIAL) {
 					main.plugin.raceQues.removeQue(this.track.getTrackName());
 				}
@@ -68,20 +73,19 @@ public class RaceQue {
 		return;
 	}
 
-	public List<String> getPlayers() {
-		for (String pname : this.players) {
-			if (main.plugin.getServer().getPlayer(pname) == null) {
-				this.players.remove(pname);
+	public List<Player> getPlayers() {
+		for (Player player : this.players) {
+			if (player == null) {
+				this.players.remove(player);
 			}
 		}
-		return this.players;
+		return new ArrayList<Player>(this.players);
 	}
 
 	public int getHowManyPlayers() {
-		for (String pname : this.players) {
-			if (main.plugin.getServer().getPlayer(pname) == null
-					&& !(main.plugin.getServer().getPlayer(pname).isOnline())) {
-				this.players.remove(pname);
+		for (Player player : this.players) {
+			if (player == null || !player.isOnline()) {
+				this.players.remove(player);
 			}
 		}
 		return this.players.size();

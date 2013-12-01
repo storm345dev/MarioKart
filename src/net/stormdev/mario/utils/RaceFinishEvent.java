@@ -1,6 +1,7 @@
 package net.stormdev.mario.utils;
 
 import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.User;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,19 +9,19 @@ import org.bukkit.event.HandlerList;
 public class RaceFinishEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
-	public String playername = "";
+	private User user;
 
-	public RaceFinishEvent(Race race, String playername) {
+	public RaceFinishEvent(Race race, User user) {
 		this.race = race;
-		this.playername = playername;
+		this.user = user;
 	}
 
 	public Race getRace() {
 		return this.race;
 	}
 
-	public String getPlayername() {
-		return this.playername;
+	public User getUser(){
+		return user;
 	}
 
 	public HandlerList getHandlers() {

@@ -288,8 +288,8 @@ public class URaceCommandExecutor implements CommandExecutor {
 				}
 			}
 			if (trackName.equalsIgnoreCase("auto")) {
-				if (main.plugin.raceMethods.inAGame(player.getName()) != null
-						|| main.plugin.raceMethods.inGameQue(player.getName()) != null) {
+				if (main.plugin.raceMethods.inAGame(player) != null
+						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
 					return true;
@@ -339,8 +339,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					RaceTrack track = main.plugin.trackManager.getRaceTracks()
 							.get(randomNumber);
 					RaceQue que = new RaceQue(track, type);
-					plugin.gameScheduler.joinGame(player.getName(), track, que,
-							track.getTrackName());
+					plugin.gameScheduler.joinGame(player, track, que, track.getTrackName());
 					return true;
 				}
 				String name = order.get(0);
@@ -362,8 +361,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					veh.eject();
 					veh.remove();
 				}
-				plugin.gameScheduler.joinGame(player.getName(), track, arena,
-						name);
+				plugin.gameScheduler.joinGame(player, track, arena, name);
 				return true;
 			} else {
 				RaceTrack track = plugin.trackManager.getRaceTrack(trackName);
@@ -391,8 +389,8 @@ public class URaceCommandExecutor implements CommandExecutor {
 						return true;
 					}
 				}
-				if (main.plugin.raceMethods.inAGame(player.getName()) != null
-						|| main.plugin.raceMethods.inGameQue(player.getName()) != null) {
+				if (main.plugin.raceMethods.inAGame(player) != null
+						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
 					return true;
@@ -402,8 +400,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					veh.eject();
 					veh.remove();
 				}
-				main.plugin.gameScheduler.joinGame(player.getName(), track,
-						que, trackName);
+				main.plugin.gameScheduler.joinGame(player, track, que, trackName);
 				return true;
 			}
 		} else if (command.equalsIgnoreCase("queues")
@@ -470,8 +467,8 @@ public class URaceCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			Boolean game = true;
-			Race race = plugin.raceMethods.inAGame(player.getName());
-			String que = plugin.raceMethods.inGameQue(player.getName());
+			Race race = plugin.raceMethods.inAGame(player);
+			String que = plugin.raceMethods.inGameQue(player);
 			if (race == null) {
 				game = false;
 			}
@@ -483,11 +480,10 @@ public class URaceCommandExecutor implements CommandExecutor {
 				}
 			}
 			if (game) {
-				race.leave(player.getName(), true);
+				race.leave(race.getUser(player), true);
 			} else {
 				RaceQue queue = plugin.raceQues.getQue(que);
-				plugin.gameScheduler.leaveQue(player.getName(), queue, queue
-						.getTrack().getTrackName());
+				plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
 				String msg = main.msgs.get("general.cmd.leave.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"), que);
 				sender.sendMessage(main.colors.getSuccess() + msg);

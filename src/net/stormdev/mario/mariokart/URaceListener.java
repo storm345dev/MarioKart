@@ -109,7 +109,7 @@ public class URaceListener implements Listener {
 		if (!ucars.listener.inACar(player)) {
 			return;
 		}
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		if (ItemStackFromId.equals(main.config.getString("mariokart.banana"),
@@ -126,7 +126,7 @@ public class URaceListener implements Listener {
 
 	@EventHandler
 	void playerDeath(PlayerDeathEvent event) {
-		if (plugin.raceMethods.inAGame(event.getEntity().getName()) == null) {
+		if (plugin.raceMethods.inAGame(event.getEntity()) == null) {
 			return;
 		}
 		event.setDeathMessage(ChatColor.GREEN + event.getEntity().getName()
@@ -147,7 +147,7 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Player player = (Player) e;
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -163,7 +163,7 @@ public class URaceListener implements Listener {
 		if (!ucars.listener.inACar(player.getName())) {
 			return;
 		}
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame((Player) player) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -194,7 +194,7 @@ public class URaceListener implements Listener {
 	void powerups(ucarUpdateEvent event) {
 		Player player = (Player) event.getVehicle().getPassenger();
 		try {
-			if (plugin.raceMethods.inAGame(player.getName()) == null) {
+			if (plugin.raceMethods.inAGame(player) == null) {
 				return;
 			}
 		} catch (Exception e) {
@@ -332,96 +332,101 @@ public class URaceListener implements Listener {
 	void RaceEnd(RaceFinishEvent event) {
 		Race game = event.getRace();
 		Boolean timed = game.getType() == RaceType.TIME_TRIAL;
-		List<String> players = new ArrayList<String>();
-		players.addAll(game.getPlayers());
-		List<String> inplayers = game.getInPlayers();
+		List<User> usersIn = game.getUsersIn();
 		String in = "";
-		for (String inp : inplayers) {
-			in = in + ", " + inp;
+		for (User user : usersIn) {
+			in = in + ", " + user.getPlayer().getName();
 		}
-		Map<String, Double> scores = new HashMap<String, Double>();
+		Map<Player, Double> scores = new HashMap<Player, Double>();
 		Boolean finished = false;
-		String playername = event.getPlayername();
-		final Player player = plugin.getServer().getPlayer(playername);
+
+		User user = event.getUser();
+
+		final Player player = user.getPlayer();
+
 		player.removeMetadata("car.stayIn", plugin);
+
 		player.setCustomName(ChatColor.stripColor(player.getCustomName()));
+
 		player.setCustomNameVisible(false);
+
 		if (player.getVehicle() != null) {
 			Vehicle veh = (Vehicle) player.getVehicle();
+
 			veh.eject();
+
 			veh.remove();
 		}
+
 		Location loc = game.getTrack().getExit(plugin.getServer());
+
 		if (loc == null) {
 			player.teleport(player.getLocation().getWorld().getSpawnLocation());
 		} else {
 			player.teleport(loc);
 		}
+
 		if (player.isOnline()) {
 			player.getInventory().clear();
-			if (game.getOldInventories().containsKey(player.getName())) {
-				player.getInventory().setContents(
-						game.getOldInventories().get(player.getName()));
-			}
+
+			player.getInventory().setContents(user.getOldInventory());
 		}
-		if (game.finished.contains(playername)) {
+
+		if (user.isFinished()) {
 			finished = true;
 		} else {
-			HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
-			for (String pname : game.getPlayers()) {
-				Player pp = main.plugin.getServer().getPlayer(pname);
+			HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
+
+			for (User u : game.getUsers()) {
+				Player pp = u.getPlayer();
+
 				if (pp != null){
 					if (pp.hasMetadata("checkpoint.distance")) {
 						List<MetadataValue> metas = pp
 								.getMetadata("checkpoint.distance");
-						checkpointDists.put(pname,
-								(Double) ((StatValue) metas.get(0)).getValue());
+						checkpointDists.put(u,  (Double) ((StatValue) metas.get(0)).getValue());
 					}
 				}
 			}
-			for (String pname : game.getPlayers()) {
-				int laps = game.totalLaps - game.lapsLeft.get(pname) + 1;
-				int checkpoints;
+
+			for (User u : game.getUsers()) {
+				int laps = game.totalLaps - u.getLapsLeft() + 1;
+
+				int checkpoints = u.getCheckpoint();
+
+				double distance = 1 / (checkpointDists.get(u));
+
+				double score = (laps * game.getMaxCheckpoints()) + checkpoints + distance;
+
 				try {
-					checkpoints = game.checkpoints.get(pname);
-				} catch (Exception e) {
-					checkpoints = 0;
-				}
-				double distance = 1 / (checkpointDists.get(pname));
-				double score = (laps * game.getMaxCheckpoints()) + checkpoints
-						+ distance;
-				try {
-					if (game.getWinner().equals(pname)) {
+					if (game.getWinner().equals(u)) {
 						score = score + 1;
 					}
 				} catch (Exception e) {
 				}
-				scores.put(pname, score);
+
+				scores.put(u.getPlayer(), score);
 			}
 		}
 		player.getInventory().clear();
-		if (game.getOldInventories().containsKey(player.getName())) {
-			player.getInventory().setContents(
-					game.getOldInventories().get(player.getName()));
-		}
+
+		player.getInventory().setContents(user.getOldInventory());
+
 		if (!finished) {
 			DoubleValueComparator com = new DoubleValueComparator(scores);
-			SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
+			SortedMap<Player, Double> sorted = new TreeMap<Player, Double>(com);
 			sorted.putAll(scores);
-			Set<String> keys = sorted.keySet();
+			Set<Player> keys = sorted.keySet();
 			Object[] pls = (Object[]) keys.toArray();
 			for (int i = 0; i < pls.length; i++) {
 				Player p = plugin.getServer().getPlayer((String) pls[i]);
-				if (p.getName().equals(event.getPlayername())) {
+				if (p.equals(player)) {
 					if (p != null) {
 						String msg = "";
 						if (!timed) {
 							msg = main.msgs.get("race.end.position");
 							if ((i + 1) <= 4
-									&& (i + 1) != game.getPlayers().size()) {
-								player.getWorld().playSound(
-										player.getLocation(),
-										Sound.NOTE_BASS_GUITAR, 1, 1);
+									&& (i + 1) != game.getUsers().size()) {player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
 							} else {
 								player.getWorld().playSound(
 										player.getLocation(), Sound.NOTE_BASS,
@@ -453,21 +458,18 @@ public class URaceListener implements Listener {
 				}
 			}
 		} else {
-			Player p = plugin.getServer().getPlayer(
-					(String) event.getPlayername());
-			if (p != null) {
+			if (player != null) {
 				int position = 1;
-				ArrayList<String> fs = new ArrayList<String>();
-				fs.addAll(game.finished);
-				for (int i = 0; i < fs.size(); i++) {
-					if (fs.get(i).equals(event.getPlayername())) {
+
+				for (int i = 0; i < game.getUsersFinished().size(); i++) {
+					if (game.getUsersFinished().get(i).equals(user)) {
 						position = i + 1;
 					}
 				}
 				String msg = "";
 				if (!timed) {
 					msg = main.msgs.get("race.end.position");
-					if (position <= 4 && position != game.getPlayers().size()) {
+					if (position <= 4 && position != game.getUsers().size()) {
 						player.getWorld().playSound(player.getLocation(),
 								Sound.NOTE_BASS_GUITAR, 1, 1);
 					} else {
@@ -499,12 +501,12 @@ public class URaceListener implements Listener {
 					.addRaceTime(game.getTrack().getTrackName(),
 							player.getName(), t);
 				}
-				p.sendMessage(main.colors.getSuccess() + msg);
+				player.sendMessage(main.colors.getSuccess() + msg);
 			}
 		}
-		game.leave(event.getPlayername(), false);
+		game.leave(user, false);
 		plugin.gameScheduler.updateGame(game);
-		if (game.getInPlayers().size() < 1) {
+		if (game.getUsersIn().size() < 1) {
 			game.ended = true;
 			game.end();
 		}
@@ -533,18 +535,18 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void gameQuitting(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		Race game = plugin.raceMethods.inAGame(player.getName());
+		Race game = plugin.raceMethods.inAGame(player);
 		if (game == null) {
-			String arenaName = plugin.raceMethods.inGameQue(player.getName());
+			String arenaName = plugin.raceMethods.inGameQue(player);
 			if (arenaName == null) {
 				return;
 			}
 			RaceQue arena = plugin.raceQues.getQue(arenaName);
-			arena.removePlayer(player.getName());
+			arena.removePlayer(player);
 			plugin.raceQues.setQue(arenaName, arena);
 			return;
 		} else {
-			game.leave(player.getName(), true);
+			game.leave(game.getUser(player), true);
 			return;
 		}
 	}
@@ -552,18 +554,18 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void gameQuitting(PlayerKickEvent event) {
 		Player player = event.getPlayer();
-		Race game = plugin.raceMethods.inAGame(player.getName());
+		Race game = plugin.raceMethods.inAGame(player);
 		if (game == null) {
-			String arenaName = plugin.raceMethods.inGameQue(player.getName());
+			String arenaName = plugin.raceMethods.inGameQue(player);
 			if (arenaName == null) {
 				return;
 			}
 			RaceQue arena = plugin.raceQues.getQue(arenaName);
-			arena.removePlayer(player.getName());
+			arena.removePlayer(player);
 			plugin.raceQues.setQue(arenaName, arena);
 			return;
 		} else {
-			game.leave(player.getName(), true);
+			game.leave(game.getUser(player), true);
 			return;
 		}
 	}
@@ -591,28 +593,34 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void RaceStart(RaceStartEvent event) {
 		Race game = event.getRace();
-		List<String> players = game.getPlayers();
-		for (String pname : players) {
-			plugin.getServer().getPlayer(pname).setGameMode(GameMode.SURVIVAL);
-			plugin.getServer().getPlayer(pname).getInventory().clear();
-			plugin.getServer().getPlayer(pname).getInventory()
-			.setItem(8, main.marioKart.respawn);
-			plugin.getServer().getPlayer(pname).updateInventory();
+
+		List<User> users = game.getUsers();
+
+		for (User user : users) {
+			Player player = user.getPlayer();
+
+			player.setGameMode(GameMode.SURVIVAL);
+			player.getInventory().clear();
+			player.getInventory().setItem(8, main.marioKart.respawn);
+			player.updateInventory();
 		}
-		for (int i = 0; i < game.getPlayers().size(); i++) {
-			String pname = game.getPlayers().get(i);
+
+		users = game.getUsers();
+
+		for (User user : users) {
 			plugin.gameScheduler.updateGame(game);
-			if (game.lapsLeft.containsKey(pname)) {
-				game.lapsLeft.put(pname, game.totalLaps);
-			}
-			if (game.checkpoints.containsKey(pname)) {
-				game.checkpoints.put(pname, 0);
-			}
+
+			user.setLapsLeft(game.totalLaps);
+
+			user.setCheckpoint(0);
+
 			String msg = main.msgs.get("race.mid.lap");
+
 			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
+
 			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
-			plugin.getServer().getPlayer(pname)
-			.sendMessage(main.colors.getInfo() + msg);
+
+			user.getPlayer().sendMessage(main.colors.getInfo() + msg);
 		}
 		plugin.gameScheduler.reCalculateQues();
 		return;
@@ -630,21 +638,15 @@ public class URaceListener implements Listener {
 			plugin.gameScheduler.reCalculateQues();
 			return;
 		}
-		ArrayList<String> pls = new ArrayList<String>();
-		pls.addAll(game.getInPlayers());
-		for (String playername : pls) {
-			Player player = plugin.getServer().getPlayer(playername);
+
+		for (User user : game.getUsersIn()) {
+			Player player = user.getPlayer();
 			if (player == null) {
-				game.leave(playername, true);
+				game.leave(user, true);
 			} else {
 				Location playerLoc = player.getLocation();
 				Boolean checkNewLap = false;
-				int old = 0;
-				try {
-					old = game.checkpoints.get(playername);
-				} catch (Exception e) {
-					old = 0;
-				}
+				int old = user.getCheckpoint();
 				if (old == game.getMaxCheckpoints()) {
 					checkNewLap = true;
 				}
@@ -671,26 +673,21 @@ public class URaceListener implements Listener {
 						 * ()+main.msgs.get("race.mid.miss")); return; }
 						 */
 						if (!(old >= ch)) {
-							game.checkpoints.put(playername, check.checkpoint);
+							user.setCheckpoint(check.checkpoint);
 						}
 					}
 				}
-				int lapsLeft = 3;
-				try {
-					lapsLeft = game.lapsLeft.get(playername);
-				} catch (Exception e) {
-					game.lapsLeft.put(playername, game.totalLaps);
-					lapsLeft = game.totalLaps;
-				}
+				int lapsLeft = user.getLapsLeft();
+
 				if (lapsLeft < 1 || checkNewLap) {
 					if (game.atLine(plugin.getServer(), playerLoc)) {
 						if (checkNewLap) {
-							int left = game.lapsLeft.get(playername) - 1;
+							int left = lapsLeft - 1;
 							if (left < 0) {
 								left = 0;
 							}
-							game.checkpoints.put(playername, 0);
-							game.lapsLeft.put(playername, left);
+							user.setCheckpoint(0);
+							user.setLapsLeft(left);
 							lapsLeft = left;
 							if (left != 0) {
 								String msg = main.msgs.get("race.mid.lap");
@@ -710,33 +707,20 @@ public class URaceListener implements Listener {
 						if (lapsLeft < 1) {
 							Boolean won = game.getWinner() == null;
 							if (won) {
-								game.setWinner(playername);
+								game.setWinner(user);
 							}
-							game.finish(playername);
+							game.finish(user);
 							if (won) {
-								ArrayList<String> plz = new ArrayList<String>();
-								plz.addAll(game.getPlayers());
-								for (String pname : plz) {
-									if (!(plugin.getServer().getPlayer(pname) == null)
-											&& !playername.equals(pname)) {
-										String msg = main.msgs
-												.get("race.end.soon");
-										msg = msg.replaceAll("%name%",
-												playername);
-										plugin.getServer()
-										.getPlayer(pname)
-										.sendMessage(
-												main.colors
-												.getSuccess()
-												+ game.getWinner()
-												+ main.msgs
-												.get("race.end.won"));
-										plugin.getServer()
-										.getPlayer(pname)
-										.sendMessage(
-												main.colors.getInfo()
-												+ msg);
-									}
+								for (User u : game.getUsers()) {
+									Player p = u.getPlayer();
+									
+									String msg = main.msgs.get("race.end.soon");
+									
+									msg = msg.replaceAll("%name%", user.getPlayer().getName());
+									
+									p.sendMessage(main.colors.getSuccess() + game.getWinner() + main.msgs.get("race.end.won"));
+									
+									p.sendMessage(main.colors.getInfo() + msg);
 								}
 							}
 						}
@@ -762,7 +746,7 @@ public class URaceListener implements Listener {
 		}
 		try {
 			if (plugin.raceMethods.inAGame(((Player) event.getEntity()
-					.getPassenger()).getName()) == null
+					.getPassenger())) == null
 					&& !(event.getEntity().hasMetadata("kart.immune"))) {
 				return;
 			}
@@ -994,8 +978,7 @@ public class URaceListener implements Listener {
 			if (!ucars.listener.inACar((Player) event.getEntity())) {
 				return;
 			}
-			if (plugin.raceMethods.inAGame(((HumanEntity) event.getEntity())
-					.getName()) == null) {
+			if (plugin.raceMethods.inAGame(((Player) event.getEntity())) == null) {
 				return;
 			}
 			Player player = ((Player) event.getEntity());
@@ -1030,8 +1013,8 @@ public class URaceListener implements Listener {
 			return;
 		}
 		try {
-			if (plugin.raceMethods.inAGame(((HumanEntity) event.getVehicle()
-					.getPassenger()).getName()) == null) {
+			if (plugin.raceMethods.inAGame(((Player) event.getVehicle()
+					.getPassenger())) == null) {
 				return;
 			}
 		} catch (Exception e) {
@@ -1048,7 +1031,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void playerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		if (!(player.getVehicle() == null)) {
@@ -1069,13 +1052,15 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void playerRespawnEvent(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
-		Race race = plugin.raceMethods.inAGame(player.getName());
+		Race race = plugin.raceMethods.inAGame(player);
 		int checkpoint = 0;
 		try {
-			checkpoint = race.checkpoints.get(player.getName());
+			User user = race.getUser(player);
+			
+			checkpoint = user.getCheckpoint();
 		} catch (Exception e) {
 		}
 		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
@@ -1101,7 +1086,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void blockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -1111,7 +1096,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void blockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player.getName()) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -1133,8 +1118,7 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Player player = (Player) pass;
-		String playername = player.getName();
-		if (plugin.raceMethods.inAGame(playername) == null) {
+		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
 		Vector Velocity = car.getVelocity();
