@@ -35,7 +35,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.useful.ucarsCommon.StatValue;
 
 public class Race {
-	public ArrayList<User> users = new ArrayList<User>();
+	public List<User> users = new ArrayList<User>();
 	private String gameId = "";
 	private RaceTrack track = null;
 	private String trackName = "";
@@ -114,7 +114,10 @@ public class Race {
 		u.addAll(users); //Fix concurrentModificationErrors 
 		return u;
 	}
-
+    public void setUsers(List<User> users){
+    	this.users = users;
+    	return;
+    }
 	public List<User> getUsersIn(){
 		List<User> inUsers = new ArrayList<User>();
 		List<User> u = new ArrayList<User>();
@@ -343,12 +346,14 @@ public class Race {
 
 					public void run() {
 						if (!(type == RaceType.TIME_TRIAL)) {
-							SortedMap<Player, Double> sorted = game.getRaceOrder();
+							SortedMap<String, Double> sorted = game.getRaceOrder();
 							Object[] keys = sorted.keySet().toArray();
 							for (int i = 0; i < sorted.size(); i++) {
 								int pos = i + 1;
 								try {
-									Player pl = ((User) keys[i]).getPlayer(main.plugin.getServer());
+									String pname = (String) keys[i];
+									User u = getUser(pname);
+									Player pl = u.getPlayer(main.plugin.getServer());
 									game.scores.getScore(pl).setScore(pos);
 									game.scoresBoard.getScore(pl).setScore(-pos);
 								} catch (IllegalStateException e) {
@@ -389,7 +394,7 @@ public class Race {
 		return;
 	}
 
-	public SortedMap<Player, Double> getRaceOrder() {
+	public SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
 		HashMap<Player, Double> checkpointDists = new HashMap<Player, Double>();
 		List<User> users = game.getUsers();
@@ -405,7 +410,7 @@ public class Race {
 				//Player is no longer in the race
 			}
 		}
-		Map<Player, Double> scores = new HashMap<Player, Double>();
+		Map<String, Double> scores = new HashMap<String, Double>();
 		for (User user : users) {
 			int laps = game.totalLaps - user.getLapsLeft() + 1;
 			int checkpoints = user.getCheckpoint();
@@ -419,14 +424,10 @@ public class Race {
 				}
 			} catch (Exception e) {
 			}
-			try {
-				scores.put(user.getPlayer(main.plugin.getServer()), score);
-			} catch (PlayerQuitException e) {
-				//Player has left
-			}
+			scores.put(user.getPlayerName(), score);
 		}
 		DoubleValueComparator com = new DoubleValueComparator(scores);
-		SortedMap<Player, Double> sorted = new TreeMap<Player, Double>(com);
+		SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
 		sorted.putAll(scores);
 		if (sorted.size() >= 1) {
 			this.winning = (String) sorted.keySet().toArray()[0];
