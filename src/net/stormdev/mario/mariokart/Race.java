@@ -39,7 +39,7 @@ public class Race {
 	private String gameId = "";
 	private RaceTrack track = null;
 	private String trackName = "";
-	private User winner = null;
+	private String winner = null;
 	public String winning = "";
 	public Boolean running = false;
 	public long startTimeMS = 0;
@@ -258,7 +258,7 @@ public class Race {
 	}
 
 	public void setWinner(User winner) {
-		this.winner = winner;
+		this.winner = winner.getPlayerName();
 	}
 
 	public void startEndCount() {
@@ -308,7 +308,7 @@ public class Race {
 		});
 	}
 
-	public User getWinner() {
+	public String getWinner() {
 		return this.winner;
 	}
 
@@ -396,7 +396,7 @@ public class Race {
 
 	public SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
-		HashMap<Player, Double> checkpointDists = new HashMap<Player, Double>();
+		HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
 		List<User> users = game.getUsers();
 		for (User user : users) {
 			try {
@@ -404,7 +404,7 @@ public class Race {
 				if (player.hasMetadata("checkpoint.distance")) {
 					List<MetadataValue> metas = player
 							.getMetadata("checkpoint.distance");
-					checkpointDists.put(user.getPlayer(main.plugin.getServer()), (Double) ((StatValue) metas.get(0)).getValue());
+					checkpointDists.put(user.getPlayerName(), (Double) ((StatValue) metas.get(0)).getValue());
 				}
 			} catch (PlayerQuitException e) {
 				//Player is no longer in the race
@@ -414,7 +414,7 @@ public class Race {
 		for (User user : users) {
 			int laps = game.totalLaps - user.getLapsLeft() + 1;
 			int checkpoints = user.getCheckpoint();
-			double distance = 1 / (checkpointDists.get(user));
+			double distance = 1 / (checkpointDists.get(user.getPlayerName()));
 
 			double score = (laps * game.getMaxCheckpoints()) + checkpoints
 					+ distance;
