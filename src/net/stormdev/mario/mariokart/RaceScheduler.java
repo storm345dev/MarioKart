@@ -133,7 +133,7 @@ public class RaceScheduler {
 					&& que.getHowManyPlayers() > 0) {
 				timed_valid = true;
 			}
-			if (!trackInUse(aname) && que.getHowManyPlayers() > 1
+			if (!trackInUse(aname) && que.getHowManyPlayers() >= main.config.getInt("race.que.minPlayers")
 					&& !que.getTransitioning()
 					&& !(this.runningGames >= this.maxGames) || timed_valid
 					&& !trackInUse(aname) && !que.getTransitioning()
@@ -163,7 +163,7 @@ public class RaceScheduler {
 							String aname = queName;
 							RaceQue arena = main.plugin.raceQues
 									.getQue(aname);
-							if (arena.getHowManyPlayers() < 2) {
+							if (arena.getHowManyPlayers() < main.config.getInt("race.que.minPlayers")) {
 								arena.setTransitioning(false);
 								plugin.raceQues.setQue(aname, arena);
 								return;

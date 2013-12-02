@@ -444,7 +444,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				if (que.getHowManyPlayers() > (que.getPlayerLimit() - 2)) {
 					color = ChatColor.YELLOW;
 				}
-				if (que.getHowManyPlayers() < 2) {
+				if (que.getHowManyPlayers() < main.config.getInt("race.que.minPlayers")) {
 					color = ChatColor.YELLOW;
 				}
 				char[] chars = Trackname.toCharArray();
