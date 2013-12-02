@@ -99,9 +99,7 @@ public class Race {
 	}
 	
 	public User getUser(String playerName){
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		for (User user : getUsers()){
 			if (user.getPlayerName().equals(playerName)){
 				return user;
 			}
@@ -118,9 +116,7 @@ public class Race {
     }
 	public List<User> getUsersIn(){
 		List<User> inUsers = new ArrayList<User>();
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		for (User user : getUsers()){
 			if (user.isInRace()){
 				inUsers.add(user);
 			}
@@ -130,9 +126,7 @@ public class Race {
 	
 	public List<User> getUsersFinished(){
 		List<User> usersFinished = new ArrayList<User>();
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		for (User user : getUsers()){
 			if (user.isFinished()){
 				usersFinished.add(user);
 			}
