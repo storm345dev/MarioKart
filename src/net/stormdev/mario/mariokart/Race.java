@@ -110,9 +110,7 @@ public class Race {
 	}
 
 	public List<User> getUsers(){
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		return u;
+		return new ArrayList<User>(users);
 	}
     public void setUsers(List<User> users){
     	this.users = users;
