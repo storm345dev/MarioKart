@@ -18,7 +18,6 @@ import net.stormdev.mario.utils.SerializableLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
@@ -134,7 +133,7 @@ public class RaceScheduler {
 					&& que.getHowManyPlayers() > 0) {
 				timed_valid = true;
 			}
-			if (!trackInUse(aname) && que.getHowManyPlayers() > 1
+			if (!trackInUse(aname) && que.getHowManyPlayers() > 3
 					&& !que.getTransitioning()
 					&& !(this.runningGames >= this.maxGames) || timed_valid
 					&& !trackInUse(aname) && !que.getTransitioning()
@@ -308,12 +307,15 @@ public class RaceScheduler {
 			}
 		}
 		final List<User> users2 = race.getUsers();
+		
 		for (User user2 : users2){
 			user2.setInRace(true);
 		}
 		plugin.getServer().getScheduler()
 		.runTaskAsynchronously(plugin, new Runnable() {
 			public void run() {
+				plugin.getServer().broadcastMessage("Attempting to start a race");
+				
 				for (User user : users2) {
 					try {
 						user.getPlayer(plugin.getServer()).sendMessage(main.colors.getInfo() + main.msgs.get("race.que.starting"));
@@ -355,6 +357,7 @@ public class RaceScheduler {
 					} catch (InterruptedException e1) {
 					}
 				}
+				
 				for (Minecart car : cars) {
 					car.removeMetadata("car.frozen", main.plugin);
 				}

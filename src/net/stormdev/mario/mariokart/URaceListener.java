@@ -2,7 +2,6 @@ package net.stormdev.mario.mariokart;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
