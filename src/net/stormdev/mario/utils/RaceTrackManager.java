@@ -99,6 +99,7 @@ public class RaceTrackManager {
 				tracks.remove(tr);
 			}
 		}
+		save();
 		return;
 	}
 

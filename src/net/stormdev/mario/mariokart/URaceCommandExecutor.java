@@ -333,8 +333,13 @@ public class URaceCommandExecutor implements CommandExecutor {
 								+ main.msgs.get("general.cmd.full"));
 						return true;
 					}
-					int randomNumber = main.plugin.random.nextInt(max - min)
-							+ min;
+					int randomNumber;
+					try {
+						randomNumber = main.plugin.random.nextInt(max - min)
+								+ min;
+					} catch (Exception e) {
+						randomNumber = 0;
+					}
 					RaceTrack track = main.plugin.trackManager.getRaceTracks()
 							.get(randomNumber);
 					RaceQue que = new RaceQue(track, type);
