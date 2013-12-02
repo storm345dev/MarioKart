@@ -240,9 +240,6 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.logger.colour")) {
 				config.set("general.logger.colour", true);
 			}
-			if (!config.contains("race.que.minPlayers")) {
-				config.set("race.que.minPlayers", 2);
-			}
 			if (!config.contains("general.raceLimit")) {
 				config.set("general.raceLimit", 10);
 			}
@@ -254,6 +251,9 @@ public class main extends JavaPlugin {
 			}
 			if (!config.contains("general.race.timed.log")) {
 				config.set("general.race.timed.log", true);
+			}
+			if (!config.contains("race.que.minPlayers")) {
+				config.set("race.que.minPlayers", 2);
 			}
 			if (!config.contains("bitlyUrlShortner")) {
 				config.set("bitlyUrlShortner", true);
