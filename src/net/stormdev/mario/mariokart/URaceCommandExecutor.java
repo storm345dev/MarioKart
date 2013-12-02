@@ -299,8 +299,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				int waitingPlayers = 0;
 				for (String aname : plugin.raceQues.getQues()) {
 					RaceQue arena = plugin.raceQues.getQue(aname);
-					if (arena.getHowManyPlayers() < arena.getPlayerLimit()
-							&& !arena.getTransitioning()) {
+					if (arena.getHowManyPlayers() < arena.getPlayerLimit()) {
 						gameArenas.add(aname);
 						if (arena.getHowManyPlayers() > waitingPlayers) {
 							waitingPlayers = arena.getHowManyPlayers();

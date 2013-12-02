@@ -1,15 +1,14 @@
 package net.stormdev.mario.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.entity.Player;
-
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+
+import org.bukkit.entity.Player;
 
 public class RaceMethods {
 	private main plugin = null;
