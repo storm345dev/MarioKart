@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
 import net.stormdev.mario.utils.RaceQue;
@@ -335,57 +336,56 @@ public class URaceListener implements Listener {
 		List<User> usersIn = game.getUsersIn();
 		String in = "";
 		for (User user : usersIn) {
-			in = in + ", " + user.getPlayer().getName();
+			in = in + ", " + user.getPlayerName();
 		}
-		Map<Player, Double> scores = new HashMap<Player, Double>();
+		Map<String, Double> scores = new HashMap<String, Double>();
 		Boolean finished = false;
-
 		User user = event.getUser();
-
-		final Player player = user.getPlayer();
-
-		player.removeMetadata("car.stayIn", plugin);
-
-		player.setCustomName(ChatColor.stripColor(player.getCustomName()));
-
-		player.setCustomNameVisible(false);
-
-		if (player.getVehicle() != null) {
-			Vehicle veh = (Vehicle) player.getVehicle();
-
-			veh.eject();
-
-			veh.remove();
+		Player player = null;
+		try {
+			player = user.getPlayer(plugin.getServer());
+		} catch (PlayerQuitException e1) {
+			//Player has left
 		}
+		if(player != null){
+			player.removeMetadata("car.stayIn", plugin);
+			player.setCustomName(ChatColor.stripColor(player.getCustomName()));
+			player.setCustomNameVisible(false);
+			if (player.getVehicle() != null) {
+				Vehicle veh = (Vehicle) player.getVehicle();
 
-		Location loc = game.getTrack().getExit(plugin.getServer());
+				veh.eject();
 
-		if (loc == null) {
-			player.teleport(player.getLocation().getWorld().getSpawnLocation());
-		} else {
-			player.teleport(loc);
+				veh.remove();
+			}
+			Location loc = game.getTrack().getExit(plugin.getServer());
+			if (loc == null) {
+				player.teleport(player.getLocation().getWorld().getSpawnLocation());
+			} else {
+				player.teleport(loc);
+			}
+			if (player.isOnline()) {
+				player.getInventory().clear();
+
+				player.getInventory().setContents(user.getOldInventory());
+			}
 		}
-
-		if (player.isOnline()) {
-			player.getInventory().clear();
-
-			player.getInventory().setContents(user.getOldInventory());
-		}
-
 		if (user.isFinished()) {
 			finished = true;
 		} else {
 			HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
-
 			for (User u : game.getUsers()) {
-				Player pp = u.getPlayer();
-
-				if (pp != null){
-					if (pp.hasMetadata("checkpoint.distance")) {
-						List<MetadataValue> metas = pp
-								.getMetadata("checkpoint.distance");
-						checkpointDists.put(u,  (Double) ((StatValue) metas.get(0)).getValue());
+				try {
+					Player pp = u.getPlayer(plugin.getServer());
+					if (pp != null){
+						if (pp.hasMetadata("checkpoint.distance")) {
+							List<MetadataValue> metas = pp
+									.getMetadata("checkpoint.distance");
+							checkpointDists.put(u,  (Double) ((StatValue) metas.get(0)).getValue());
+						}
 					}
+				} catch (PlayerQuitException e) {
+					//Player has left
 				}
 			}
 
@@ -404,8 +404,7 @@ public class URaceListener implements Listener {
 					}
 				} catch (Exception e) {
 				}
-
-				scores.put(u.getPlayer(), score);
+				scores.put(u.getPlayerName(), score);
 			}
 		}
 		player.getInventory().clear();
@@ -414,12 +413,12 @@ public class URaceListener implements Listener {
 
 		if (!finished) {
 			DoubleValueComparator com = new DoubleValueComparator(scores);
-			SortedMap<Player, Double> sorted = new TreeMap<Player, Double>(com);
+			SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
 			sorted.putAll(scores);
-			Set<Player> keys = sorted.keySet();
+			Set<String> keys = sorted.keySet();
 			Object[] pls = (Object[]) keys.toArray();
 			for (int i = 0; i < pls.length; i++) {
-				Player p = plugin.getServer().getPlayer((String) pls[i]);
+				Player p = plugin.getServer().getPlayer((String) pls[i]); //Evidence the dodgy PR was not tested as it was still reading string with Player in the map
 				if (p.equals(player)) {
 					if (p != null) {
 						String msg = "";
@@ -510,6 +509,7 @@ public class URaceListener implements Listener {
 			game.ended = true;
 			game.end();
 		}
+		final Player pl = player;
 		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
 
 			public void run() {
@@ -522,9 +522,9 @@ public class URaceListener implements Listener {
 					valid = false;
 				}
 				if (valid) {
-					player.sendMessage(main.colors.getInfo()
+					pl.sendMessage(main.colors.getInfo()
 							+ main.msgs.get("resource.clear"));
-					player.setTexturePack(rl);
+					pl.setTexturePack(rl);
 				}
 				return;
 			}
@@ -546,7 +546,7 @@ public class URaceListener implements Listener {
 			plugin.raceQues.setQue(arenaName, arena);
 			return;
 		} else {
-			game.leave(game.getUser(player), true);
+			game.leave(game.getUser(player.getName()), true);
 			return;
 		}
 	}
@@ -565,7 +565,7 @@ public class URaceListener implements Listener {
 			plugin.raceQues.setQue(arenaName, arena);
 			return;
 		} else {
-			game.leave(game.getUser(player), true);
+			game.leave(game.getUser(player.getName()), true);
 			return;
 		}
 	}
@@ -593,35 +593,33 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void RaceStart(RaceStartEvent event) {
 		Race game = event.getRace();
-
 		List<User> users = game.getUsers();
-
 		for (User user : users) {
-			Player player = user.getPlayer();
-
-			player.setGameMode(GameMode.SURVIVAL);
-			player.getInventory().clear();
-			player.getInventory().setItem(8, main.marioKart.respawn);
-			player.updateInventory();
+			try {
+				Player player = user.getPlayer(plugin.getServer());
+				player.setGameMode(GameMode.SURVIVAL);
+				player.getInventory().clear();
+				player.getInventory().setItem(8, main.marioKart.respawn);
+				player.updateInventory();
+			} catch (PlayerQuitException e) {
+				//Player has left
+			}
 		}
-
 		users = game.getUsers();
-
 		for (User user : users) {
 			plugin.gameScheduler.updateGame(game);
-
 			user.setLapsLeft(game.totalLaps);
-
 			user.setCheckpoint(0);
-
 			String msg = main.msgs.get("race.mid.lap");
-
 			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
-
 			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
-
-			user.getPlayer().sendMessage(main.colors.getInfo() + msg);
+			try {
+				user.getPlayer(plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
+			} catch (PlayerQuitException e) {
+				//Player has left
+			}
 		}
+		game.setUsers(users);
 		plugin.gameScheduler.reCalculateQues();
 		return;
 	}
@@ -638,9 +636,9 @@ public class URaceListener implements Listener {
 			plugin.gameScheduler.reCalculateQues();
 			return;
 		}
-
 		for (User user : game.getUsersIn()) {
-			Player player = user.getPlayer();
+			String pname = user.getPlayerName();
+			Player player = plugin.getServer().getPlayer(pname);
 			if (player == null) {
 				game.leave(user, true);
 			} else {
@@ -712,15 +710,17 @@ public class URaceListener implements Listener {
 							game.finish(user);
 							if (won) {
 								for (User u : game.getUsers()) {
-									Player p = u.getPlayer();
+									Player p;
+									try {
+										p = u.getPlayer(plugin.getServer());
+										String msg = main.msgs.get("race.end.soon");
+										msg = msg.replaceAll("%name%", p.getName());
+										p.sendMessage(main.colors.getSuccess() + game.getWinner() + main.msgs.get("race.end.won"));
+										p.sendMessage(main.colors.getInfo() + msg);
+									} catch (PlayerQuitException e) {
+										//Player has left
+									}
 									
-									String msg = main.msgs.get("race.end.soon");
-									
-									msg = msg.replaceAll("%name%", user.getPlayer().getName());
-									
-									p.sendMessage(main.colors.getSuccess() + game.getWinner() + main.msgs.get("race.end.won"));
-									
-									p.sendMessage(main.colors.getInfo() + msg);
 								}
 							}
 						}
@@ -1077,7 +1077,6 @@ public class URaceListener implements Listener {
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		cart.setPassenger(player);
 		player.setMetadata("car.stayIn", new StatValue(null, plugin));
-		player.getInventory().setItem(7, main.marioKart.leave);
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
 		return;

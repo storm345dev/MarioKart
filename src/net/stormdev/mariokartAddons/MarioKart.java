@@ -47,7 +47,6 @@ public class MarioKart {
 	private HashMap<UUID, BukkitTask> tasks = new HashMap<UUID, BukkitTask>();
 	Boolean enabled = true;
 	public ItemStack respawn = null;
-	public ItemStack leave = null;
 
 	public MarioKart(main plugin) {
 		this.plugin = plugin;
@@ -56,14 +55,6 @@ public class MarioKart {
 		ItemMeta meta = this.respawn.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "Respawn");
 		this.respawn.setItemMeta(meta);
-		
-		leave = new ItemStack(Material.WOODEN_DOOR);
-		
-		meta = leave.getItemMeta();
-		
-		meta.setDisplayName(ChatColor.RED + "Leave");
-		
-		leave.setItemMeta(meta);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -209,13 +200,8 @@ public class MarioKart {
 				player.setHealth(0);
 				evt.setCancelled(true);
 				return;
-			} else if (inHand.equals(this.leave)){
-				player.chat("/race leave");
-				
-				evt.setCancelled(true);
-				
-				return;
-			}else if (ItemStackFromId.equals(
+			}
+			else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.random"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -292,12 +278,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				int ppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						ppos = i;
 					}
 				}
@@ -364,8 +350,8 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				final String targetName = (String) pls[0];
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -546,12 +532,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				int ppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						ppos = i;
 					}
 				}
@@ -590,12 +576,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
 				int pppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						pppos = i;
 					}
 				}
@@ -685,12 +671,12 @@ public class MarioKart {
 				if (race == null) {
 					return;
 				}
-				SortedMap<Player, Double> sorted = race.getRaceOrder();
-				Set<Player> keys = sorted.keySet();
+				SortedMap<String, Double> sorted = race.getRaceOrder();
+				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
 				int pppos = 0;
 				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player)) {
+					if (pls[i].equals(player.getName())) {
 						pppos = i;
 					}
 				}
@@ -700,7 +686,6 @@ public class MarioKart {
 							(String) pls[pos]);
 					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
 					pl.getInventory().clear();
-					player.getInventory().setItem(7, this.leave);
 					player.getInventory().setItem(8, this.respawn);
 					pl.getInventory().addItem(
 							PowerupMaker.getPowerup(Powerup.BOO, 1));
@@ -719,7 +704,6 @@ public class MarioKart {
 								public void run() {
 									pl.removeMetadata("kart.rolling", plugin);
 									pl.getInventory().clear();
-									player.getInventory().setItem(7, leave);
 									player.getInventory().setItem(8, respawn);
 									pl.updateInventory();
 								}
@@ -735,7 +719,6 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
-			player.getInventory().setItem(7, this.leave);
 			player.getInventory().setItem(8, this.respawn);
 			if (under.getType() == Material.COAL_BLOCK
 					|| under.getType() == Material.COAL_BLOCK
@@ -825,7 +808,6 @@ public class MarioKart {
 						 */
 						if (player.getInventory().getContents().length > 0) {
 							player.getInventory().clear();
-							player.getInventory().setItem(7, this.leave);
 							player.getInventory().setItem(8, this.respawn);
 						}
 						ItemStack give = null;
@@ -884,7 +866,6 @@ public class MarioKart {
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
 											ply.getInventory().clear();
-											player.getInventory().setItem(7, leave);
 											ply.getInventory().setItem(8,
 													respawn);
 											ply.getInventory().addItem(
@@ -903,7 +884,6 @@ public class MarioKart {
 											}
 										}
 										ply.getInventory().clear();
-										player.getInventory().setItem(7, leave);
 										ply.getInventory().setItem(8, respawn);
 										ply.getInventory().addItem(get);
 										ply.removeMetadata("kart.rolling",

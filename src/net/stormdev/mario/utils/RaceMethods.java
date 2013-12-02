@@ -25,11 +25,9 @@ public class RaceMethods {
 		Race mgame = null;
 		for (String key : keys) {
 			Race game = games.get(key);
-			
 			for (User user : game.getUsersIn()){
-				if (user.getPlayer().equals(player)){
+				if (user.getPlayerName().equals(player.getName())){
 					inAGame = true;
-					
 					mgame = game;
 				}
 			}

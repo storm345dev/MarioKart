@@ -13,7 +13,6 @@ public class RaceQue {
 	int playerLimit = 2;
 	RaceType type = RaceType.RACE;
 	List<Player> players = new ArrayList<Player>();
-
 	public RaceQue(RaceTrack track, RaceType type) {
 		this.track = track;
 		this.playerLimit = track.maxplayers;

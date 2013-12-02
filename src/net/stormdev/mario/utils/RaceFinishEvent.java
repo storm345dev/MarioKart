@@ -10,7 +10,6 @@ public class RaceFinishEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
 	private User user;
-
 	public RaceFinishEvent(Race race, User user) {
 		this.race = race;
 		this.user = user;

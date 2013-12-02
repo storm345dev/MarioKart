@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
 import net.stormdev.mario.utils.RaceStartEvent;
@@ -38,7 +39,7 @@ public class Race {
 	private String gameId = "";
 	private RaceTrack track = null;
 	private String trackName = "";
-	private User winner = null;
+	private String winner = null;
 	public String winning = "";
 	public Boolean running = false;
 	public long startTimeMS = 0;
@@ -86,106 +87,119 @@ public class Race {
 		return this.type;
 	}
 
-	public User getUser(Player player){
-		for (User user : users){
-			if (user.getPlayer().equals(player)){
+	public User getUser(Player player) throws PlayerQuitException{
+		List<User> u = new ArrayList<User>();
+		u.addAll(users); //Fix concurrentModificationErrors 
+		for (User user : u){
+			if (user.getPlayer(main.plugin.getServer()).equals(player)){
 				return user;
 			}
 		}
-
+		return null;
+	}
+	
+	public User getUser(String playerName){
+		List<User> u = new ArrayList<User>();
+		u.addAll(users); //Fix concurrentModificationErrors 
+		for (User user : u){
+			if (user.getPlayerName().equals(playerName)){
+				return user;
+			}
+		}
 		return null;
 	}
 
 	public List<User> getUsers(){
-		return users;
+		List<User> u = new ArrayList<User>();
+		u.addAll(users); //Fix concurrentModificationErrors 
+		return u;
 	}
-
+    public void setUsers(List<User> users){
+    	this.users = users;
+    	return;
+    }
 	public List<User> getUsersIn(){
 		List<User> inUsers = new ArrayList<User>();
-
-		for (User user : users){
+		List<User> u = new ArrayList<User>();
+		u.addAll(users); //Fix concurrentModificationErrors 
+		for (User user : u){
 			if (user.isInRace()){
 				inUsers.add(user);
 			}
 		}
-
 		return inUsers;
 	}
 	
 	public List<User> getUsersFinished(){
 		List<User> usersFinished = new ArrayList<User>();
-
-		for (User user : users){
+		List<User> u = new ArrayList<User>();
+		u.addAll(users); //Fix concurrentModificationErrors 
+		for (User user : u){
 			if (user.isFinished()){
 				usersFinished.add(user);
 			}
 		}
-
 		return usersFinished;
 	}
 
 	public void playerOut(User user) {
 		user.setInRace(false);
-
-		Player player = user.getPlayer();
-
+		Player player = null;;
+		try {
+			player = user.getPlayer(main.plugin.getServer());
+		} catch (PlayerQuitException e) {
+			return;
+		}
 		player.setLevel(user.getOldLevel());
-
 		player.setExp(user.getOldExp());
-
 		return;
 	}
 
 	public Boolean join(Player player) {
 		if (users.size() < this.track.getMaxPlayers()) {
-			User user = new User(player);
-
+			User user = new User(player.getName(), player.getLevel(), player.getExp());
 			users.add(user);
-
 			return true;
 		}
 		return false;
 	}
 
 	public void leave(User user, boolean quit) {
-		Player player = user.getPlayer();
-
-		player.setLevel(user.getOldLevel());
-
+		Player player = null;
+		try {
+			player = user.getPlayer(main.plugin.getServer());
+			player.setLevel(user.getOldLevel());
+		} catch (PlayerQuitException e1) {
+			//User quit
+		}
 		if (quit) {
 			users.remove(user);
-
 			if (users.size() < 2) {
+				
 				for (User u : getUsersIn()) {
 					String msg = main.msgs.get("race.end.soon");
-
-					u.getPlayer().sendMessage(main.colors.getInfo() + msg);
+					try {
+						u.getPlayer(main.plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
+					} catch (PlayerQuitException e) {
+						//Player is no longer in the game
+					}
 				}
 				startEndCount();
 			}
 		}
-
 		playerOut(user);
-
 		player.removeMetadata("car.stayIn", main.plugin);
-
 		if (quit) {
 			scoresBoard.getScore(player).setScore(0);
-
 			this.board.resetScores(player);
-
 			player.getInventory().clear();
-			
 			if (player.getVehicle() != null) {
 				Vehicle veh = (Vehicle) player.getVehicle();
 				veh.eject();
 				veh.remove();
 			}
-
 			player.removeMetadata("car.stayIn", main.plugin);
-			
 			player.getInventory().setContents(user.getOldInventory());
-			
 				player.setGameMode(GameMode.SURVIVAL);
 				try {
 					player.teleport(this.track.getExit(main.plugin.getServer()));
@@ -193,11 +207,16 @@ public class Race {
 					player.teleport(player.getWorld().getSpawnLocation());
 				}
 				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
-				
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-			for (User u : users) {
-					u.getPlayer().sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
-			}
+				List<User> u = new ArrayList<User>();
+				u.addAll(users); //Fix concurrentModificationErrors 
+				for (User us : u) {
+					try {
+						us.getPlayer(main.plugin.getServer()).sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
+					} catch (PlayerQuitException e) {
+						//Player has left the game
+					}
+			    }
 		}
 		try {
 			recalculateGame();
@@ -239,7 +258,7 @@ public class Race {
 	}
 
 	public void setWinner(User winner) {
-		this.winner = winner;
+		this.winner = winner.getPlayerName();
 	}
 
 	public void startEndCount() {
@@ -289,7 +308,7 @@ public class Race {
 		});
 	}
 
-	public User getWinner() {
+	public String getWinner() {
 		return this.winner;
 	}
 
@@ -301,7 +320,16 @@ public class Race {
 		this.running = true;
 		final Race game = this;
 		for (User user : getUsersIn()) {
-			user.getPlayer().setScoreboard(board);
+			try {
+				user.getPlayer(main.plugin.getServer()).setScoreboard(board);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (PlayerQuitException e) {
+				//User has left
+				this.leave(user, true);
+			}
 		}
 		this.task = main.plugin.getServer().getScheduler()
 				.runTaskTimer(main.plugin, new Runnable() {
@@ -318,18 +346,28 @@ public class Race {
 
 					public void run() {
 						if (!(type == RaceType.TIME_TRIAL)) {
-							SortedMap<Player, Double> sorted = game.getRaceOrder();
+							SortedMap<String, Double> sorted = game.getRaceOrder();
 							Object[] keys = sorted.keySet().toArray();
 							for (int i = 0; i < sorted.size(); i++) {
 								int pos = i + 1;
-								Player pl = ((User) keys[i]).getPlayer();
-								game.scores.getScore(pl).setScore(pos);
-								game.scoresBoard.getScore(pl).setScore(-pos);
+								try {
+									String pname = (String) keys[i];
+									User u = getUser(pname);
+									Player pl = u.getPlayer(main.plugin.getServer());
+									game.scores.getScore(pl).setScore(pos);
+									game.scoresBoard.getScore(pl).setScore(-pos);
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								} catch (IllegalArgumentException e) {
+									e.printStackTrace();
+								} catch (PlayerQuitException e) {
+									//Player has left
+								}
 							}
 						} else { // Time trial
 							try {
 								User user = game.getUsers().get(0);
-								Player pl = user.getPlayer();
+								Player pl = user.getPlayer(main.plugin.getServer());
 								long time = System.currentTimeMillis()
 										- startTimeMS;
 								time = time / 1000; // In s
@@ -337,7 +375,7 @@ public class Race {
 								game.scoresBoard.getScore(pl).setScore(
 										(int) time);
 							} catch (Exception e) {
-								// Game ended or something
+								// Game ended or user has left
 							}
 						}
 						return;
@@ -356,24 +394,27 @@ public class Race {
 		return;
 	}
 
-	public SortedMap<Player, Double> getRaceOrder() {
+	public SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
-		HashMap<Player, Double> checkpointDists = new HashMap<Player, Double>();
+		HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
 		List<User> users = game.getUsers();
 		for (User user : users) {
-			Player player = user.getPlayer();
-			if (player.hasMetadata("checkpoint.distance")) {
-				List<MetadataValue> metas = player
-						.getMetadata("checkpoint.distance");
-				checkpointDists.put(user.getPlayer(), (Double) ((StatValue) metas.get(0)).getValue());
+			try {
+				Player player = user.getPlayer(main.plugin.getServer());
+				if (player.hasMetadata("checkpoint.distance")) {
+					List<MetadataValue> metas = player
+							.getMetadata("checkpoint.distance");
+					checkpointDists.put(user.getPlayerName(), (Double) ((StatValue) metas.get(0)).getValue());
+				}
+			} catch (PlayerQuitException e) {
+				//Player is no longer in the race
 			}
 		}
-		Map<Player, Double> scores = new HashMap<Player, Double>();
-		
+		Map<String, Double> scores = new HashMap<String, Double>();
 		for (User user : users) {
 			int laps = game.totalLaps - user.getLapsLeft() + 1;
 			int checkpoints = user.getCheckpoint();
-			double distance = 1 / (checkpointDists.get(user));
+			double distance = 1 / (checkpointDists.get(user.getPlayerName()));
 
 			double score = (laps * game.getMaxCheckpoints()) + checkpoints
 					+ distance;
@@ -383,10 +424,10 @@ public class Race {
 				}
 			} catch (Exception e) {
 			}
-			scores.put(user.getPlayer(), score);
+			scores.put(user.getPlayerName(), score);
 		}
 		DoubleValueComparator com = new DoubleValueComparator(scores);
-		SortedMap<Player, Double> sorted = new TreeMap<Player, Double>(com);
+		SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
 		sorted.putAll(scores);
 		if (sorted.size() >= 1) {
 			this.winning = (String) sorted.keySet().toArray()[0];
@@ -431,14 +472,18 @@ public class Race {
 		
 		this.endTimeMS = System.currentTimeMillis();
 		for (User user : getUsersIn()) {
-			Player player = user.getPlayer();
-			
-			player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-			
-			player.setLevel(user.getOldLevel());
-			
-			player.setExp(user.getOldExp());
-			
+			Player player = null;
+			try {
+				player = user.getPlayer(main.plugin.getServer());
+				
+				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
+				
+				player.setLevel(user.getOldLevel());
+				
+				player.setExp(user.getOldExp());
+			} catch (PlayerQuitException e) {
+				//Player has left
+			}
 			main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
 		}
 		RaceEndEvent evt = new RaceEndEvent(this);
@@ -454,15 +499,14 @@ public class Race {
 			
 			startEndCount();
 		}
-		
 		user.setFinished(true);
-		
-		Player player = user.getPlayer();
-		
-		player.setLevel(user.getOldLevel());
-		
-		player.setExp(user.getOldExp());
-		
+		try {
+			Player player = user.getPlayer(main.plugin.getServer());
+			player.setLevel(user.getOldLevel());
+			player.setExp(user.getOldExp());
+		} catch (PlayerQuitException e) {
+			//Player has left
+		}
 		this.endTimeMS = System.currentTimeMillis();
 		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
 	}
