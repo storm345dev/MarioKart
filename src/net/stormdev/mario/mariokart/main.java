@@ -170,9 +170,6 @@ public class main extends JavaPlugin {
 				lang.set("race.que.other",
 						"Unavailable! Current queue race type: %type%");
 			}
-			if (!lang.contains("race.que.minPlayers")) {
-				lang.set("race.que.minPlayers", 2);
-			}
 			if (!lang.contains("race.que.full")) {
 				lang.set("race.que.full", "Race que full!");
 			}
@@ -242,6 +239,9 @@ public class main extends JavaPlugin {
 			}
 			if (!config.contains("general.logger.colour")) {
 				config.set("general.logger.colour", true);
+			}
+			if (!lang.contains("race.que.minPlayers")) {
+				lang.set("race.que.minPlayers", 2);
 			}
 			if (!config.contains("general.raceLimit")) {
 				config.set("general.raceLimit", 10);

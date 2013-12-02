@@ -61,7 +61,7 @@ public class RaceQue {
 
 	public void validatePlayers() {
 		for (Player player : this.players) {
-			if (player == null) {
+			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
 				
 				if (this.type == RaceType.TIME_TRIAL) {
