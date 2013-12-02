@@ -110,9 +110,7 @@ public class Race {
 	}
 
 	public List<User> getUsers(){
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		return u;
+		return new ArrayList<User>(users);
 	}
     public void setUsers(List<User> users){
     	this.users = users;
@@ -120,25 +118,25 @@ public class Race {
     }
 	public List<User> getUsersIn(){
 		List<User> inUsers = new ArrayList<User>();
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		
+		for (User user : getUsers()){
 			if (user.isInRace()){
 				inUsers.add(user);
 			}
 		}
+		
 		return inUsers;
 	}
 	
 	public List<User> getUsersFinished(){
 		List<User> usersFinished = new ArrayList<User>();
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		
+		for (User user : getUsers()){
 			if (user.isFinished()){
 				usersFinished.add(user);
 			}
 		}
+		
 		return usersFinished;
 	}
 
@@ -208,9 +206,7 @@ public class Race {
 				}
 				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-				List<User> u = new ArrayList<User>();
-				u.addAll(users); //Fix concurrentModificationErrors 
-				for (User us : u) {
+				for (User us : getUsers()) {
 					try {
 						us.getPlayer(main.plugin.getServer()).sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
 					} catch (PlayerQuitException e) {
