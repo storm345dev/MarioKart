@@ -200,9 +200,7 @@ public class Race {
 				}
 				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-				List<User> u = new ArrayList<User>();
-				u.addAll(users); //Fix concurrentModificationErrors 
-				for (User us : u) {
+				for (User us : getUsers()) {
 					try {
 						us.getPlayer(main.plugin.getServer()).sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
 					} catch (PlayerQuitException e) {
