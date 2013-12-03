@@ -52,7 +52,7 @@ public class RaceQue {
 	public void removePlayer(Player player) {
 		this.players.remove(player);
 		
-		if (this.type == RaceType.TIME_TRIAL) {
+		if (this.type == RaceType.TIME_TRIAL || this.getHowManyPlayers() < 1) {
 			main.plugin.raceQues.removeQue(this.track.getTrackName());
 		}
 		
@@ -64,7 +64,7 @@ public class RaceQue {
 			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
 				
-				if (this.type == RaceType.TIME_TRIAL) {
+				if (this.type == RaceType.TIME_TRIAL || this.getHowManyPlayers() < 1) {
 					main.plugin.raceQues.removeQue(this.track.getTrackName());
 				}
 			}
