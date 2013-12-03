@@ -364,13 +364,13 @@ public class URaceCommandExecutor implements CommandExecutor {
 				RaceQue other = null;
 				Boolean rec = order.get(name);
 				while ((arena.getHowManyPlayers() < 1
-						|| arena.getType() == RaceType.TIME_TRIAL
+						|| arena.getType() != type
 						|| !rec)
 						&& order.size()>0) {
 					main.logger.info("Not good arena: Rec:"+rec+" Type:  "+arena.getType()+" rem: "+order.size());
 					if(order != null 
 							&& !rec
-							&& arena.getType() != RaceType.TIME_TRIAL){
+							&& arena.getType() == type){
 						//Not reccommended (eg. lots of players) but still valid
 						other = arena;
 					}
