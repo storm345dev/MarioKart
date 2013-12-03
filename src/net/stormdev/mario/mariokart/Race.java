@@ -44,6 +44,7 @@ public class Race {
 	public Boolean running = false;
 	public long startTimeMS = 0;
 	public long endTimeMS = 0;
+	public long timeLimitS = 0;
 	public long tickrate = 6;
 	public long scorerate = 15;
 	private BukkitTask task = null;
@@ -80,6 +81,7 @@ public class Race {
 					+ "Race Time(s)", "dummy");
 		}
 		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
+		this.timeLimitS = main.config.getInt("general.race.maxTimePerCheckpoint") * track.getCheckpoints().size() + 60;
 		main.plugin.gameScheduler.runningGames++;
 	}
 
@@ -594,5 +596,22 @@ public class Race {
 		}
 
 		return false;
+	}
+
+	public void broadcast(String msg) {
+		for (User user : getUsersIn()) {
+			Player player = null;
+			try {
+				player = user.getPlayer(main.plugin.getServer());
+			} catch (PlayerQuitException e) {
+				leave(user, true);
+			}
+			if (player == null) {
+				leave(user, true);
+			} else {
+				player.sendMessage(main.colors.getInfo()+msg);
+			}
+		}
+		return;
 	}
 }

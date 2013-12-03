@@ -643,6 +643,11 @@ public class URaceListener implements Listener {
 			plugin.gameScheduler.reCalculateQues();
 			return;
 		}
+		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") && (game.startTimeMS*0.001)>game.timeLimitS){
+			//TODO Say it's ending
+			game.broadcast(main.msgs.get("race.end.timeLimit"));
+			game.startEndCount();
+		}
 		for (User user : game.getUsersIn()) {
 			String pname = user.getPlayerName();
 			Player player = plugin.getServer().getPlayer(pname);

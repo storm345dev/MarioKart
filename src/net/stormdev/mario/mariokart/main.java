@@ -207,6 +207,9 @@ public class main extends JavaPlugin {
 			if (!lang.contains("race.que.go")) {
 				lang.set("race.que.go", "Go!");
 			}
+			if (!lang.contains("race.end.timeLimit")) {
+				lang.set("race.end.timeLimit", "Time Limit exceeded!");
+			}
 			if (!lang.contains("race.end.won")) {
 				lang.set("race.end.won", " won the race!");
 			}
@@ -251,6 +254,12 @@ public class main extends JavaPlugin {
 			}
 			if (!config.contains("general.race.timed.log")) {
 				config.set("general.race.timed.log", true);
+			}
+			if (!config.contains("general.race.maxTimePerCheckpoint")) {
+				config.set("general.race.maxTimePerCheckpoint", 60);
+			}
+			if (!config.contains("general.race.enableTimeLimit")) {
+				config.set("general.race.enableTimeLimit", true);
 			}
 			if (!config.contains("general.race.targetPlayers")) {
 				config.set("general.race.targetPlayers", 5);
