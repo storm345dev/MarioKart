@@ -644,9 +644,11 @@ public class URaceListener implements Listener {
 			return;
 		}
 		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") 
-				&& (System.currentTimeMillis()-(game.startTimeMS*0.001))>game.timeLimitS){
+				&& ((System.currentTimeMillis()-game.startTimeMS)*0.001)>game.timeLimitS){
 			game.broadcast(main.msgs.get("race.end.timeLimit"));
-			game.startEndCount();
+			game.ending = true;
+			game.end();
+			return;
 		}
 		for (User user : game.getUsersIn()) {
 			String pname = user.getPlayerName();

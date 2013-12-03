@@ -375,9 +375,7 @@ public class Race {
 					}
 				}, this.scorerate, this.scorerate);
 		try {
-			if (type == RaceType.TIME_TRIAL) {
-				this.startTimeMS = System.currentTimeMillis();
-			}
+		    this.startTimeMS = System.currentTimeMillis();
 			main.plugin.getServer().getPluginManager()
 			.callEvent(new RaceStartEvent(this));
 		} catch (Exception e) {
