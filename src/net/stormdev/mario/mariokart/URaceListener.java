@@ -643,7 +643,8 @@ public class URaceListener implements Listener {
 			plugin.gameScheduler.reCalculateQues();
 			return;
 		}
-		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") && (game.startTimeMS*0.001)>game.timeLimitS){
+		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") 
+				&& (System.currentTimeMillis()-(game.startTimeMS*0.001))>game.timeLimitS){
 			game.broadcast(main.msgs.get("race.end.timeLimit"));
 			game.startEndCount();
 		}
