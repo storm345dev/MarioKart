@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.utils.ItemStackFromId;
+import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
@@ -65,6 +66,8 @@ public class MarioKart {
 		if (plugin.raceMethods.inAGame(player) == null) {
 			return;
 		}
+		Race game = plugin.raceMethods.inAGame(player);
+		Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 		// Start calculations
 		if (event instanceof PlayerInteractEvent) {
 			PlayerInteractEvent evt = (PlayerInteractEvent) event;
@@ -75,8 +78,8 @@ public class MarioKart {
 				return;
 			}
 			final Minecart car = (Minecart) evt.getPlayer().getVehicle();
-			if (evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_AIR
-					|| evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) {
+			if ((evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_AIR
+					|| evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) && !timed) {
 				ItemStack inHand = evt.getPlayer().getItemInHand();
 				// If green shell, throw forward
 				if (ItemStackFromId.equals(
@@ -203,7 +206,10 @@ public class MarioKart {
 				}
 				return;
 			}
-			else if (ItemStackFromId.equals(
+			if(timed){
+				return;
+			}
+			if (ItemStackFromId.equals(
 					main.config.getString("mariokart.random"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -718,6 +724,9 @@ public class MarioKart {
 			evt.getPlayer().updateInventory(); // Fix 1.6 bug with inventory not
 												// updating
 		} else if (event instanceof ucarUpdateEvent) {
+			if(timed){
+				return;
+			}
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
