@@ -715,7 +715,7 @@ public class URaceListener implements Listener {
 								game.setWinner(user);
 							}
 							game.finish(user);
-							if (won) {
+							if (won && game.getType() != RaceType.TIME_TRIAL) {
 								for (User u : game.getUsers()) {
 									Player p;
 									try {

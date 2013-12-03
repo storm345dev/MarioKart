@@ -166,17 +166,18 @@ public class Race {
 		}
 		if (quit) {
 			users.remove(user);
-			if (users.size() < 2) {
-				
-				for (User u : getUsersIn()) {
-					String msg = main.msgs.get("race.end.soon");
-					try {
-						u.getPlayer(main.plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
-					} catch (PlayerQuitException e) {
-						//Player is no longer in the game
+			if(type != RaceType.TIME_TRIAL){
+				if (users.size() < 2) {
+					for (User u : getUsersIn()) {
+						String msg = main.msgs.get("race.end.soon");
+						try {
+							u.getPlayer(main.plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
+						} catch (PlayerQuitException e) {
+							//Player is no longer in the game
+						}
 					}
+					startEndCount();
 				}
-				startEndCount();
 			}
 		}
 		playerOut(user);
