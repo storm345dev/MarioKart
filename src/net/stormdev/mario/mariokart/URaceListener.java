@@ -311,11 +311,11 @@ public class URaceListener implements Listener {
 		game.running = false;
 		try {
 			if (plugin.gameScheduler.trackInUse(game.getTrackName())) {
-				plugin.gameScheduler.removeRace(game.getTrackName());
+				plugin.gameScheduler.removeRace(game.getGameId());
 			}
 		} catch (Exception e1) {
 			try {
-				plugin.gameScheduler.removeRace(game.getTrackName());
+				plugin.gameScheduler.removeRace(game.getGameId());
 			} catch (Exception e) {
 				// Nothing
 			}

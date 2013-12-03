@@ -367,7 +367,6 @@ public class URaceCommandExecutor implements CommandExecutor {
 						|| arena.getType() != type
 						|| !rec)
 						&& order.size()>0) {
-					main.logger.info("Not good arena: Rec:"+rec+" Type:  "+arena.getType()+" rem: "+order.size());
 					if(order != null 
 							&& !rec
 							&& arena.getType() == type){
@@ -385,7 +384,6 @@ public class URaceCommandExecutor implements CommandExecutor {
 					arena = other;
 					name = other.getTrack().getTrackName();
 				}
-				main.logger.info("name: "+name);
 				RaceTrack track = plugin.trackManager.getRaceTrack(name);
 				if (track == null) {
 					sender.sendMessage(main.colors.getError()

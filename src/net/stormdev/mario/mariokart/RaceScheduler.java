@@ -133,7 +133,9 @@ public class RaceScheduler {
 					&& que.getHowManyPlayers() > 0) {
 				timed_valid = true;
 			}
-			if (!trackInUse(aname) && que.getHowManyPlayers() >= main.config.getInt("race.que.minPlayers")
+			if ((!trackInUse(aname) || que.getType() == RaceType.TIME_TRIAL)
+					&& (que.getHowManyPlayers() >= main.config.getInt("race.que.minPlayers")
+					|| que.getType() == RaceType.TIME_TRIAL)
 					&& !que.getTransitioning()
 					&& !(this.runningGames >= this.maxGames) || timed_valid
 					&& !trackInUse(aname) && !que.getTransitioning()
@@ -208,7 +210,6 @@ public class RaceScheduler {
 							
 							for (Player player : arena.getPlayers()) {
 								game.join(player);
-								
 								arena.removePlayer(player);
 							}
 							arena.setTransitioning(false);
@@ -381,7 +382,7 @@ public class RaceScheduler {
 		if (!trackInUse(track.getTrackName())) {
 			return;
 		}
-		removeRace(track.getTrackName());
+		removeRace(gameId);
 		reCalculateQues();
 		return;
 	}
@@ -412,7 +413,7 @@ public class RaceScheduler {
 			Race game = this.games.get(key);
 			if (game.getTrackName().equalsIgnoreCase(arenaName)) {
 				if (!game.running) {
-					removeRace(game.getTrackName());
+					removeRace(game.getGameId());
 					this.games.remove(key);
 				} else {
 					return true;
@@ -422,14 +423,14 @@ public class RaceScheduler {
 		return false;
 	}
 
-	public Boolean removeRace(String trackName) {
+	public Boolean removeRace(String gameId) {
 		Set<String> keys = this.games.keySet();
 		ArrayList<String> kz = new ArrayList<String>();
 		kz.addAll(keys);
 		for (String key : kz) {
 			Race game = this.games.get(key);
 			if (game != null) {
-				if (game.getTrackName().equalsIgnoreCase(trackName)) {
+				if (game.getGameId().equals(gameId)) {
 					for (User user : game.getUsers()) {
 						try {
 							Player pl = user.getPlayer(plugin.getServer());
