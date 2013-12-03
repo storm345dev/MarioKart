@@ -362,29 +362,30 @@ public class URaceCommandExecutor implements CommandExecutor {
 				String name = (String) order.keySet().toArray()[randomNumber];
 				RaceQue arena = plugin.raceQues.getQue(name);
 				RaceQue other = null;
-				while (arena.getHowManyPlayers() < 1
+				Boolean rec = order.get(name);
+				while ((arena.getHowManyPlayers() < 1
 						|| arena.getType() == RaceType.TIME_TRIAL
-						|| !order.get(name)) {
-					if(order.size()>1){
-						order.remove(name);
-						name = (String) order.keySet().toArray()[main.plugin.random.nextInt(order.size())];
-						arena = plugin.raceQues.getQue(name);
-						if(!order.get(name)){
-							other = arena;
-						}
+						|| !rec)
+						&& order.size()>0) {
+					main.logger.info("Not good arena: Rec:"+rec+" Type:  "+arena.getType()+" rem: "+order.size());
+					if(order != null 
+							&& !rec
+							&& arena.getType() != RaceType.TIME_TRIAL){
+						//Not reccommended (eg. lots of players) but still valid
+						other = arena;
 					}
-					else{
-						if(other == null){
-							sender.sendMessage(main.colors.getError()
-									+ main.msgs.get("general.cmd.delete.exists"));
-							return true;
-						}
+					order.remove(name);
+					if(order.size()>1){
+					name = (String) order.keySet().toArray()[main.plugin.random.nextInt(order.size())];
+					arena = plugin.raceQues.getQue(name);
+					rec = order.get(name);
 					}
 				}
-				if(!order.get(name)){
+				if(!rec && other != null){
 					arena = other;
 					name = other.getTrack().getTrackName();
 				}
+				main.logger.info("name: "+name);
 				RaceTrack track = plugin.trackManager.getRaceTrack(name);
 				if (track == null) {
 					sender.sendMessage(main.colors.getError()
