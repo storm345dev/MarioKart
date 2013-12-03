@@ -1,6 +1,7 @@
 package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -277,11 +278,13 @@ public class URaceCommandExecutor implements CommandExecutor {
 				} else if (t.equalsIgnoreCase("timed")
 						|| t.equalsIgnoreCase("time")
 						|| t.equalsIgnoreCase("time_trial")
+						|| t.equalsIgnoreCase("time trial")
 						|| t.equalsIgnoreCase("time-trial")) {
 					type = RaceType.TIME_TRIAL;
 				} else if (t.equalsIgnoreCase("cup")
 						|| t.equalsIgnoreCase("championship")
 						|| t.equalsIgnoreCase("grand")
+						|| t.equalsIgnoreCase("grand prix")
 						|| t.equalsIgnoreCase("grand-prix")
 						|| t.equalsIgnoreCase("grand_prix")) {
 					type = RaceType.GRAND_PRIX;
@@ -295,7 +298,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				List<String> gameArenas = new ArrayList<String>();
-				List<String> order = new ArrayList<String>();
+				Map<String, Boolean> order = new HashMap<String, Boolean>();
 				int waitingPlayers = 0;
 				for (String aname : plugin.raceQues.getQues()) {
 					RaceQue arena = plugin.raceQues.getQue(aname);
@@ -313,7 +316,11 @@ public class URaceCommandExecutor implements CommandExecutor {
 					for (String aname : gameArenas) {
 						RaceQue arena = plugin.raceQues.getQue(aname);
 						if (arena.getHowManyPlayers() == waitNo) {
-							order.add(aname);
+							Boolean reccommendedQueue = true;
+							if(arena.getHowManyPlayers() > main.config.getInt("general.race.targetPlayers")){
+								reccommendedQueue = false;
+							}
+							order.put(aname, reccommendedQueue);
 							if (remaining.contains(aname)) {
 								remaining.remove(aname);
 							}
@@ -321,7 +328,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					}
 				}
 				for (String aname : remaining) {
-					order.add(aname);
+					order.put(aname, true);
 				}
 				if (order.size() < 1) {
 					// Create a random raceQue
@@ -346,13 +353,37 @@ public class URaceCommandExecutor implements CommandExecutor {
 					plugin.gameScheduler.joinGame(player, track, que, track.getTrackName());
 					return true;
 				}
-				String name = order.get(0);
+				int randomNumber;
+				try {
+					randomNumber = main.plugin.random.nextInt(order.size());
+				} catch (Exception e) {
+					randomNumber = 0;
+				}
+				String name = (String) order.keySet().toArray()[randomNumber];
 				RaceQue arena = plugin.raceQues.getQue(name);
-				if (arena.getHowManyPlayers() < 1
-						|| arena.getType() == RaceType.TIME_TRIAL) {
-					int rand = 0 + (int) (Math.random() * ((order.size() - 0) + 0));
-					name = order.get(rand);
-					arena = plugin.raceQues.getQue(name);
+				RaceQue other = null;
+				while (arena.getHowManyPlayers() < 1
+						|| arena.getType() == RaceType.TIME_TRIAL
+						|| !order.get(name)) {
+					if(order.size()>0){
+						order.remove(name);
+						name = (String) order.keySet().toArray()[main.plugin.random.nextInt(order.size())];
+						arena = plugin.raceQues.getQue(name);
+						if(!order.get(name)){
+							other = arena;
+						}
+					}
+					else{
+						if(other == null){
+							sender.sendMessage(main.colors.getError()
+									+ main.msgs.get("general.cmd.delete.exists"));
+							return true;
+						}
+					}
+				}
+				if(!order.get(name)){
+					arena = other;
+					name = other.getTrack().getTrackName();
 				}
 				RaceTrack track = plugin.trackManager.getRaceTrack(name);
 				if (track == null) {

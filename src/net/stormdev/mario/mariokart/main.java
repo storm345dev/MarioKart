@@ -252,6 +252,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.race.timed.log")) {
 				config.set("general.race.timed.log", true);
 			}
+			if (!config.contains("general.race.targetPlayers")) {
+				config.set("general.race.targetPlayers", 5);
+			}
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);
 			}
