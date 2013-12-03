@@ -365,7 +365,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				while (arena.getHowManyPlayers() < 1
 						|| arena.getType() == RaceType.TIME_TRIAL
 						|| !order.get(name)) {
-					if(order.size()>0){
+					if(order.size()>1){
 						order.remove(name);
 						name = (String) order.keySet().toArray()[main.plugin.random.nextInt(order.size())];
 						arena = plugin.raceQues.getQue(name);
