@@ -644,7 +644,6 @@ public class URaceListener implements Listener {
 			return;
 		}
 		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") && (game.startTimeMS*0.001)>game.timeLimitS){
-			//TODO Say it's ending
 			game.broadcast(main.msgs.get("race.end.timeLimit"));
 			game.startEndCount();
 		}
