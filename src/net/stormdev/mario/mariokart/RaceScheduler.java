@@ -146,6 +146,7 @@ public class RaceScheduler {
 							if (arena.getHowManyPlayers() < main.config.getInt("race.que.minPlayers")) {
 								arena.setTransitioning(false);
 								plugin.raceQues.setQue(aname, arena);
+								reCalculateQues();
 								return;
 							}
 							Race game = new Race(arena.getTrack(),
@@ -165,7 +166,7 @@ public class RaceScheduler {
 							startGame(arena, aname, game);
 							return;
 						}
-					}, grace); // 10 seconds
+					}, grace); // X seconds
 				} else {
 					plugin.getServer().getScheduler()
 					.runTask(plugin, new Runnable() {
