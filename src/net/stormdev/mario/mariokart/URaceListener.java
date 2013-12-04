@@ -559,6 +559,9 @@ public class URaceListener implements Listener {
 			RaceQue arena = plugin.raceQues.getQue(arenaName);
 			arena.removePlayer(player);
 			plugin.raceQues.setQue(arenaName, arena);
+			if(arena.getHowManyPlayers() < 1){
+				plugin.raceQues.removeQue(arenaName);
+			}
 			return;
 		} else {
 			game.leave(game.getUser(player.getName()), true);
