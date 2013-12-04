@@ -224,7 +224,7 @@ public class main extends JavaPlugin {
 				lang.set("race.end.won", " won the race!");
 			}
 			if (!lang.contains("race.end.rewards")) {
-				lang.set("race.end.rewards", "+%amount% %currency% for %position%! You now have %balance% %currency%!");
+				lang.set("race.end.rewards", "&6+&a%amount%&6 %currency% for %position%! You now have %balance% %currency%!");
 			}
 			if (!lang.contains("race.end.time")) {
 				lang.set("race.end.time", "Your time was %time% seconds!");
