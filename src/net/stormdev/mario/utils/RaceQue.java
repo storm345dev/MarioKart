@@ -89,5 +89,11 @@ public class RaceQue {
 		}
 		return this.players.size();
 	}
+	
+	public void clear(){
+		this.players.clear();
+		this.track = null;
+		return;
+	}
 
 }
