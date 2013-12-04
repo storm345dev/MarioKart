@@ -903,30 +903,35 @@ public class MarioKart {
 										return;
 									}
 								});
-						List<Entity> ents = ply.getNearbyEntities(2, 3, 2);
+						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
+						r.reloadingItemBoxes.add(signLoc);
+						main.plugin.gameScheduler.updateGame(r);
+						Location eLoc = null;
 						for (Entity ent : ents) {
 							if (ent instanceof EnderCrystal) {
-								final Location loc = ent.getLocation();
-								r.reloadingItemBoxes.add(signLoc);
-								main.plugin.gameScheduler.updateGame(r);
-								// final Sign si = sign;
-								plugin.getServer().getScheduler()
-										.runTaskLater(plugin, new Runnable() {
-
-											public void run() {
-												r.reloadingItemBoxes
-														.remove(signLoc);
-												main.plugin.gameScheduler
-														.updateGame(r);
-												main.listener
-														.spawnItemPickupBox(loc);
-												return;
-											}
-										}, 200l);
+								eLoc = ent.getLocation();
 								ent.remove();
 							}
 						}
+						if(eLoc == null){
+							//Set crystal spawn loc from signLoc
+							main.logger.info("Approximating crystal location");
+							eLoc = signLoc.add(0, 1.4, 0);
+						}
+						final Location loc = eLoc;
+						plugin.getServer().getScheduler()
+						.runTaskLater(plugin, new Runnable() {
 
+							public void run() {
+								r.reloadingItemBoxes
+										.remove(signLoc);
+								main.listener
+								.spawnItemPickupBox(loc);
+								main.plugin.gameScheduler
+										.updateGame(r);
+								return;
+							}
+						}, 200l);
 					}
 				}
 			}
