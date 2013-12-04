@@ -126,11 +126,12 @@ public class URaceListener implements Listener {
 
 	@EventHandler
 	void playerDeath(PlayerDeathEvent event) {
-		if (plugin.raceMethods.inAGame(event.getEntity()) == null) {
+		Race r = plugin.raceMethods.inAGame(event.getEntity());
+		if (r == null) {
 			return;
 		}
-		event.setDeathMessage(ChatColor.GREEN + event.getEntity().getName()
-				+ " respawned");
+		//r.broadcast(ChatColor.GREEN + event.getEntity().getName() + " respawned");
+		event.setDeathMessage("");
 		event.getDrops().clear();
 		return;
 	}
