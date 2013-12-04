@@ -915,7 +915,6 @@ public class MarioKart {
 						}
 						if(eLoc == null){
 							//Set crystal spawn loc from signLoc
-							main.logger.info("Approximating crystal location");
 							eLoc = signLoc.add(0, 1.4, 0);
 						}
 						final Location loc = eLoc;
