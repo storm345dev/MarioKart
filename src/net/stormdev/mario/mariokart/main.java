@@ -218,6 +218,9 @@ public class main extends JavaPlugin {
 			if (!lang.contains("race.end.won")) {
 				lang.set("race.end.won", " won the race!");
 			}
+			if (!lang.contains("race.end.rewards")) {
+				lang.set("race.end.rewards", "+%amount% %currency% for %position%! You now have %balance% %currency%!");
+			}
 			if (!lang.contains("race.end.time")) {
 				lang.set("race.end.time", "Your time was %time% seconds!");
 			}
@@ -271,6 +274,18 @@ public class main extends JavaPlugin {
 			}
 			if (!config.contains("general.race.rewards.enable")) {
 				config.set("general.race.rewards.enable", true);
+			}
+			if (!config.contains("general.race.rewards.win")) {
+				config.set("general.race.rewards.win", 10.0);
+			}
+			if (!config.contains("general.race.rewards.second")) {
+				config.set("general.race.rewards.second", 5.0);
+			}
+			if (!config.contains("general.race.rewards.third")) {
+				config.set("general.race.rewards.third", 2.0);
+			}
+			if (!config.contains("general.race.rewards.currency")) {
+				config.set("general.race.rewards.currency", "Dollars");
 			}
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);

@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
@@ -447,6 +450,8 @@ public class URaceListener implements Listener {
 									pos = pos + "th";
 								}
 								msg = msg.replaceAll("%position%", "" + pos);
+								MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(player, (i + 1), pos);
+								plugin.getServer().getPluginManager().callEvent(evt);
 							} else {
 								double tim = (game.endTimeMS - game.startTimeMS) / 10;
 								double ti = (int) tim;
@@ -494,6 +499,8 @@ public class URaceListener implements Listener {
 							msg = msg.replaceAll("%position%", "" + pos);
 						} catch (Exception e) {
 						}
+						MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(player, position, pos);
+						plugin.getServer().getPluginManager().callEvent(evt);
 					} else {
 						// Time trial
 						double tim = (game.endTimeMS - game.startTimeMS) / 10;
@@ -1150,6 +1157,51 @@ public class URaceListener implements Listener {
 			xpBar = 0.999f;
 		}
 		player.setExp(xpBar);
+		return;
+	}
+	
+	@EventHandler
+	void raceFinish(MarioKartRaceFinishEvent event){
+		//TODO
+		if(!main.config.getBoolean("general.race.rewards.enable")){
+			return;
+		}
+		Player player = event.getPlayer();
+		int pos = event.getFinishPosition();
+		double reward = 0;
+		switch(pos){
+		case 1:{
+			reward = main.config.getDouble("general.race.rewards.win");
+			break;
+		}
+		case 2:{
+			reward = main.config.getDouble("general.race.rewards.second");
+			break;
+		}
+		case 3:{
+			reward = main.config.getDouble("general.race.rewards.third");
+			break;
+		}
+		default: return;
+		}
+		if(reward <= 0){
+			return;
+		}
+		if(!main.vault || main.economy == null){
+			plugin.setupEconomy(); //Economy plugin loaded after MarioKart
+			if(!main.vault || main.economy == null){ //No Economy plugin installed
+			return;
+			}
+		}
+		EconomyResponse r = main.economy.depositPlayer(player.getName(), reward);
+		double b = r.balance;
+		String currency = main.config.getString("general.race.rewards.currency");
+		String msg = main.msgs.get("race.end.rewards");
+		msg = msg.replaceAll(Pattern.quote("%amount%"), Matcher.quoteReplacement(""+reward));
+		msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(""+b));
+		msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(""+currency));
+		msg = msg.replaceAll(Pattern.quote("%position%"), Matcher.quoteReplacement(""+event.getPlayerFriendlyPosition()));
+		player.sendMessage(main.colors.getInfo()+msg);
 		return;
 	}
 }
