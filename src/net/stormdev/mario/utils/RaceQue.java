@@ -3,9 +3,9 @@ package net.stormdev.mario.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.entity.Player;
-
 import net.stormdev.mario.mariokart.main;
+
+import org.bukkit.entity.Player;
 
 public class RaceQue {
 	RaceTrack track = null;
@@ -60,7 +60,7 @@ public class RaceQue {
 	}
 
 	public void validatePlayers() {
-		for (Player player : this.players) {
+		for (Player player : new ArrayList<Player>(this.players)) {
 			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
 				
@@ -73,7 +73,7 @@ public class RaceQue {
 	}
 
 	public List<Player> getPlayers() {
-		for (Player player : this.players) {
+		for (Player player : new ArrayList<Player>(this.players)) {
 			if (player == null) {
 				this.players.remove(player);
 			}
@@ -82,7 +82,7 @@ public class RaceQue {
 	}
 
 	public int getHowManyPlayers() {
-		for (Player player : this.players) {
+		for (Player player : new ArrayList<Player>(this.players)) {
 			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
 			}
