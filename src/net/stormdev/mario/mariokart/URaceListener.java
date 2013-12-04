@@ -374,7 +374,7 @@ public class URaceListener implements Listener {
 					player.getInventory().setContents(user.getOldInventory());
 				}
 			}
-			if (user.isFinished()) {
+			if (game.finished.contains(user.getPlayerName())) {
 				finished = true;
 			} else {
 				HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
@@ -471,7 +471,7 @@ public class URaceListener implements Listener {
 					int position = 1;
 
 					for (int i = 0; i < game.getUsersFinished().size(); i++) {
-						if (game.getUsersFinished().get(i).equals(user)) {
+						if (game.getUsersFinished().get(i).equals(user.getPlayerName())) {
 							position = i + 1;
 						}
 					}

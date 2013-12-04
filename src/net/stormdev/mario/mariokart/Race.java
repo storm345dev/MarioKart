@@ -35,6 +35,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.useful.ucarsCommon.StatValue;
 
 public class Race {
+	public List<String> finished = new ArrayList<String>();
 	public List<User> users = new ArrayList<User>();
 	private String gameId = "";
 	private RaceTrack track = null;
@@ -126,14 +127,8 @@ public class Race {
 		return inUsers;
 	}
 	
-	public List<User> getUsersFinished(){
-		List<User> usersFinished = new ArrayList<User>();
-		for (User user : getUsers()){
-			if (user.isFinished()){
-				usersFinished.add(user);
-			}
-		}
-		return usersFinished;
+	public List<String> getUsersFinished(){
+		return finished;
 	}
 
 	public void playerOut(User user) {
@@ -487,9 +482,9 @@ public class Race {
 	public void finish(User user) {
 		if (!ending) {
 			ending = true;
-			
 			startEndCount();
 		}
+		finished.add(user.getPlayerName());
 		user.setFinished(true);
 		try {
 			Player player = user.getPlayer(main.plugin.getServer());
