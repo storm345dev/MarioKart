@@ -1,7 +1,5 @@
 package net.stormdev.mario.mariokart;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +21,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 
-import com.rosaloves.bitlyj.Bitly;
-import com.rosaloves.bitlyj.Url;
 import com.useful.ucarsCommon.StatValue;
 
 /*
@@ -200,6 +196,8 @@ public class RaceScheduler {
 						}
 					});
 				}
+				que.clear();
+				plugin.raceQues.setQue(aname, que); //Fix some of the memory leak
 			}
 		}
 		return;
