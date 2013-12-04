@@ -14,6 +14,7 @@ import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -202,7 +203,7 @@ public class RaceScheduler {
 		}
 		return;
 	}
-
+	
 	public void startGame(RaceQue que, String trackName, final Race race) {
 		this.games.put(race.getGameId(), race);
 		final List<User> users = race.getUsers();
@@ -253,6 +254,10 @@ public class RaceScheduler {
 				if(p!=null){
 				if (p.getVehicle() != null) {
 					p.getVehicle().eject();
+				}
+				Chunk c = loc.getChunk();
+				if(c.isLoaded()){
+					c.load(true);
 				}
 				p.teleport(loc.add(0, 2, 0));
 				Minecart car = (Minecart) loc.getWorld().spawnEntity(
