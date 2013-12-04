@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.milkbowl.vault.economy.Economy;
 import net.stormdev.mario.utils.Ques;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQue;
@@ -23,6 +24,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.useful.ucars.Colors;
@@ -47,6 +49,9 @@ public class main extends JavaPlugin {
 	public Random random = null;
 	public static MarioKart marioKart = null;
 	public RaceTimes raceTimes = null;
+	
+	public static Boolean vault = false;
+	public static Economy economy = null;
 
 	public void onEnable() {
 		random = new Random();
@@ -264,6 +269,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.race.targetPlayers")) {
 				config.set("general.race.targetPlayers", 5);
 			}
+			if (!config.contains("general.race.rewards.enable")) {
+				config.set("general.race.rewards.enable", true);
+			}
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);
 			}
@@ -388,6 +396,25 @@ public class main extends JavaPlugin {
 				+ File.separator + "Data" + File.separator
 				+ "raceTimes.uracetimes"),
 				config.getBoolean("general.race.timed.log"));
+		if (config.getBoolean("general.race.rewards.enable")) {
+			try {
+				if (!setupEconomy()) {
+					plugin.getLogger()
+							.warning(
+									"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
+					plugin.getLogger().warning("Disabling reward system...");
+					config.set("general.race.rewards.enable", false);
+				} else {
+					vault = true;
+				}
+			} catch (Exception e) {
+				plugin.getLogger()
+				.warning(
+						"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
+		        plugin.getLogger().warning("Disabling reward system...");
+		        config.set("general.race.rewards.enable", false);
+			}
+		}
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
 	}
@@ -428,5 +455,15 @@ public class main extends JavaPlugin {
 
 	public static String colorise(String prefix) {
 		return ChatColor.translateAlternateColorCodes('&', prefix);
+	}
+	
+	protected boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer()
+				.getServicesManager().getRegistration(
+						net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
+		return (economy != null);
 	}
 }
