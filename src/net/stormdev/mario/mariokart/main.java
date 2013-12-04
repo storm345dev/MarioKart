@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -27,6 +29,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.rosaloves.bitlyj.Bitly;
+import com.rosaloves.bitlyj.Url;
 import com.useful.ucars.Colors;
 import com.useful.ucars.ucars;
 
@@ -49,6 +53,7 @@ public class main extends JavaPlugin {
 	public Random random = null;
 	public static MarioKart marioKart = null;
 	public RaceTimes raceTimes = null;
+	public String packUrl = "";
 	
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -429,6 +434,23 @@ public class main extends JavaPlugin {
 		        plugin.getLogger().warning("Disabling reward system...");
 		        config.set("general.race.rewards.enable", false);
 			}
+		}
+		String rl = main.config.getString("mariokart.resourcePack");
+		
+		Boolean valid = true;
+		try {
+			new URL(rl);
+		} catch (MalformedURLException e2) {
+			valid = false;
+		}
+		if(valid && main.config.getBoolean("bitlyUrlShortner")){
+			//Shorten url
+				//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+				Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
+                this.packUrl = url.getShortUrl();
+		}
+		else{
+			this.packUrl = rl;
 		}
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");

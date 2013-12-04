@@ -82,29 +82,10 @@ public class RaceScheduler {
 
 				player.teleport(track.getLobby(plugin.getServer()));
 
-				String rl = main.config.getString("mariokart.resourcePack");
-				
-				Boolean valid = true;
-				try {
-					new URL(rl);
-				} catch (MalformedURLException e2) {
-					valid = false;
-				}
-				if(valid && main.config.getBoolean("bitlyUrlShortner")){
-					//Shorten url
-						player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
-						//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
-						Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
-						player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+url.getShortUrl());
-						player.setTexturePack(rl);
-				}
-				else{
-					//Dont shorten url
-						player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
-						player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
-						player.setTexturePack(rl);
-				}
-				
+				String rl = main.plugin.packUrl;
+				player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+				player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
+				player.setTexturePack(main.config.getString("mariokart.resourcePack"));
 				return true;
 			}
 		}

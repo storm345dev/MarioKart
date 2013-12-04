@@ -1162,7 +1162,6 @@ public class URaceListener implements Listener {
 	
 	@EventHandler
 	void raceFinish(MarioKartRaceFinishEvent event){
-		//TODO
 		if(!main.config.getBoolean("general.race.rewards.enable")){
 			return;
 		}
