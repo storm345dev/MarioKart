@@ -518,7 +518,14 @@ public class URaceCommandExecutor implements CommandExecutor {
 				race.leave(race.getUser(player.getName()), true);
 			} else {
 				RaceQue queue = plugin.raceQues.getQue(que);
-				plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
+				try {
+					plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
+				} catch (Exception e) {
+					//Player not in a queue
+					sender.sendMessage(main.colors.getError()
+							+ main.msgs.get("general.cmd.leave.fail"));
+					return true;
+				}
 				String msg = main.msgs.get("general.cmd.leave.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"), que);
 				sender.sendMessage(main.colors.getSuccess() + msg);
