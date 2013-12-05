@@ -14,6 +14,7 @@ import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -915,13 +916,17 @@ public class MarioKart {
 						}
 						if(eLoc == null){
 							//Set crystal spawn loc from signLoc
-							eLoc = signLoc.add(0, 1.4, 0);
+							eLoc = signLoc.add(0, 2.4, 0).clone();
 						}
 						final Location loc = eLoc;
 						plugin.getServer().getScheduler()
 						.runTaskLater(plugin, new Runnable() {
 
 							public void run() {
+								Chunk c = loc.getChunk();
+								if(c.isLoaded()){
+									c.load(true);
+								}
 								r.reloadingItemBoxes
 										.remove(signLoc);
 								main.listener
