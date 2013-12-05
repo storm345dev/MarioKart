@@ -530,7 +530,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				String msg = main.msgs.get("general.cmd.leave.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"), que);
 				sender.sendMessage(main.colors.getSuccess() + msg);
-				player.teleport(queue.getTrack().getExit(plugin.getServer()));
+				player.teleport(queue.getTrack().getExit(main.plugin.getServer()));
 			}
 			return true;
 		}
