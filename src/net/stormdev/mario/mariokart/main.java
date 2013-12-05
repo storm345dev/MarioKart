@@ -407,7 +407,7 @@ public class main extends JavaPlugin {
 		this.trackManager = new RaceTrackManager(this, new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "tracks.uracetracks"));
-		this.raceQues = new Ques(this);
+		this.raceQues = new Ques();
 		this.raceMethods = new RaceMethods();
 		this.gameScheduler = new RaceScheduler();
 		// Setup marioKart

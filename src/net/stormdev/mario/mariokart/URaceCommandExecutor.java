@@ -351,7 +351,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					RaceTrack track = main.plugin.trackManager.getRaceTracks()
 							.get(randomNumber);
 					RaceQue que = new RaceQue(track, type);
-					plugin.gameScheduler.joinGame(player, track, que, track.getTrackName());
+					main.plugin.gameScheduler.joinGame(player, track, que, track.getTrackName());
 					return true;
 				}
 				int randomNumber;
@@ -502,8 +502,8 @@ public class URaceCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			Boolean game = true;
-			Race race = plugin.raceMethods.inAGame(player);
-			String que = plugin.raceMethods.inGameQue(player);
+			Race race = main.plugin.raceMethods.inAGame(player);
+			String que = main.plugin.raceMethods.inGameQue(player);
 			if (race == null) {
 				game = false;
 			}
@@ -517,13 +517,14 @@ public class URaceCommandExecutor implements CommandExecutor {
 			if (game) {
 				race.leave(race.getUser(player.getName()), true);
 			} else {
-				RaceQue queue = plugin.raceQues.getQue(que);
+				RaceQue queue = main.plugin.raceQues.getQue(que);
 				try {
-					plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
+					main.plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
 				} catch (Exception e) {
+					e.printStackTrace();
 					//Player not in a queue
 					sender.sendMessage(main.colors.getError()
-							+ main.msgs.get("general.cmd.leave.fail"));
+							+ "ERROR occured. Please contact a member of staff.");
 					return true;
 				}
 				String msg = main.msgs.get("general.cmd.leave.success");

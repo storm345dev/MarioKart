@@ -5,14 +5,12 @@ import java.util.Set;
 import net.stormdev.mario.mariokart.main;
 
 public class Ques {
-	main plugin = null;
 
-	public Ques(main plugin) {
-		this.plugin = plugin;
+	public Ques() {
 	}
 
 	public void setQue(String name, RaceQue toAdd) {
-		plugin.ques.put(name, toAdd);
+		main.plugin.ques.put(name, toAdd);
 		return;
 	}
 
@@ -23,12 +21,16 @@ public class Ques {
 				name = key;
 			}
 		}
-		plugin.ques.remove(name);
+		RaceQue q = main.plugin.ques.get(name);
+		if(q != null){
+			q.clear();
+		}
+		main.plugin.ques.remove(name);
 		return;
 	}
 
 	public RaceQue getQue(String name) {
-		return plugin.ques.get(name);
+		return main.plugin.ques.get(name);
 	}
 
 	public Boolean queExists(String name) {
@@ -42,6 +44,6 @@ public class Ques {
 	}
 
 	public Set<String> getQues() {
-		return plugin.ques.keySet();
+		return main.plugin.ques.keySet();
 	}
 }

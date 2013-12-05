@@ -93,13 +93,14 @@ public class RaceScheduler {
 	}
 
 	public void reCalculateQues() {
-		Set<String> queNames = plugin.raceQues.getQues();
+		Set<String> queNames = main.plugin.raceQues.getQues();
 		for (String aname : queNames) {
-			RaceQue que = plugin.raceQues.getQue(aname);
+			RaceQue que = main.plugin.raceQues.getQue(aname);
 			List<Player> arenaque = que.getPlayers();
 			
 			for (Player player : arenaque) {
 				if (!(player != null && player.isOnline())) {
+					que.removePlayer(player);
 					arenaque.remove(player);
 				}
 			}
@@ -120,7 +121,6 @@ public class RaceScheduler {
 					&& !(this.runningGames >= this.maxGames)) {
 				Boolean timed = que.getType() == RaceType.TIME_TRIAL;
 				que.setTransitioning(true);
-				plugin.raceQues.setQue(aname, que);
 				final String queName = aname;
 				double seconds = main.config
 						.getDouble("general.raceGracePeriod");
@@ -135,9 +135,10 @@ public class RaceScheduler {
 						player.sendMessage(main.colors.getInfo() + msg);
 					}
 				}
+				main.plugin.raceQues.setQue(queName, que);
 				if (!timed) {
-					plugin.getServer().getScheduler()
-					.runTaskLater(plugin, new Runnable() {
+					main.plugin.getServer().getScheduler()
+					.runTaskLater(main.plugin, new Runnable() {
 
 						public void run() {
 							String aname = queName;
@@ -145,8 +146,7 @@ public class RaceScheduler {
 									.getQue(aname);
 							if (arena.getHowManyPlayers() < main.config.getInt("race.que.minPlayers")) {
 								arena.setTransitioning(false);
-								plugin.raceQues.setQue(aname, arena);
-								reCalculateQues();
+								main.plugin.raceQues.setQue(aname, arena);
 								return;
 							}
 							Race game = new Race(arena.getTrack(),
@@ -198,8 +198,6 @@ public class RaceScheduler {
 						}
 					});
 				}
-				que.clear();
-				plugin.raceQues.setQue(aname, que); //Fix some of the memory leak
 			}
 		}
 		return;
