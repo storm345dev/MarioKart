@@ -47,7 +47,7 @@ public class RaceScheduler {
 	public Boolean joinGame(Player player, RaceTrack track, RaceQue que,
 			String trackName) {
 		RaceQue r = plugin.raceQues.getQue(que.getTrack().getTrackName());
-		if(r.getType() != que.getType()){
+		if(r != null && r.getType() != que.getType()){
 			player.teleport(track.getExit(Bukkit.getServer()));
 			player.sendMessage(main.colors.getError()+"RaceMode currently unavailable for that track");
 			return false;
