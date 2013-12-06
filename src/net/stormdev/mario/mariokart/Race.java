@@ -52,7 +52,7 @@ public class Race {
 	private BukkitTask scoreCalcs = null;
 	public int maxCheckpoints = 3;
 	public int totalLaps = 3;
-	//public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
+	public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
 	public int finishCountdown = 60;
 	Boolean ending = false;
 	Boolean ended = false;
@@ -421,8 +421,13 @@ public class Race {
 		return sorted;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void end() {
 		this.running = false;
+		for(Location l:((List<Location>)this.reloadingItemBoxes.clone())){
+			main.listener.spawnItemPickupBox(l, true);
+			this.reloadingItemBoxes.remove(l);
+		}
 		if (task != null) {
 			task.cancel();
 		}

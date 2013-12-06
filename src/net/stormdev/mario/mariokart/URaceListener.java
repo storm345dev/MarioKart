@@ -959,12 +959,14 @@ public class URaceListener implements Listener {
 		return;
 	}
 
-	public void spawnItemPickupBox(Location previous) {
+	public void spawnItemPickupBox(Location previous, Boolean force) {
 		Location newL = previous;
+		newL.getChunk(); //Load chunk
 		Location signLoc = null;
-		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign)) {
+		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign) || force) {
 			signLoc = newL.add(0, -2.4, 0);
 		} else {
+			main.logger.info("No sign below");
 			return; // Let them destroy it
 		}
 		Location above = signLoc.add(0, 3.8, 0);

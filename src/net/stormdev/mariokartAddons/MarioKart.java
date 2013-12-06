@@ -811,7 +811,7 @@ public class MarioKart {
 							return;
 						}
 						final Location signLoc = sign.getLocation();
-						if (main.plugin.reloadingItemBoxes.contains(signLoc)) {
+						if (r.reloadingItemBoxes.contains(signLoc)) {
 							return; // Box is reloading
 						}
 						/*
@@ -905,9 +905,7 @@ public class MarioKart {
 									}
 								});
 						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
-						if(!main.plugin.reloadingItemBoxes.contains(signLoc)){
-						main.plugin.reloadingItemBoxes.add(signLoc);
-						}
+						r.reloadingItemBoxes.add(signLoc);
 						main.plugin.gameScheduler.updateGame(r);
 						Location eLoc = null;
 						for (Entity ent : ents) {
@@ -918,23 +916,22 @@ public class MarioKart {
 						}
 						if(eLoc == null){
 							//Set crystal spawn loc from signLoc
-							eLoc = signLoc.add(0, 2.4, 0).clone();
+							eLoc = signLoc.clone().add(0, 2.4, 0);
 						}
 						final Location loc = eLoc;
 						plugin.getServer().getScheduler()
 						.runTaskLater(plugin, new Runnable() {
 
 							public void run() {
-								if(!main.plugin.reloadingItemBoxes.contains(signLoc)){
+								if(!r.reloadingItemBoxes.contains(signLoc)){
 									return; //ItemBox has been respawned
 								}
 								Chunk c = loc.getChunk();
 								if(c.isLoaded()){
 									c.load(true);
 								}
-								main.plugin.reloadingItemBoxes
-										.remove(signLoc);
-								main.listener.spawnItemPickupBox(loc);
+								r.reloadingItemBoxes.remove(signLoc);
+								main.listener.spawnItemPickupBox(loc, true);
 								main.plugin.gameScheduler.updateGame(r);
 								return;
 							}

@@ -58,8 +58,6 @@ public class main extends JavaPlugin {
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
 	
-	public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
-	
 	public static Boolean vault = false;
 	public static Economy economy = null;
 
@@ -472,11 +470,6 @@ public class main extends JavaPlugin {
 				this.gameScheduler.stopGame(r.getTrack(), r.getGameId());
 			} catch (Exception e) {
 			}
-		}
-		List<Location> boxLocs= new ArrayList<Location>(this.reloadingItemBoxes);
-		for(Location s:boxLocs){
-			listener.spawnItemPickupBox(s.add(0, 2.4, 0));
-			reloadingItemBoxes.remove(s);
 		}
 		getServer().getScheduler().cancelTasks(this);
 		logger.info("MarioKart has been disabled!");
