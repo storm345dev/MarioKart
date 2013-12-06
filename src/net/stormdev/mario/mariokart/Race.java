@@ -425,7 +425,7 @@ public class Race {
 	public void end() {
 		this.running = false;
 		for(Location l:((List<Location>)this.reloadingItemBoxes.clone())){
-			main.listener.spawnItemPickupBox(l, true);
+			main.listener.spawnItemPickupBox(l.add(0, 2.4, 0), false, l);
 			this.reloadingItemBoxes.remove(l);
 		}
 		if (task != null) {
