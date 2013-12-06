@@ -14,6 +14,7 @@ import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SerializableLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -45,6 +46,12 @@ public class RaceScheduler {
 
 	public Boolean joinGame(Player player, RaceTrack track, RaceQue que,
 			String trackName) {
+		RaceQue r = plugin.raceQues.getQue(que.getTrack().getTrackName());
+		if(r.getType() != que.getType()){
+			player.teleport(track.getExit(Bukkit.getServer()));
+			player.sendMessage(main.colors.getError()+"RaceMode currently unavailable for that track");
+			return false;
+		}
 		que.validatePlayers(true);
 		if (que.getHowManyPlayers() < que.getPlayerLimit() && player.isOnline()
 				&& !(que.getType() == RaceType.TIME_TRIAL && que
