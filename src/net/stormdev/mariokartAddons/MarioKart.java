@@ -905,7 +905,9 @@ public class MarioKart {
 									}
 								});
 						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
+						if(!main.plugin.reloadingItemBoxes.contains(signLoc)){
 						main.plugin.reloadingItemBoxes.add(signLoc);
+						}
 						main.plugin.gameScheduler.updateGame(r);
 						Location eLoc = null;
 						for (Entity ent : ents) {
@@ -932,10 +934,8 @@ public class MarioKart {
 								}
 								main.plugin.reloadingItemBoxes
 										.remove(signLoc);
-								main.listener
-								.spawnItemPickupBox(loc);
-								main.plugin.gameScheduler
-										.updateGame(r);
+								main.listener.spawnItemPickupBox(loc);
+								main.plugin.gameScheduler.updateGame(r);
 								return;
 							}
 						}, 200l);
