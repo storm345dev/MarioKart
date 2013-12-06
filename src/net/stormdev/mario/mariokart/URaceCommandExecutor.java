@@ -518,6 +518,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				race.leave(race.getUser(player.getName()), true);
 			} else {
 				RaceQue queue = main.plugin.raceQues.getQue(que);
+				RaceTrack track = queue.getTrack();
 				try {
 					main.plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
 				} catch (Exception e) {
@@ -530,7 +531,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				String msg = main.msgs.get("general.cmd.leave.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"), que);
 				sender.sendMessage(main.colors.getSuccess() + msg);
-				player.teleport(queue.getTrack().getExit(main.plugin.getServer()));
+				player.teleport(track.getExit(main.plugin.getServer()));
 			}
 			return true;
 		}

@@ -92,7 +92,6 @@ public class RaceQue {
 	
 	public void clear(){
 		this.players.clear();
-		this.track = null;
 		return;
 	}
 
