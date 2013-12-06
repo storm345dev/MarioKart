@@ -1114,13 +1114,7 @@ public class URaceListener implements Listener {
 		}
 		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).add(0, 2, 0);
-		plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
-
-			public void run() {
-				player.teleport(loc);
-				return;
-			}
-		});
+		event.setRespawnLocation(loc);
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
