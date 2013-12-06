@@ -59,7 +59,7 @@ public class RaceQue {
 		return;
 	}
 
-	public void validatePlayers() {
+	public void validatePlayers(Boolean checkPlayerCount) {
 		for (String p : new ArrayList<String>(this.players)) {
 			Player player = main.plugin.getServer().getPlayer(p);
 			if (player == null || !player.isOnline()) {
@@ -75,7 +75,7 @@ public class RaceQue {
 
 	public ArrayList<Player> getPlayers() {
 		ArrayList<Player> ps = new ArrayList<Player>();
-		validatePlayers();
+		validatePlayers(true);
 		List<String> pp = new ArrayList<String>(this.players);
 		for(String s:pp){
 			ps.add(main.plugin.getServer().getPlayer(s));
@@ -84,7 +84,7 @@ public class RaceQue {
 	}
 
 	public int getHowManyPlayers() {
-		validatePlayers();
+		validatePlayers(false);
 		return this.players.size();
 	}
 	
