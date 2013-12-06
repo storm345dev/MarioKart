@@ -86,6 +86,7 @@ public class RaceScheduler {
 				msg = msg.replaceAll(Pattern.quote("%url%"), Matcher.quoteReplacement(ChatColor.RESET+rl));
 				player.sendMessage(main.colors.getInfo()+msg);
 				player.setTexturePack(main.config.getString("mariokart.resourcePack"));
+				arenaque.clear();
 				return true;
 			}
 		}
@@ -200,6 +201,7 @@ public class RaceScheduler {
 							return;
 						}
 					});
+					arenaque.clear();
 				}
 			}
 		}

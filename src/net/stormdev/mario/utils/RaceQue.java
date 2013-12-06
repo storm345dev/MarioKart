@@ -12,7 +12,7 @@ public class RaceQue {
 	Boolean transitioning = false;
 	int playerLimit = 2;
 	RaceType type = RaceType.RACE;
-	List<Player> players = new ArrayList<Player>();
+	List<String> players = new ArrayList<String>();
 	public RaceQue(RaceTrack track, RaceType type) {
 		this.track = track;
 		this.playerLimit = track.maxplayers;
@@ -38,7 +38,7 @@ public class RaceQue {
 
 	public Boolean addPlayer(Player player) {
 		if ((this.players.size() + 1) <= this.playerLimit) {
-			this.players.add(player);
+			this.players.add(player.getName());
 			return true;
 		} else {
 			return false;
@@ -60,7 +60,8 @@ public class RaceQue {
 	}
 
 	public void validatePlayers() {
-		for (Player player : new ArrayList<Player>(this.players)) {
+		for (String p : new ArrayList<String>(this.players)) {
+			Player player = main.plugin.getServer().getPlayer(p);
 			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
 				
@@ -72,21 +73,18 @@ public class RaceQue {
 		return;
 	}
 
-	public List<Player> getPlayers() {
-		for (Player player : new ArrayList<Player>(this.players)) {
-			if (player == null) {
-				this.players.remove(player);
-			}
+	public ArrayList<Player> getPlayers() {
+		ArrayList<Player> ps = new ArrayList<Player>();
+		validatePlayers();
+		List<String> pp = new ArrayList<String>(this.players);
+		for(String s:pp){
+			ps.add(main.plugin.getServer().getPlayer(s));
 		}
-		return new ArrayList<Player>(this.players);
+		return ps;
 	}
 
 	public int getHowManyPlayers() {
-		for (Player player : new ArrayList<Player>(this.players)) {
-			if (player == null || !player.isOnline()) {
-				this.players.remove(player);
-			}
-		}
+		validatePlayers();
 		return this.players.size();
 	}
 	
