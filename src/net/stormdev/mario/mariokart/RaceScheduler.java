@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.PlayerQuitException;
@@ -81,7 +82,9 @@ public class RaceScheduler {
 
 				String rl = main.plugin.packUrl;
 				player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
-				player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.downloadHelp")+ChatColor.RESET+" "+rl);
+				String msg = main.msgs.get("resource.downloadHelp");
+				msg = msg.replaceAll(Pattern.quote("%url%"), Matcher.quoteReplacement(ChatColor.RESET+rl));
+				player.sendMessage(main.colors.getInfo()+msg);
 				player.setTexturePack(main.config.getString("mariokart.resourcePack"));
 				return true;
 			}

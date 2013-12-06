@@ -213,7 +213,7 @@ public class main extends JavaPlugin {
 			}
 			if (!lang.contains("resource.downloadHelp")) {
 				lang.set("resource.downloadHelp",
-						"If the resources aren't downloaded automatically. Download it at: ");
+						"If the resources aren't downloaded automatically. Download it at: %url%");
 			}
 			if (!lang.contains("resource.clear")) {
 				lang.set("resource.clear",
@@ -479,7 +479,6 @@ public class main extends JavaPlugin {
 			reloadingItemBoxes.remove(s);
 		}
 		getServer().getScheduler().cancelTasks(this);
-		
 		logger.info("MarioKart has been disabled!");
 	}
 
