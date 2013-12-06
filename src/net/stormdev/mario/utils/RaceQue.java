@@ -64,9 +64,10 @@ public class RaceQue {
 			Player player = main.plugin.getServer().getPlayer(p);
 			if (player == null || !player.isOnline()) {
 				this.players.remove(player);
-				
+				if(checkPlayerCount){
 				if (this.type == RaceType.TIME_TRIAL || this.getHowManyPlayers() < 1) {
 					main.plugin.raceQues.removeQue(this.track.getTrackName());
+				}
 				}
 			}
 		}

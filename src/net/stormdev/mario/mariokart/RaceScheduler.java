@@ -45,7 +45,7 @@ public class RaceScheduler {
 
 	public Boolean joinGame(Player player, RaceTrack track, RaceQue que,
 			String trackName) {
-		que.validatePlayers();
+		que.validatePlayers(true);
 		if (que.getHowManyPlayers() < que.getPlayerLimit() && player.isOnline()
 				&& !(que.getType() == RaceType.TIME_TRIAL && que
 				.getHowManyPlayers() > 0)) {
