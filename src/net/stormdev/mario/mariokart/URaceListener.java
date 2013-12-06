@@ -25,6 +25,7 @@ import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -1077,7 +1078,8 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void playerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		if (plugin.raceMethods.inAGame(player) == null) {
+		Race r = plugin.raceMethods.inAGame(player);
+		if (r == null) {
 			return;
 		}
 		if (!(player.getVehicle() == null)) {
@@ -1091,11 +1093,12 @@ public class URaceListener implements Listener {
 				player.removeMetadata("car.stayIn", val.getOwningPlugin());
 			}
 		}
+		player.setBedSpawnLocation(r.getTrack().getLobby(Bukkit.getServer()), true);
 		return;
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	void playerRespawnEvent(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player) == null) {
