@@ -86,7 +86,7 @@ public class RaceScheduler {
 				player.sendMessage(main.colors.getSuccess() + main.msgs.get("race.que.success"));
 
 				player.teleport(track.getLobby(plugin.getServer()));
-
+                player.setBedSpawnLocation(track.getLobby(plugin.getServer()), true);
 				String rl = main.plugin.packUrl;
 				player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
 				String msg = main.msgs.get("resource.downloadHelp");
