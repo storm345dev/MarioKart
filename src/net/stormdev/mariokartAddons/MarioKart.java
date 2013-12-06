@@ -931,7 +931,7 @@ public class MarioKart {
 									c.load(true);
 								}
 								r.reloadingItemBoxes.remove(signLoc);
-								main.listener.spawnItemPickupBox(loc, true, signLoc);
+								main.listener.spawnItemPickupBox(loc, true);
 								main.plugin.gameScheduler.updateGame(r);
 								return;
 							}

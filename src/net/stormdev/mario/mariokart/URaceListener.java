@@ -959,16 +959,34 @@ public class URaceListener implements Listener {
 		return;
 	}
 
-	public void spawnItemPickupBox(Location previous, Boolean force, Location signLocation) {
+	public void spawnItemPickupBox(Location previous, Boolean force) {
 		Location newL = previous;
 		newL.getChunk(); //Load chunk
-		Location signLoc = signLocation;
-		if(!force){
+		Location signLoc = null;
 		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign) || force) {
 			signLoc = newL.add(0, -2.4, 0);
 		} else {
+			if(force){
+				double ll = newL.getY();
+				Boolean foundSign = false;
+				Boolean cancel = false;
+				while(!foundSign && !cancel){
+					if(ll < newL.getY() - 4){
+						cancel = true;
+					}
+					Location i = new Location(newL.getWorld(), newL.getX(), ll, newL.getZ());
+					if(i.getBlock().getState() instanceof Sign){
+						foundSign = true;
+						signLoc = i;
+					}
+				}
+				if(!foundSign){
+					return; // Let is be destroyed
+				}
+			}
+			else{
 			return; // Let them destroy it
-		}
+			}
 		}
 		Location above = signLoc.add(0, 3.8, 0);
 		EnderCrystal newC = (EnderCrystal) above.getWorld().spawnEntity(above,
