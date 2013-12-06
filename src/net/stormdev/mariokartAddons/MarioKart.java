@@ -811,7 +811,7 @@ public class MarioKart {
 							return;
 						}
 						final Location signLoc = sign.getLocation();
-						if (r.reloadingItemBoxes.contains(signLoc)) {
+						if (main.plugin.reloadingItemBoxes.contains(signLoc)) {
 							return; // Box is reloading
 						}
 						/*
@@ -905,7 +905,7 @@ public class MarioKart {
 									}
 								});
 						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
-						r.reloadingItemBoxes.add(signLoc);
+						main.plugin.reloadingItemBoxes.add(signLoc);
 						main.plugin.gameScheduler.updateGame(r);
 						Location eLoc = null;
 						for (Entity ent : ents) {
@@ -923,11 +923,14 @@ public class MarioKart {
 						.runTaskLater(plugin, new Runnable() {
 
 							public void run() {
+								if(!main.plugin.reloadingItemBoxes.contains(signLoc)){
+									return; //ItemBox has been respawned
+								}
 								Chunk c = loc.getChunk();
 								if(c.isLoaded()){
 									c.load(true);
 								}
-								r.reloadingItemBoxes
+								main.plugin.reloadingItemBoxes
 										.remove(signLoc);
 								main.listener
 								.spawnItemPickupBox(loc);

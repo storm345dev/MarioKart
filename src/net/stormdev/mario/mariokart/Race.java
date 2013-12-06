@@ -52,7 +52,7 @@ public class Race {
 	private BukkitTask scoreCalcs = null;
 	public int maxCheckpoints = 3;
 	public int totalLaps = 3;
-	public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
+	//public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
 	public int finishCountdown = 60;
 	Boolean ending = false;
 	Boolean ended = false;
@@ -506,18 +506,22 @@ public class Race {
 		Location pl = p.getLocation();
 		for (Integer key : checks) {
 			if (schecks.containsKey(key)) {
-				SerializableLocation sloc = schecks.get(key);
-				Location check = sloc.getLocation(server);
-				double dist = check.distanceSquared(pl); // Squared because of
-				// better
-				// performance
-				p.removeMetadata("checkpoint.distance", main.plugin);
-				p.setMetadata("checkpoint.distance", new StatValue(dist,
-						main.plugin));
-				if (dist < 100) {
-					at = true;
-					checkpoint = key;
-					return new CheckpointCheck(at, checkpoint);
+				try {
+					SerializableLocation sloc = schecks.get(key);
+					Location check = sloc.getLocation(server);
+					double dist = check.distanceSquared(pl); // Squared because of
+					// better
+					// performance
+					p.removeMetadata("checkpoint.distance", main.plugin);
+					p.setMetadata("checkpoint.distance", new StatValue(dist,
+							main.plugin));
+					if (dist < 100) {
+						at = true;
+						checkpoint = key;
+						return new CheckpointCheck(at, checkpoint);
+					}
+				} catch (Exception e) {
+					//Un-measureable distance (Diff. world or sommat)
 				}
 			}
 		}

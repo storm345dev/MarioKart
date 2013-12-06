@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -22,6 +24,7 @@ import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -54,6 +57,8 @@ public class main extends JavaPlugin {
 	public static MarioKart marioKart = null;
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
+	
+	public ArrayList<Location> reloadingItemBoxes = new ArrayList<Location>();
 	
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -468,7 +473,11 @@ public class main extends JavaPlugin {
 			} catch (Exception e) {
 			}
 		}
-		
+		List<Location> boxLocs= new ArrayList<Location>(this.reloadingItemBoxes);
+		for(Location s:boxLocs){
+			listener.spawnItemPickupBox(s.add(0, 2.4, 0));
+			reloadingItemBoxes.remove(s);
+		}
 		getServer().getScheduler().cancelTasks(this);
 		
 		logger.info("MarioKart has been disabled!");
