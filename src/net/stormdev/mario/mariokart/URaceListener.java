@@ -1094,7 +1094,6 @@ public class URaceListener implements Listener {
 				player.removeMetadata("car.stayIn", val.getOwningPlugin());
 			}
 		}
-		player.setBedSpawnLocation(r.getTrack().getLobby(Bukkit.getServer()), true);
 		return;
 	}
 

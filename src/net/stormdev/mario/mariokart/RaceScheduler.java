@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class RaceScheduler {
@@ -82,10 +85,21 @@ public class RaceScheduler {
 					}
 				}
 			}
+			if(track == null){
+			    player.sendMessage(main.colors.getError()
+						+ main.msgs.get("general.cmd.delete.exists"));
+				return;
+			}
 			toJoin = new RaceQueue(track, type);
 		}
 		//Join that queue
 		toJoin.addPlayer(player);
+		toJoin.broadcast(main.colors.getTitle() + "[MarioKart:] " + 
+		        main.colors.getInfo() + player.getName() + 
+				main.msgs .get("race.que.joined") + 
+				" ["+toJoin.playerCount()+"/"+toJoin.playerLimit()+"]");
+	    executeLobbyJoin(player, toJoin);
+	    return;
 	}
 	
 	public void joinQueue(Player player, RaceTrack track, RaceType type){
@@ -94,18 +108,35 @@ public class RaceScheduler {
 			queue = new RaceQueue(track, type);
 		}
 		queue.addPlayer(player);
-		//TODO
+		queue.broadcast(main.colors.getTitle() + "[MarioKart:] " + 
+		        main.colors.getInfo() + player.getName() + 
+				main.msgs .get("race.que.joined") + 
+				" ["+queue.playerCount()+"/"+queue.playerLimit()+"]");
+	    executeLobbyJoin(player, queue);
+	    return;
 	}
 	
-	public void leaveQueue(Player player){
-		//TODO
+	public void executeLobbyJoin(Player player, RaceQueue queue){
+		player.teleport(queue.getTrack().getLobby(main.plugin.getServer()));
+		String rl = main.plugin.packUrl;
+		player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
+		String msg = main.msgs.get("resource.downloadHelp");
+		msg = msg.replaceAll(Pattern.quote("%url%"), Matcher.quoteReplacement(ChatColor.RESET+rl));
+		player.sendMessage(main.colors.getInfo()+msg);
+		player.setTexturePack(main.config.getString("mariokart.resourcePack"));
+		return;
+	}
+	
+	public void leaveQueue(Player player, RaceQueue queue){
+		queue.removePlayer(player);
+		return;
 	}
 	
 	public void recalculateQueues(){
 		//TODO
 	}
 	
-	public void startRace(){
+	public void startRace(Race race){
 		//TODO
 	}
 	
@@ -124,12 +155,10 @@ public class RaceScheduler {
 	}
 	
 	public HashMap<UUID, Race> getRaces(){
-		//TODO
 		return new HashMap<UUID, Race>(races);
 	}
 	
 	public int getRacesRunning(){
-		//TODO
 		return races.size();
 	}
 	

@@ -71,9 +71,11 @@ public class RaceQueue {
 	
 	public Boolean validatePlayers(){	
 		Boolean valid = true;
+		ArrayList<String> leftPlayers = new ArrayList<String>();
 		for(Player p:getPlayers()){
 			if(p==null||!p.isOnline()){
 				players.remove(p);
+				leftPlayers.add(p.getName());
 			}
 		}
 		if(type == RaceType.TIME_TRIAL && players.size() < 1){
@@ -91,6 +93,9 @@ public class RaceQueue {
 			trackQueues.remove(queueId);
 			main.plugin.queues.put(getTrackName(), trackQueues); //Queue is now un-registered with the system
 			return false;
+		}
+		for(String s:leftPlayers){
+			broadcast(main.colors.getTitle() + "[MarioKart:] " + main.colors.getInfo() + s + main.msgs.get("race.que.left"));
 		}
 		return true;
 	}
@@ -121,6 +126,7 @@ public class RaceQueue {
 	public void removePlayer(Player player){
 		players.remove(player);
 		validatePlayers();
+		broadcast(main.colors.getTitle() + "[MarioKart:] " + main.colors.getInfo() + player.getName() + main.msgs.get("race.que.left"));
 		main.plugin.raceQueues.updateQueue(this);
 		main.plugin.raceScheduler.recalculateQueues();
 	}
@@ -143,6 +149,14 @@ public class RaceQueue {
 	
 	public Boolean containsPlayer(Player player){
 		return players.contains(player);
+	}
+	
+	public void broadcast(String message){
+		validatePlayers();
+		for(Player p:getPlayers()){
+			p.sendMessage(main.colors.getInfo()+message);
+		}
+		return;
 	}
 
 }
