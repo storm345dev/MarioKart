@@ -34,6 +34,7 @@ public class RaceScheduler {
 	public void joinAutoQueue(Player player, RaceType type){
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getOpenQueues(type); //Joinable queues for that racemode
 		RaceQueue toJoin = null;
+		Boolean added = false;
 		if(queues.size() > 0){
 		int targetPlayers = main.config.getInt("general.race.targetPlayers");
 		Map<UUID, RaceQueue> recommendedQueues = new HashMap<UUID, RaceQueue>();
@@ -100,10 +101,13 @@ public class RaceScheduler {
 						+ main.msgs.get("general.cmd.delete.exists"));
 				return;
 			}
-			toJoin = new RaceQueue(track, type);
+			toJoin = new RaceQueue(track, type, player);
+			added = true;
 		}
 		//Join that queue
+		if(!added){
 		toJoin.addPlayer(player);
+		}
 		toJoin.broadcast(main.colors.getTitle() + "[MarioKart:] " + 
 		        main.colors.getInfo() + player.getName() + 
 				main.msgs .get("race.que.joined") + 
@@ -115,9 +119,11 @@ public class RaceScheduler {
 	public void joinQueue(Player player, RaceTrack track, RaceType type){
 		RaceQueue queue = main.plugin.raceQueues.getQueue(track.getTrackName(), type); //Get the oldest queue of that type for that track
 		if(queue == null){
-			queue = new RaceQueue(track, type);
+			queue = new RaceQueue(track, type, player);
 		}
+		else{
 		queue.addPlayer(player);
+		}
 		queue.broadcast(main.colors.getTitle() + "[MarioKart:] " + 
 		        main.colors.getInfo() + player.getName() + 
 				main.msgs .get("race.que.joined") + 

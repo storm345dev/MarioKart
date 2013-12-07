@@ -17,11 +17,12 @@ public class RaceQueue {
     private RaceType type = RaceType.RACE;
     private List<Player> players = new ArrayList<Player>();
     private UUID queueId = null;
-	public RaceQueue(RaceTrack track, RaceType type){
+	public RaceQueue(RaceTrack track, RaceType type, Player creator){
 		this.track = track;
 		this.type = type;
 		this.queueId = UUID.randomUUID();
 		this.playerLimit = track.getMaxPlayers();
+		this.players.add(creator);
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
 		if(main.plugin.queues.containsKey(getTrackName())){
 			trackQueues = main.plugin.queues.get(getTrackName());
