@@ -8,12 +8,22 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
+import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+
+import com.useful.ucarsCommon.StatValue;
 
 public class RaceScheduler {
 	private HashMap<UUID, Race> races = new HashMap<UUID, Race>();
@@ -136,12 +146,163 @@ public class RaceScheduler {
 		//TODO
 	}
 	
-	public void startRace(Race race){
-		//TODO
+	public void startRace(RaceQueue que, String trackName, final Race race) {
+		this.races.put(race.getGameId(), race);
+		final List<User> users = race.getUsers();
+		for (User user : users) {
+			Player player = null;
+			try {
+				player = user.getPlayer();
+			} catch (PlayerQuitException e) {
+				race.leave(user, true);
+				//User has left
+			}
+			user.setOldInventory(player.getInventory().getContents().clone());
+			if(player != null){
+			player.getInventory().clear();
+			player.setGameMode(GameMode.SURVIVAL);
+			}
+		}
+		final ArrayList<Minecart> cars = new ArrayList<Minecart>();
+		RaceTrack track = race.getTrack();
+		ArrayList<SerializableLocation> sgrid = track.getStartGrid();
+		HashMap<Integer, Location> grid = new HashMap<Integer, Location>();
+		for (int i = 0; i < sgrid.size(); i++) {
+			SerializableLocation s = sgrid.get(i);
+			grid.put(i, s.getLocation(main.plugin.getServer()));
+		}
+		int count = grid.size();
+		if (count > users.size()) { // If more grid slots than players, only
+			// use the right number of grid slots
+			count = users.size();
+		}
+		if (users.size() > count) {
+			count = users.size(); // Should theoretically never happen but
+			// sometimes does?
+		}
+		for (int i = 0; i < count; i++) {
+			int max = users.size();
+			if (!(max < 1)) {
+				Player p = null;
+				int randomNumber = main.plugin.random.nextInt(max);
+				User user = users.get(randomNumber);
+				try {
+					p = users.get(randomNumber).getPlayer();
+				} catch (PlayerQuitException e) {
+					//Player has left
+				}
+				users.remove(user);
+				Location loc = grid.get(i);
+				if(p!=null){
+				if (p.getVehicle() != null) {
+					p.getVehicle().eject();
+				}
+				Chunk c = loc.getChunk();
+				if(c.isLoaded()){
+					c.load(true);
+				}
+				p.teleport(loc.add(0, 2, 0));
+				Minecart car = (Minecart) loc.getWorld().spawnEntity(
+						loc.add(0, 0.2, 0), EntityType.MINECART);
+				car.setMetadata("car.frozen", new StatValue(null, main.plugin));
+				car.setMetadata("kart.racing", new StatValue(null, main.plugin));
+				car.setPassenger(p);
+				p.setMetadata("car.stayIn", new StatValue(null, main.plugin));
+				cars.add(car);
+				}
+			}
+		}
+		if (users.size() > 0) {
+			User user = users.get(0);
+			try {
+				Player p = user.getPlayer();
+				p.sendMessage(main.colors.getError() + main.msgs.get("race.que.full"));
+			} catch (PlayerQuitException e) {
+				//Player has left anyway
+			}
+			race.leave(user, true);
+		}
+
+		for (User user : users) {
+			Player player;
+			try {
+				player = user.getPlayer();
+				user.setLocation(player.getLocation().clone());
+				player.sendMessage(main.colors.getInfo() + main.msgs.get("race.que.preparing"));
+			} catch (PlayerQuitException e) {
+				//Player has left
+			}
+		}
+		final List<User> users2 = race.getUsers();
+		for (User user2 : users2){
+			user2.setInRace(true);
+		}
+		main.plugin.getServer().getScheduler()
+		.runTaskAsynchronously(main.plugin, new Runnable() {
+			public void run() {
+				for (User user : users2) {
+					try {
+						user.getPlayer().sendMessage(main.colors.getInfo() + main.msgs.get("race.que.starting"));
+					} catch (PlayerQuitException e) {
+						//User has left
+					}
+				}
+				for (int i = 10; i > 0; i--) {
+					try {
+						if (i == 10) {
+							try {
+								Player player = users.get(0).getPlayer();
+								player.getWorld().playSound(player.getLocation(), Sound.BREATH, 8, 1);
+							} catch (Exception e) {
+								//Player has left
+							}
+						}
+						if (i == 3) {
+							try {
+								Player player = users.get(0).getPlayer();
+								player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_DRUM, 8, 1);
+							} catch (Exception e) {
+								//Player has left
+							}
+						}
+					} catch (Exception e) {
+						// Game ended
+					}
+					for (User user : users2) {
+						try {
+							Player p = user.getPlayer();
+							p.sendMessage(main.colors.getInfo() + "" + i);
+						} catch (PlayerQuitException e) {
+							//Player has left
+						}
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+				}
+				for (Minecart car : cars) {
+					car.removeMetadata("car.frozen", main.plugin);
+				}
+				for (User user : users2) {
+					try {
+						user.getPlayer().sendMessage(main.colors.getInfo() + main.msgs.get("race.que.go"));
+					} catch (PlayerQuitException e) {
+						//Player has left
+					}
+				}
+				race.start();
+				return;
+			}
+		});
+
+		return;
 	}
 	
 	public void stopRace(Race race){
-		//TODO
+		race.end();
+		removeRace(race);
+		recalculateQueues();
 	}
 	
 	public void removeRace(Race race){

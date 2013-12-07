@@ -315,6 +315,7 @@ public class URaceListener implements Listener {
 	void RaceEnd(RaceEndEvent event) {
 		Race game = event.getRace();
 		game.running = false;
+		game.users.clear();
 		try {
 			if (plugin.gameScheduler.trackInUse(game.getTrackName())) {
 				plugin.gameScheduler.removeRace(game.getGameId());

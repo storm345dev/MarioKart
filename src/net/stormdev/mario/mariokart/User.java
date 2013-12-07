@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class User {
-	private final String player;
+	private Player player;
+	
+	private String playerName = "";
 
 	private int checkpoint;
 
@@ -27,38 +29,32 @@ public class User {
 	
 	private Location location;
 
-	public User(String playerName, int oldLevel, float oldExp){
-		this.player = playerName;
-
+	public User(Player player, int oldLevel, float oldExp){
+		this.player = player;
+		this.playerName = player.getName();
 		this.checkpoint = 0;
-
 		this.lapsLeft = 3;
-
 		this.oldLevel = oldLevel;
-		
 		this.oldExp = oldExp;
-		
 		inRace = false;
-		
 		finished = false;
-		
 		location = null;
 	}
 
 	public String getPlayerName(){
+		return playerName;
+	}
+	
+	public Player getPlayer() throws PlayerQuitException{
+		if(player==null || !player.isOnline()){
+			player = null;
+			throw new PlayerQuitException(playerName);
+		}
 		return player;
 	}
 	
-	public Player getPlayer(Server server) throws PlayerQuitException{
-		Player p = server.getPlayer(player);
-		if(p==null || !p.isOnline()){
-			throw new PlayerQuitException(player);
-		}
-		return p;
-	}
-	
 	public OfflinePlayer getOfflinePlayer(Server server){
-		return server.getOfflinePlayer(player);
+		return server.getOfflinePlayer(playerName);
 	}
 
 	public void setCheckpoint(int checkpoint){
@@ -130,5 +126,9 @@ public class User {
 		}
 
 		return true;
+	}
+	
+	public void clear(){
+		this.player = null;
 	}
 }

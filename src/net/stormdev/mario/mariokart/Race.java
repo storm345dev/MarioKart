@@ -89,12 +89,17 @@ public class Race {
 		return this.type;
 	}
 
-	public User getUser(Player player) throws PlayerQuitException{
+	public User getUser(Player player){
 		List<User> u = new ArrayList<User>();
 		u.addAll(users); //Fix concurrentModificationErrors 
 		for (User user : u){
-			if (user.getPlayer(main.plugin.getServer()).equals(player)){
-				return user;
+			try {
+				Player pl = user.getPlayer();
+				if (pl.equals(player)){
+					return user;
+				}
+			} catch (Exception e) {
+				users.remove(user);
 			}
 		}
 		return null;
@@ -134,8 +139,9 @@ public class Race {
 		user.setInRace(false);
 		Player player = null;;
 		try {
-			player = user.getPlayer(main.plugin.getServer());
+			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
+			users.remove(user);
 			return;
 		}
 		player.setLevel(user.getOldLevel());
@@ -145,7 +151,7 @@ public class Race {
 
 	public Boolean join(Player player) {
 		if (users.size() < this.track.getMaxPlayers()) {
-			User user = new User(player.getName(), player.getLevel(), player.getExp());
+			User user = new User(player, player.getLevel(), player.getExp());
 			users.add(user);
 			return true;
 		}
@@ -155,7 +161,7 @@ public class Race {
 	public void leave(User user, boolean quit) {
 		Player player = null;
 		try {
-			player = user.getPlayer(main.plugin.getServer());
+			player = user.getPlayer();
 			player.setLevel(user.getOldLevel());
 		} catch (PlayerQuitException e1) {
 			//User quit
@@ -167,7 +173,7 @@ public class Race {
 					for (User u : getUsersIn()) {
 						String msg = main.msgs.get("race.end.soon");
 						try {
-							u.getPlayer(main.plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
+							u.getPlayer().sendMessage(main.colors.getInfo() + msg);
 						} catch (PlayerQuitException e) {
 							//Player is no longer in the game
 						}
@@ -199,9 +205,9 @@ public class Race {
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
 				for (User us : getUsers()) {
 					try {
-						us.getPlayer(main.plugin.getServer()).sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
+						us.getPlayer().sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
 					} catch (PlayerQuitException e) {
-						//Player has left the game
+						users.remove(us);
 					}
 			    }
 		}
@@ -308,7 +314,7 @@ public class Race {
 		final Race game = this;
 		for (User user : getUsersIn()) {
 			try {
-				user.getPlayer(main.plugin.getServer()).setScoreboard(board);
+				user.getPlayer().setScoreboard(board);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
@@ -337,10 +343,10 @@ public class Race {
 							Object[] keys = sorted.keySet().toArray();
 							for (int i = 0; i < sorted.size(); i++) {
 								int pos = i + 1;
+								String pname = (String) keys[i];
+								User u = getUser(pname);
 								try {
-									String pname = (String) keys[i];
-									User u = getUser(pname);
-									Player pl = u.getPlayer(main.plugin.getServer());
+									Player pl = u.getPlayer();
 									game.scores.getScore(pl).setScore(pos);
 									game.scoresBoard.getScore(pl).setScore(-pos);
 								} catch (IllegalStateException e) {
@@ -349,12 +355,18 @@ public class Race {
 									e.printStackTrace();
 								} catch (PlayerQuitException e) {
 									//Player has left
+									users.remove(u);
 								}
 							}
 						} else { // Time trial
+							User user = null;
 							try {
-								User user = game.getUsers().get(0);
-								Player pl = user.getPlayer(main.plugin.getServer());
+								user = game.getUsers().get(0);
+							} catch (Exception e1) {
+								return; //No players
+							}
+							try {
+								Player pl = user.getPlayer();
 								long time = System.currentTimeMillis()
 										- startTimeMS;
 								time = time / 1000; // In s
@@ -362,6 +374,7 @@ public class Race {
 								game.scoresBoard.getScore(pl).setScore(
 										(int) time);
 							} catch (Exception e) {
+								leave(user, true);
 								// Game ended or user has left
 							}
 						}
@@ -385,13 +398,14 @@ public class Race {
 		List<User> users = game.getUsers();
 		for (User user : users) {
 			try {
-				Player player = user.getPlayer(main.plugin.getServer());
+				Player player = user.getPlayer();
 				if (player.hasMetadata("checkpoint.distance")) {
 					List<MetadataValue> metas = player
 							.getMetadata("checkpoint.distance");
 					checkpointDists.put(user.getPlayerName(), (Double) ((StatValue) metas.get(0)).getValue());
 				}
 			} catch (PlayerQuitException e) {
+				leave(user, true);
 				//Player is no longer in the race
 			}
 		}
@@ -454,7 +468,7 @@ public class Race {
 		for (User user : getUsersIn()) {
 			Player player = null;
 			try {
-				player = user.getPlayer(main.plugin.getServer());
+				player = user.getPlayer();
 				
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
 				
@@ -462,7 +476,7 @@ public class Race {
 				
 				player.setExp(user.getOldExp());
 			} catch (PlayerQuitException e) {
-				//Player has left
+				leave(user, true);
 			}
 			main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
 		}
@@ -470,6 +484,7 @@ public class Race {
 		if (evt != null) {
 			main.plugin.getServer().getPluginManager().callEvent(evt);
 		}
+		users.clear();
 		main.plugin.raceScheduler.removeRace(this);
 		main.plugin.raceScheduler.recalculateQueues();
 	}
@@ -482,11 +497,12 @@ public class Race {
 		finished.add(user.getPlayerName());
 		user.setFinished(true);
 		try {
-			Player player = user.getPlayer(main.plugin.getServer());
+			Player player = user.getPlayer();
 			player.setLevel(user.getOldLevel());
 			player.setExp(user.getOldExp());
 		} catch (PlayerQuitException e) {
 			//Player has left
+			users.remove(user);
 		}
 		this.endTimeMS = System.currentTimeMillis();
 		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
@@ -594,7 +610,7 @@ public class Race {
 		for (User user : getUsersIn()) {
 			Player player = null;
 			try {
-				player = user.getPlayer(main.plugin.getServer());
+				player = user.getPlayer();
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
