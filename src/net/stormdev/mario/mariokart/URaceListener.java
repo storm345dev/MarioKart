@@ -1098,7 +1098,6 @@ public class URaceListener implements Listener {
 		return;
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.HIGHEST)
 	void playerRespawnEvent(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
