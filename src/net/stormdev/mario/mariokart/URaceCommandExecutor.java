@@ -297,9 +297,6 @@ public class URaceCommandExecutor implements CommandExecutor {
 							+ main.msgs.get("race.que.existing"));
 					return true;
 				}
-				if(player == null){
-					return true;
-				}
 				if (player.getVehicle() != null) {
 					Vehicle veh = (Vehicle) player.getVehicle();
 					veh.eject();
