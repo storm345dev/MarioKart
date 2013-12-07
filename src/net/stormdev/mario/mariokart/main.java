@@ -463,6 +463,10 @@ public class main extends JavaPlugin {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
+		HashMap<UUID, Race> races = new HashMap<UUID, Race>(this.raceScheduler.getRaces());
+		for(UUID id:races.keySet()){
+			races.get(id).end(); //End the race
+		}
 		getServer().getScheduler().cancelTasks(this);
 		System.gc();
 		logger.info("MarioKart has been disabled!");
