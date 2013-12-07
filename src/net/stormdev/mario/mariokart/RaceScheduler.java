@@ -2,10 +2,12 @@ package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import net.stormdev.mario.utils.RaceQueue;
+import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
 
 import org.bukkit.entity.Player;
@@ -19,6 +21,7 @@ public class RaceScheduler {
 	public void joinAutoQueue(Player player, RaceType type){
 		//TODO
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getOpenQueues(type); //Joinable queues for that racemode
+		RaceQueue toJoin = null;
 		if(queues.size() > 0){
 		int targetPlayers = main.config.getInt("general.race.targetPlayers");
 		Map<UUID, RaceQueue> recommendedQueues = new HashMap<UUID, RaceQueue>();
@@ -28,7 +31,6 @@ public class RaceScheduler {
 				recommendedQueues.put(id, queue);
 			}
 		}
-		RaceQueue toJoin = null;
 		if(recommendedQueues.size() > 0){
 			UUID random = (UUID) recommendedQueues.keySet().toArray()
 					[main.plugin.random.nextInt(recommendedQueues.size())];
@@ -42,8 +44,51 @@ public class RaceScheduler {
 		}
 		}
 		else{
-			//TODO Create a random queue
+			//Create a random queue
+			//TODO
+			List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
+			List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
+			List<RaceTrack> clearQueuedTracks = new ArrayList<RaceTrack>();
+			for(RaceTrack t:tracks){
+				if(!isTrackInUse(t, type)){
+					openTracks.add(t);
+					if(main.plugin.raceQueues.getQueues(t.getTrackName()).size() < 1){
+						clearQueuedTracks.add(t);
+					}
+				}
+			}
+			RaceTrack track= null;
+			if(clearQueuedTracks.size() > 0 && type != RaceType.TIME_TRIAL){
+				track = clearQueuedTracks.get(main.plugin.random.nextInt(clearQueuedTracks.size()));
+			}
+			else{
+				if(openTracks.size() > 0){
+					// - They're going to have to wait for another race to finish before them...
+					track = openTracks.get(main.plugin.random.nextInt(openTracks.size()));
+				}
+				else{
+					if(type == RaceType.TIME_TRIAL && clearQueuedTracks.size() > 0){
+						//Put them on a track to themselves
+						track = clearQueuedTracks.get(main.plugin.random.nextInt(clearQueuedTracks.size()));
+					}
+					else{
+						if(tracks.size() < 1){						
+							//No tracks exist
+							// No tracks created
+							player.sendMessage(main.colors.getError()
+									+ main.msgs.get("general.cmd.full"));
+							return;
+						}
+						track = tracks.get(main.plugin.random.nextInt(tracks.size()));
+					    //-They are going to have to wait for a game to finish
+					}
+				}
+			}
+			toJoin = new RaceQueue(track, type);
 		}
+		//Join that queue
+		toJoin.addPlayer(player);
+		main.plugin.raceQueues.updateQueue(toJoin);
 	}
 	
 	public void joinQueue(Player player, String trackName, RaceType type){
@@ -84,6 +129,20 @@ public class RaceScheduler {
 	public int getRacesRunning(){
 		//TODO
 		return races.size();
+	}
+	
+	public Boolean isTrackInUse(RaceTrack track, RaceType type){
+		HashMap<UUID, Race> rs = new HashMap<UUID, Race>(races);
+		for(UUID id:rs.keySet()){
+			Race r = rs.get(id);
+			if(r.getTrackName().equals(track.getTrackName())){
+				if(type == RaceType.TIME_TRIAL && r.getType() == RaceType.TIME_TRIAL){
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

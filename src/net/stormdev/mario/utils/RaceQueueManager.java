@@ -125,5 +125,17 @@ public class RaceQueueManager {
 		}
 		return queues;
 	}
+	
+	public void updateQueue(RaceQueue queue){
+		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+		if(main.plugin.queues.containsKey(queue.getTrackName())){
+			trackQueues = main.plugin.queues.get(queue.getTrackName());
+		}
+		if(trackQueues.containsKey(queue.getQueueId())){
+			trackQueues.put(queue.getQueueId(), queue);
+			main.plugin.queues.put(queue.getTrackName(), trackQueues);
+		}
+		return;
+	}
 
 }

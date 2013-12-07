@@ -63,12 +63,12 @@ public class RaceTrackManager {
 	}
 
 	public ArrayList<RaceTrack> getRaceTracks() {
-		return tracks;
+		return new ArrayList<RaceTrack>(tracks);
 	}
 
 	public ArrayList<String> getRaceTrackNames() {
 		ArrayList<String> names = new ArrayList<String>();
-		for (RaceTrack tr : tracks) {
+		for (RaceTrack tr : getRaceTracks()) {
 			names.add(tr.getTrackName());
 		}
 		return names;
