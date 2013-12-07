@@ -86,10 +86,14 @@ public class RaceScheduler {
 		}
 		//Join that queue
 		toJoin.addPlayer(player);
-		main.plugin.raceQueues.updateQueue(toJoin);
 	}
 	
-	public void joinQueue(Player player, String trackName, RaceType type){
+	public void joinQueue(Player player, RaceTrack track, RaceType type){
+		RaceQueue queue = main.plugin.raceQueues.getQueue(track.getTrackName(), type); //Get the oldest queue of that type for that track
+		if(queue == null){
+			queue = new RaceQueue(track, type);
+		}
+		queue.addPlayer(player);
 		//TODO
 	}
 	

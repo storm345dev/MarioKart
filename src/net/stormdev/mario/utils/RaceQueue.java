@@ -36,6 +36,7 @@ public class RaceQueue {
 	public void setTrack(RaceTrack track){
 		this.track = track;
 		this.playerLimit = track.getMaxPlayers();
+		main.plugin.raceQueues.updateQueue(this);
 	}
 	
 	public RaceTrack getTrack(){
@@ -56,6 +57,7 @@ public class RaceQueue {
 	
 	public void setRaceMode(RaceType type){
 		this.type = type;
+		main.plugin.raceQueues.updateQueue(this);
 	}
 	
 	public UUID getQueueId(){
@@ -64,6 +66,7 @@ public class RaceQueue {
 	
 	public void regenQueueId(){
 		this.queueId = UUID.randomUUID();
+		main.plugin.raceQueues.updateQueue(this);
 	}
 	
 	public Boolean validatePlayers(){	
@@ -108,6 +111,7 @@ public class RaceQueue {
 	public Boolean addPlayer(Player player){
 		if(player != null && player.isOnline() && (playerCount()+1<playerLimit)){
 			players.add(player);
+			main.plugin.raceQueues.updateQueue(this);
 			main.plugin.raceScheduler.recalculateQueues();
 			return true;
 		}
@@ -117,6 +121,7 @@ public class RaceQueue {
 	public void removePlayer(Player player){
 		players.remove(player);
 		validatePlayers();
+		main.plugin.raceQueues.updateQueue(this);
 		main.plugin.raceScheduler.recalculateQueues();
 	}
 	
@@ -133,6 +138,7 @@ public class RaceQueue {
 		this.players.clear();
 		this.type = RaceType.RACE;
 		starting = false;
+		main.plugin.raceQueues.updateQueue(this);
 	}
 	
 	public Boolean containsPlayer(Player player){
