@@ -60,6 +60,7 @@ public class main extends JavaPlugin {
 	public static Economy economy = null;
 
 	public void onEnable() {
+		System.gc();
 		random = new Random();
 		plugin = this;
 		File langFile = new File(getDataFolder().getAbsolutePath()
@@ -453,6 +454,7 @@ public class main extends JavaPlugin {
 		else{
 			this.packUrl = rl;
 		}
+		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
 	}
@@ -462,6 +464,7 @@ public class main extends JavaPlugin {
 			ucars.unHookPlugin(this);
 		}
 		getServer().getScheduler().cancelTasks(this);
+		System.gc();
 		logger.info("MarioKart has been disabled!");
 	}
 

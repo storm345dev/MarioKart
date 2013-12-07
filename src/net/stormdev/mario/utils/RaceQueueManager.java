@@ -71,6 +71,9 @@ public class RaceQueueManager {
 	}
 	
 	public Map<UUID, RaceQueue> getOpenQueues(RaceType type){
+		if(type == RaceType.TIME_TRIAL){
+			return new HashMap<UUID, RaceQueue>();
+		}
 		Map<UUID, RaceQueue> trackQueues = getAllQueues();
 		for(UUID id:new ArrayList<UUID>(trackQueues.keySet())){
 			RaceQueue queue = trackQueues.get(id);

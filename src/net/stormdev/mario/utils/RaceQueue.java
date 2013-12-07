@@ -80,11 +80,15 @@ public class RaceQueue {
 	public Boolean validatePlayers(){	
 		Boolean valid = true;
 		ArrayList<String> leftPlayers = new ArrayList<String>();
-		for(Player p:getPlayers()){
-			if(p==null||!p.isOnline()){
-				players.remove(p);
-				leftPlayers.add(p.getName());
+		try {
+			for(Player p:getPlayers()){
+				if(p==null||!p.isOnline()){
+					players.remove(p);
+					leftPlayers.add(p.getName());
+				}
 			}
+		} catch (Exception e) {
+			//Error checking if players valid
 		}
 		if(players.size() < 1){
 			valid = false;

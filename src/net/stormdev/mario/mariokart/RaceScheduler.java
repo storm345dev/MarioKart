@@ -35,7 +35,7 @@ public class RaceScheduler {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getOpenQueues(type); //Joinable queues for that racemode
 		RaceQueue toJoin = null;
 		Boolean added = false;
-		if(queues.size() > 0){
+		if(queues.size() > 0 && type != RaceType.TIME_TRIAL){ //Check if queues existing and for Time Trial force a new queue
 		int targetPlayers = main.config.getInt("general.race.targetPlayers");
 		Map<UUID, RaceQueue> recommendedQueues = new HashMap<UUID, RaceQueue>();
 		for(UUID id:new ArrayList<UUID>(queues.keySet())){
@@ -113,6 +113,7 @@ public class RaceScheduler {
 				main.msgs .get("race.que.joined") + 
 				" ["+toJoin.playerCount()+"/"+toJoin.playerLimit()+"]");
 	    executeLobbyJoin(player, toJoin);
+	    recalculateQueues();
 	    return;
 	}
 	
@@ -129,6 +130,7 @@ public class RaceScheduler {
 				main.msgs .get("race.que.joined") + 
 				" ["+queue.playerCount()+"/"+queue.playerLimit()+"]");
 	    executeLobbyJoin(player, queue);
+	    recalculateQueues();
 	    return;
 	}
 	
@@ -158,27 +160,34 @@ public class RaceScheduler {
 			final RaceQueue queue = queues.get(id);
 			if(queue.getRaceMode() == RaceType.TIME_TRIAL
 					&& !isTrackInUse(queue.getTrack(), RaceType.TIME_TRIAL)
-					&& !queuedTracks.contains(queue.getTrack())
+					&& !queuedTracks.contains(queue.getTrack()) //Are there other racemodes waiting for the track ahead of it?
 					&& getRacesRunning()<raceLimit
-					&& !queue.isStarting()){ //Are there other racemodes waiting for the track ahead of it?
+					&& !queue.isStarting()){
 				queue.setStarting(true);
-				Race race = new Race(queue.getTrack(), queue.getTrackName(), RaceType.TIME_TRIAL);
 				List<Player> q = new ArrayList<Player>(queue.getPlayers());
 				for(Player p:q){
-					if(p!=null && p.isOnline()){
-				    race.join(p);
+					if(p!=null && p.isOnline() && getRacesRunning()<raceLimit){
+						Race race = new Race(queue.getTrack(), queue.getTrackName(), RaceType.TIME_TRIAL);
+				        race.join(p);
+				        if(race.getUsers().size() > 0){
+							startRace(race.getTrackName(), race);
+						}
+				        queue.removePlayer(p);
 					}
 				}
 				q.clear();
+				if(queue.playerCount() < 1){
 				main.plugin.raceQueues.removeQueue(queue);
-				if(race.getUsers().size() > 0){
-					startRace(race.getTrackName(), race);
 				}
 			}
 			else if(queue.playerCount() >= main.config.getInt("race.que.minPlayers")
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
 					&& getRacesRunning()<raceLimit
+					&& !queuedTracks.contains(queue.getTrack()) //Check it's not reserved
+					&& queue.getRaceMode() != RaceType.TIME_TRIAL
 					&& !queue.isStarting()){
+				queuedTracks.add(queue.getTrack());
+				main.logger.info("Track reserved: "+queue.getTrackName());
 				// Queue can be initiated
 				queue.setStarting(true);
 				//Wait grace time
@@ -217,7 +226,8 @@ public class RaceScheduler {
 			else{
 				//Race unable to be started (Unavailable etc...)
 				if(queue.getRaceMode() != RaceType.TIME_TRIAL){
-				queuedTracks.add(queue.getTrack());
+					main.logger.info("Track reserved: "+queue.getTrackName());
+				    queuedTracks.add(queue.getTrack());
 				}
 			}
 			if(getRacesRunning()>=raceLimit){

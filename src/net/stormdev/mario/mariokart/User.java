@@ -46,8 +46,12 @@ public class User {
 	}
 	
 	public Player getPlayer() throws PlayerQuitException{
-		if(player==null || !player.isOnline()){
-			player = null;
+		try {
+			if(player==null || !player.isOnline()){
+				player = null;
+				throw new PlayerQuitException(playerName);
+			}
+		} catch (Exception e) {
 			throw new PlayerQuitException(playerName);
 		}
 		return player;
