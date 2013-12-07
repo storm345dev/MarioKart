@@ -108,7 +108,7 @@ public class RaceQueue {
 	public Boolean addPlayer(Player player){
 		if(player != null && player.isOnline() && (playerCount()+1<playerLimit)){
 			players.add(player);
-			//TODO Recalculate that the queue now has an extra player
+			main.plugin.raceScheduler.recalculateQueues();
 			return true;
 		}
 		return false;
@@ -117,6 +117,7 @@ public class RaceQueue {
 	public void removePlayer(Player player){
 		players.remove(player);
 		validatePlayers();
+		main.plugin.raceScheduler.recalculateQueues();
 	}
 	
 	public void removePlayer(String player){

@@ -19,7 +19,6 @@ public class RaceScheduler {
 		this.raceLimit = raceLimit;
 	}
 	public void joinAutoQueue(Player player, RaceType type){
-		//TODO
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getOpenQueues(type); //Joinable queues for that racemode
 		RaceQueue toJoin = null;
 		if(queues.size() > 0){
@@ -45,7 +44,6 @@ public class RaceScheduler {
 		}
 		else{
 			//Create a random queue
-			//TODO
 			List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
 			List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
 			List<RaceTrack> clearQueuedTracks = new ArrayList<RaceTrack>();
