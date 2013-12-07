@@ -395,11 +395,11 @@ public class URaceCommandExecutor implements CommandExecutor {
 			}
 			Boolean game = true;
 			Race race = main.plugin.raceMethods.inAGame(player);
-			String que = main.plugin.raceMethods.inGameQueue(player);
+			RaceQueue queue = main.plugin.raceMethods.inGameQue(player);
 			if (race == null) {
 				game = false;
 			}
-			if (que == null) {
+			if (queue == null) {
 				if (!game) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("general.cmd.leave.fail"));
@@ -409,10 +409,9 @@ public class URaceCommandExecutor implements CommandExecutor {
 			if (game) {
 				race.leave(race.getUser(player.getName()), true);
 			} else {
-				RaceQue queue = main.plugin.raceQues.getQue(que);
 				RaceTrack track = queue.getTrack();
 				try {
-					main.plugin.gameScheduler.leaveQue(player, queue, queue.getTrack().getTrackName());
+					main.plugin.raceScheduler.leaveQueue(player, queue);
 				} catch (Exception e) {
 					e.printStackTrace();
 					//Player not in a queue
@@ -421,7 +420,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				String msg = main.msgs.get("general.cmd.leave.success");
-				msg = msg.replaceAll(Pattern.quote("%name%"), que);
+				msg = msg.replaceAll(Pattern.quote("%name%"), queue.getTrackName());
 				sender.sendMessage(main.colors.getSuccess() + msg);
 				player.teleport(track.getExit(main.plugin.getServer()));
 				player.setBedSpawnLocation(track.getExit(main.plugin.getServer()), true);

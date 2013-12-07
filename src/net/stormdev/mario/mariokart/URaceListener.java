@@ -18,14 +18,13 @@ import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
-import net.stormdev.mario.utils.RaceQue;
+import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceStartEvent;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -317,21 +316,21 @@ public class URaceListener implements Listener {
 		game.running = false;
 		game.users.clear();
 		try {
-			if (plugin.gameScheduler.trackInUse(game.getTrackName())) {
-				plugin.gameScheduler.removeRace(game.getGameId());
+			if (plugin.raceScheduler.isTrackInUse(game.getTrack(), game.getType())) {
+				plugin.raceScheduler.removeRace(game);
 			}
 		} catch (Exception e1) {
 			try {
-				plugin.gameScheduler.removeRace(game.getGameId());
+				plugin.raceScheduler.removeRace(game);
 			} catch (Exception e) {
 				// Nothing
 			}
 		}
 		try {
-			plugin.gameScheduler.stopGame(game.getTrack(), game.getGameId());
+			plugin.raceScheduler.stopRace(game);
 		} catch (Exception e) {
 		}
-		plugin.gameScheduler.reCalculateQues();
+		plugin.raceScheduler.recalculateQueues();
 	}
 
 	// Much extranious PORTED code from here on (Races)
@@ -350,7 +349,7 @@ public class URaceListener implements Listener {
 			User user = event.getUser();
 			Player player = null;
 			try {
-				player = user.getPlayer(plugin.getServer());
+				player = user.getPlayer();
 			} catch (PlayerQuitException e1) {
 				//Player has left
 			}
@@ -383,7 +382,7 @@ public class URaceListener implements Listener {
 				HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
 				for (User u : game.getUsers()) {
 					try {
-						Player pp = u.getPlayer(plugin.getServer());
+						Player pp = u.getPlayer();
 						if (pp != null){
 							if (pp.hasMetadata("checkpoint.distance")) {
 								List<MetadataValue> metas = pp
@@ -519,7 +518,7 @@ public class URaceListener implements Listener {
 				}
 			}
 			game.leave(user, false);
-			plugin.gameScheduler.updateGame(game);
+			plugin.raceScheduler.updateRace(game);
 			if (game.getUsersIn().size() < 1) {
 				game.ended = true;
 				game.end();
@@ -555,16 +554,11 @@ public class URaceListener implements Listener {
 		Player player = event.getPlayer();
 		Race game = plugin.raceMethods.inAGame(player);
 		if (game == null) {
-			String arenaName = plugin.raceMethods.inGameQue(player);
-			if (arenaName == null) {
+			RaceQueue queue = plugin.raceMethods.inGameQue(player);
+			if (queue == null) {
 				return;
 			}
-			RaceQue arena = plugin.raceQues.getQue(arenaName);
-			arena.removePlayer(player);
-			plugin.raceQues.setQue(arenaName, arena);
-			if(arena.getHowManyPlayers() < 1){
-				plugin.raceQues.removeQue(arenaName);
-			}
+			queue.removePlayer(player);
 			return;
 		} else {
 			game.leave(game.getUser(player.getName()), true);
@@ -577,13 +571,11 @@ public class URaceListener implements Listener {
 		Player player = event.getPlayer();
 		Race game = plugin.raceMethods.inAGame(player);
 		if (game == null) {
-			String arenaName = plugin.raceMethods.inGameQue(player);
-			if (arenaName == null) {
+			RaceQueue queue = plugin.raceMethods.inGameQue(player);
+			if (queue == null) {
 				return;
 			}
-			RaceQue arena = plugin.raceQues.getQue(arenaName);
-			arena.removePlayer(player);
-			plugin.raceQues.setQue(arenaName, arena);
+			queue.removePlayer(player);
 			return;
 		} else {
 			game.leave(game.getUser(player.getName()), true);
@@ -617,31 +609,32 @@ public class URaceListener implements Listener {
 		List<User> users = game.getUsers();
 		for (User user : users) {
 			try {
-				Player player = user.getPlayer(plugin.getServer());
+				Player player = user.getPlayer();
 				player.setGameMode(GameMode.SURVIVAL);
 				player.getInventory().clear();
 				player.getInventory().setItem(8, main.marioKart.respawn);
 				player.updateInventory();
 			} catch (PlayerQuitException e) {
 				//Player has left
+				game.leave(user, true);
 			}
 		}
+		plugin.raceScheduler.updateRace(game);
 		users = game.getUsers();
 		for (User user : users) {
-			plugin.gameScheduler.updateGame(game);
 			user.setLapsLeft(game.totalLaps);
 			user.setCheckpoint(0);
 			String msg = main.msgs.get("race.mid.lap");
 			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
 			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
 			try {
-				user.getPlayer(plugin.getServer()).sendMessage(main.colors.getInfo() + msg);
+				user.getPlayer().sendMessage(main.colors.getInfo() + msg);
 			} catch (PlayerQuitException e) {
 				//Player has left
 			}
 		}
 		game.setUsers(users);
-		plugin.gameScheduler.reCalculateQues();
+		plugin.raceScheduler.recalculateQueues();
 		return;
 	}
 
@@ -650,11 +643,10 @@ public class URaceListener implements Listener {
 		final Race game = event.getRace();
 		if (!game.getRunning()) {
 			try {
-				plugin.gameScheduler.stopGame(game.getTrack(),
-						game.getTrackName());
+				plugin.raceScheduler.stopRace(game);
 			} catch (Exception e) {
 			}
-			plugin.gameScheduler.reCalculateQues();
+			plugin.raceScheduler.recalculateQueues();
 			return;
 		}
 		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") 
@@ -740,7 +732,7 @@ public class URaceListener implements Listener {
 								for (User u : game.getUsers()) {
 									Player p;
 									try {
-										p = u.getPlayer(plugin.getServer());
+										p = u.getPlayer();
 										String msg = main.msgs.get("race.end.soon");
 										msg = msg.replaceAll("%name%", p.getName());
 										p.sendMessage(main.colors.getSuccess() + game.getWinner() + main.msgs.get("race.end.won"));
@@ -756,7 +748,7 @@ public class URaceListener implements Listener {
 				}
 			}
 		}
-		plugin.gameScheduler.updateGame(game);
+		plugin.raceScheduler.updateRace(game);
 		return;
 	}
 
