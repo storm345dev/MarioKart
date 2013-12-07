@@ -203,10 +203,11 @@ public class RaceScheduler {
 							}
 						}
 						q.clear();
-						if(queue.playerCount() > main.config.getInt("race.que.minPlayers")){
-							if(race.getUsers().size() > 0){
-								startRace(race.getTrackName(), race);
-							}
+						if(race.getUsers().size() > main.config.getInt("race.que.minPlayers")){
+							startRace(race.getTrackName(), race);
+						}
+						else{
+							queue.setStarting(false);
 						}
 						return;
 					}}, grace);
