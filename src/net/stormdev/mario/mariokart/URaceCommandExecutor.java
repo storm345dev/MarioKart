@@ -333,8 +333,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				}
 				if (order.size() < 1) {
 					// Create a random raceQue
-					int min = 0;
-					int max = main.plugin.trackManager.getRaceTracks().size() - 1;
+					int max = main.plugin.trackManager.getRaceTracks().size();
 					if (main.plugin.trackManager.getRaceTracks().size() < 1) {
 						// No tracks created
 						sender.sendMessage(main.colors.getError()
@@ -343,8 +342,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					}
 					int randomNumber;
 					try {
-						randomNumber = main.plugin.random.nextInt(max - min)
-								+ min;
+						randomNumber = main.plugin.random.nextInt(max);
 					} catch (Exception e) {
 						randomNumber = 0;
 					}

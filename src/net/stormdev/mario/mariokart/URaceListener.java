@@ -1120,6 +1120,30 @@ public class URaceListener implements Listener {
             chunk.load(true);
         }
 		event.setRespawnLocation(loc);
+		return;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.MONITOR)
+	void postRespawn(PlayerRespawnEvent event){
+		final Player player = event.getPlayer();
+		if (plugin.raceMethods.inAGame(player) == null) {
+			return;
+		}
+		Race race = plugin.raceMethods.inAGame(player);
+		int checkpoint = 0;
+		try {
+			User user = race.getUser(player);
+			
+			checkpoint = user.getCheckpoint();
+		} catch (Exception e) {
+		}
+		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
+				.getLocation(plugin.getServer()).add(0, 2, 0);
+		Chunk chunk = loc.getChunk();
+        if(!chunk.isLoaded()){
+            chunk.load(true);
+        }
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
