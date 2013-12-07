@@ -134,5 +134,8 @@ public class RaceQueue {
 		starting = false;
 	}
 	
+	public Boolean containsPlayer(Player player){
+		return players.contains(player);
+	}
 
 }

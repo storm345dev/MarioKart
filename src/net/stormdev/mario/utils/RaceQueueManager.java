@@ -44,6 +44,21 @@ public class RaceQueueManager {
 		return null;
 	}
 	
+	public RaceQueue getQueue(String trackName, UUID queueId){
+		Map<UUID, RaceQueue> trackQueues = getQueues(trackName);
+		if(trackQueues.size() < 1){
+			return null;
+		}
+		Set<UUID> keys = trackQueues.keySet();
+		for(UUID key:keys){
+			RaceQueue r = trackQueues.get(key);
+			if(r.getQueueId() == queueId){
+				return r;
+			}
+		}
+		return null;
+	}
+	
 	public Map<UUID, RaceQueue> getQueues(String trackName){
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
 		if(main.plugin.queues.containsKey(trackName)){

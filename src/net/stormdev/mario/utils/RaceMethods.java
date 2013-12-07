@@ -2,7 +2,9 @@ package net.stormdev.mario.utils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.User;
@@ -22,13 +24,13 @@ public class RaceMethods {
 		return null;
 	}
 
-	public String inGameQue(Player player) {
-		Set<String> arenaNames = plugin.raceQueues.getAllQueues();
-		for (String arenaName : arenaNames) {
+	public RaceQueue inGameQue(Player player) {
+		Map<UUID, RaceQueue> queues = plugin.raceQueues.getAllQueues();
+		for (UUID id:queues.keySet()) {
 			try {
-				List<Player> que = plugin.raceQues.getQue(arenaName).getPlayers();
-				if (que.contains(player)) {
-					return arenaName;
+				RaceQueue queue = queues.get(id);
+				if (queue.containsPlayer(player)) {
+					return queue;
 				}
 			} catch (Exception e) {
 				return null;
