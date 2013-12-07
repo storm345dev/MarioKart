@@ -326,10 +326,6 @@ public class URaceListener implements Listener {
 				// Nothing
 			}
 		}
-		try {
-			plugin.raceScheduler.stopRace(game);
-		} catch (Exception e) {
-		}
 		plugin.raceScheduler.recalculateQueues();
 	}
 

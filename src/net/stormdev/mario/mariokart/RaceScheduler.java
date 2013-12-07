@@ -203,7 +203,9 @@ public class RaceScheduler {
 							}
 						}
 						q.clear();
-						if(race.getUsers().size() > main.config.getInt("race.que.minPlayers")){
+						if(race.getUsers().size() >= main.config.getInt("race.que.minPlayers")){
+							queue.clear();
+							main.plugin.raceQueues.removeQueue(queue);
 							startRace(race.getTrackName(), race);
 						}
 						else{
