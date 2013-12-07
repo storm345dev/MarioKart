@@ -27,6 +27,7 @@ import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -1114,10 +1115,10 @@ public class URaceListener implements Listener {
 		}
 		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).add(0, 2, 0);
-                Chunk chunk = loc.getChunk();
-                if(!chunk.isLoaded()){
-                    chunk.losd(true);
-                }
+		Chunk chunk = loc.getChunk();
+        if(!chunk.isLoaded()){
+            chunk.load(true);
+        }
 		event.setRespawnLocation(loc);
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
