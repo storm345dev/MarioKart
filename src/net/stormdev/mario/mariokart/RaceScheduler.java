@@ -187,7 +187,6 @@ public class RaceScheduler {
 					&& queue.getRaceMode() != RaceType.TIME_TRIAL
 					&& !queue.isStarting()){
 				queuedTracks.add(queue.getTrack());
-				main.logger.info("Track reserved: "+queue.getTrackName());
 				// Queue can be initiated
 				queue.setStarting(true);
 				//Wait grace time
@@ -226,7 +225,6 @@ public class RaceScheduler {
 			else{
 				//Race unable to be started (Unavailable etc...)
 				if(queue.getRaceMode() != RaceType.TIME_TRIAL){
-					main.logger.info("Track reserved: "+queue.getTrackName());
 				    queuedTracks.add(queue.getTrack());
 				}
 			}
@@ -283,6 +281,9 @@ public class RaceScheduler {
 				}
 				users.remove(user);
 				Location loc = grid.get(i);
+				if(race.getType() == RaceType.TIME_TRIAL){
+					loc = grid.get(main.plugin.random.nextInt(grid.size()));
+				}
 				if(p!=null){
 				if (p.getVehicle() != null) {
 					p.getVehicle().eject();
