@@ -74,7 +74,7 @@ public class RaceQueueManager {
 		Map<UUID, RaceQueue> trackQueues = getAllQueues();
 		for(UUID id:new ArrayList<UUID>(trackQueues.keySet())){
 			RaceQueue queue = trackQueues.get(id);
-			if(queue.getRaceMode() != type && queue.playerCount()+1<queue.playerLimit()){
+			if(queue.getRaceMode() != type && queue.playerCount()<queue.playerLimit()){
 				trackQueues.remove(queue);
 			}
 		}

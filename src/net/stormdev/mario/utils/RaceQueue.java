@@ -47,6 +47,13 @@ public class RaceQueue {
 		return starting;
 	}
 	
+	public void setStarting(Boolean starting){
+		this.starting = starting;
+		main.plugin.raceQueues.updateQueue(this);
+		main.plugin.raceScheduler.recalculateQueues();
+		return;
+	}
+	
 	public int getMaxPlayers(){
 		return playerLimit;
 	}

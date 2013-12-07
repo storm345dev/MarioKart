@@ -143,10 +143,40 @@ public class RaceScheduler {
 	}
 	
 	public void recalculateQueues(){
+		if(getRacesRunning()>=raceLimit){
+			return; //Cannot start any more races for now...
+		}
+		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
+		ArrayList<RaceTrack> queuedTracks = new ArrayList<RaceTrack>();
+		for(UUID id:new ArrayList<UUID>(queues.keySet())){
+			RaceQueue queue = queues.get(id);
+			if(queue.getRaceMode() == RaceType.TIME_TRIAL
+					&& !isTrackInUse(queue.getTrack(), RaceType.TIME_TRIAL)
+					&& !queuedTracks.contains(queue.getTrack())
+					&& getRacesRunning()<raceLimit
+					&& !queue.isStarting()){ //Are there other racemodes waiting for the track ahead of it?
+				//TODO
+			}
+			else if(queue.playerCount() > main.config.getInt("race.que.minPlayers")
+					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
+					&& getRacesRunning()<raceLimit
+					&& !queue.isStarting()){
+				//TODO Queue can be initiated
+			}
+			else{
+				//Race unable to be started (Unavailable etc...)
+				if(queue.getRaceMode() != RaceType.TIME_TRIAL){
+				queuedTracks.add(queue.getTrack());
+				}
+			}
+			if(getRacesRunning()>=raceLimit){
+				return; //No more races can be run for now
+			}
+		}
 		//TODO
 	}
 	
-	public void startRace(RaceQueue que, String trackName, final Race race) {
+	public void startRace(String trackName, final Race race) {
 		this.races.put(race.getGameId(), race);
 		final List<User> users = race.getUsers();
 		for (User user : users) {
