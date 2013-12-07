@@ -387,7 +387,7 @@ public class RaceScheduler {
 	}
 	
 	public void removeRace(Race race){
-		this.races.remove(race);
+		this.races.remove(race.getGameId());
 	}
 	
 	public void updateRace(Race race){
