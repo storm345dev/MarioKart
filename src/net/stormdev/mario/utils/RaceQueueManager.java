@@ -1,6 +1,8 @@
 package net.stormdev.mario.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -58,7 +60,7 @@ public class RaceQueueManager {
 		if(trackQueues.size() < 1){
 			return;
 		}
-		Set<UUID> keys = trackQueues.keySet();
+		List<UUID> keys = new ArrayList<UUID>(trackQueues.keySet());
 		for(UUID key:keys){
 			RaceQueue r = trackQueues.get(key);
 			if(r.getQueueId() == queueId){
@@ -76,6 +78,15 @@ public class RaceQueueManager {
 		}
 		trackQueues.remove(queue.getQueueId());
 		main.plugin.queues.put(queue.getTrackName(), trackQueues);	
+	}
+	
+	public Map<UUID, RaceQueue> getAllQueues(){
+		List<String> tracks = new ArrayList<String>(main.plugin.queues.keySet());
+		Map<UUID, RaceQueue> queues = new HashMap<UUID, RaceQueue>();
+		for(String tName:tracks){
+			queues.putAll(getQueues(tName));
+		}
+		return queues;
 	}
 
 }

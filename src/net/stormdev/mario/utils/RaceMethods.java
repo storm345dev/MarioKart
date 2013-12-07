@@ -18,27 +18,12 @@ public class RaceMethods {
 	}
 
 	public Race inAGame(Player player) {
-		HashMap<String, Race> games = plugin.gameScheduler.getGames();
-		Set<String> keys = games.keySet();
-		Boolean inAGame = false;
-		Race mgame = null;
-		for (String key : keys) {
-			Race game = games.get(key);
-			for (User user : game.getUsersIn()){
-				if (user.getPlayerName().equals(player.getName())){
-					inAGame = true;
-					mgame = game;
-				}
-			}
-		}
-		if (inAGame) {
-			return mgame;
-		}
+		//TODO
 		return null;
 	}
 
 	public String inGameQue(Player player) {
-		Set<String> arenaNames = plugin.raceQues.getQues();
+		Set<String> arenaNames = plugin.raceQueues.getAllQueues();
 		for (String arenaName : arenaNames) {
 			try {
 				List<Player> que = plugin.raceQues.getQue(arenaName).getPlayers();

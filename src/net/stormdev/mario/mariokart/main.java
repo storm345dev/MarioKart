@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
+import net.stormdev.mario.utils.RaceQueueManager;
 import net.stormdev.mario.utils.RaceTrackManager;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mariokartAddons.MarioKart;
@@ -47,7 +48,7 @@ public class main extends JavaPlugin {
 	public OldRaceScheduler gameScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
 	public HashMap<String, Map<UUID,RaceQueue>> queues = new HashMap<String, Map<UUID,RaceQueue>>();
-	public Ques raceQues = null;
+	public RaceQueueManager raceQueues = null;
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;
 	public Random random = null;
@@ -407,7 +408,7 @@ public class main extends JavaPlugin {
 		this.trackManager = new RaceTrackManager(this, new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "tracks.uracetracks"));
-		this.raceQues = new Ques();
+		this.raceQueues = new RaceQueueManager();
 		this.raceMethods = new RaceMethods();
 		this.gameScheduler = new OldRaceScheduler();
 		// Setup marioKart
