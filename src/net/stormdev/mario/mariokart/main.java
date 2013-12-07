@@ -7,24 +7,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
-import net.stormdev.mario.utils.Ques;
 import net.stormdev.mario.utils.RaceMethods;
-import net.stormdev.mario.utils.RaceQue;
+import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrackManager;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -47,9 +44,9 @@ public class main extends JavaPlugin {
 	public static URaceCommandExecutor cmdExecutor = null;
 	public static URaceListener listener = null;
 	public RaceTrackManager trackManager = null;
-	public RaceScheduler gameScheduler = null;
+	public OldRaceScheduler gameScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
-	public HashMap<String, RaceQue> ques = new HashMap<String, RaceQue>();
+	public HashMap<String, Map<UUID,RaceQueue>> queues = new HashMap<String, Map<UUID,RaceQueue>>();
 	public Ques raceQues = null;
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;
@@ -412,7 +409,7 @@ public class main extends JavaPlugin {
 				+ "tracks.uracetracks"));
 		this.raceQues = new Ques();
 		this.raceMethods = new RaceMethods();
-		this.gameScheduler = new RaceScheduler();
+		this.gameScheduler = new OldRaceScheduler();
 		// Setup marioKart
 		marioKart = new MarioKart(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()

@@ -30,7 +30,7 @@ import com.useful.ucarsCommon.StatValue;
  * An adaptation of a game scheduler written for Minigamez but was never released. -Code is messy and 
  * weirdly named as a result
  */
-public class RaceScheduler {
+public class OldRaceScheduler {
 	// NOTE: This code is probably highly extraneous in places.
 	private HashMap<String, Race> games = new HashMap<String, Race>();
 	private main plugin;
@@ -38,7 +38,7 @@ public class RaceScheduler {
 	public int runningGames = 0;
 	public int maxGames = 10;
 
-	public RaceScheduler() {
+	public OldRaceScheduler() {
 		this.plugin = main.plugin;
 		random = new Random();
 		this.maxGames = main.config.getInt("general.raceLimit");
