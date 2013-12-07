@@ -410,7 +410,7 @@ public class main extends JavaPlugin {
 				+ "tracks.uracetracks"));
 		this.raceQueues = new RaceQueueManager();
 		this.raceMethods = new RaceMethods();
-		this.raceScheduler = new RaceScheduler();
+		this.raceScheduler = new RaceScheduler(config.getInt("general.raceLimit"));
 		// Setup marioKart
 		marioKart = new MarioKart(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()
@@ -461,11 +461,11 @@ public class main extends JavaPlugin {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
-		HashMap<String, Race> games = this.raceScheduler.getGames();
+		HashMap<UUID, Race> games = this.raceScheduler.getGames();
 		for (Race r : games.values()) {
 			r.end();
 			try {
-				this.raceScheduler.stopGame(r.getTrack(), r.getGameId());
+				this.raceScheduler.stopGame(r.getGameId());
 			} catch (Exception e) {
 			}
 		}
