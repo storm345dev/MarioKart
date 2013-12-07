@@ -1,9 +1,12 @@
 package net.stormdev.mario.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.entity.Player;
@@ -16,12 +19,21 @@ public class RaceMethods {
 	}
 
 	public Race inAGame(Player player) {
-		//TODO
+		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
+		for(UUID id:new ArrayList<UUID>(races.keySet())){
+			Race r = races.get(id);
+			List<User> users = r.getUsersIn(); //Exclude those that have finished the race
+			for(User u:users){
+				if(u.getPlayerName().equals(player.getName())){
+					return r;
+				}
+			}
+		}
 		return null;
 	}
 
 	public RaceQueue inGameQue(Player player) {
-		Map<UUID, RaceQueue> queues = plugin.raceQueues.getAllQueues();
+		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		for (UUID id:queues.keySet()) {
 			try {
 				RaceQueue queue = queues.get(id);

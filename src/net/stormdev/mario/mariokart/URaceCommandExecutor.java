@@ -1,13 +1,13 @@
 package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.utils.RaceQue;
+import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.TrackCreator;
@@ -297,96 +297,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 							+ main.msgs.get("race.que.existing"));
 					return true;
 				}
-				List<String> gameArenas = new ArrayList<String>();
-				Map<String, Boolean> order = new HashMap<String, Boolean>();
-				int waitingPlayers = 0;
-				for (String aname : plugin.raceQues.getQues()) {
-					RaceQue arena = plugin.raceQues.getQue(aname);
-					if (arena.getHowManyPlayers() < arena.getPlayerLimit()
-							&& arena.getType() == type) {
-						gameArenas.add(aname);
-						if (arena.getHowManyPlayers() > waitingPlayers) {
-							waitingPlayers = arena.getHowManyPlayers();
-						}
-					}
-				}
-				int waitNo = 1;
-				List<String> remaining = new ArrayList<String>();
-				remaining.addAll(gameArenas);
-				for (int i = waitNo; i <= waitingPlayers; i++) {
-					for (String aname : gameArenas) {
-						RaceQue arena = plugin.raceQues.getQue(aname);
-						if (arena.getHowManyPlayers() == waitNo) {
-							Boolean reccommendedQueue = true;
-							if(arena.getHowManyPlayers() > main.config.getInt("general.race.targetPlayers")){
-								reccommendedQueue = false;
-							}
-							order.put(aname, reccommendedQueue);
-							if (remaining.contains(aname)) {
-								remaining.remove(aname);
-							}
-						}
-					}
-				}
-				for (String aname : remaining) {
-					order.put(aname, true);
-				}
-				if (order.size() < 1) {
-					// Create a random raceQue
-					int max = main.plugin.trackManager.getRaceTracks().size();
-					if (main.plugin.trackManager.getRaceTracks().size() < 1) {
-						// No tracks created
-						sender.sendMessage(main.colors.getError()
-								+ main.msgs.get("general.cmd.full"));
-						return true;
-					}
-					int randomNumber;
-					try {
-						randomNumber = main.plugin.random.nextInt(max);
-					} catch (Exception e) {
-						randomNumber = 0;
-					}
-					RaceTrack track = main.plugin.trackManager.getRaceTracks()
-							.get(randomNumber);
-					RaceQue que = new RaceQue(track, type);
-					main.plugin.gameScheduler.joinGame(player, track, que, track.getTrackName());
-					return true;
-				}
-				int randomNumber;
-				try {
-					randomNumber = main.plugin.random.nextInt(order.size());
-				} catch (Exception e) {
-					randomNumber = 0;
-				}
-				String name = (String) order.keySet().toArray()[randomNumber];
-				RaceQue arena = plugin.raceQues.getQue(name);
-				RaceQue other = null;
-				Boolean rec = order.get(name);
-				while ((arena.getHowManyPlayers() < 1
-						|| arena.getType() != type
-						|| !rec)
-						&& order.size()>0) {
-					if(order != null 
-							&& !rec
-							&& arena.getType() == type){
-						//Not reccommended (eg. lots of players) but still valid
-						other = arena;
-					}
-					order.remove(name);
-					if(order.size()>1){
-					name = (String) order.keySet().toArray()[main.plugin.random.nextInt(order.size())];
-					arena = plugin.raceQues.getQue(name);
-					rec = order.get(name);
-					}
-				}
-				if(!rec && other != null){
-					arena = other;
-					name = other.getTrack().getTrackName();
-				}
-				RaceTrack track = plugin.trackManager.getRaceTrack(name);
-				if (track == null) {
-					sender.sendMessage(main.colors.getError()
-							+ main.msgs.get("general.cmd.delete.exists"));
+				if(player == null){
 					return true;
 				}
 				if (player.getVehicle() != null) {
@@ -394,46 +305,27 @@ public class URaceCommandExecutor implements CommandExecutor {
 					veh.eject();
 					veh.remove();
 				}
-				plugin.gameScheduler.joinGame(player, track, arena, name);
+				plugin.raceScheduler.joinAutoQueue(player, type);
 				return true;
 			} else {
-				RaceTrack track = plugin.trackManager.getRaceTrack(trackName);
-				if (track == null) {
-					sender.sendMessage(main.colors.getError()
-							+ main.msgs.get("general.cmd.delete.exists"));
-					return true;
-				}
-				RaceQue que = new RaceQue(track, type);
-				trackName = track.getTrackName();
-				if (main.plugin.raceQues.getQue(trackName) != null) {
-					que = main.plugin.raceQues.getQue(trackName);
-				}
-				if (que.getType() != type) {
-					if (que.getHowManyPlayers() < 1) {
-						plugin.raceQues
-								.removeQue(que.getTrack().getTrackName());
-						que = new RaceQue(track, type);
-					} else {
-						// Another queue for different RameType
-						String msg = main.msgs.get("race.que.other");
-						msg = msg.replaceAll(Pattern.quote("%type%"), que
-								.getType().name().toLowerCase());
-						sender.sendMessage(main.colors.getError() + msg);
-						return true;
-					}
-				}
 				if (main.plugin.raceMethods.inAGame(player) != null
 						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
 					return true;
 				}
+				RaceTrack track = plugin.trackManager.getRaceTrack(trackName);
+				if (track == null) {
+					sender.sendMessage(main.colors.getError()
+							+ main.msgs.get("general.cmd.delete.exists"));
+					return true;
+				}
 				if (player.getVehicle() != null) {
 					Vehicle veh = (Vehicle) player.getVehicle();
 					veh.eject();
 					veh.remove();
 				}
-				main.plugin.gameScheduler.joinGame(player, track, que, trackName);
+				main.plugin.raceScheduler.joinQueue(player, track, type);
 				return true;
 			}
 		} else if (command.equalsIgnoreCase("queues")
@@ -446,16 +338,15 @@ public class URaceCommandExecutor implements CommandExecutor {
 					page = 1;
 				}
 			}
-			ArrayList<String> names = new ArrayList<String>();
-			names.addAll(plugin.raceQues.getQues());
-			double total = names.size() / 6;
+			Map<UUID, RaceQueue> queues = plugin.raceQueues.getAllQueues();
+			double total = queues.size() / 6;
 			int totalpages = (int) Math.ceil(total);
 			int pos = (page - 1) * 6;
 			if (page > totalpages) {
 				page = totalpages;
 			}
-			if (pos > names.size()) {
-				pos = names.size() - 5;
+			if (pos > queues.size()) {
+				pos = queues.size() - 5;
 			}
 			if (pos < 0) {
 				pos = 0;
@@ -468,29 +359,32 @@ public class URaceCommandExecutor implements CommandExecutor {
 			msg = msg.replaceAll(Pattern.quote("%total%"), ""
 					+ (totalpages + 1));
 			sender.sendMessage(main.colors.getTitle() + msg);
-			for (int i = pos; i < (i + 6) && i < names.size(); i++) {
-				String Trackname = names.get(i);
-				RaceQue que = plugin.raceQues.getQue(Trackname);
+			ArrayList<UUID> keys = new ArrayList<UUID>(queues.keySet());
+			for (int i = pos; i < (i + 6) && i < queues.size(); i++) {
+				UUID id = keys.get(i);
+				RaceQueue queue = queues.get(id);
+				String trackName = queue.getTrackName();
 				ChatColor color = ChatColor.GREEN;
-				if (que.getHowManyPlayers() > (que.getPlayerLimit() - 1)) {
+				int playerCount = queue.playerCount();
+				if (playerCount > (queue.playerLimit() - 1)) {
 					color = ChatColor.RED;
 				}
-				if (que.getHowManyPlayers() > (que.getPlayerLimit() - 2)) {
+				if (playerCount > (queue.playerLimit() - 2)) {
 					color = ChatColor.YELLOW;
 				}
-				if (que.getHowManyPlayers() < main.config.getInt("race.que.minPlayers")) {
+				if (playerCount < main.config.getInt("race.que.minPlayers")) {
 					color = ChatColor.YELLOW;
 				}
-				char[] chars = Trackname.toCharArray();
+				char[] chars = trackName.toCharArray();
 				if (chars.length >= 1) {
 					String s = "" + chars[0];
 					s = s.toUpperCase();
-					Trackname = color + s + Trackname.substring(1)
-							+ main.colors.getInfo() + " (" + color
-							+ que.getHowManyPlayers() + main.colors.getInfo()
-							+ "/" + que.getPlayerLimit() + ")";
+					trackName = color + s + trackName.substring(1)
+							+ main.colors.getInfo() + "-"+queue.getRaceMode().name().toLowerCase()+" (" + color
+							+ queue.playerCount() + main.colors.getInfo()
+							+ "/" + queue.playerLimit() + ")";
 				}
-				sender.sendMessage(main.colors.getInfo() + Trackname);
+				sender.sendMessage(main.colors.getInfo() + trackName);
 			}
 			return true;
 		} else if (command.equalsIgnoreCase("leave")) {
@@ -501,7 +395,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 			}
 			Boolean game = true;
 			Race race = main.plugin.raceMethods.inAGame(player);
-			String que = main.plugin.raceMethods.inGameQue(player);
+			String que = main.plugin.raceMethods.inGameQueue(player);
 			if (race == null) {
 				game = false;
 			}

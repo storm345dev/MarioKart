@@ -906,7 +906,7 @@ public class MarioKart {
 								});
 						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
 						r.reloadingItemBoxes.add(signLoc);
-						main.plugin.gameScheduler.updateGame(r);
+						main.plugin.raceScheduler.updateRace(r);
 						Location eLoc = null;
 						for (Entity ent : ents) {
 							if (ent instanceof EnderCrystal) {
@@ -932,7 +932,7 @@ public class MarioKart {
 								}
 								r.reloadingItemBoxes.remove(signLoc);
 								main.listener.spawnItemPickupBox(loc, true);
-								main.plugin.gameScheduler.updateGame(r);
+								main.plugin.raceScheduler.updateRace(r);
 								return;
 							}
 						}, 200l);
