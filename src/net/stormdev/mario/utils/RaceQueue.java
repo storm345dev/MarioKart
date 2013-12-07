@@ -66,8 +66,72 @@ public class RaceQueue {
 		this.queueId = UUID.randomUUID();
 	}
 	
-	public void validatePlayers(){	
-		List<Player> pls = new ArrayList<Player>(players)
+	public Boolean validatePlayers(){	
+		Boolean valid = true;
+		for(Player p:getPlayers()){
+			if(p==null||!p.isOnline()){
+				players.remove(p);
+			}
+		}
+		if(type == RaceType.TIME_TRIAL && players.size() < 1){
+			valid = false;
+		}
+		if(players.size() < 1){
+			valid = false;
+		}
+		if(!valid){ //If there's not enough players in the queue
+			clear();
+			Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+			if(main.plugin.queues.containsKey(getTrackName())){
+				trackQueues = main.plugin.queues.get(getTrackName());
+			}
+			trackQueues.remove(queueId);
+			main.plugin.queues.put(getTrackName(), trackQueues); //Queue is now un-registered with the system
+			return false;
+		}
+		return true;
+	}
+	
+	public int playerCount(){
+		validatePlayers();
+		return players.size();
+	}
+	
+	public int playerLimit(){
+		return playerLimit;
+	}
+	
+	public List<Player> getPlayers(){
+		return new ArrayList<Player>(players);
+	}
+	
+	public Boolean addPlayer(Player player){
+		if(player != null && player.isOnline() && (playerCount()+1<playerLimit)){
+			players.add(player);
+			//TODO Recalculate that the queue now has an extra player
+			return true;
+		}
+		return false;
+	}
+	
+	public void removePlayer(Player player){
+		players.remove(player);
+		validatePlayers();
+	}
+	
+	public void removePlayer(String player){
+		for(Player p:getPlayers()){
+			if(p.getName().equals(player)){
+				removePlayer(p);
+				return;
+			}
+		}
+	}
+	
+	public void clear(){
+		this.players.clear();
+		this.type = RaceType.RACE;
+		starting = false;
 	}
 	
 
