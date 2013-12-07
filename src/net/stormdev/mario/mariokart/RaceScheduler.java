@@ -224,7 +224,6 @@ public class RaceScheduler {
 				return; //No more races can be run for now
 			}
 		}
-		main.logger.info("Running: "+getRacesRunning()+" races");
 	}
 	
 	public void startRace(String trackName, final Race race) {
