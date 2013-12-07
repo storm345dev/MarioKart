@@ -1114,6 +1114,10 @@ public class URaceListener implements Listener {
 		}
 		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).add(0, 2, 0);
+                Chunk chunk = loc.getChunk();
+                if(!chunk.isLoaded()){
+                    chunk.losd(true);
+                }
 		event.setRespawnLocation(loc);
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
