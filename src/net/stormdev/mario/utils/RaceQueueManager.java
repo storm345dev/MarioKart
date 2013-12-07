@@ -59,6 +59,28 @@ public class RaceQueueManager {
 		return null;
 	}
 	
+	public Map<UUID, RaceQueue> getQueues(RaceType type){
+		Map<UUID, RaceQueue> trackQueues = getAllQueues();
+		for(UUID id:new ArrayList<UUID>(trackQueues.keySet())){
+			RaceQueue queue = trackQueues.get(id);
+			if(queue.getRaceMode() != type){
+				trackQueues.remove(queue);
+			}
+		}
+		return trackQueues;
+	}
+	
+	public Map<UUID, RaceQueue> getOpenQueues(RaceType type){
+		Map<UUID, RaceQueue> trackQueues = getAllQueues();
+		for(UUID id:new ArrayList<UUID>(trackQueues.keySet())){
+			RaceQueue queue = trackQueues.get(id);
+			if(queue.getRaceMode() != type && queue.playerCount()+1<queue.playerLimit()){
+				trackQueues.remove(queue);
+			}
+		}
+		return trackQueues;
+	}
+	
 	public Map<UUID, RaceQueue> getQueues(String trackName){
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
 		if(main.plugin.queues.containsKey(trackName)){

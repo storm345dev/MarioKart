@@ -461,11 +461,11 @@ public class main extends JavaPlugin {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
-		HashMap<UUID, Race> games = this.raceScheduler.getGames();
+		HashMap<UUID, Race> games = this.raceScheduler.getRaces();
 		for (Race r : games.values()) {
 			r.end();
 			try {
-				this.raceScheduler.stopGame(r.getGameId());
+				this.raceScheduler.stopRace(r);
 			} catch (Exception e) {
 			}
 		}

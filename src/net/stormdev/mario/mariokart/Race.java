@@ -37,7 +37,7 @@ import com.useful.ucarsCommon.StatValue;
 public class Race {
 	public List<String> finished = new ArrayList<String>();
 	public List<User> users = new ArrayList<User>();
-	private String gameId = "";
+	private UUID gameId = null;
 	private RaceTrack track = null;
 	private String trackName = "";
 	private String winner = null;
@@ -63,7 +63,7 @@ public class Race {
 
 	public Race(RaceTrack track, String trackName, RaceType type) {
 		this.type = type;
-		this.gameId = UUID.randomUUID().toString();
+		this.gameId = UUID.randomUUID();
 		this.track = track;
 		this.trackName = trackName;
 		this.totalLaps = this.track.getLaps();
@@ -83,7 +83,6 @@ public class Race {
 		}
 		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
 		this.timeLimitS = main.config.getInt("general.race.maxTimePerCheckpoint") * track.getCheckpoints().size() + 60;
-		main.plugin.gameScheduler.runningGames++;
 	}
 
 	public RaceType getType() {
@@ -222,7 +221,7 @@ public class Race {
 				end();
 			} catch (Exception e) {
 			}
-			main.plugin.gameScheduler.reCalculateQues();
+			main.plugin.raceScheduler.recalculateQueues();
 		}
 	}
 
@@ -233,7 +232,7 @@ public class Race {
 		return false;
 	}
 
-	public String getGameId() {
+	public UUID getGameId() {
 		return this.gameId;
 	}
 
@@ -450,16 +449,6 @@ public class Race {
 			this.scoresBoard.unregister();
 		} catch (IllegalStateException e) {
 		}
-		try {
-			int current = main.plugin.gameScheduler.runningGames;
-			current--;
-			if (current < 0) {
-				current = 0;
-			}
-			main.plugin.gameScheduler.runningGames = current;
-		} catch (Exception e) {
-			// Server reloaded when game ending
-		}
 		
 		this.endTimeMS = System.currentTimeMillis();
 		for (User user : getUsersIn()) {
@@ -481,7 +470,8 @@ public class Race {
 		if (evt != null) {
 			main.plugin.getServer().getPluginManager().callEvent(evt);
 		}
-		main.plugin.gameScheduler.reCalculateQues();
+		main.plugin.raceScheduler.removeRace(this);
+		main.plugin.raceScheduler.recalculateQueues();
 	}
 
 	public void finish(User user) {
