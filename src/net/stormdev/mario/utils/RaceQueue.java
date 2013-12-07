@@ -86,9 +86,6 @@ public class RaceQueue {
 				leftPlayers.add(p.getName());
 			}
 		}
-		if(type == RaceType.TIME_TRIAL && players.size() < 1){
-			valid = false;
-		}
 		if(players.size() < 1){
 			valid = false;
 		}

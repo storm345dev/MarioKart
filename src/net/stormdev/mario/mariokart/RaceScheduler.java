@@ -175,7 +175,7 @@ public class RaceScheduler {
 					startRace(race.getTrackName(), race);
 				}
 			}
-			else if(queue.playerCount() > main.config.getInt("race.que.minPlayers")
+			else if(queue.playerCount() >= main.config.getInt("race.que.minPlayers")
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
 					&& getRacesRunning()<raceLimit
 					&& !queue.isStarting()){
@@ -191,7 +191,7 @@ public class RaceScheduler {
 
 					@Override
 					public void run() {
-						if(!(queue.playerCount() > main.config.getInt("race.que.minPlayers"))){
+						if(queue.playerCount() < main.config.getInt("race.que.minPlayers")){
 						queue.setStarting(false);
 						return;
 						}
