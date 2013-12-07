@@ -149,19 +149,61 @@ public class RaceScheduler {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		ArrayList<RaceTrack> queuedTracks = new ArrayList<RaceTrack>();
 		for(UUID id:new ArrayList<UUID>(queues.keySet())){
-			RaceQueue queue = queues.get(id);
+			final RaceQueue queue = queues.get(id);
 			if(queue.getRaceMode() == RaceType.TIME_TRIAL
 					&& !isTrackInUse(queue.getTrack(), RaceType.TIME_TRIAL)
 					&& !queuedTracks.contains(queue.getTrack())
 					&& getRacesRunning()<raceLimit
 					&& !queue.isStarting()){ //Are there other racemodes waiting for the track ahead of it?
-				//TODO
+				queue.setStarting(true);
+				Race race = new Race(queue.getTrack(), queue.getTrackName(), RaceType.TIME_TRIAL);
+				List<Player> q = new ArrayList<Player>(queue.getPlayers());
+				for(Player p:q){
+					if(p!=null && p.isOnline()){
+				    race.join(p);
+					}
+				}
+				q.clear();
+				main.plugin.raceQueues.removeQueue(queue);
+				if(race.getUsers().size() > 0){
+					startRace(race.getTrackName(), race);
+				}
 			}
 			else if(queue.playerCount() > main.config.getInt("race.que.minPlayers")
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
 					&& getRacesRunning()<raceLimit
 					&& !queue.isStarting()){
-				//TODO Queue can be initiated
+				// Queue can be initiated
+				queue.setStarting(true);
+				//Wait grace time
+				double graceS = main.config.getDouble("general.raceGracePeriod");
+				long grace = (long) (graceS*20);
+				String msg = main.msgs.get("race.que.players");
+				msg = msg.replaceAll(Pattern.quote("%time%"), "" + graceS);
+				queue.broadcast(main.colors.getInfo() + msg);
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						if(!(queue.playerCount() > main.config.getInt("race.que.minPlayers"))){
+						queue.setStarting(false);
+						return;
+						}
+						Race race = new Race(queue.getTrack(), queue.getTrackName(), queue.getRaceMode());
+						List<Player> q = new ArrayList<Player>(queue.getPlayers());
+						for(Player p:q){
+							if(p!=null && p.isOnline()){
+						    race.join(p);
+							}
+						}
+						q.clear();
+						if(queue.playerCount() > main.config.getInt("race.que.minPlayers")){
+							if(race.getUsers().size() > 0){
+								startRace(race.getTrackName(), race);
+							}
+						}
+						return;
+					}}, grace);
 			}
 			else{
 				//Race unable to be started (Unavailable etc...)
@@ -173,7 +215,7 @@ public class RaceScheduler {
 				return; //No more races can be run for now
 			}
 		}
-		//TODO
+		main.logger.info("Running: "+getRacesRunning()+" races");
 	}
 	
 	public void startRace(String trackName, final Race race) {
