@@ -380,9 +380,10 @@ public class URaceCommandExecutor implements CommandExecutor {
 					String s = "" + chars[0];
 					s = s.toUpperCase();
 					trackName = color + s + trackName.substring(1)
-							+ main.colors.getInfo() + "-"+queue.getRaceMode().name().toLowerCase()+" (" + color
+							+ main.colors.getInfo() +" (" + color
 							+ queue.playerCount() + main.colors.getInfo()
-							+ "/" + queue.playerLimit() + ")";
+							+ "/" + queue.playerLimit() + ")" 
+							+ " ["+queue.getRaceMode().name().toLowerCase()+"]";
 				}
 				sender.sendMessage(main.colors.getInfo() + trackName);
 			}
