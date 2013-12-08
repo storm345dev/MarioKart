@@ -90,9 +90,7 @@ public class Race {
 	}
 
 	public User getUser(Player player){
-		List<User> u = new ArrayList<User>();
-		u.addAll(users); //Fix concurrentModificationErrors 
-		for (User user : u){
+		for (User user : getUsers()){
 			try {
 				Player pl = user.getPlayer();
 				if (pl.equals(player)){
@@ -132,7 +130,7 @@ public class Race {
 	}
 	
 	public List<String> getUsersFinished(){
-		return finished;
+		return new ArrayList<String>(finished);
 	}
 
 	public void playerOut(User user) {
@@ -495,7 +493,10 @@ public class Race {
 			startEndCount();
 		}
 		finished.add(user.getPlayerName());
+		users.remove(user);
 		user.setFinished(true);
+		user.setInRace(false);
+		users.add(user);
 		try {
 			Player player = user.getPlayer();
 			player.setLevel(user.getOldLevel());
