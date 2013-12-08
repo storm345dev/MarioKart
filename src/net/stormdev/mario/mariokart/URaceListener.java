@@ -1299,6 +1299,10 @@ public class URaceListener implements Listener {
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
 		Map<String, Object> data = hotBarItem.getData();
 		HotBarUpgrade type = hotBarItem.getType();
+		String upgradeName = "Unknown";
+		if(data.containsKey("upgrade.name")){
+			upgradeName = data.get("upgrade.name").toString();
+		}
 		if(type == HotBarUpgrade.LEAVE){
 			//Make the player leave the race
 			main.cmdExecutor.urace(player, new String[]{"leave"}, player);
@@ -1321,8 +1325,16 @@ public class URaceListener implements Listener {
 			if(data.containsKey("upgrade.useUpgrade")){
 				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
 			}
-			ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
-			//TODO Manage useItem and useUpgrade
+			Boolean execute = true;
+			if(useItem){
+				if(!hotBar.useItem(slot)){
+					execute = false;
+				}
+			}
+			if(execute){
+				ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+				//TODO Manage useUpgrade
+			}
 		}
 	}
 	@EventHandler
