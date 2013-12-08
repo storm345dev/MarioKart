@@ -1297,10 +1297,32 @@ public class URaceListener implements Listener {
 		MarioHotBar hotBar = event.getHotBar();
 		HotBarSlot slot = event.getHotBarSlot();
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
-		if(hotBarItem.getType() == HotBarUpgrade.LEAVE){
+		Map<String, Object> data = hotBarItem.getData();
+		HotBarUpgrade type = hotBarItem.getType();
+		if(type == HotBarUpgrade.LEAVE){
 			//Make the player leave the race
 			main.cmdExecutor.urace(player, new String[]{"leave"}, player);
 			return;
+		}
+		else if(type == HotBarUpgrade.SPEED_BOOST){
+			long lengthMS = 5000;
+			double power = 5;
+			Boolean useItem = true;
+			Boolean useUpgrade = false;
+			if(data.containsKey("upgrade.length")){
+				lengthMS = (long) data.get("upgrade.length");
+			}
+			if(data.containsKey("upgrade.power")){
+				power = (double) data.get("upgrade.power");
+			}
+			if(data.containsKey("upgrade.useItem")){
+				useItem = (Boolean) data.get("upgrade.useItem");
+			}
+			if(data.containsKey("upgrade.useUpgrade")){
+				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
+			}
+			ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+			//TODO Manage useItem and useUpgrade
 		}
 	}
 	@EventHandler

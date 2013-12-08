@@ -1,5 +1,8 @@
 package net.stormdev.mario.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.inventory.ItemStack;
 
 public class HotBarItem {
@@ -7,11 +10,20 @@ public class HotBarItem {
 	private String displayName = "";
 	private int quantity = 1;
 	private HotBarUpgrade type = HotBarUpgrade.SPEED_BOOST;
-	public HotBarItem(ItemStack displayItem, String displayName, int quantity, HotBarUpgrade type){
+	Map<String, Object> data = new HashMap<String, Object>();
+	public HotBarItem(ItemStack displayItem, String displayName, int quantity, HotBarUpgrade type, Map<String, Object> data){
 		this.displayItem = displayItem;
 		this.displayName = displayName;
 		this.quantity = quantity;
 		this.type = type;
+		this.data = data;
+	}
+	public Map<String, Object> getData(){
+		return data;
+	}
+	public void setData(Map<String, Object> data){
+		this.data = data;
+		return;
 	}
 	public ItemStack getDisplayItem(){
 		return this.displayItem;

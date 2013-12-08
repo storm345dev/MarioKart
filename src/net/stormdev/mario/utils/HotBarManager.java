@@ -47,10 +47,15 @@ public class HotBarManager {
 		ArrayList<HotBarItem> defaultItems = new ArrayList<HotBarItem>();
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
 				ChatColor.GREEN+"Leave Race", 1, 
-				HotBarUpgrade.LEAVE);
+				HotBarUpgrade.LEAVE, new HashMap<String, Object>());
+		Map<String, Object> scroll_test_data = new HashMap<String, Object>();
+		scroll_test_data.put("upgrade.length", 5000l);
+		scroll_test_data.put("upgrade.power", 10d);
+		scroll_test_data.put("upgrade.useItem", true);
+		scroll_test_data.put("upgrade.useUpgrade", false);
 		HotBarItem scroll_test = new HotBarItem(new ItemStack(Material.APPLE),
-				ChatColor.GREEN+"Test Item", 1,
-				HotBarUpgrade.SPEED_BOOST);
+				ChatColor.GREEN+"Speed Burst", 1,
+				HotBarUpgrade.SPEED_BOOST, scroll_test_data);
 		defaultItems.add(exit_door);
 		defaultItems.add(scroll_test);
 		contents.put(HotBarSlot.UTIL, defaultItems);
