@@ -1328,7 +1328,7 @@ public class URaceListener implements Listener {
 				@Override
 				public void run() {
 					player.removeMetadata("mariokart.slotChanging", main.plugin);
-				}}, 40);
+				}}, 15);
 		}
 	}
 }
