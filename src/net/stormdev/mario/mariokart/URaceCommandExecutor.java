@@ -291,7 +291,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				}
 			}
 			if (trackName.equalsIgnoreCase("auto")) {
-				if (main.plugin.raceMethods.inAGame(player) != null
+				if (main.plugin.raceMethods.inAGame(player, false) != null
 						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
@@ -305,7 +305,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				plugin.raceScheduler.joinAutoQueue(player, type);
 				return true;
 			} else {
-				if (main.plugin.raceMethods.inAGame(player) != null
+				if (main.plugin.raceMethods.inAGame(player, false) != null
 						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
@@ -392,7 +392,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			Boolean game = true;
-			Race race = main.plugin.raceMethods.inAGame(player);
+			Race race = main.plugin.raceMethods.inAGame(player, false);
 			RaceQueue queue = main.plugin.raceMethods.inGameQue(player);
 			if (race == null) {
 				game = false;

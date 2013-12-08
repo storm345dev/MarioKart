@@ -57,6 +57,11 @@ public class User {
 		return player;
 	}
 	
+	public void setPlayer(Player player){
+		this.player = player;
+		return;
+	}
+	
 	public OfflinePlayer getOfflinePlayer(Server server){
 		return server.getOfflinePlayer(playerName);
 	}

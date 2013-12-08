@@ -64,11 +64,11 @@ public class MarioKart {
 		if (!enabled) {
 			return;
 		}
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		Race game = plugin.raceMethods.inAGame(player);
-		Boolean timed = game.getType() == RaceType.TIME_TRIAL;
+		Race race = plugin.raceMethods.inAGame(player, false);
+		Boolean timed = race.getType() == RaceType.TIME_TRIAL;
 		// Start calculations
 		if (event instanceof PlayerInteractEvent) {
 			PlayerInteractEvent evt = (PlayerInteractEvent) event;
@@ -86,7 +86,6 @@ public class MarioKart {
 				if (ItemStackFromId.equals(
 						main.config.getString("mariokart.greenShell"),
 						inHand.getTypeId(), inHand.getDurability())) {
-					Race race = plugin.raceMethods.inAGame(player);
 					if (race == null) {
 						return;
 					}
@@ -215,8 +214,7 @@ public class MarioKart {
 					inHand.getTypeId(), inHand.getDurability())) {
 				inHand.setAmount(inHand.getAmount() - 1);
 				ItemStack give = this.getRandomPowerup();
-				if (plugin.raceMethods.inAGame(ply) != null) {
-					Race race = plugin.raceMethods.inAGame(ply);
+				if (race != null) {
 					if (ply.getName().equals(race.winning)) {
 						while (ItemStackFromId.equals(
 								main.config.getString("mariokart.blueShell"),
@@ -283,10 +281,6 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.redShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
@@ -355,10 +349,6 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.blueShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
@@ -414,10 +404,6 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.greenShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				inHand.setAmount(inHand.getAmount() - 1);
 				ItemStack toDrop = ItemStackFromId.get(main.config
 						.getString("mariokart.greenShell"));
@@ -537,10 +523,6 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.lightning"),
 					inHand.getTypeId(), inHand.getDurability())) {
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
@@ -581,10 +563,6 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.pow"), inHand.getTypeId(),
 					inHand.getDurability())) {
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
@@ -676,10 +654,6 @@ public class MarioKart {
 					inHand.getDurability())) {
 				PotionEffect effect = new PotionEffect(
 						PotionEffectType.INVISIBILITY, 120, 10);
-				Race race = plugin.raceMethods.inAGame(player);
-				if (race == null) {
-					return;
-				}
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				final Object[] pls = (Object[]) keys.toArray();
@@ -806,7 +780,7 @@ public class MarioKart {
 						if (player.hasMetadata("kart.rolling")) {
 							return;
 						}
-						final Race r = plugin.raceMethods.inAGame(player);
+						final Race r = race;
 						if (r == null) {
 							return;
 						}
@@ -835,8 +809,7 @@ public class MarioKart {
 								give = a;
 							}
 							Player ply = ((Player) car.getPassenger());
-							if (plugin.raceMethods.inAGame(ply) != null) {
-								Race race = plugin.raceMethods.inAGame(ply);
+							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
 									while (ItemStackFromId.equals(main.config
 											.getString("mariokart.blueShell"),
@@ -850,8 +823,7 @@ public class MarioKart {
 							// Give mario items
 							Player ply = ((Player) car.getPassenger());
 							give = this.getRandomPowerup();
-							if (plugin.raceMethods.inAGame(ply) != null) {
-								Race race = plugin.raceMethods.inAGame(ply);
+							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
 									while (ItemStackFromId.equals(main.config
 											.getString("mariokart.blueShell"),

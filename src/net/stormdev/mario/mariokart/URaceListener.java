@@ -25,6 +25,7 @@ import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -113,7 +114,7 @@ public class URaceListener implements Listener {
 		if (!ucars.listener.inACar(player)) {
 			return;
 		}
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
 		if (ItemStackFromId.equals(main.config.getString("mariokart.banana"),
@@ -130,7 +131,7 @@ public class URaceListener implements Listener {
 
 	@EventHandler
 	void playerDeath(PlayerDeathEvent event) {
-		Race r = plugin.raceMethods.inAGame(event.getEntity());
+		Race r = plugin.raceMethods.inAGame(event.getEntity(), false);
 		if (r == null) {
 			return;
 		}
@@ -152,7 +153,7 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Player player = (Player) e;
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -168,7 +169,7 @@ public class URaceListener implements Listener {
 		if (!ucars.listener.inACar(player.getName())) {
 			return;
 		}
-		if (plugin.raceMethods.inAGame((Player) player) == null) {
+		if (plugin.raceMethods.inAGame((Player) player, false) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -199,7 +200,7 @@ public class URaceListener implements Listener {
 	void powerups(ucarUpdateEvent event) {
 		Player player = (Player) event.getVehicle().getPassenger();
 		try {
-			if (plugin.raceMethods.inAGame(player) == null) {
+			if (plugin.raceMethods.inAGame(player, false) == null) {
 				return;
 			}
 		} catch (Exception e) {
@@ -548,7 +549,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void gameQuitting(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		Race game = plugin.raceMethods.inAGame(player);
+		Race game = plugin.raceMethods.inAGame(player, false);
 		if (game == null) {
 			RaceQueue queue = plugin.raceMethods.inGameQue(player);
 			if (queue == null) {
@@ -565,7 +566,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void gameQuitting(PlayerKickEvent event) {
 		Player player = event.getPlayer();
-		Race game = plugin.raceMethods.inAGame(player);
+		Race game = plugin.raceMethods.inAGame(player, false);
 		if (game == null) {
 			RaceQueue queue = plugin.raceMethods.inGameQue(player);
 			if (queue == null) {
@@ -762,7 +763,7 @@ public class URaceListener implements Listener {
 		}
 		try {
 			if (plugin.raceMethods.inAGame(((Player) event.getEntity()
-					.getPassenger())) == null
+					.getPassenger()), false) == null
 					&& !(event.getEntity().hasMetadata("kart.immune"))) {
 				return;
 			}
@@ -1015,7 +1016,7 @@ public class URaceListener implements Listener {
 			if (!ucars.listener.inACar((Player) event.getEntity())) {
 				return;
 			}
-			if (plugin.raceMethods.inAGame(((Player) event.getEntity())) == null) {
+			if (plugin.raceMethods.inAGame(((Player) event.getEntity()), false) == null) {
 				return;
 			}
 			Player player = ((Player) event.getEntity());
@@ -1051,7 +1052,7 @@ public class URaceListener implements Listener {
 		}
 		try {
 			if (plugin.raceMethods.inAGame(((Player) event.getVehicle()
-					.getPassenger())) == null) {
+					.getPassenger()), false) == null) {
 				return;
 			}
 		} catch (Exception e) {
@@ -1068,7 +1069,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void playerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		Race r = plugin.raceMethods.inAGame(player);
+		Race r = plugin.raceMethods.inAGame(player, false);
 		if (r == null) {
 			return;
 		}
@@ -1089,10 +1090,10 @@ public class URaceListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	void playerRespawnEvent(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		Race race = plugin.raceMethods.inAGame(player);
+		Race race = plugin.raceMethods.inAGame(player, false);
 		int checkpoint = 0;
 		try {
 			User user = race.getUser(player);
@@ -1114,10 +1115,11 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	void postRespawn(PlayerRespawnEvent event){
 		final Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
 		}
-		Race race = plugin.raceMethods.inAGame(player);
+		Race race = plugin.raceMethods.inAGame(player, false);
+		race.updateUser(player);
 		int checkpoint = 0;
 		try {
 			User user = race.getUser(player);
@@ -1144,13 +1146,14 @@ public class URaceListener implements Listener {
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
 		player.setScoreboard(race.board);
+		main.plugin.raceScheduler.updateRace(race);
 		return;
 	}
 
 	@EventHandler
 	void blockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -1160,7 +1163,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void blockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
 		event.setCancelled(true);
@@ -1182,7 +1185,7 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Player player = (Player) pass;
-		if (plugin.raceMethods.inAGame(player) == null) {
+		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
 		Vector Velocity = car.getVelocity();

@@ -90,10 +90,10 @@ public class Race {
 	}
 
 	public User getUser(Player player){
+		String pname = player.getName();
 		for (User user : getUsers()){
 			try {
-				Player pl = user.getPlayer();
-				if (pl.equals(player)){
+				if (user.getPlayerName().equals(pname)){
 					return user;
 				}
 			} catch (Exception e) {
@@ -507,6 +507,19 @@ public class Race {
 		}
 		this.endTimeMS = System.currentTimeMillis();
 		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
+	}
+	
+	public User updateUser(Player player){
+		String playerName = player.getName();
+		for(User u:getUsers()){
+			if(u.getPlayerName().equals(playerName)){
+				users.remove(u);
+				u.setPlayer(player);
+				users.add(u);
+				return u;
+			}
+		}
+		return null;
 	}
 
 	public CheckpointCheck playerAtCheckpoint(Integer[] checks, Player p,

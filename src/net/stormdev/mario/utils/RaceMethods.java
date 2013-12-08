@@ -18,10 +18,13 @@ public class RaceMethods {
 		this.plugin = main.plugin;
 	}
 
-	public Race inAGame(Player player) {
+	public Race inAGame(Player player, Boolean update) {
 		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
 		for(UUID id:new ArrayList<UUID>(races.keySet())){
 			Race r = races.get(id);
+			if(update){
+				r.updateUser(player);
+			}
 			List<User> users = r.getUsersIn(); //Exclude those that have finished the race
 			for(User u:users){
 				if(u.getPlayerName().equals(player.getName())){
