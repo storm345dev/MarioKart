@@ -392,11 +392,14 @@ public class RaceScheduler {
 	
 	public void stopRace(Race race){
 		race.end();
+		race.clear();
+		this.races.put(race.getGameId(), race);
 		removeRace(race);
 		recalculateQueues();
 	}
 	
 	public void removeRace(Race race){
+		race.clear();
 		this.races.remove(race.getGameId());
 	}
 	

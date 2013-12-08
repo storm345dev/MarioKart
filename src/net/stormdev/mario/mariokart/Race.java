@@ -482,7 +482,7 @@ public class Race {
 		if (evt != null) {
 			main.plugin.getServer().getPluginManager().callEvent(evt);
 		}
-		users.clear();
+		clear();
 		main.plugin.raceScheduler.removeRace(this);
 		main.plugin.raceScheduler.recalculateQueues();
 	}
@@ -635,5 +635,11 @@ public class Race {
 			}
 		}
 		return;
+	}
+	public void clear(){
+		users.clear();
+		finished.clear();
+		this.ended = true;
+		this.ending = true;
 	}
 }
