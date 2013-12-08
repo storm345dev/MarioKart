@@ -21,6 +21,22 @@ public class MarioHotBar {
 	public Player getPlayer(){
 		return player;
 	}
+	public void setHotBar(Map<HotBarSlot, List<HotBarItem>> hotBar){
+		this.hotBar = hotBar;
+		return;
+	}
+	public void setHotBarItems(HotBarSlot slot, List<HotBarItem> items){
+		hotBar.put(slot, items);
+	}
+	public void addHotBarItem(HotBarSlot slot, HotBarItem item){
+		List<HotBarItem> items = new ArrayList<HotBarItem>();
+		if(hotBar.containsKey(slot)){
+			items.addAll(hotBar.get(slot));
+		}
+		items.add(item);
+		hotBar.put(slot, items);
+		return;
+	}
 	public Map<HotBarSlot, List<HotBarItem>> getHotBar(){
 		return new HashMap<HotBarSlot, List<HotBarItem>>(hotBar);
 	}
