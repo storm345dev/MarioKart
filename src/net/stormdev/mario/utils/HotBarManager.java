@@ -48,7 +48,11 @@ public class HotBarManager {
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
 				ChatColor.GREEN+"Leave Race", 1, 
 				HotBarUpgrade.LEAVE);
+		HotBarItem scroll_test = new HotBarItem(new ItemStack(Material.APPLE),
+				ChatColor.GREEN+"Test Item", 1,
+				HotBarUpgrade.SPEED_BOOST);
 		defaultItems.add(exit_door);
+		defaultItems.add(scroll_test);
 		contents.put(HotBarSlot.UTIL, defaultItems);
 		//TODO Look-up purchased upgrades in a menu and add them too
 		return contents;

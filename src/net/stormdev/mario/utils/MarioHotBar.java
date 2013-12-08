@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.stormdev.mario.mariokart.main;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -108,7 +109,7 @@ public class MarioHotBar {
 		HotBarItem i = items.get(0);
 		String n = i.getDisplayName();
 		if(items.size() > 1){
-			n = n+ChatColor.RESET+ChatColor.DARK_PURPLE+"(Press 'd' to change)";
+			n = n+ChatColor.RESET+ChatColor.DARK_PURPLE+" (Press 'd' to change)";
 		}
 		ItemStack item = i.getDisplayItem();
 		ItemMeta im = item.getItemMeta();
