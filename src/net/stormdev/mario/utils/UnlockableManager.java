@@ -16,6 +16,7 @@ public class UnlockableManager {
 	public UnlockableManager(File saveFile, Boolean sql, Map<String, Unlockable> unlocks){
 		this.saveFile = saveFile;
 		this.sql = sql;
+		this.unlocks = unlocks;
 		if(sql){
 			try {
 				sqlManager = new SQLManager(main.config.getString("general.upgrades.sqlHostName"), 
