@@ -214,6 +214,7 @@ public class MarioKart {
 						HotBarSlot.UTIL);
 				main.plugin.getServer().getPluginManager().callEvent(evet);
 				evt.setCancelled(true);
+				return;
 			}
 			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
 					&& hotBar.getDisplayedItem(HotBarSlot.SCROLLER).equals(inHand)){
@@ -222,6 +223,7 @@ public class MarioKart {
 						HotBarSlot.SCROLLER);
 				main.plugin.getServer().getPluginManager().callEvent(evet);
 				evt.setCancelled(true);
+				return;
 			}
 			if(timed){
 				return;
