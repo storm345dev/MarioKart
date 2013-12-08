@@ -1008,7 +1008,8 @@ public class URaceListener implements Listener {
 	void playerFireProtection(EntityDamageEvent event) {
 		try {
 			if (event.getCause() != DamageCause.FIRE
-					&& event.getCause() != DamageCause.FIRE_TICK) {
+					&& event.getCause() != DamageCause.FIRE_TICK
+					&& event.getCause() != DamageCause.ENTITY_ATTACK) {
 				return;
 			}
 			if (!(event.getEntity() instanceof Player)) {
@@ -1250,9 +1251,17 @@ public class URaceListener implements Listener {
 		return;
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
+	void pvp(EntityDamageEvent event){
+		if(event.getEntity() instanceof Player 
+				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
+			event.setDamage(0);
+			event.setCancelled(true);
+		}
+		return;
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
 	void pvp(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player 
-				&& event.getDamager() instanceof Player
 				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
 			event.setDamage(0);
 			event.setCancelled(true);

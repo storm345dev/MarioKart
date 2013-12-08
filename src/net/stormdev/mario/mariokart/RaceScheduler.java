@@ -135,7 +135,12 @@ public class RaceScheduler {
 	}
 	
 	public void executeLobbyJoin(Player player, RaceQueue queue){
-		player.teleport(queue.getTrack().getLobby(main.plugin.getServer()));
+		Location l = queue.getTrack().getLobby(main.plugin.getServer());
+		Chunk chunk = l.getChunk();
+		if(!chunk.isLoaded()){
+			chunk.load(true);
+		}
+		player.teleport(l);
 		String rl = main.plugin.packUrl;
 		player.sendMessage(main.colors.getInfo()+main.msgs.get("resource.download"));
 		String msg = main.msgs.get("resource.downloadHelp");

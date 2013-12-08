@@ -300,6 +300,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				if (player.getVehicle() != null) {
 					Vehicle veh = (Vehicle) player.getVehicle();
 					veh.eject();
+					player.eject();
 					veh.remove();
 				}
 				plugin.raceScheduler.joinAutoQueue(player, type);
@@ -320,6 +321,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				if (player.getVehicle() != null) {
 					Vehicle veh = (Vehicle) player.getVehicle();
 					veh.eject();
+					player.eject();
 					veh.remove();
 				}
 				main.plugin.raceScheduler.joinQueue(player, track, type);
