@@ -9,7 +9,10 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
+import net.stormdev.mario.utils.MarioHotBar;
+import net.stormdev.mario.utils.MarioKartHotBarClickEvent;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
@@ -86,9 +89,6 @@ public class MarioKart {
 				if (ItemStackFromId.equals(
 						main.config.getString("mariokart.greenShell"),
 						inHand.getTypeId(), inHand.getDurability())) {
-					if (race == null) {
-						return;
-					}
 					inHand.setAmount(inHand.getAmount() - 1);
 					player.setItemInHand(inHand);
 					if ((inHand.getAmount() - 1) < 1) {
@@ -205,6 +205,19 @@ public class MarioKart {
 					evt.setCancelled(true);
 				}
 				return;
+			}
+			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply.getName());
+			if(hotBar.getDisplayedItem(HotBarSlot.UTIL).equals(inHand)){
+				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
+						hotBar,
+						HotBarSlot.UTIL);
+				main.plugin.getServer().getPluginManager().callEvent(evet);
+			}
+			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER).equals(inHand)){
+				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
+						hotBar,
+						HotBarSlot.SCROLLER);
+				main.plugin.getServer().getPluginManager().callEvent(evet);
 			}
 			if(timed){
 				return;
@@ -781,9 +794,6 @@ public class MarioKart {
 							return;
 						}
 						final Race r = race;
-						if (r == null) {
-							return;
-						}
 						final Location signLoc = sign.getLocation();
 						if (r.reloadingItemBoxes.contains(signLoc)) {
 							return; // Box is reloading

@@ -16,7 +16,9 @@ import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.HotBarItem;
 import net.stormdev.mario.utils.HotBarSlot;
+import net.stormdev.mario.utils.HotBarUpgrade;
 import net.stormdev.mario.utils.MarioHotBar;
+import net.stormdev.mario.utils.MarioKartHotBarClickEvent;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
@@ -67,7 +69,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -1285,5 +1286,17 @@ public class URaceListener implements Listener {
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
 		return;
+	}
+	@EventHandler (priority = EventPriority.MONITOR)
+	public void hotBarClickEvent(MarioKartHotBarClickEvent event){
+		Player player = event.getPlayer();
+		MarioHotBar hotBar = event.getHotBar();
+		HotBarSlot slot = event.getHotBarSlot();
+		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
+		if(hotBarItem.getType() == HotBarUpgrade.LEAVE){
+			//Make the player leave the race
+			main.cmdExecutor.urace(player, new String[]{"leave"}, player);
+			return;
+		}
 	}
 }
