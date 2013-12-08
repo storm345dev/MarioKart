@@ -1303,4 +1303,32 @@ public class URaceListener implements Listener {
 			return;
 		}
 	}
+	@EventHandler
+	public void hotBarScrolling(VehicleUpdateEvent event){
+		Vehicle car = event.getVehicle();
+		if(car.getPassenger() == null
+				|| !(car.getPassenger() instanceof Player)){
+			return;
+		}
+		final Player player = (Player) car.getPassenger();
+		if(car.hasMetadata("car.braking")
+				&& !player.hasMetadata("mariokart.slotChanging")
+				&& (player.getInventory().getHeldItemSlot() == 6
+				|| player.getInventory().getHeldItemSlot() == 7)){
+			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player.getName());
+			if(player.getInventory().getHeldItemSlot() == 6){
+				hotBar.scroll(HotBarSlot.SCROLLER);
+			}
+			else{
+				hotBar.scroll(HotBarSlot.UTIL);
+			}
+			player.setMetadata("mariokart.slotChanging", new StatValue(true, main.plugin));
+			main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					player.removeMetadata("mariokart.slotChanging", main.plugin);
+				}}, 40);
+		}
+	}
 }

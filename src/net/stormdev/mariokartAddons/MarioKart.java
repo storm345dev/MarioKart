@@ -722,25 +722,6 @@ public class MarioKart {
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
 			main.listener.updateHotBar(player);
-			if(car.hasMetadata("car.braking")
-					&& !player.hasMetadata("mariokart.slotChanging")
-					&& (player.getInventory().getHeldItemSlot() == 6
-					|| player.getInventory().getHeldItemSlot() == 7)){
-				MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player.getName());
-				if(player.getInventory().getHeldItemSlot() == 6){
-					hotBar.scroll(HotBarSlot.SCROLLER);
-				}
-				else{
-					hotBar.scroll(HotBarSlot.UTIL);
-				}
-				player.setMetadata("mariokart.slotChanging", new StatValue(true, main.plugin));
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
-
-					@Override
-					public void run() {
-						player.removeMetadata("mariokart.slotChanging", main.plugin);
-					}}, 40);
-			}
 			if(timed){
 				return;
 			}
