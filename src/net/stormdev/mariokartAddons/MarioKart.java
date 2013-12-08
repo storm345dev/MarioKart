@@ -207,17 +207,21 @@ public class MarioKart {
 				return;
 			}
 			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply.getName());
-			if(hotBar.getDisplayedItem(HotBarSlot.UTIL).equals(inHand)){
+			if(hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
+					&& hotBar.getDisplayedItem(HotBarSlot.UTIL).equals(inHand)){
 				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
 						hotBar,
 						HotBarSlot.UTIL);
 				main.plugin.getServer().getPluginManager().callEvent(evet);
+				evt.setCancelled(true);
 			}
-			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER).equals(inHand)){
+			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
+					&& hotBar.getDisplayedItem(HotBarSlot.SCROLLER).equals(inHand)){
 				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
 						hotBar,
 						HotBarSlot.SCROLLER);
 				main.plugin.getServer().getPluginManager().callEvent(evet);
+				evt.setCancelled(true);
 			}
 			if(timed){
 				return;
