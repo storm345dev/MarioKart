@@ -175,9 +175,9 @@ public class RaceScheduler {
 				        queue.removePlayer(p);
 					}
 				}
-				q.clear();
 				if(queue.playerCount() < 1){
-				main.plugin.raceQueues.removeQueue(queue);
+					q.clear();
+				    main.plugin.raceQueues.removeQueue(queue);
 				}
 			}
 			else if(queue.playerCount() >= main.config.getInt("race.que.minPlayers")

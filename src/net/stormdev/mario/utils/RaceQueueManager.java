@@ -137,5 +137,14 @@ public class RaceQueueManager {
 		}
 		return;
 	}
+	
+	public void clear(){
+		Map<UUID, RaceQueue> queues = getAllQueues();
+		for(UUID id:queues.keySet()){
+			RaceQueue q = ((RaceQueue)queues.get(id));
+			q.clear();
+			main.plugin.queues.remove(id);
+		}
+	}
 
 }

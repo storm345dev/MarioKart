@@ -467,6 +467,7 @@ public class main extends JavaPlugin {
 		for(UUID id:races.keySet()){
 			races.get(id).end(); //End the race
 		}
+		raceQueues.clear();
 		getServer().getScheduler().cancelTasks(this);
 		System.gc();
 		logger.info("MarioKart has been disabled!");
