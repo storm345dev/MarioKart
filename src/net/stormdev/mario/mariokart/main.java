@@ -297,6 +297,27 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.race.rewards.currency")) {
 				config.set("general.race.rewards.currency", "Dollars");
 			}
+			if (!config.contains("general.upgrades.enable")) {
+				config.set("general.upgrades.enable", true);
+			}
+			if (!config.contains("general.upgrades.useSQL")) {
+				config.set("general.upgrades.useSQL", false);
+			}
+			if (!config.contains("general.upgrades.sqlHostName")) {
+				config.set("general.upgrades.sqlHostName", "localhost");
+			}
+			if (!config.contains("general.upgrades.sqlPort")) {
+				config.set("general.upgrades.sqlPort", "3306");
+			}
+			if (!config.contains("general.upgrades.sqlDataBaseName")) {
+				config.set("general.upgrades.sqlDataBaseName", "myDataBase");
+			}
+			if (!config.contains("general.upgrades.sqlUsername")) {
+				config.set("general.upgrades.sqlUsername", "root");
+			}
+			if (!config.contains("general.upgrades.sqlPassword")) {
+				config.set("general.upgrades.sqlPassword", "password123");
+			}
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);
 			}

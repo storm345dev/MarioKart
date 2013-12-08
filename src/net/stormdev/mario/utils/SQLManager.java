@@ -14,9 +14,9 @@ public class SQLManager {
 	Connection c = null;
 	public SQLManager(String hostName, String port, String dbName, String username, String password){
 		main.logger.info("Connecting to mySQL database...");
-		MySQL = new MySQL(main.plugin, hostName, port, dbName, username, password);
-		c = MySQL.openConnection();
 		try {
+			MySQL = new MySQL(main.plugin, hostName, port, dbName, username, password);
+			c = MySQL.openConnection();
 			c.setAutoCommit(true);
 		} catch (SQLException e) {
 			main.logger.info("Error connecting to mySQL database!");
