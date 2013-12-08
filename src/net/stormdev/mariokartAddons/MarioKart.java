@@ -669,7 +669,7 @@ public class MarioKart {
 							(String) pls[pos]);
 					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
 					pl.getInventory().clear();
-					player.getInventory().setItem(8, this.respawn);
+					main.listener.updateHotBar(pl);
 					pl.getInventory().addItem(
 							PowerupMaker.getPowerup(Powerup.BOO, 1));
 					PotionEffect nausea = new PotionEffect(
@@ -687,7 +687,7 @@ public class MarioKart {
 								public void run() {
 									pl.removeMetadata("kart.rolling", plugin);
 									pl.getInventory().clear();
-									player.getInventory().setItem(8, respawn);
+									main.listener.updateHotBar(pl);
 									pl.updateInventory();
 								}
 							}, 240l);
@@ -705,7 +705,7 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
-			player.getInventory().setItem(8, this.respawn);
+			main.listener.updateHotBar(player);
 			if (under.getType() == Material.COAL_BLOCK
 					|| under.getType() == Material.COAL_BLOCK
 					|| under.getType() == Material.COAL_BLOCK) {
@@ -794,7 +794,7 @@ public class MarioKart {
 						 */
 						if (player.getInventory().getContents().length > 0) {
 							player.getInventory().clear();
-							player.getInventory().setItem(8, this.respawn);
+							main.listener.updateHotBar(player);
 						}
 						ItemStack give = null;
 						if (ChatColor.stripColor(lines[2]).equalsIgnoreCase(
@@ -850,8 +850,7 @@ public class MarioKart {
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
 											ply.getInventory().clear();
-											ply.getInventory().setItem(8,
-													respawn);
+											main.listener.updateHotBar(player);
 											ply.getInventory().addItem(
 													getRandomPowerup());
 											ply.updateInventory();
@@ -868,7 +867,7 @@ public class MarioKart {
 											}
 										}
 										ply.getInventory().clear();
-										ply.getInventory().setItem(8, respawn);
+										main.listener.updateHotBar(ply);
 										ply.getInventory().addItem(get);
 										ply.removeMetadata("kart.rolling",
 												plugin);

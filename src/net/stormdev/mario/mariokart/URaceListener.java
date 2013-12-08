@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.HotBarItem;
+import net.stormdev.mario.utils.HotBarSlot;
+import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
@@ -25,7 +28,6 @@ import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -65,6 +67,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -610,7 +613,7 @@ public class URaceListener implements Listener {
 				Player player = user.getPlayer();
 				player.setGameMode(GameMode.SURVIVAL);
 				player.getInventory().clear();
-				player.getInventory().setItem(8, main.marioKart.respawn);
+				updateHotBar(player);
 				player.updateInventory();
 			} catch (PlayerQuitException e) {
 				//Player has left
@@ -1145,7 +1148,7 @@ public class URaceListener implements Listener {
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		cart.setPassenger(player);
 		player.setMetadata("car.stayIn", new StatValue(null, plugin));
-		player.getInventory().setItem(8, main.marioKart.respawn);
+		updateHotBar(player);
 		player.updateInventory();
 		player.setScoreboard(race.board);
 		main.plugin.raceScheduler.updateRace(race);
@@ -1266,6 +1269,21 @@ public class URaceListener implements Listener {
 			event.setDamage(0);
 			event.setCancelled(true);
 		}
+		return;
+	}
+	@SuppressWarnings("deprecation")
+	public void updateHotBar(Player player){
+		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player.getName());
+		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
+		HotBarItem scroller = hotBar.getDisplayedItem(HotBarSlot.SCROLLER);
+		if(util != null){
+			player.getInventory().setItem(7, util.getDisplayItem());
+		}
+		if(scroller != null){
+			player.getInventory().setItem(6, scroller.getDisplayItem());
+		}
+		player.getInventory().setItem(8, main.marioKart.respawn);
+		player.updateInventory();
 		return;
 	}
 }
