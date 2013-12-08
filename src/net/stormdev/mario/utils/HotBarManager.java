@@ -45,6 +45,7 @@ public class HotBarManager {
 	public Map<HotBarSlot, List<HotBarItem>> calculateHotbarContents(String player){
 		Map<HotBarSlot, List<HotBarItem>>  contents = new HashMap<HotBarSlot, List<HotBarItem>>();
 		ArrayList<HotBarItem> defaultItems = new ArrayList<HotBarItem>();
+		ArrayList<HotBarItem> unlockedItems = new ArrayList<HotBarItem>();
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
 				ChatColor.GREEN+"Leave Race", 1, 
 				HotBarUpgrade.LEAVE, new HashMap<String, Object>());
@@ -58,8 +59,9 @@ public class HotBarManager {
 				ChatColor.GREEN+"Speed Burst", 1,
 				HotBarUpgrade.SPEED_BOOST, scroll_test_data);
 		defaultItems.add(exit_door);
-		defaultItems.add(scroll_test);
+		unlockedItems.add(scroll_test);
 		contents.put(HotBarSlot.UTIL, defaultItems);
+		contents.put(HotBarSlot.SCROLLER, unlockedItems);
 		//TODO Look-up purchased upgrades in a menu and add them too
 		return contents;
 	}
