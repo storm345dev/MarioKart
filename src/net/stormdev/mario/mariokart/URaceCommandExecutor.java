@@ -385,6 +385,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 						+ main.msgs.get("general.cmd.playersOnly"));
 				return true;
 			}
+			main.plugin.hotBarManager.clearHotBar(player.getName());
 			Boolean game = true;
 			Race race = main.plugin.raceMethods.inAGame(player, false);
 			RaceQueue queue = main.plugin.raceMethods.inGameQue(player);

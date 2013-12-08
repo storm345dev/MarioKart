@@ -1213,10 +1213,11 @@ public class URaceListener implements Listener {
 	
 	@EventHandler
 	void raceFinish(MarioKartRaceFinishEvent event){
+		Player player = event.getPlayer();
+		main.plugin.hotBarManager.clearHotBar(player.getName());
 		if(!main.config.getBoolean("general.race.rewards.enable")){
 			return;
 		}
-		Player player = event.getPlayer();
 		int pos = event.getFinishPosition();
 		double reward = 0;
 		switch(pos){

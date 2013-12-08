@@ -126,9 +126,10 @@ public class MarioHotBar {
 	 * Mandatory be called when Object's life has ended, to fix memory leaks
 	 */
 	public void clear(){
+		String str = getPlayer();
 		this.player = null; //Plug memory leak
 		this.hotBar.clear();
-		main.plugin.hotBarManager.removeHotBar(getPlayer());
+		main.plugin.hotBarManager.removeHotBar(str);
 	}
 	public void update(){
 		main.plugin.hotBarManager.setHotBar(getPlayer(), this);
