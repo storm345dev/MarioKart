@@ -1249,11 +1249,12 @@ public class URaceListener implements Listener {
 		player.sendMessage(main.colors.getInfo()+msg);
 		return;
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	void pvp(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player 
 				&& event.getDamager() instanceof Player
 				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
+			event.setDamage(0);
 			event.setCancelled(true);
 		}
 		return;
