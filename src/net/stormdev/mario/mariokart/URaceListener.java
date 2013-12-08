@@ -1250,7 +1250,7 @@ public class URaceListener implements Listener {
 		player.sendMessage(main.colors.getInfo()+msg);
 		return;
 	}
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	void pvp(EntityDamageEvent event){
 		if(event.getEntity() instanceof Player 
 				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
@@ -1259,7 +1259,7 @@ public class URaceListener implements Listener {
 		}
 		return;
 	}
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	void pvp(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player 
 				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
