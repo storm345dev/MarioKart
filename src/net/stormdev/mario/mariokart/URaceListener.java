@@ -1131,6 +1131,11 @@ public class URaceListener implements Listener {
         if(!chunk.isLoaded()){
             chunk.load(true);
         }
+        if(player.getLocation().getChunk()!=chunk){
+        	Location l = new Location(chunk.getWorld(), chunk.getX(), 90, chunk.getZ());
+        	l.getChunk(); //Load the chunk
+        	player.teleport(l);
+        }
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
