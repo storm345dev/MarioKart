@@ -37,6 +37,31 @@ public class MarioHotBar {
 		hotBar.put(slot, items);
 		return;
 	}
+	public void clearSlot(HotBarSlot slot){
+		this.hotBar.remove(slot);
+		return;
+	}
+	public Boolean useItem(HotBarSlot slot){
+		HotBarItem item = getDisplayedItem(slot);
+		if(item == null){
+			return false;
+		}
+		int q = item.getQuantity();
+		if(q-1<0){
+			return false;
+		}
+		item.setQuantity(q-1);
+		if(!hotBar.containsKey(slot)){
+			return false;
+		}
+		List<HotBarItem> items = hotBar.get(slot);
+		if(items.size() < 1){
+			return false;
+		}
+		items.set(0, item);
+		hotBar.put(slot, items);
+		return true;
+	}
 	public Map<HotBarSlot, List<HotBarItem>> getHotBar(){
 		return new HashMap<HotBarSlot, List<HotBarItem>>(hotBar);
 	}
