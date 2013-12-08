@@ -47,10 +47,6 @@ public class MarioHotBar {
 			return false;
 		}
 		int q = item.getQuantity();
-		if(q-1<0){
-			return false;
-		}
-		item.setQuantity(q-1);
 		if(!hotBar.containsKey(slot)){
 			return false;
 		}
@@ -58,6 +54,15 @@ public class MarioHotBar {
 		if(items.size() < 1){
 			return false;
 		}
+		if(q<0){
+			return false;
+		}
+		else if(q-2<0){ //q was 1
+		    items.remove(item);
+		    hotBar.put(slot, items);
+		    return true;
+		}
+		item.setQuantity(q-1);
 		items.set(0, item);
 		hotBar.put(slot, items);
 		return true;
