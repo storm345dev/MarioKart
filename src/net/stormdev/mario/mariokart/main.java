@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.utils.HotBarManager;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;
@@ -55,6 +56,7 @@ public class main extends JavaPlugin {
 	public static MarioKart marioKart = null;
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
+	public HotBarManager hotBarManager = null;
 	
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -454,6 +456,7 @@ public class main extends JavaPlugin {
 		else{
 			this.packUrl = rl;
 		}
+		this.hotBarManager = new HotBarManager();
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
