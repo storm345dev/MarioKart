@@ -135,7 +135,8 @@ public class Race {
 
 	public void playerOut(User user) {
 		user.setInRace(false);
-		Player player = null;;
+		main.plugin.hotBarManager.clearHotBar(user.getPlayerName());
+		Player player = null;
 		try {
 			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
