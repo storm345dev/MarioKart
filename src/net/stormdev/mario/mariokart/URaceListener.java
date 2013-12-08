@@ -51,6 +51,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -1246,6 +1247,15 @@ public class URaceListener implements Listener {
 		msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(""+currency));
 		msg = msg.replaceAll(Pattern.quote("%position%"), Matcher.quoteReplacement(""+event.getPlayerFriendlyPosition()));
 		player.sendMessage(main.colors.getInfo()+msg);
+		return;
+	}
+	@EventHandler
+	void pvp(EntityDamageByEntityEvent event){
+		if(event.getEntity() instanceof Player 
+				&& event.getDamager() instanceof Player
+				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
+			event.setCancelled(true);
+		}
 		return;
 	}
 }
