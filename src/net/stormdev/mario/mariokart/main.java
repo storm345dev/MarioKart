@@ -26,6 +26,7 @@ import net.stormdev.mariokartAddons.MarioKart;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -471,6 +472,12 @@ public class main extends JavaPlugin {
 			races.get(id).end(); //End the race
 		}
 		raceQueues.clear();
+		Player[] players = getServer().getOnlinePlayers().clone();
+		for(Player player:players){
+			if(player.hasMetadata("car.stayIn")){
+				player.removeMetadata("car.stayIn", plugin);
+			}
+		}
 		getServer().getScheduler().cancelTasks(this);
 		System.gc();
 		logger.info("MarioKart has been disabled!");

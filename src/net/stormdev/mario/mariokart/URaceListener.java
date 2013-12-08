@@ -1287,9 +1287,12 @@ public class URaceListener implements Listener {
 		player.updateInventory();
 		return;
 	}
+	
+	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void hotBarClickEvent(MarioKartHotBarClickEvent event){
 		Player player = event.getPlayer();
+		player.updateInventory();
 		MarioHotBar hotBar = event.getHotBar();
 		HotBarSlot slot = event.getHotBarSlot();
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.stormdev.mario.mariokart.main;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,7 +46,7 @@ public class HotBarManager {
 		Map<HotBarSlot, List<HotBarItem>>  contents = new HashMap<HotBarSlot, List<HotBarItem>>();
 		ArrayList<HotBarItem> defaultItems = new ArrayList<HotBarItem>();
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
-				main.colors.getInfo()+"Leave Race", 1, 
+				ChatColor.GREEN+"Leave Race", 1, 
 				HotBarUpgrade.LEAVE);
 		defaultItems.add(exit_door);
 		contents.put(HotBarSlot.UTIL, defaultItems);

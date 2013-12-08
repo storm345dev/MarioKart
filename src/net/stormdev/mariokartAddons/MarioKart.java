@@ -208,7 +208,7 @@ public class MarioKart {
 			}
 			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply.getName());
 			if(hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
-					&& hotBar.getDisplayedItem(HotBarSlot.UTIL).equals(inHand)){
+					&& player.getInventory().getHeldItemSlot() == 7){
 				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
 						hotBar,
 						HotBarSlot.UTIL);
@@ -217,7 +217,7 @@ public class MarioKart {
 				return;
 			}
 			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
-					&& hotBar.getDisplayedItem(HotBarSlot.SCROLLER).equals(inHand)){
+					&& player.getInventory().getHeldItemSlot() == 6){
 				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
 						hotBar,
 						HotBarSlot.SCROLLER);

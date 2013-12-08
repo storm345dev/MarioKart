@@ -290,18 +290,16 @@ public class URaceCommandExecutor implements CommandExecutor {
 					type = RaceType.GRAND_PRIX;
 				}
 			}
+			if (player.getVehicle() != null) {
+                sender.sendMessage(main.colors.getError()+"Cannot execute whilst in a vehicle");
+				return true;
+			}
 			if (trackName.equalsIgnoreCase("auto")) {
 				if (main.plugin.raceMethods.inAGame(player, false) != null
 						|| main.plugin.raceMethods.inGameQue(player) != null) {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("race.que.existing"));
 					return true;
-				}
-				if (player.getVehicle() != null) {
-					Vehicle veh = (Vehicle) player.getVehicle();
-					veh.eject();
-					player.eject();
-					veh.remove();
 				}
 				plugin.raceScheduler.joinAutoQueue(player, type);
 				return true;
@@ -317,12 +315,6 @@ public class URaceCommandExecutor implements CommandExecutor {
 					sender.sendMessage(main.colors.getError()
 							+ main.msgs.get("general.cmd.delete.exists"));
 					return true;
-				}
-				if (player.getVehicle() != null) {
-					Vehicle veh = (Vehicle) player.getVehicle();
-					veh.eject();
-					player.eject();
-					veh.remove();
 				}
 				main.plugin.raceScheduler.joinQueue(player, track, type);
 				return true;
