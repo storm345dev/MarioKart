@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.stormdev.mario.mariokart.main;
 import code.husky.mysql.MySQL;
@@ -42,6 +44,36 @@ public class SQLManager {
 		res.close();
 		statement.close();
 		return found;
+	}
+	public Map<String, Object> getFromTable(String tableName, String col1, String col2) throws SQLException{
+		Statement statement = c.createStatement();
+		ResultSet res = statement.executeQuery("SELECT "+col1+","+col2+" FROM "+tableName+";");
+		HashMap<String, Object> results = new HashMap<String, Object>();
+		while(res.next()){
+			Object found = res.getObject(col2);
+			String key = res.getString(col1);
+			if(key != null && found != null) {
+				results.put(key, found);
+			}
+		}
+		res.close();
+		statement.close();
+		return results;
+	}
+	public Map<String, String> getStringsFromTable(String tableName, String col1, String col2) throws SQLException{
+		Statement statement = c.createStatement();
+		ResultSet res = statement.executeQuery("SELECT "+col1+","+col2+" FROM "+tableName+";");
+		HashMap<String, String> results = new HashMap<String, String>();
+		while(res.next()){
+			String found = res.getString(col2);
+			String key = res.getString(col1);
+			if(key != null && found != null) {
+				results.put(key, found);
+			}
+		}
+		res.close();
+		statement.close();
+		return results;
 	}
 	public Boolean setInTable(String tableName, String keyName, String keyValue, String valueName, Object value) throws SQLException{
 		//Make so it overrides key
