@@ -1258,7 +1258,8 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	void pvp(EntityDamageEvent event){
 		if(event.getEntity() instanceof Player 
-				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
+				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null
+				&& event.getCause() == DamageCause.ENTITY_ATTACK){
 			event.setDamage(0);
 			event.setCancelled(true);
 		}
