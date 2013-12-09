@@ -60,10 +60,14 @@ public class RaceScheduler {
 			//Create a random queue
 			List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
 			List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
+			List<RaceTrack> openNoQueueTracks = new ArrayList<RaceTrack>();
 			List<RaceTrack> clearQueuedTracks = new ArrayList<RaceTrack>();
 			for(RaceTrack t:tracks){
 				if(!isTrackInUse(t, type)){
 					openTracks.add(t);
+					if(!main.plugin.raceQueues.queuesFor(t, type)){
+						openNoQueueTracks.add(t);
+					}
 					if(main.plugin.raceQueues.getQueues(t.getTrackName()).size() < 1){
 						clearQueuedTracks.add(t);
 					}
@@ -74,7 +78,10 @@ public class RaceScheduler {
 				track = clearQueuedTracks.get(main.plugin.random.nextInt(clearQueuedTracks.size()));
 			}
 			else{
-				if(openTracks.size() > 0){
+				if(openNoQueueTracks.size() > 0){
+					track = openNoQueueTracks.get(main.plugin.random.nextInt(openNoQueueTracks.size()));
+				}
+			    else if(openTracks.size() > 0){
 					// - They're going to have to wait for another race to finish before them...
 					track = openTracks.get(main.plugin.random.nextInt(openTracks.size()));
 				}

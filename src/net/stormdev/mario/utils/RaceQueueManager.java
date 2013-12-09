@@ -146,5 +146,17 @@ public class RaceQueueManager {
 			main.plugin.queues.remove(id);
 		}
 	}
+	
+	public Boolean queuesFor(RaceTrack track, RaceType type){
+		Map<UUID, RaceQueue> queues = getAllQueues();
+		for(UUID id:queues.keySet()){
+			RaceQueue q = queues.get(id);
+			if(!(q.getRaceMode()==RaceType.TIME_TRIAL
+					&& type == RaceType.TIME_TRIAL)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
