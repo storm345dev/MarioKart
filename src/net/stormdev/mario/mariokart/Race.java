@@ -564,7 +564,7 @@ public class Race {
 					p.removeMetadata("checkpoint.distance", main.plugin);
 					p.setMetadata("checkpoint.distance", new StatValue(dist,
 							main.plugin));
-					if (dist < 100) {
+					if (dist < main.plugin.checkpointRadiusSquared) {
 						at = true;
 						checkpoint = key;
 						return new CheckpointCheck(at, checkpoint);

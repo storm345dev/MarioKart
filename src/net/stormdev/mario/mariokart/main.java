@@ -58,6 +58,7 @@ public class main extends JavaPlugin {
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
+	public double checkpointRadiusSquared = 10.0;
 	
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -279,6 +280,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.raceTickrate")) {
 				config.set("general.raceTickrate", 2l);
 			}
+			if (!config.contains("general.checkpointRadius")) {
+				config.set("general.checkpointRadius", (double) 10.0);
+			}
 			if (!config.contains("general.raceGracePeriod")) {
 				config.set("general.raceGracePeriod", (double) 10.0);
 			}
@@ -412,6 +416,7 @@ public class main extends JavaPlugin {
 				config.getString("colorScheme.title"),
 				config.getString("colorScheme.title"));
 		logger.info("Config loaded!");
+		this.checkpointRadiusSquared = Math.pow(config.getDouble("general.checkpointRadius"),2);
 		logger.info("Searching for uCars...");
 		Plugin[] plugins = getServer().getPluginManager().getPlugins();
 		Boolean installed = false;
