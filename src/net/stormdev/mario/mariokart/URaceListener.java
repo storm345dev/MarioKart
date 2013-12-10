@@ -1127,8 +1127,8 @@ public class URaceListener implements Listener {
 			checkpoint = user.getCheckpoint();
 		} catch (Exception e) {
 		}
-		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
-				.getLocation(plugin.getServer()).add(0, 2, 0);
+		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
+				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
         if(!chunk.isLoaded()){
             chunk.load(true);
@@ -1163,8 +1163,8 @@ public class URaceListener implements Listener {
 			checkpoint = user.getCheckpoint();
 		} catch (Exception e) {
 		}
-		final Location loc = race.getTrack().getCheckpoints().get(checkpoint)
-				.getLocation(plugin.getServer()).add(0, 2, 0);
+		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
+				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
         if(!chunk.isLoaded()){
             chunk.load(true);
