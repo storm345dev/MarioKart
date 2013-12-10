@@ -64,6 +64,18 @@ public class main extends JavaPlugin {
 
 	public void onEnable() {
 		System.gc();
+		if(listener != null || cmdExecutor != null
+				|| logger != null || msgs != null 
+				|| marioKart != null || economy != null){
+			getLogger().log(Level.WARNING, "Previous plugin instance found, performing clearup...");
+			listener = null;
+			cmdExecutor = null;
+			logger = null;
+			msgs = null;
+			marioKart = null;
+			vault = null;
+			economy = null;
+		}
 		random = new Random();
 		plugin = this;
 		File langFile = new File(getDataFolder().getAbsolutePath()
