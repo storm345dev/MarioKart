@@ -341,6 +341,9 @@ public class URaceListener implements Listener {
 			}
 		}
 		plugin.raceScheduler.recalculateQueues();
+		if(!game.isEmpty()){
+			main.logger.info("MEMORY LEAK ALERT");
+		}
 	}
 
 	// Much extranious PORTED code from here on (Races)
@@ -1299,13 +1302,13 @@ public class URaceListener implements Listener {
 			player.getInventory().setItem(7, util.getDisplayItem());
 		}
 		else{
-			player.getInventory().remove(7);
+			player.getInventory().setItem(7, new ItemStack(Material.AIR));
 		}
 		if(scroller != null){
 			player.getInventory().setItem(6, scroller.getDisplayItem());
 		}
 		else{
-			player.getInventory().remove(6);
+			player.getInventory().setItem(6, new ItemStack(Material.AIR));
 		}
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
@@ -1387,5 +1390,6 @@ public class URaceListener implements Listener {
 					player.removeMetadata("mariokart.slotChanging", main.plugin);
 				}}, 15);
 		}
+		updateHotBar(player);
 	}
 }
