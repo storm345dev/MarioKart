@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceEndEvent;
 import net.stormdev.mario.utils.RaceFinishEvent;
@@ -338,16 +339,47 @@ public class Race {
 				this.leave(user, true);
 			}
 		}
-		this.task = main.plugin.getServer().getScheduler()
-				.runTaskTimer(main.plugin, new Runnable() {
+		final long ms = tickrate*50; //TODO
+		this.task = main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable() {
 
 					public void run() {
+						//TODO
+						long mis = ms;
+						while(running && !ended){
+					    double tps = DynamicLagReducer.getTPS();
+					    if(tps<20){
+					    	if(tps<15){
+					    		mis = ms+1000; //Go all out to keep up
+					    	}
+					    	else if(tps<17){
+					    		mis = ms+500; //Reduce lag
+					    	}
+					    	else if(tps<19){
+					    		mis = ms+100;
+					    	}
+					    	else{
+					    		mis = ms+10; //Slow down a tad
+					    	}
+					    	try {
+								Thread.sleep(mis);
+							} catch (InterruptedException e) {
+								//Nothing
+							}
+					    }
+					    else{
+					    	try {
+								Thread.sleep(ms);
+							} catch (InterruptedException e) {
+								//Nothing
+							}
+					    }
 						RaceUpdateEvent event = new RaceUpdateEvent(game);
 						main.plugin.getServer().getPluginManager()
 						.callEvent(event);
+						}
 						return;
 					}
-				}, tickrate, tickrate);
+				});
 		this.scoreCalcs = main.plugin.getServer().getScheduler()
 				.runTaskTimer(main.plugin, new Runnable() {
 
@@ -550,7 +582,7 @@ public class Race {
 			Server server) {
 		int checkpoint = 0;
 		Boolean at = false;
-		Map<Integer, SerializableLocation> schecks = this.track
+		final Map<Integer, SerializableLocation> schecks = this.track
 				.getCheckpoints();
 		Location pl = p.getLocation();
 		for (Integer key : checks) {

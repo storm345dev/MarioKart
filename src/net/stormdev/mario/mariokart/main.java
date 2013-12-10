@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarManager;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
@@ -31,6 +32,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Url;
@@ -59,6 +61,8 @@ public class main extends JavaPlugin {
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
+	
+	BukkitTask lagReducer = null;
 	
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -496,6 +500,8 @@ public class main extends JavaPlugin {
 			this.packUrl = rl;
 		}
 		this.hotBarManager = new HotBarManager();
+		this.lagReducer = getServer().getScheduler().runTaskTimer(this, new DynamicLagReducer(), 
+				100L, 1L);
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
@@ -516,6 +522,7 @@ public class main extends JavaPlugin {
 				player.removeMetadata("car.stayIn", plugin);
 			}
 		}
+		this.lagReducer.cancel();
 		getServer().getScheduler().cancelTasks(this);
 		System.gc();
 		logger.info("MarioKart has been disabled!");

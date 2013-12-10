@@ -121,8 +121,9 @@ public class RaceTrack implements Serializable {
 		calculateMaxMinPlayers();
 	}
 
-	public Map<Integer, SerializableLocation> getCheckpoints() {
-		return this.checkPoints;
+	final public Map<Integer, SerializableLocation> getCheckpoints() {
+		final Map<Integer, SerializableLocation> m = new HashMap<Integer, SerializableLocation>(this.checkPoints);
+		return m;
 	}
 
 	public void setCheckpoints(Map<Integer, SerializableLocation> checkpoints) {
