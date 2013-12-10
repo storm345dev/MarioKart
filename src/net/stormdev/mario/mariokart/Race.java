@@ -98,7 +98,7 @@ public class Race {
 				}
 			} catch (Exception e) {
 				if(!forceRemoveUser(user)){
-					main.logger.info("getUser() failed to remove invalid user");
+					main.logger.info("getUser() failed to remove user");
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public class Race {
 			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
 			if(!forceRemoveUser(user) && playerUserRegistered(user.getPlayerName())){
-				main.logger.info("race.playerOut failed to remove invalid user");
+				main.logger.info("race.playerOut failed to remove user");
 			}
 			return;
 		}
@@ -171,7 +171,7 @@ public class Race {
 		}
 		if (quit) {
 			if(!forceRemoveUser(user)){
-				main.logger.info("race.quit failed to remove invalid user");
+				main.logger.info("race.quit failed to remove user");
 			}
 			if(type != RaceType.TIME_TRIAL){
 				if (users.size() < 2) {
@@ -182,7 +182,7 @@ public class Race {
 						} catch (PlayerQuitException e) {
 							//Player is no longer in the game
 							if(!forceRemoveUser(u)){
-								main.logger.info("race.leave failed to remove invalid user");
+								main.logger.info("race.leave failed to remove user");
 							}
 						}
 					}
@@ -191,18 +191,21 @@ public class Race {
 			}
 		}
 		playerOut(user);
-		player.removeMetadata("car.stayIn", main.plugin);
+		if(player != null){
+		    player.removeMetadata("car.stayIn", main.plugin);
+		}
 		if (quit) {
-			scoresBoard.getScore(player).setScore(0);
-			this.board.resetScores(player);
-			player.getInventory().clear();
-			if (player.getVehicle() != null) {
-				Vehicle veh = (Vehicle) player.getVehicle();
-				veh.eject();
-				veh.remove();
-			}
-			player.removeMetadata("car.stayIn", main.plugin);
-			player.getInventory().setContents(user.getOldInventory());
+			if(player != null){
+				scoresBoard.getScore(player).setScore(0);
+				this.board.resetScores(player);
+				player.getInventory().clear();
+				if (player.getVehicle() != null) {
+					Vehicle veh = (Vehicle) player.getVehicle();
+					veh.eject();
+					veh.remove();
+				}
+				player.removeMetadata("car.stayIn", main.plugin);
+				player.getInventory().setContents(user.getOldInventory());
 				player.setGameMode(GameMode.SURVIVAL);
 				try {
 					player.teleport(this.track.getExit(main.plugin.getServer()));
@@ -211,12 +214,13 @@ public class Race {
 				}
 				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
+			}
 				for (User us : getUsers()) {
 					try {
 						us.getPlayer().sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
 					} catch (PlayerQuitException e) {
 						if(!forceRemoveUser(us)){
-							main.logger.info("race.quit failed to remove invalid user");
+							main.logger.info("race.quit failed to remove user");
 						}
 					}
 			    }
@@ -366,10 +370,9 @@ public class Race {
 								} catch (PlayerQuitException e) {
 									//Player has left
 									if(!forceRemoveUser(u)){
-										main.logger.info("race.start failed to remove invalid user");
+										main.logger.info("race.scores failed to remove invalid user");
 									}
 								}
-								u.clear();
 							}
 						} else { // Time trial
 							User user = null;
@@ -386,13 +389,9 @@ public class Race {
 								game.scores.getScore(pl).setScore((int) time);
 								game.scoresBoard.getScore(pl).setScore(
 										(int) time);
-								user.clear();
-							} catch (Exception e) {
-								if(user != null){
-								leave(user, true);
-								}
+							} catch (Exception e) {	
 								return;
-								// Game ended or user has left
+								// Game ended or user has left or random error with above code
 							}
 						}
 						return;
@@ -513,20 +512,20 @@ public class Race {
 		}
 		finished.add(user.getPlayerName());
 		if(!forceRemoveUser(user)){
-			main.logger.info("race.finish failed to remove invalid user");
+			main.logger.info("race.finish failed to remove user");
 		}
 		user.setFinished(true);
 		user.setInRace(false);
 		users.add(user);
 		try {
 			Player player = user.getPlayer();
+			if(player == null){
+				player = main.plugin.getServer().getPlayer(user.getPlayerName()); //Player removed prematurely
+			}
 			player.setLevel(user.getOldLevel());
 			player.setExp(user.getOldExp());
-		} catch (PlayerQuitException e) {
+		} catch (Exception e) {
 			//Player has left
-			if(!forceRemoveUser(user)){
-				main.logger.info("race.finish.quit failed to remove invalid user");
-			}
 		}
 		this.endTimeMS = System.currentTimeMillis();
 		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
@@ -537,7 +536,7 @@ public class Race {
 		for(User u:getUsers()){
 			if(u.getPlayerName().equals(playerName)){
 				if(!forceRemoveUser(u)){
-					main.logger.info("updateUser() failed to remove invalid user");
+					main.logger.info("updateUser() failed to remove user");
 				}
 				u.setPlayer(player);
 				users.add(u);

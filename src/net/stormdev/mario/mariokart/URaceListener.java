@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -319,8 +320,15 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void RaceEnd(RaceEndEvent event) {
 		Race game = event.getRace();
+		if(game == null){
+			return;
+		}
 		game.running = false;
-		game.users.clear();
+		try {
+			game.users.clear();
+		} catch (Exception e2) {
+			//Users already cleared
+		}
 		try {
 			if (plugin.raceScheduler.isTrackInUse(game.getTrack(), game.getType())) {
 				plugin.raceScheduler.removeRace(game);
@@ -354,6 +362,13 @@ public class URaceListener implements Listener {
 				player = user.getPlayer();
 			} catch (PlayerQuitException e1) {
 				//Player has left
+			}
+			if(player == null){
+				//Player has been removed from race prematurely
+				player = main.plugin.getServer().getPlayer(user.getPlayerName());
+				if(player == null || !player.isOnline()){
+					return; //Player is no longer around...
+				}
 			}
 			if(player != null){
 				player.removeMetadata("car.stayIn", plugin);
@@ -419,10 +434,11 @@ public class URaceListener implements Listener {
 					}
 				}
 			}
-			player.getInventory().clear();
+			if(player != null){
+				player.getInventory().clear();
 
-			player.getInventory().setContents(user.getOldInventory());
-
+				player.getInventory().setContents(user.getOldInventory());
+			}
 			if (!finished) {
 				DoubleValueComparator com = new DoubleValueComparator(scores);
 				SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
