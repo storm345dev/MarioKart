@@ -347,7 +347,10 @@ public class Race {
 						while(running && !ended){
 					    double tps = DynamicLagReducer.getTPS();
 					    if(tps<19.9){
-					    	if(tps<15){
+					    	if(tps< 13){
+					    		mis = (long) (ms+(tps*100));
+					    	}
+					        else if(tps<15){
 					    		mis = ms+1000; //Go all out to keep up
 					    	}
 					    	else if(tps<17){
