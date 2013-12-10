@@ -346,6 +346,7 @@ public class Race {
 						long mis = ms;
 						while(running && !ended){
 					    double tps = DynamicLagReducer.getTPS();
+					    main.logger.info("TPS: "+tps);
 					    if(tps<19.9){
 					    	if(tps< 13){
 					    		mis = (long) (ms+(tps*100));
@@ -354,6 +355,8 @@ public class Race {
 					    		mis = ms+1000; //Go all out to keep up
 					    	}
 					    	else if(tps<17){
+					    		main.logger.info("[WARNING] Server running out of resources! - "
+					    				+ "Compensating by reducing MarioKart tickRate (Accuracy)");
 					    		mis = ms+500; //Reduce lag
 					    	}
 					    	else if(tps<19){
