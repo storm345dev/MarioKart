@@ -343,11 +343,10 @@ public class Race {
 		this.task = main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable() {
 
 					public void run() {
-						//TODO
 						long mis = ms;
 						while(running && !ended){
 					    double tps = DynamicLagReducer.getTPS();
-					    if(tps<20){
+					    if(tps<19.9){
 					    	if(tps<15){
 					    		mis = ms+1000; //Go all out to keep up
 					    	}
