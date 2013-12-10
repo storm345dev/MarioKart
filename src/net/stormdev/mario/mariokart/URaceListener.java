@@ -1136,6 +1136,16 @@ public class URaceListener implements Listener {
 		return;
 	}
 	
+	@EventHandler (priority = EventPriority.HIGHEST)
+	void queueRespawns(PlayerRespawnEvent event){
+		Player player = event.getPlayer();
+		RaceQueue r = main.plugin.raceMethods.inGameQue(player);
+		if(r == null){
+			return;
+		}
+		event.setRespawnLocation(r.getTrack().getLobby(main.plugin.getServer()));
+	}
+	
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	void postRespawn(PlayerRespawnEvent event){
