@@ -97,7 +97,9 @@ public class Race {
 					return user;
 				}
 			} catch (Exception e) {
-				users.remove(user);
+				if(!forceRemoveUser(user)){
+					main.logger.info("getUser() failed to remove invalid user");
+				}
 			}
 		}
 		return null;
@@ -140,7 +142,9 @@ public class Race {
 		try {
 			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
-			users.remove(user);
+			if(!forceRemoveUser(user) && playerUserRegistered(user.getPlayerName())){
+				main.logger.info("race.playerOut failed to remove invalid user");
+			}
 			return;
 		}
 		player.setLevel(user.getOldLevel());
@@ -166,7 +170,9 @@ public class Race {
 			//User quit
 		}
 		if (quit) {
-			users.remove(user);
+			if(!forceRemoveUser(user)){
+				main.logger.info("race.quit failed to remove invalid user");
+			}
 			if(type != RaceType.TIME_TRIAL){
 				if (users.size() < 2) {
 					for (User u : getUsersIn()) {
@@ -175,6 +181,9 @@ public class Race {
 							u.getPlayer().sendMessage(main.colors.getInfo() + msg);
 						} catch (PlayerQuitException e) {
 							//Player is no longer in the game
+							if(!forceRemoveUser(u)){
+								main.logger.info("race.leave failed to remove invalid user");
+							}
 						}
 					}
 					startEndCount();
@@ -206,7 +215,9 @@ public class Race {
 					try {
 						us.getPlayer().sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
 					} catch (PlayerQuitException e) {
-						users.remove(us);
+						if(!forceRemoveUser(us)){
+							main.logger.info("race.quit failed to remove invalid user");
+						}
 					}
 			    }
 		}
@@ -354,8 +365,11 @@ public class Race {
 									e.printStackTrace();
 								} catch (PlayerQuitException e) {
 									//Player has left
-									users.remove(u);
+									if(!forceRemoveUser(u)){
+										main.logger.info("race.start failed to remove invalid user");
+									}
 								}
+								u.clear();
 							}
 						} else { // Time trial
 							User user = null;
@@ -372,8 +386,10 @@ public class Race {
 								game.scores.getScore(pl).setScore((int) time);
 								game.scoresBoard.getScore(pl).setScore(
 										(int) time);
+								user.clear();
 							} catch (Exception e) {
 								leave(user, true);
+								return;
 								// Game ended or user has left
 							}
 						}
@@ -494,7 +510,9 @@ public class Race {
 			startEndCount();
 		}
 		finished.add(user.getPlayerName());
-		users.remove(user);
+		if(!forceRemoveUser(user)){
+			main.logger.info("race.finish failed to remove invalid user");
+		}
 		user.setFinished(true);
 		user.setInRace(false);
 		users.add(user);
@@ -504,7 +522,9 @@ public class Race {
 			player.setExp(user.getOldExp());
 		} catch (PlayerQuitException e) {
 			//Player has left
-			users.remove(user);
+			if(!forceRemoveUser(user)){
+				main.logger.info("race.finish.quit failed to remove invalid user");
+			}
 		}
 		this.endTimeMS = System.currentTimeMillis();
 		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
@@ -514,7 +534,9 @@ public class Race {
 		String playerName = player.getName();
 		for(User u:getUsers()){
 			if(u.getPlayerName().equals(playerName)){
-				users.remove(u);
+				if(!forceRemoveUser(u)){
+					main.logger.info("updateUser() failed to remove invalid user");
+				}
 				u.setPlayer(player);
 				users.add(u);
 				return u;
@@ -642,5 +664,42 @@ public class Race {
 		finished.clear();
 		this.ended = true;
 		this.ending = true;
+		return;
+	}
+	public Boolean removeUser(User user){
+		if(!users.contains(user)){
+			return false;
+		}
+		users.remove(user);
+		user.clear();
+		return true;
+	}
+	public Boolean removeUser(String user){
+		for(User u:getUsers()){
+			if(u.getPlayerName().equals(user)){
+				u.clear();
+				users.remove(u);
+				return true;
+			}
+		}
+		return false;
+	}
+	public Boolean forceRemoveUser(User user){
+		if(!removeUser(user)){
+			if(!removeUser(user.getPlayerName())){
+				user.clear();
+				return false;
+			}
+		}
+		user.clear();
+		return true;
+	}
+	public Boolean playerUserRegistered(String name){
+		for(User u:getUsers()){
+			if(u.getPlayerName().equals(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
