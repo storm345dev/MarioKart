@@ -1298,8 +1298,14 @@ public class URaceListener implements Listener {
 		if(util != null){
 			player.getInventory().setItem(7, util.getDisplayItem());
 		}
+		else{
+			player.getInventory().remove(7);
+		}
 		if(scroller != null){
 			player.getInventory().setItem(6, scroller.getDisplayItem());
+		}
+		else{
+			player.getInventory().remove(6);
 		}
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
@@ -1310,7 +1316,6 @@ public class URaceListener implements Listener {
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void hotBarClickEvent(MarioKartHotBarClickEvent event){
 		Player player = event.getPlayer();
-		player.updateInventory();
 		MarioHotBar hotBar = event.getHotBar();
 		HotBarSlot slot = event.getHotBarSlot();
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
@@ -1353,6 +1358,7 @@ public class URaceListener implements Listener {
 				//TODO Manage useUpgrade
 			}
 		}
+		player.updateInventory();
 	}
 	@EventHandler
 	public void hotBarScrolling(VehicleUpdateEvent event){
