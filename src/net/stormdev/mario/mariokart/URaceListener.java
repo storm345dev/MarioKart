@@ -462,6 +462,7 @@ public class URaceListener implements Listener {
 											player.getLocation(), Sound.NOTE_BASS,
 											1, 1);
 								}
+								i = i+game.getUsersFinished().size();
 								String pos = "" + (i + 1);
 								if (pos.endsWith("1")) {
 									pos = pos + "st";
