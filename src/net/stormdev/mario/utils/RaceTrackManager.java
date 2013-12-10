@@ -54,7 +54,7 @@ public class RaceTrackManager {
 	}
 
 	public RaceTrack getRaceTrack(String trackName) {
-		for (RaceTrack track : tracks) {
+		for (RaceTrack track : getRaceTracks()) {
 			if (track.getTrackName().equalsIgnoreCase(trackName)) {
 				return track;
 			}
