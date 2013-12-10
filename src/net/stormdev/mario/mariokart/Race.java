@@ -388,7 +388,9 @@ public class Race {
 										(int) time);
 								user.clear();
 							} catch (Exception e) {
+								if(user != null){
 								leave(user, true);
+								}
 								return;
 								// Game ended or user has left
 							}
