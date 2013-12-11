@@ -339,14 +339,13 @@ public class Race {
 				this.leave(user, true);
 			}
 		}
-		final long ms = tickrate*50; //TODO
+		final long ms = tickrate*50;
 		this.task = main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable() {
 
 					public void run() {
 						long mis = ms;
 						while(running && !ended){
 					    double tps = DynamicLagReducer.getTPS();
-					    main.logger.info("TPS: "+tps);
 					    if(tps<19.9){
 					    	if(tps< 13){
 					    		mis = (long) (ms+(tps*100));

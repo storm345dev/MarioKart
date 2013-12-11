@@ -115,8 +115,8 @@ public class MarioKart {
 							((Integer) 3), plugin));
 					shell.setMetadata("shell.expiry", new StatValue(
 							((Integer) 50), plugin));
-					BukkitTask task = plugin.getServer().getScheduler()
-							.runTaskTimer(plugin, new Runnable() {
+					BukkitTask task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(
+							plugin, new Runnable() {
 
 								public void run() {
 									if (shell.hasMetadata("shell.destroy")) {
@@ -188,7 +188,7 @@ public class MarioKart {
 											.callEvent(event);
 									return;
 								}
-							}, 1l, 1l);
+							}, 3l, 3l);
 					tasks.put(shell.getUniqueId(), task);
 				}
 			}
@@ -331,7 +331,7 @@ public class MarioKart {
 				shell.setMetadata("shell.expiry", new StatValue(((Integer) 33),
 						plugin));
 				BukkitTask task = plugin.getServer().getScheduler()
-						.runTaskTimer(plugin, new Runnable() {
+						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
@@ -386,7 +386,7 @@ public class MarioKart {
 				shell.setMetadata("shell.expiry", new StatValue(((Integer) 66),
 						plugin));
 				BukkitTask task = plugin.getServer().getScheduler()
-						.runTaskTimer(plugin, new Runnable() {
+						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
