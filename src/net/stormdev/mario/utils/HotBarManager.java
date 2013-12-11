@@ -49,26 +49,28 @@ public class HotBarManager {
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
 				ChatColor.GREEN+"Leave Race", 1, 
 				HotBarUpgrade.LEAVE, new HashMap<String, Object>());
-		Map<String, Object> scroll_test_data = new HashMap<String, Object>();
-		scroll_test_data.put("upgrade.name", "Speed Burst");
-		scroll_test_data.put("upgrade.length", 5000l);
-		scroll_test_data.put("upgrade.power", 10d);
-		scroll_test_data.put("upgrade.useItem", true);
-		scroll_test_data.put("upgrade.useUpgrade", false);
-		HotBarItem scroll_test = new HotBarItem(new ItemStack(Material.APPLE),
-				ChatColor.GREEN+"Speed Burst", 1,
-				HotBarUpgrade.SPEED_BOOST, scroll_test_data);
 		defaultItems.add(exit_door);
-		unlockedItems.add(scroll_test);
 		contents.put(HotBarSlot.UTIL, defaultItems);
 		//Look-up purchased upgrades in a menu and add them too
 		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
+		//TODO Start debug code
+		if(unlocks.size() < 1){
+			Map<String, Unlockable> upgrades = main.plugin.getUnlocks();
+			for(String key:upgrades.keySet()){
+				Unlockable u = upgrades.get(key);
+				Upgrade upgrade = new Upgrade(u, 2);
+				main.plugin.upgradeManager.addUpgrade(player,upgrade);
+			}
+			unlocks = main.plugin.upgradeManager.getUpgrades(player);
+		}
+		//TODO End debug code
 		for(Upgrade upgrade:unlocks){
 			Unlockable u = upgrade.getUnlockedAble();
 			HotBarItem item = new HotBarItem(new ItemStack(u.displayItem),
 					ChatColor.GREEN+u.upgradeName, upgrade.getQuantity(), 
 					u.type, u.data);
 			unlockedItems.add(item);
+			main.logger.info("Loaded: "+u.upgradeName);
 		}
 		contents.put(HotBarSlot.SCROLLER, unlockedItems);
 		return contents;

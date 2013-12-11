@@ -1382,6 +1382,9 @@ public class URaceListener implements Listener {
 			return;
 		}
 		final Player player = (Player) car.getPassenger();
+		if(main.plugin.raceMethods.inAGame(player, false) == null){
+			return;
+		}
 		if(car.hasMetadata("car.braking")
 				&& !player.hasMetadata("mariokart.slotChanging")
 				&& (player.getInventory().getHeldItemSlot() == 6

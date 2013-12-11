@@ -128,8 +128,12 @@ public class UnlockableManager {
 		return used;
 	}
 	public Boolean addUpgrade(String player, Upgrade upgrade){
-		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
-		String[] un = unlocks.clone();
+		String[] un = new String[]{};
+		String[] unlocks = new String[]{};
+		if(this.data.containsKey(player)){
+			unlocks = this.data.get(player).split(Pattern.quote(","));
+		    un = unlocks.clone();
+		}
 		Boolean added = false;
 		for(int i=0;i<un.length;i++){
 			String unlock = un[i];
@@ -160,10 +164,10 @@ public class UnlockableManager {
 		String s = "";
 		for(String u:unlocks){
 			if(s.length() < 1){
-			    s = u;
+			    s = ""+u;
 			}
 			else{
-				s = ","+u;
+				s += ","+u;
 			}
 		}
 		if(!added){
@@ -171,7 +175,7 @@ public class UnlockableManager {
 			    s = upgrade.getUnlockedAble().shortId+":"+upgrade.getQuantity();
 			}
 			else{
-				s = ","+upgrade.getUnlockedAble().shortId+":"+upgrade.getQuantity();
+				s += ","+upgrade.getUnlockedAble().shortId+":"+upgrade.getQuantity();
 			}
 		}
 		if(s.length()<255){
