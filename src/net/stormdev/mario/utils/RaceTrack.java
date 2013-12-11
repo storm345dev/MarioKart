@@ -95,8 +95,9 @@ public class RaceTrack implements Serializable {
 		return this.minplayers;
 	}
 
-	public ArrayList<SerializableLocation> getStartGrid() {
-		return this.startGrid;
+	final public ArrayList<SerializableLocation> getStartGrid() {
+		final ArrayList<SerializableLocation> s = this.startGrid;
+		return s;
 	}
 
 	public void setStartGrid(ArrayList<SerializableLocation> startGrid) {

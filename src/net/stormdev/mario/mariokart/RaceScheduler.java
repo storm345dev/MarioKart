@@ -269,7 +269,7 @@ public class RaceScheduler {
 		HashMap<Integer, Location> grid = new HashMap<Integer, Location>();
 		for (int i = 0; i < sgrid.size(); i++) {
 			SerializableLocation s = sgrid.get(i);
-			grid.put(i, s.getLocation(main.plugin.getServer()));
+			grid.put(i, s.getLocation(main.plugin.getServer()).clone());
 		}
 		int count = grid.size();
 		if (count > users.size()) { // If more grid slots than players, only
