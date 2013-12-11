@@ -443,7 +443,7 @@ public class MarioKart {
 				shell.setMetadata("shell.expiry", new StatValue(((Integer) 50),
 						plugin));
 				BukkitTask task = plugin.getServer().getScheduler()
-						.runTaskTimer(plugin, new Runnable() {
+						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
@@ -651,6 +651,7 @@ public class MarioKart {
 														}
 													}
 												}
+												return;
 											}
 										});
 							}
