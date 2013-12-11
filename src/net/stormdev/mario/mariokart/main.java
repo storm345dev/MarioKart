@@ -279,6 +279,9 @@ public class main extends JavaPlugin {
 			if (!lang.contains("race.end.position")) {
 				lang.set("race.end.position", "You finished %position%!");
 			}
+			if (!lang.contains("race.upgrades.use")) {
+				lang.set("race.upgrades.use", "&c[-]&6 Consumed Upgrade");
+			}
 			if (!lang.contains("mario.hit")) {
 				lang.set("mario.hit", "You were hit by a %name%!");
 			}

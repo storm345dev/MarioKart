@@ -8,15 +8,17 @@ import org.bukkit.inventory.ItemStack;
 public class HotBarItem {
 	private ItemStack displayItem = null;
 	private String displayName = "";
+	public String shortId = "";
 	private int quantity = 1;
 	private HotBarUpgrade type = HotBarUpgrade.SPEED_BOOST;
 	Map<String, Object> data = new HashMap<String, Object>();
-	public HotBarItem(ItemStack displayItem, String displayName, int quantity, HotBarUpgrade type, Map<String, Object> data){
+	public HotBarItem(ItemStack displayItem, String displayName, int quantity, HotBarUpgrade type, Map<String, Object> data, String unlockId){
 		this.displayItem = displayItem;
 		this.displayName = displayName;
 		this.quantity = quantity;
 		this.type = type;
 		this.data = data;
+		this.shortId = unlockId;
 	}
 	public Map<String, Object> getData(){
 		return data;

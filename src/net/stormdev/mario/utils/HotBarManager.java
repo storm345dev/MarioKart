@@ -48,7 +48,7 @@ public class HotBarManager {
 		ArrayList<HotBarItem> unlockedItems = new ArrayList<HotBarItem>();
 		HotBarItem exit_door = new HotBarItem(new ItemStack(Material.WOOD_DOOR), 
 				ChatColor.GREEN+"Leave Race", 1, 
-				HotBarUpgrade.LEAVE, new HashMap<String, Object>());
+				HotBarUpgrade.LEAVE, new HashMap<String, Object>(), "null");
 		defaultItems.add(exit_door);
 		contents.put(HotBarSlot.UTIL, defaultItems);
 		//Look-up purchased upgrades in a menu and add them too
@@ -68,9 +68,8 @@ public class HotBarManager {
 			Unlockable u = upgrade.getUnlockedAble();
 			HotBarItem item = new HotBarItem(new ItemStack(u.displayItem),
 					ChatColor.GREEN+u.upgradeName, upgrade.getQuantity(), 
-					u.type, u.data);
+					u.type, u.data, u.shortId);
 			unlockedItems.add(item);
-			main.logger.info("Loaded: "+u.upgradeName);
 		}
 		contents.put(HotBarSlot.SCROLLER, unlockedItems);
 		return contents;

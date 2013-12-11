@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +28,7 @@ import net.stormdev.mario.utils.RaceStartEvent;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.TrackCreator;
+import net.stormdev.mario.utils.Upgrade;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
@@ -1368,8 +1368,16 @@ public class URaceListener implements Listener {
 				}
 			}
 			if(execute){
-				ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
-				//TODO Manage useUpgrade
+				if(useUpgrade){
+					if(main.plugin.upgradeManager.useUpgrade(player.getName(), new Upgrade(
+							main.plugin.upgradeManager.getUnlockable(hotBarItem.shortId), hotBarItem.getQuantity()))){
+						player.sendMessage(main.msgs.get("race.upgrades.use"));
+						ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+					}
+				}
+				else{
+					ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+				}
 			}
 		}
 		player.updateInventory();

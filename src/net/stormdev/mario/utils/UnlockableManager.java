@@ -250,35 +250,41 @@ public class UnlockableManager {
 			}
 		}
 	}
-	public void save(String playerName){
-		if(!sql){
-			this.saveFile.getParentFile().mkdirs();
-			if(!this.saveFile.exists() || this.saveFile.length() < 1){
-				try {
-					this.saveFile.createNewFile();
-				} catch (IOException e) {
+	public void save(final String playerName){
+		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				if(!sql){
+					saveFile.getParentFile().mkdirs();
+					if(!saveFile.exists() || saveFile.length() < 1){
+						try {
+							saveFile.createNewFile();
+						} catch (IOException e) {
+						}
+					}
+					try {
+						ObjectOutputStream oos = new ObjectOutputStream(
+								new FileOutputStream(saveFile));
+						oos.writeObject(data);
+						oos.flush();
+						oos.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}			
+					return;
 				}
-			}
-			try {
-				ObjectOutputStream oos = new ObjectOutputStream(
-						new FileOutputStream(this.saveFile));
-				oos.writeObject(data);
-				oos.flush();
-				oos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
-			return;
-		}
-		//Save to SQL
-		if(data.containsKey(playerName)){
-			try {
-				sqlManager.setInTable("MarioKartUnlocks", "playername", playerName, "unlocks", data.get(playerName));
-			} catch (SQLException e) {
-				//SQL Error
-				e.printStackTrace();
-			}
-		}
+				//Save to SQL
+				if(data.containsKey(playerName)){
+					try {
+						sqlManager.setInTable("MarioKartUnlocks", "playername", playerName, "unlocks", data.get(playerName));
+					} catch (SQLException e) {
+						//SQL Error
+						e.printStackTrace();
+					}
+				}
+				return;
+			}});
 	}
 	public void save(){
 		if(!sql){
