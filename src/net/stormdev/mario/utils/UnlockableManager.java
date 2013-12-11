@@ -199,6 +199,11 @@ public class UnlockableManager {
 		}
 		return false;
 	}
+	public void resetUpgrades(String player){
+		this.data.remove(player);
+		save(player);
+		return;
+	}
 	public Unlockable getUnlockable(String shortId){
 		if(!unlocks.containsKey(shortId)){
 			return null;

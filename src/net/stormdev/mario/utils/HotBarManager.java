@@ -61,8 +61,16 @@ public class HotBarManager {
 		defaultItems.add(exit_door);
 		unlockedItems.add(scroll_test);
 		contents.put(HotBarSlot.UTIL, defaultItems);
+		//Look-up purchased upgrades in a menu and add them too
+		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
+		for(Upgrade upgrade:unlocks){
+			Unlockable u = upgrade.getUnlockedAble();
+			HotBarItem item = new HotBarItem(new ItemStack(u.displayItem),
+					ChatColor.GREEN+u.upgradeName, upgrade.getQuantity(), 
+					u.type, u.data);
+			unlockedItems.add(item);
+		}
 		contents.put(HotBarSlot.SCROLLER, unlockedItems);
-		//TODO Look-up purchased upgrades in a menu and add them too
 		return contents;
 	}
 
