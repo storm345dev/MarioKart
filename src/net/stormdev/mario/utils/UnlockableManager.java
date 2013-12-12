@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import net.stormdev.mario.mariokart.main;
 
 public class UnlockableManager {
@@ -74,6 +72,7 @@ public class UnlockableManager {
 		return upgrades;
 	}
 	public Boolean useUpgrade(String player, Upgrade upgrade){
+		//TODO Find why it don't use up when last upgrade u own
 		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
 		String[] un = unlocks.clone();
 		Boolean used = false;
@@ -108,21 +107,28 @@ public class UnlockableManager {
 				}
 			}
 			if(remove){
-				ArrayUtils.removeElement(unlocks, unlock);
+				unlocks[i] = "";
 			}
 		}
 		if(used || remove){
 			//Update database
 			String s = "";
 			for(String u:unlocks){
-				if(s.length() < 1){
-				    s = u;
-				}
-				else{
-					s = ","+u;
+				if(u.length()>0){
+					if(s.length() < 1){
+					    s = u;
+					}
+					else{
+						s = s+","+u;
+					}
 				}
 			}
-			this.data.put(player, s);
+			if(s.length()<2){
+				this.data.remove(player);
+			}
+			else{
+			    this.data.put(player, s);
+			}
 			save(player); //Save to file/sql
 		}
 		return used;
