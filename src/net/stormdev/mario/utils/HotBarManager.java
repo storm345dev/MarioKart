@@ -53,17 +53,6 @@ public class HotBarManager {
 		contents.put(HotBarSlot.UTIL, defaultItems);
 		//Look-up purchased upgrades in a menu and add them too
 		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
-		//TODO Start debug code
-		if(unlocks.size() < 1){
-			Map<String, Unlockable> upgrades = main.plugin.getUnlocks();
-			for(String key:upgrades.keySet()){
-				Unlockable u = upgrades.get(key);
-				Upgrade upgrade = new Upgrade(u, 2);
-				main.plugin.upgradeManager.addUpgrade(player,upgrade);
-			}
-			unlocks = main.plugin.upgradeManager.getUpgrades(player);
-		}
-		//TODO End debug code
 		for(Upgrade upgrade:unlocks){
 			Unlockable u = upgrade.getUnlockedAble();
 			HotBarItem item = new HotBarItem(new ItemStack(u.displayItem),
