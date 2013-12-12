@@ -29,7 +29,9 @@ import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.SelectMenuClickEvent;
 import net.stormdev.mario.utils.SelectMenuType;
+import net.stormdev.mario.utils.Shop;
 import net.stormdev.mario.utils.TrackCreator;
+import net.stormdev.mario.utils.Unlockable;
 import net.stormdev.mario.utils.Upgrade;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
@@ -1420,12 +1422,20 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void menus(SelectMenuClickEvent event){
 		SelectMenuType type = event.getMenuType();
+		int slot = event.getClickEvent().getPosition();
+		final Player player = event.getClickEvent().getPlayer();
 		if(type == SelectMenuType.MENU){
-			int slot = event.getClickEvent().getPosition();
-			Player player = event.getClickEvent().getPlayer();
 			if(slot == 0){
 				//They clicked on 'Buy Upgrades'
-				//TODO
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, 1);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				return;
 			}
 			else if(slot == 1){
 				//They clicked on 'Sell Upgrades'
@@ -1434,6 +1444,102 @@ public class URaceListener implements Listener {
 			else if(slot == 8){
 				//They clicked on 'Exit Menu'
 				return; //Menu closes on-click by default
+			}
+		}
+		else if(type == SelectMenuType.BUY_UPGRADES){
+			int page = event.getPage();
+			if(slot == 0){
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openShop(player);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else if(slot == 52){
+				if(page <= 1){
+					event.setCancelled(true); //Don't do anything
+					return;
+				}
+				final int p = page-1;
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, p);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else if(slot == 53){
+				final int p = page+1;
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, p);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else{
+				//Get and buy unlockable
+				int i = ((page-1)*51)+slot-1;
+				String shortId = "";
+				Unlockable unlock = null;
+				String currency = main.config.getString("general.race.rewards.currency");
+				try {
+					shortId = (String) main.plugin.getUnlocks().keySet().toArray()[i];
+					unlock = main.plugin.getUnlocks().get(shortId);
+				} catch (Exception e) {
+					//Clicked in an invalid place
+					return;
+				}
+				if(unlock == null){
+					//Invalid unlock
+					return;
+				}
+				double price = unlock.price;
+				if(main.economy == null){
+					if(!main.plugin.setupEconomy() || main.economy == null){
+						player.sendMessage(main.colors.getError()+main.msgs.get("general.shop.error"));
+						return;
+					}
+					
+				}
+				double balance = main.economy.getBalance(player.getName());
+				if(balance < price){
+					String msg = main.msgs.get("general.shop.notEnoughMoney");
+					msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(currency));
+					msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(balance+""));
+					player.sendMessage(main.colors.getError()+msg);
+					return;
+				}
+				//Confident in success of transaction
+				Boolean success = main.plugin.upgradeManager.addUpgrade(player.getName()
+						, new Upgrade(unlock, 1)); //Give them the upgrade
+				if(!success){
+					player.sendMessage(main.colors.getError()+main.msgs.get("general.shop.maxUpgrades"));
+					return;
+				}
+				EconomyResponse response = main.economy.withdrawPlayer(player.getName(), price);
+				balance = response.balance;
+				String msg = main.msgs.get("general.shop.success");
+				msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(currency));
+				msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(balance+""));
+				msg = msg.replaceAll(Pattern.quote("%name%"), Matcher.quoteReplacement(unlock.upgradeName));
+				msg = msg.replaceAll(Pattern.quote("%price%"), Matcher.quoteReplacement(""+price));
+				player.sendMessage(main.colors.getInfo()+msg);
+				event.getClickEvent().setWillDestroy(true);
+				return;
 			}
 		}
 		return;

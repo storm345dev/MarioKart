@@ -163,6 +163,26 @@ public class main extends JavaPlugin {
 				lang.set("general.cmd.racetimes",
 						"Top %n% times for track %track%:");
 			}
+			if (!lang.contains("general.shop.notEnoughMoney")) {
+				lang.set("general.shop.notEnoughMoney",
+						"You don't have enough %currency% for that item!");
+			}
+			if (!lang.contains("general.shop.maxUpgrades")) {
+				lang.set("general.shop.maxUpgrades",
+						"You are not allowed to own more than 64 of an upgrade!");
+			}
+			if (!lang.contains("general.shop.success")) {
+				lang.set("general.shop.success",
+						"Successfully bought %name% for %price% %currency%! You now have %balance% %currency%!");
+			}
+			if (!lang.contains("general.shop.sellSuccess")) {
+				lang.set("general.shop.sellSuccess",
+						"Successfully removed %amount% of %name% from your upgrades list!");
+			}
+			if (!lang.contains("general.shop.error")) {
+				lang.set("general.shop.error",
+						"An error occured. Please contact a member of staff. (No economy found)");
+			}
 			if (!lang.contains("setup.create.exists")) {
 				lang.set("setup.create.exists",
 						"This track already exists! Please do /urace delete %name% before proceeding!");
@@ -640,7 +660,7 @@ public class main extends JavaPlugin {
 	    	upgrades.set("upgrades.immunityII.length", 5000l);
 	    	upgrades.set("upgrades.immunityII.useItem", true);
 	    	upgrades.set("upgrades.immunityII.useUpgrade", false);
-	    	upgrades.set("upgrades.immunityII.price", 6d);
+	    	upgrades.set("upgrades.immunityII.price", 12d);
 	    	try {
 				upgrades.save(saveFile);
 			} catch (IOException e) {

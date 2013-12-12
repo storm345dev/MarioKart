@@ -159,10 +159,15 @@ public class UnlockableManager {
 						added = true;
 					}
 					else{
+						if(q<=64){
 					    //Set quantity to q
 						unlocks[i] = shortId+":"+q;
+						added = true;
+						}
+						else{
+							return false; //Not allowed more than 64 of an upgrade
+						}
 					}
-					added = true;
 				}
 			}
 		}

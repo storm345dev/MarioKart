@@ -2,6 +2,9 @@ package net.stormdev.mario.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import com.useful.ucarsCommon.StatValue;
+
 public class IconMenu implements Listener {
 	 
     private String name;
@@ -24,6 +29,8 @@ public class IconMenu implements Listener {
    
     private String[] optionNames;
     private ItemStack[] optionIcons;
+    private Boolean enabled = true;
+    private String metaData;
    
     public IconMenu(String name, int size, OptionClickEventHandler handler, Plugin plugin) {
         this.name = name;
@@ -32,6 +39,7 @@ public class IconMenu implements Listener {
         this.plugin = plugin;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
+        this.metaData = "menu."+UUID.randomUUID().toString();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
    
@@ -54,6 +62,7 @@ public class IconMenu implements Listener {
             }
         }
         player.openInventory(inventory);
+        player.setMetadata(metaData, new StatValue(null, main.plugin));
     }
    
     public void destroy() {
@@ -62,11 +71,14 @@ public class IconMenu implements Listener {
         plugin = null;
         optionNames = null;
         optionIcons = null;
+        enabled = false;
+        metaData = null;
     }
    
     @EventHandler(priority=EventPriority.MONITOR)
     void onInventoryClick(InventoryClickEvent event) {
-        if (event.getInventory().getTitle().equals(name)) {
+        if (event.getInventory().getTitle().equals(name) && enabled
+        		&& event.getWhoClicked().hasMetadata(metaData)) {
             event.setCancelled(true);
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size && optionNames[slot] != null) {
@@ -78,6 +90,7 @@ public class IconMenu implements Listener {
                     Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                         public void run() {
                             p.closeInventory();
+                            p.removeMetadata(metaData, main.plugin);
                         }
                     }, 1);
                 }
