@@ -76,7 +76,9 @@ public class UnlockableManager {
 		String[] un = unlocks.clone();
 		Boolean used = false;
 		Boolean remove = false;
+		Boolean update = false;
 		for(int i=0;i<un.length;i++){
+			remove = false;
 			String unlock = un[i];
 			String[] upgradeData = unlock.split(Pattern.quote(":"));
 			if(upgradeData.length > 1){
@@ -106,14 +108,15 @@ public class UnlockableManager {
 				}
 			}
 			if(remove){
-				unlocks[i] = "";
+				unlocks[i] = " ";
+				update = true;
 			}
 		}
-		if(used || remove){
+		if(used || update){
 			//Update database
 			String s = "";
 			for(String u:unlocks){
-				if(u.length()>0){
+				if(u.length()>1){
 					if(s.length() < 1){
 					    s = u;
 					}
