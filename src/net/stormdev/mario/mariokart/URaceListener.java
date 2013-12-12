@@ -881,6 +881,8 @@ public class URaceListener implements Listener {
 					"join", ChatColor.stripColor(lines[2]).toLowerCase() },
 					event.getPlayer());
 			}
+		} else if(cmd.equalsIgnoreCase("shop")){
+			main.cmdExecutor.urace(event.getPlayer(), new String[]{"shop"}, event.getPlayer());
 		}
 		return;
 	}
