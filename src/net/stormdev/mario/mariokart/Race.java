@@ -162,6 +162,7 @@ public class Race {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void leave(User user, boolean quit) {
 		Player player = null;
 		try {
@@ -215,6 +216,7 @@ public class Race {
 				}
 				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
 				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
+			    player.updateInventory();
 			}
 				for (User us : getUsers()) {
 					try {
