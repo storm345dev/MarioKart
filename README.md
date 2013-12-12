@@ -1,4 +1,4 @@
 MarioKart
 =========
 
-The official repo for http://dev.bukkit.org/bukkit-plugins/mariokart
+The official repo for the MarioKart plugin by storm345 and stormdev
