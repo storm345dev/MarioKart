@@ -72,7 +72,6 @@ public class UnlockableManager {
 		return upgrades;
 	}
 	public Boolean useUpgrade(String player, Upgrade upgrade){
-		//TODO Find why it don't use up when last upgrade u own
 		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
 		String[] un = unlocks.clone();
 		Boolean used = false;
@@ -91,7 +90,7 @@ public class UnlockableManager {
 				}
 				if(a>0){
 					if(shortId.equals(upgrade.getUnlockedAble().shortId)){
-						int q = a-1;
+						int q = a-upgrade.getQuantity();
 						if(q<1){
 							remove = true;
 						}

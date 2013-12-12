@@ -1439,7 +1439,15 @@ public class URaceListener implements Listener {
 			}
 			else if(slot == 1){
 				//They clicked on 'Sell Upgrades'
-				//TODO
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, 1);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				return;
 			}
 			else if(slot == 8){
 				//They clicked on 'Exit Menu'
@@ -1539,6 +1547,82 @@ public class URaceListener implements Listener {
 				msg = msg.replaceAll(Pattern.quote("%price%"), Matcher.quoteReplacement(""+price));
 				player.sendMessage(main.colors.getInfo()+msg);
 				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+		}
+		else if(type == SelectMenuType.SELL_UPGRADES){
+			int page = event.getPage();
+			if(slot == 0){
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openShop(player);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else if(slot == 52){
+				if(page <= 1){
+					event.setCancelled(true); //Don't do anything
+					return;
+				}
+				final int p = page-1;
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else if(slot == 53){
+				final int p = page+1;
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}}, 2l);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				return;
+			}
+			else{
+				//Get and buy unlockable
+				int i = ((page-1)*51)+slot-1;
+				Upgrade upgrade = null;
+				try {
+					List<Upgrade> ups = main.plugin.upgradeManager.getUpgrades(player.getName());
+					upgrade = ups.get(i);
+				} catch (Exception e) {
+					//Clicked on invalid slot
+					return;
+				}
+				if(upgrade == null){
+					return; //Clicked on invalid slot
+				}
+				main.plugin.upgradeManager.useUpgrade(player.getName(), upgrade);
+				String msg = main.msgs.get("general.shop.sellSuccess");
+				msg = msg.replaceAll(Pattern.quote("%amount%"), ""+upgrade.getQuantity());
+				msg = msg.replaceAll(Pattern.quote("%name%"), Matcher.quoteReplacement(upgrade.getUnlockedAble().upgradeName));
+				player.sendMessage(main.colors.getInfo()+msg);
+				event.getClickEvent().setWillClose(true);
+				event.getClickEvent().setWillDestroy(true);
+				final int p = page;
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
+						new Runnable(){
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}}, 2l);
 				return;
 			}
 		}
