@@ -1342,6 +1342,8 @@ public class URaceListener implements Listener {
 		Map<String, Object> data = hotBarItem.getData();
 		HotBarUpgrade type = hotBarItem.getType();
 		String upgradeName = "Unknown";
+		Boolean useUpgrade = false;
+		Boolean execute = true;
 		if(data.containsKey("upgrade.name")){
 			upgradeName = data.get("upgrade.name").toString();
 		}
@@ -1354,7 +1356,6 @@ public class URaceListener implements Listener {
 			long lengthMS = 5000;
 			double power = 5;
 			Boolean useItem = true;
-			Boolean useUpgrade = false;
 			if(data.containsKey("upgrade.length")){
 				lengthMS = (long) data.get("upgrade.length");
 			}
@@ -1367,23 +1368,19 @@ public class URaceListener implements Listener {
 			if(data.containsKey("upgrade.useUpgrade")){
 				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
 			}
-			Boolean execute = true;
 			if(useItem){
 				if(!hotBar.useItem(slot)){
 					execute = false;
 				}
 			}
 			if(execute){
-				if(useUpgrade){
-					if(main.plugin.upgradeManager.useUpgrade(player.getName(), new Upgrade(
-							main.plugin.upgradeManager.getUnlockable(hotBarItem.shortId), hotBarItem.getQuantity()))){
-						player.sendMessage(main.msgs.get("race.upgrades.use"));
-						ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
-					}
-				}
-				else{
-					ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
-				}
+				ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+			}
+		}
+		if(useUpgrade){
+			if(main.plugin.upgradeManager.useUpgrade(player.getName(), new Upgrade(
+					main.plugin.upgradeManager.getUnlockable(hotBarItem.shortId), 1))){
+				player.sendMessage(main.msgs.get("race.upgrades.use"));
 			}
 		}
 		player.updateInventory();
