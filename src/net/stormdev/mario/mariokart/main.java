@@ -23,6 +23,7 @@ import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;
 import net.stormdev.mario.utils.RaceTrackManager;
+import net.stormdev.mario.utils.Shop;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.Unlockable;
 import net.stormdev.mario.utils.UnlockableManager;
@@ -543,6 +544,11 @@ public class main extends JavaPlugin {
 		}
 		this.lagReducer.cancel();
 		getServer().getScheduler().cancelTasks(this);
+		try {
+			Shop.getShop().destroy();
+		} catch (Exception e) {
+			//Shop is invalid anyway
+		}
 		System.gc();
 		logger.info("MarioKart has been disabled!");
 	}

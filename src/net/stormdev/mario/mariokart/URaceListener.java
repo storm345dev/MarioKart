@@ -27,6 +27,8 @@ import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceStartEvent;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.RaceUpdateEvent;
+import net.stormdev.mario.utils.SelectMenuClickEvent;
+import net.stormdev.mario.utils.SelectMenuType;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.Upgrade;
 import net.stormdev.mario.utils.shellUpdateEvent;
@@ -1413,5 +1415,27 @@ public class URaceListener implements Listener {
 				}}, 15);
 		}
 		updateHotBar(player);
+	}
+	
+	@EventHandler
+	void menus(SelectMenuClickEvent event){
+		SelectMenuType type = event.getMenuType();
+		if(type == SelectMenuType.MENU){
+			int slot = event.getClickEvent().getPosition();
+			Player player = event.getClickEvent().getPlayer();
+			if(slot == 0){
+				//They clicked on 'Buy Upgrades'
+				//TODO
+			}
+			else if(slot == 1){
+				//They clicked on 'Sell Upgrades'
+				//TODO
+			}
+			else if(slot == 8){
+				//They clicked on 'Exit Menu'
+				return; //Menu closes on-click by default
+			}
+		}
+		return;
 	}
 }

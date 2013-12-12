@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
+import net.stormdev.mario.utils.Shop;
 import net.stormdev.mario.utils.TrackCreator;
 
 import org.bukkit.ChatColor;
@@ -420,6 +421,15 @@ public class URaceCommandExecutor implements CommandExecutor {
 				player.teleport(track.getExit(main.plugin.getServer()));
 				player.setBedSpawnLocation(track.getExit(main.plugin.getServer()), true);
 			}
+			return true;
+		}
+		else if(command.equalsIgnoreCase("shop")){
+			if (player == null) {
+				sender.sendMessage(main.colors.getError()
+						+ main.msgs.get("general.cmd.playersOnly"));
+				return true;
+			}
+			Shop.openShop(player);
 			return true;
 		}
 		return false;
