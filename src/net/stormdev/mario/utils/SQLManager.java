@@ -75,6 +75,14 @@ public class SQLManager {
 		statement.close();
 		return results;
 	}
+	public Boolean deleteFromTable(String tableName, String keyName, String keyValue, String valueName) throws SQLException{
+		String del = "DELETE FROM "+tableName+" WHERE "+tableName+"."+keyName+" = ?;";
+		PreparedStatement delStatement = c.prepareStatement(del);
+		delStatement.setString(1, keyValue);
+		delStatement.executeUpdate();
+		delStatement.close();
+		return true;
+	}
 	public Boolean setInTable(String tableName, String keyName, String keyValue, String valueName, Object value) throws SQLException{
 		//Make so it overrides key
 		/*

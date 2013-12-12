@@ -294,6 +294,13 @@ public class UnlockableManager {
 						e.printStackTrace();
 					}
 				}
+				else{
+					try {
+						sqlManager.deleteFromTable("MarioKartUnlocks", "playername", playerName, "unlocks");
+					} catch (SQLException e) {
+						//Player wasn't in database
+					}
+				}
 				return;
 			}});
 	}
