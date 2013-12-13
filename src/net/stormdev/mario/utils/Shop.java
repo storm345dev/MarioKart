@@ -37,7 +37,7 @@ public class Shop {
 		menu.setOption(1, new ItemStack(Material.EMERALD)
 	        , main.colors.getTitle()+"My Upgrades", 
 	        new String[]{main.colors.getInfo()+"View and Remove Kart upgrades!"});
-		menu.setOption(8, new ItemStack(Material.WOODEN_DOOR)
+		menu.setOption(8, new ItemStack(Material.BOOK)
 	        , main.colors.getTitle()+"Exit Menu", 
 	        new String[]{main.colors.getInfo()+"Exit this menu!"});
 		return menu;
