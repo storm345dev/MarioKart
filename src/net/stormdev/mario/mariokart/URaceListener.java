@@ -1404,8 +1404,12 @@ public class URaceListener implements Listener {
 
 					@Override
 					public void run() {
-						player.getWorld().playSound(player.getLocation(), Sound.CLICK, 0.5f, 3f);
-						veh.removeMetadata("kart.immune", main.plugin);
+						try {
+							veh.removeMetadata("kart.immune", main.plugin);
+							player.getWorld().playSound(player.getLocation(), Sound.CLICK, 0.5f, 3f);
+						} catch (Exception e) {
+							//Player or vehicle are gone
+						}
 						return;
 					}}, (long)(lengthMS*0.020));
 				player.getWorld().playSound(player.getLocation(), Sound.DRINK, 0.5f, 3f);
