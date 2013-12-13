@@ -352,9 +352,6 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.race.rewards.currency")) {
 				config.set("general.race.rewards.currency", "Dollars");
 			}
-			if (!config.contains("general.upgrades.enable")) {
-				config.set("general.upgrades.enable", true);
-			}
 			if (!config.contains("general.upgrades.useSQL")) {
 				config.set("general.upgrades.useSQL", false);
 			}
@@ -534,11 +531,9 @@ public class main extends JavaPlugin {
 		else{
 			this.packUrl = rl;
 		}
-		if(config.getBoolean("general.upgrades.enable")){
-			this.upgradeManager = new UnlockableManager(new File(getDataFolder().getAbsolutePath()
-					+ File.separator + "Data"+File.separator+"upgradesData.mkdata"),
-					config.getBoolean("general.upgrades.useSQL"), getUnlocks());
-		}
+		this.upgradeManager = new UnlockableManager(new File(getDataFolder().getAbsolutePath()
+				+ File.separator + "Data"+File.separator+"upgradesData.mkdata"),
+				config.getBoolean("general.upgrades.useSQL"), getUnlocks());
 		this.hotBarManager = new HotBarManager();
 		this.lagReducer = getServer().getScheduler().runTaskTimer(this, new DynamicLagReducer(), 
 				100L, 1L);
