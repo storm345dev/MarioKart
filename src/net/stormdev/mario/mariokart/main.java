@@ -651,7 +651,7 @@ public class main extends JavaPlugin {
 	    	upgrades.set("upgrades.immunityI.item", Material.IRON_HELMET.name().toUpperCase());
 	    	upgrades.set("upgrades.immunityI.length", 5000l);
 	    	upgrades.set("upgrades.immunityI.useItem", true);
-	    	upgrades.set("upgrades.immunityI.useUpgrade", false);
+	    	upgrades.set("upgrades.immunityI.useUpgrade", true);
 	    	upgrades.set("upgrades.immunityI.price", 6d);
 	    	upgrades.set("upgrades.immunityII.name", "Immunity II (10s)");
 	    	upgrades.set("upgrades.immunityII.id", "ad");
@@ -659,7 +659,7 @@ public class main extends JavaPlugin {
 	    	upgrades.set("upgrades.immunityII.item", Material.GOLD_HELMET.name().toUpperCase());
 	    	upgrades.set("upgrades.immunityII.length", 5000l);
 	    	upgrades.set("upgrades.immunityII.useItem", true);
-	    	upgrades.set("upgrades.immunityII.useUpgrade", false);
+	    	upgrades.set("upgrades.immunityII.useUpgrade", true);
 	    	upgrades.set("upgrades.immunityII.price", 12d);
 	    	try {
 				upgrades.save(saveFile);

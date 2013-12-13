@@ -1342,7 +1342,7 @@ public class URaceListener implements Listener {
 		Map<String, Object> data = hotBarItem.getData();
 		HotBarUpgrade type = hotBarItem.getType();
 		String upgradeName = "Unknown";
-		Boolean useUpgrade = false;
+		Boolean useUpgrade = true;
 		Boolean execute = true;
 		if(data.containsKey("upgrade.name")){
 			upgradeName = data.get("upgrade.name").toString();
@@ -1377,7 +1377,39 @@ public class URaceListener implements Listener {
 				ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
 			}
 		}
-		if(useUpgrade){
+		else if(type == HotBarUpgrade.IMMUNITY){
+			long lengthMS = 5000;
+			Boolean useItem = true;
+			if(data.containsKey("upgrade.length")){
+				lengthMS = (long) data.get("upgrade.length");
+			}
+			if(data.containsKey("upgrade.useItem")){
+				useItem = (Boolean) data.get("upgrade.useItem");
+			}
+			if(data.containsKey("upgrade.useUpgrade")){
+				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
+			}
+			if(useItem){
+				if(!hotBar.useItem(slot)){
+					execute = false;
+				}
+			}
+			if(execute){
+				if(player.getVehicle() == null){
+					return;
+				}
+				final Entity veh = player.getVehicle();
+				veh.setMetadata("kart.immune", new StatValue(true, main.plugin));
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						veh.removeMetadata("kart.immune", main.plugin);
+					}}, (long)(lengthMS*20));
+				player.getWorld().playSound(player.getLocation(), Sound.DRINK, 0.5f, 3f);
+			}
+		}
+		if(useUpgrade && execute){
 			if(main.plugin.upgradeManager.useUpgrade(player.getName(), new Upgrade(
 					main.plugin.upgradeManager.getUnlockable(hotBarItem.shortId), 1))){
 				player.sendMessage(main.msgs.get("race.upgrades.use"));
