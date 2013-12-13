@@ -910,6 +910,9 @@ public class URaceListener implements Listener {
 				}
 				lines[3] = main.colors.getInfo() + lines[3];
 				text = false;
+			} else if(cmd.equalsIgnoreCase("shop")){
+				lines[1] = main.colors.getInfo()+"Shop";
+				
 			} else if (cmd.equalsIgnoreCase("leave")
 					|| cmd.equalsIgnoreCase("exit")
 					|| cmd.equalsIgnoreCase("quit")) {
