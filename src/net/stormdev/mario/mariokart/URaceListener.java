@@ -1335,7 +1335,7 @@ public class URaceListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void hotBarClickEvent(MarioKartHotBarClickEvent event){
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		MarioHotBar hotBar = event.getHotBar();
 		HotBarSlot slot = event.getHotBarSlot();
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
@@ -1404,8 +1404,10 @@ public class URaceListener implements Listener {
 
 					@Override
 					public void run() {
+						player.getWorld().playSound(player.getLocation(), Sound.CLICK, 0.5f, 3f);
 						veh.removeMetadata("kart.immune", main.plugin);
-					}}, (long)(lengthMS*20));
+						return;
+					}}, (long)(lengthMS*0.020));
 				player.getWorld().playSound(player.getLocation(), Sound.DRINK, 0.5f, 3f);
 			}
 		}

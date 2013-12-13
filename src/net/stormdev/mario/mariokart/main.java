@@ -657,7 +657,7 @@ public class main extends JavaPlugin {
 	    	upgrades.set("upgrades.immunityII.id", "ad");
 	    	upgrades.set("upgrades.immunityII.type", HotBarUpgrade.IMMUNITY.name().toUpperCase());
 	    	upgrades.set("upgrades.immunityII.item", Material.GOLD_HELMET.name().toUpperCase());
-	    	upgrades.set("upgrades.immunityII.length", 5000l);
+	    	upgrades.set("upgrades.immunityII.length", 10000l);
 	    	upgrades.set("upgrades.immunityII.useItem", true);
 	    	upgrades.set("upgrades.immunityII.useUpgrade", true);
 	    	upgrades.set("upgrades.immunityII.price", 12d);
