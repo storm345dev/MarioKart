@@ -8,11 +8,11 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.RaceExecutor;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
-import net.stormdev.mario.utils.MarioKartHotBarClickEvent;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
@@ -211,16 +211,12 @@ public class MarioKart {
 					.getName());
 			if (hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
 					&& player.getInventory().getHeldItemSlot() == 7) {
-				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(
-						ply, hotBar, HotBarSlot.UTIL);
-				main.plugin.getServer().getPluginManager().callEvent(evet);
+				main.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.UTIL);
 				evt.setCancelled(true);
 				return;
 			} else if (hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
 					&& player.getInventory().getHeldItemSlot() == 6) {
-				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(
-						ply, hotBar, HotBarSlot.SCROLLER);
-				main.plugin.getServer().getPluginManager().callEvent(evet);
+				main.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.SCROLLER);
 				evt.setCancelled(true);
 				return;
 			}
@@ -564,7 +560,7 @@ public class MarioKart {
 						pl.getWorld().strikeLightningEffect(pl.getLocation());
 						if (pl.getVehicle() != null) {
 							if (pl.getVehicle() instanceof Minecart) {
-								main.listener.penalty(
+								RaceExecutor.penalty(
 										(Minecart) pl.getVehicle(), 4);
 								ucars.listener
 										.carBoost(
@@ -641,8 +637,8 @@ public class MarioKart {
 																				0.25f);
 																pl.sendMessage(ChatColor.RED
 																		+ msg);
-																main.listener
-																		.penalty(
+																
+																RaceExecutor.penalty(
 																				(Minecart) pl
 																						.getVehicle(),
 																				2);
@@ -688,7 +684,7 @@ public class MarioKart {
 							(String) pls[pos]);
 					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
 					pl.getInventory().clear();
-					main.listener.updateHotBar(pl);
+					main.plugin.hotBarManager.updateHotBar(pl);
 					pl.getInventory().addItem(
 							PowerupMaker.getPowerup(Powerup.BOO, 1));
 					PotionEffect nausea = new PotionEffect(
@@ -706,7 +702,7 @@ public class MarioKart {
 								public void run() {
 									pl.removeMetadata("kart.rolling", plugin);
 									pl.getInventory().clear();
-									main.listener.updateHotBar(pl);
+									main.plugin.hotBarManager.updateHotBar(pl);
 									pl.updateInventory();
 								}
 							}, 240l);
@@ -721,7 +717,7 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
-			main.listener.updateHotBar(player);
+			main.plugin.hotBarManager.updateHotBar(player);
 			if (timed) {
 				return;
 			}
@@ -810,7 +806,7 @@ public class MarioKart {
 						 */
 						if (player.getInventory().getContents().length > 0) {
 							player.getInventory().clear();
-							main.listener.updateHotBar(player);
+							main.plugin.hotBarManager.updateHotBar(player);
 						}
 						ItemStack give = null;
 						if (ChatColor.stripColor(lines[2]).equalsIgnoreCase(
@@ -866,7 +862,7 @@ public class MarioKart {
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
 											ply.getInventory().clear();
-											main.listener.updateHotBar(player);
+											main.plugin.hotBarManager.updateHotBar(player);
 											ply.getInventory().addItem(
 													getRandomPowerup());
 											ply.updateInventory();
@@ -883,7 +879,7 @@ public class MarioKart {
 											}
 										}
 										ply.getInventory().clear();
-										main.listener.updateHotBar(ply);
+										main.plugin.hotBarManager.updateHotBar(ply);
 										ply.getInventory().addItem(get);
 										ply.removeMetadata("kart.rolling",
 												plugin);

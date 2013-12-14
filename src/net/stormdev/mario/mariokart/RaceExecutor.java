@@ -20,9 +20,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.Vector;
 
 import com.useful.ucarsCommon.StatValue;
 
@@ -304,7 +306,7 @@ public class RaceExecutor {
 				Player player = user.getPlayer();
 				player.setGameMode(GameMode.SURVIVAL);
 				player.getInventory().clear();
-				main.listener.updateHotBar(player);
+				main.plugin.hotBarManager.updateHotBar(player);
 				player.updateInventory();
 			} catch (PlayerQuitException e) {
 				// Player has left
@@ -445,6 +447,30 @@ public class RaceExecutor {
 			}
 		}
 		main.plugin.raceScheduler.updateRace(game);
+		return;
+	}
+	
+	public static void penalty(final Minecart car, long time) {
+		if (car == null) {
+			return;
+		}
+		if (car.hasMetadata("kart.immune")) {
+			return;
+		}
+		double power = (time / 2);
+		if (power < 1) {
+			power = 1;
+		}
+		car.setMetadata("car.frozen", new StatValue(time, main.plugin));
+		car.setVelocity(new Vector(0, power, 0));
+		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable() {
+
+			public void run() {
+				car.getLocation().getWorld()
+						.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
+				car.removeMetadata("car.frozen", main.plugin);
+			}
+		}, (time * 20));
 		return;
 	}
 

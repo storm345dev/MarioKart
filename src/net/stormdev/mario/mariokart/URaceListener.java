@@ -1,28 +1,14 @@
 package net.stormdev.mario.mariokart;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.stormdev.mario.utils.CheckpointCheck;
-import net.stormdev.mario.utils.DoubleValueComparator;
-import net.stormdev.mario.utils.HotBarItem;
 import net.stormdev.mario.utils.HotBarSlot;
-import net.stormdev.mario.utils.HotBarUpgrade;
 import net.stormdev.mario.utils.MarioHotBar;
-import net.stormdev.mario.utils.MarioKartHotBarClickEvent;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
-import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceQueue;
-import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SelectMenuClickEvent;
 import net.stormdev.mario.utils.SelectMenuType;
 import net.stormdev.mario.utils.Shop;
@@ -33,7 +19,6 @@ import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -88,30 +73,9 @@ public class URaceListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	public void penalty(final Minecart car, long time) {
-		if (car == null) {
-			return;
-		}
-		if (car.hasMetadata("kart.immune")) {
-			return;
-		}
-		double power = (time / 2);
-		if (power < 1) {
-			power = 1;
-		}
-		car.setMetadata("car.frozen", new StatValue(time, plugin));
-		car.setVelocity(new Vector(0, power, 0));
-		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+	
 
-			public void run() {
-				car.getLocation().getWorld()
-						.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
-				car.removeMetadata("car.frozen", plugin);
-			}
-		}, (time * 20));
-		return;
-	}
-
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	void bananas(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
@@ -128,7 +92,7 @@ public class URaceListener implements Listener {
 			player.getWorld().playSound(player.getLocation(), Sound.SPLASH2,
 					1f, 0.5f);
 			item.remove();
-			this.penalty(((Minecart) player.getVehicle()), 1);
+			RaceExecutor.penalty(((Minecart) player.getVehicle()), 1);
 			event.setCancelled(true);
 			return;
 		}
@@ -195,6 +159,7 @@ public class URaceListener implements Listener {
 		}
 		TrackCreator creator = main.trackCreators.get(player.getName());
 		Boolean wand = false;
+		@SuppressWarnings("deprecation")
 		int handid = player.getItemInHand().getTypeId();
 		if (handid == main.config.getInt("setup.create.wand")) {
 			wand = true;
@@ -273,7 +238,7 @@ public class URaceListener implements Listener {
 						.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
 								1, 0.8f);
 				target.sendMessage(ChatColor.RED + msg);
-				penalty(((Minecart) target.getVehicle()), 4);
+				RaceExecutor.penalty(((Minecart) target.getVehicle()), 4);
 				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
 				return;
 			}
@@ -304,7 +269,7 @@ public class URaceListener implements Listener {
 										.playSound(pl.getLocation(),
 												Sound.ENDERDRAGON_HIT, 1, 0.8f);
 								pl.sendMessage(ChatColor.RED + msg);
-								penalty(((Minecart) pl.getVehicle()), 4);
+								RaceExecutor.penalty(((Minecart) pl.getVehicle()), 4);
 								shell.setMetadata("shell.destroy",
 										new StatValue(0, plugin));
 							}
@@ -426,7 +391,7 @@ public class URaceListener implements Listener {
 					if (ucars.listener.isACar((Minecart) listent)) {
 						try {
 							((Minecart) listent).setDamage(0);
-							penalty((Minecart) listent, 4);
+							RaceExecutor.penalty((Minecart) listent, 4);
 						} catch (Exception e) {
 						}
 					}
@@ -784,7 +749,7 @@ public class URaceListener implements Listener {
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		cart.setPassenger(player);
 		player.setMetadata("car.stayIn", new StatValue(null, plugin));
-		updateHotBar(player);
+		plugin.hotBarManager.updateHotBar(player);
 		player.updateInventory();
 		player.setScoreboard(race.board);
 		main.plugin.raceScheduler.updateRace(race);
@@ -922,126 +887,6 @@ public class URaceListener implements Listener {
 		return;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void updateHotBar(Player player) {
-		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player
-				.getName());
-		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
-		HotBarItem scroller = hotBar.getDisplayedItem(HotBarSlot.SCROLLER);
-		if (util != null) {
-			player.getInventory().setItem(7, util.getDisplayItem());
-		} else {
-			player.getInventory().setItem(7, new ItemStack(Material.AIR));
-		}
-		if (scroller != null) {
-			player.getInventory().setItem(6, scroller.getDisplayItem());
-		} else {
-			player.getInventory().setItem(6, new ItemStack(Material.AIR));
-		}
-		player.getInventory().setItem(8, main.marioKart.respawn);
-		player.updateInventory();
-		return;
-	}
-
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void hotBarClickEvent(MarioKartHotBarClickEvent event) {
-		final Player player = event.getPlayer();
-		MarioHotBar hotBar = event.getHotBar();
-		HotBarSlot slot = event.getHotBarSlot();
-		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
-		Map<String, Object> data = hotBarItem.getData();
-		HotBarUpgrade type = hotBarItem.getType();
-		String upgradeName = "Unknown";
-		Boolean useUpgrade = true;
-		Boolean execute = true;
-		if (data.containsKey("upgrade.name")) {
-			upgradeName = data.get("upgrade.name").toString();
-		}
-		if (type == HotBarUpgrade.LEAVE) {
-			// Make the player leave the race
-			main.cmdExecutor.urace(player, new String[] { "leave" }, player);
-			return;
-		} else if (type == HotBarUpgrade.SPEED_BOOST) {
-			long lengthMS = 5000;
-			double power = 5;
-			Boolean useItem = true;
-			if (data.containsKey("upgrade.length")) {
-				lengthMS = (long) data.get("upgrade.length");
-			}
-			if (data.containsKey("upgrade.power")) {
-				power = (double) data.get("upgrade.power");
-			}
-			if (data.containsKey("upgrade.useItem")) {
-				useItem = (Boolean) data.get("upgrade.useItem");
-			}
-			if (data.containsKey("upgrade.useUpgrade")) {
-				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
-			}
-			if (useItem) {
-				if (!hotBar.useItem(slot)) {
-					execute = false;
-				}
-			}
-			if (execute) {
-				ucars.listener.carBoost(player.getName(), power, lengthMS,
-						ucars.config.getDouble("general.cars.defSpeed"));
-			}
-		} else if (type == HotBarUpgrade.IMMUNITY) {
-			long lengthMS = 5000;
-			Boolean useItem = true;
-			if (data.containsKey("upgrade.length")) {
-				lengthMS = (long) data.get("upgrade.length");
-			}
-			if (data.containsKey("upgrade.useItem")) {
-				useItem = (Boolean) data.get("upgrade.useItem");
-			}
-			if (data.containsKey("upgrade.useUpgrade")) {
-				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
-			}
-			if (useItem) {
-				if (!hotBar.useItem(slot)) {
-					execute = false;
-				}
-			}
-			if (execute) {
-				if (player.getVehicle() == null) {
-					return;
-				}
-				final Entity veh = player.getVehicle();
-				veh.setMetadata("kart.immune", new StatValue(true, main.plugin));
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
-
-							@Override
-							public void run() {
-								try {
-									veh.removeMetadata("kart.immune",
-											main.plugin);
-									player.getWorld().playSound(
-											player.getLocation(), Sound.CLICK,
-											0.5f, 3f);
-								} catch (Exception e) {
-									// Player or vehicle are gone
-								}
-								return;
-							}
-						}, (long) (lengthMS * 0.020));
-				player.getWorld().playSound(player.getLocation(), Sound.DRINK,
-						0.5f, 3f);
-			}
-		}
-		if (useUpgrade && execute) {
-			if (main.plugin.upgradeManager.useUpgrade(
-					player.getName(),
-					new Upgrade(main.plugin.upgradeManager
-							.getUnlockable(hotBarItem.shortId), 1))) {
-				player.sendMessage(main.msgs.get("race.upgrades.use"));
-			}
-		}
-		player.updateInventory();
-	}
-
 	@EventHandler
 	public void hotBarScrolling(VehicleUpdateEvent event) {
 		Vehicle car = event.getVehicle();
@@ -1076,7 +921,7 @@ public class URaceListener implements Listener {
 						}
 					}, 15);
 		}
-		updateHotBar(player);
+		plugin.hotBarManager.updateHotBar(player);
 	}
 
 	@EventHandler
