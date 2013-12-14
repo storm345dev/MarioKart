@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.utils.IconMenu.OptionClickEvent;
 
@@ -21,15 +24,8 @@ public class Shop {
 
 			@Override
 			public void onOptionClick(OptionClickEvent event) {
-				SelectMenuClickEvent evt = new SelectMenuClickEvent(event,
-						SelectMenuType.MENU, 1);
-				main.plugin.getServer().getPluginManager().callEvent(evt);
-				if (evt.isCancelled()) {
-					event.setWillClose(false);
-					event.setWillDestroy(false);
-					return;
-				}
-				event = evt.getClickEvent();
+				event = onClick(SelectMenuType.MENU, event.getPosition(), event, 1);
+				return;
 			}
 		}, main.plugin);
 		menu.setOption(0, new ItemStack(Material.EMERALD),
@@ -70,16 +66,8 @@ public class Shop {
 					public void onOptionClick(IconMenu.OptionClickEvent event) {
 						event.setWillClose(true);
 						event.setWillDestroy(true);
-						SelectMenuClickEvent evt = new SelectMenuClickEvent(
-								event, SelectMenuType.BUY_UPGRADES, page);
-						main.plugin.getServer().getPluginManager()
-								.callEvent(evt);
-						if (evt.isCancelled()) {
-							event.setWillClose(false);
-							event.setWillDestroy(false);
-							return;
-						}
-						event = evt.getClickEvent();
+						event = onClick(SelectMenuType.BUY_UPGRADES, event.getPosition(), event, page);
+					    return;
 					}
 				}, main.plugin);
 		menu.setOption(0, new ItemStack(Material.BOOK), main.colors.getTitle()
@@ -129,16 +117,8 @@ public class Shop {
 					public void onOptionClick(IconMenu.OptionClickEvent event) {
 						event.setWillClose(true);
 						event.setWillDestroy(true);
-						SelectMenuClickEvent evt = new SelectMenuClickEvent(
-								event, SelectMenuType.SELL_UPGRADES, page);
-						main.plugin.getServer().getPluginManager()
-								.callEvent(evt);
-						if (evt.isCancelled()) {
-							event.setWillClose(false);
-							event.setWillDestroy(false);
-							return;
-						}
-						event = evt.getClickEvent();
+						event = onClick(SelectMenuType.SELL_UPGRADES, event.getPosition(), event, page);
+						return;
 					}
 				}, main.plugin);
 		menu.setOption(0, new ItemStack(Material.BOOK), main.colors.getTitle()
@@ -171,6 +151,232 @@ public class Shop {
 			}
 		}
 		return menu;
+	}
+	
+	public static OptionClickEvent onClick(SelectMenuType type, int slot, 
+			IconMenu.OptionClickEvent event, int page){
+		final Player player = event.getPlayer();
+		if (type == SelectMenuType.MENU) {
+			if (slot == 0) {
+				// They clicked on 'Buy Upgrades'
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, 1);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				return event;
+			} else if (slot == 1) {
+				// They clicked on 'Sell Upgrades'
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, 1);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				return event;
+			} else if (slot == 8) {
+				// They clicked on 'Exit Menu'
+				return event; // Menu closes on-click by default
+			}
+		} else if (type == SelectMenuType.BUY_UPGRADES) {
+			if (slot == 0) {
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openShop(player);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else if (slot == 52) {
+				if (page <= 1) {
+					event.setWillClose(false);
+					event.setWillDestroy(false);
+					return event;
+				}
+				final int p = page - 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, p);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else if (slot == 53) {
+				final int p = page + 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openUpgradeShop(player, p);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else {
+				// Get and buy unlockable
+				int i = ((page - 1) * 51) + slot - 1;
+				String shortId = "";
+				Unlockable unlock = null;
+				String currency = main.config
+						.getString("general.race.rewards.currency");
+				try {
+					shortId = (String) main.plugin.getUnlocks().keySet()
+							.toArray()[i];
+					unlock = main.plugin.getUnlocks().get(shortId);
+				} catch (Exception e) {
+					// Clicked in an invalid place
+					return event;
+				}
+				if (unlock == null) {
+					// Invalid unlock
+					return event;
+				}
+				double price = unlock.price;
+				if (main.economy == null) {
+					if (!main.plugin.setupEconomy() || main.economy == null) {
+						player.sendMessage(main.colors.getError()
+								+ main.msgs.get("general.shop.error"));
+						return event;
+					}
+
+				}
+				double balance = main.economy.getBalance(player.getName());
+				if (balance < price) {
+					String msg = main.msgs.get("general.shop.notEnoughMoney");
+					msg = msg.replaceAll(Pattern.quote("%currency%"),
+							Matcher.quoteReplacement(currency));
+					msg = msg.replaceAll(Pattern.quote("%balance%"),
+							Matcher.quoteReplacement(balance + ""));
+					player.sendMessage(main.colors.getError() + msg);
+					return event;
+				}
+				// Confident in success of transaction
+				Boolean success = main.plugin.upgradeManager.addUpgrade(
+						player.getName(), new Upgrade(unlock, 1)); // Give them
+																	// the
+																	// upgrade
+				if (!success) {
+					player.sendMessage(main.colors.getError()
+							+ main.msgs.get("general.shop.maxUpgrades"));
+					return event;
+				}
+				EconomyResponse response = main.economy.withdrawPlayer(
+						player.getName(), price);
+				balance = response.balance;
+				String msg = main.msgs.get("general.shop.success");
+				msg = msg.replaceAll(Pattern.quote("%currency%"),
+						Matcher.quoteReplacement(currency));
+				msg = msg.replaceAll(Pattern.quote("%balance%"),
+						Matcher.quoteReplacement(balance + ""));
+				msg = msg.replaceAll(Pattern.quote("%name%"),
+						Matcher.quoteReplacement(unlock.upgradeName));
+				msg = msg.replaceAll(Pattern.quote("%price%"),
+						Matcher.quoteReplacement("" + price));
+				player.sendMessage(main.colors.getInfo() + msg);
+				event.setWillDestroy(true);
+				return event;
+			}
+		} else if (type == SelectMenuType.SELL_UPGRADES) {
+			if (slot == 0) {
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openShop(player);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else if (slot == 52) {
+				if (page <= 1) {
+					event.setWillClose(false);
+					event.setWillDestroy(false);
+					return event;
+				}
+				final int p = page - 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else if (slot == 53) {
+				final int p = page + 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}
+						}, 2l);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				return event;
+			} else {
+				// Get and buy unlockable
+				int i = ((page - 1) * 51) + slot - 1;
+				Upgrade upgrade = null;
+				try {
+					List<Upgrade> ups = main.plugin.upgradeManager
+							.getUpgrades(player.getName());
+					upgrade = ups.get(i);
+				} catch (Exception e) {
+					// Clicked on invalid slot
+					return event;
+				}
+				if (upgrade == null) {
+					return event; // Clicked on invalid slot
+				}
+				main.plugin.upgradeManager
+						.useUpgrade(player.getName(), upgrade);
+				String msg = main.msgs.get("general.shop.sellSuccess");
+				msg = msg.replaceAll(Pattern.quote("%amount%"),
+						"" + upgrade.getQuantity());
+				msg = msg
+						.replaceAll(Pattern.quote("%name%"),
+								Matcher.quoteReplacement(upgrade
+										.getUnlockedAble().upgradeName));
+				player.sendMessage(main.colors.getInfo() + msg);
+				event.setWillClose(true);
+				event.setWillDestroy(true);
+				final int p = page;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
+							@Override
+							public void run() {
+								Shop.openMyUpgrades(player, p);
+								return;
+							}
+						}, 2l);
+				return event;
+			}
+		}
+		return event;
 	}
 
 }

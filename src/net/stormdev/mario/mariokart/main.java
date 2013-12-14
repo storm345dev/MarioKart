@@ -598,7 +598,7 @@ public class main extends JavaPlugin {
 		return ChatColor.translateAlternateColorCodes('&', prefix);
 	}
 
-	protected boolean setupEconomy() {
+	public boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider = getServer()
 				.getServicesManager().getRegistration(
 						net.milkbowl.vault.economy.Economy.class);
