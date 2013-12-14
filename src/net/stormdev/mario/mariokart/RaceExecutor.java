@@ -10,12 +10,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceType;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -293,6 +295,157 @@ public class RaceExecutor {
 		} catch (IllegalArgumentException e) {
 			// Player has left (Silly User system breaking everything...)
 		}
+	}
+	@SuppressWarnings("deprecation")
+	public static void onRaceStart(Race game){
+		List<User> users = game.getUsers();
+		for (User user : users) {
+			try {
+				Player player = user.getPlayer();
+				player.setGameMode(GameMode.SURVIVAL);
+				player.getInventory().clear();
+				main.listener.updateHotBar(player);
+				player.updateInventory();
+			} catch (PlayerQuitException e) {
+				// Player has left
+				game.leave(user, true);
+			}
+		}
+		main.plugin.raceScheduler.updateRace(game);
+		users = game.getUsers();
+		for (User user : users) {
+			user.setLapsLeft(game.totalLaps);
+			user.setCheckpoint(0);
+			String msg = main.msgs.get("race.mid.lap");
+			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
+			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
+			try {
+				user.getPlayer().sendMessage(main.colors.getInfo() + msg);
+			} catch (PlayerQuitException e) {
+				// Player has left
+			}
+		}
+		game.setUsers(users);
+		main.plugin.raceScheduler.recalculateQueues();
+		return;
+	}
+	public static void onRaceUpdate(final Race game){
+		if (!game.getRunning()) {
+			try {
+				main.plugin.raceScheduler.stopRace(game);
+			} catch (Exception e) {
+			}
+			main.plugin.raceScheduler.recalculateQueues();
+			return;
+		}
+		if (!game.ending
+				&& !game.ending
+				&& main.config.getBoolean("general.race.enableTimeLimit")
+				&& ((System.currentTimeMillis() - game.startTimeMS) * 0.001) > game.timeLimitS) {
+			game.broadcast(main.msgs.get("race.end.timeLimit"));
+			game.ending = true;
+			game.end();
+			return;
+		}
+		for (User user : game.getUsersIn()) {
+			String pname = user.getPlayerName();
+			Player player = main.plugin.getServer().getPlayer(pname);
+			if (player == null) {
+				game.leave(user, true);
+			} else {
+				Location playerLoc = player.getLocation();
+				Boolean checkNewLap = false;
+				int old = user.getCheckpoint();
+				if (old == game.getMaxCheckpoints()) {
+					checkNewLap = true;
+				}
+				Integer[] toCheck = new Integer[] {};
+				if (checkNewLap) {
+					toCheck = new Integer[] { 0 };
+				} else {
+					toCheck = new Integer[] { (old + 1) };
+				}
+				CheckpointCheck check = game.playerAtCheckpoint(toCheck,
+						player, main.plugin.getServer());
+
+				if (check.at) { // At a checkpoint
+					int ch = check.checkpoint;
+					if (ch >= game.getMaxCheckpoints()) {
+						checkNewLap = true;
+					}
+					if (!(ch == old)) {
+						/*
+						 * Removed to reduce server load - Requires all
+						 * checkpoints to be checked if(ch-2 > old){ //They
+						 * missed a checkpoint
+						 * player.sendMessage(main.colors.getError
+						 * ()+main.msgs.get("race.mid.miss")); return; }
+						 */
+						if (!(old >= ch)) {
+							user.setCheckpoint(check.checkpoint);
+						}
+					}
+				}
+				int lapsLeft = user.getLapsLeft();
+
+				if (lapsLeft < 1 || checkNewLap) {
+					if (game.atLine(main.plugin.getServer(), playerLoc)) {
+						if (checkNewLap) {
+							int left = lapsLeft - 1;
+							if (left < 0) {
+								left = 0;
+							}
+							user.setCheckpoint(0);
+							user.setLapsLeft(left);
+							lapsLeft = left;
+							if (left != 0) {
+								String msg = main.msgs.get("race.mid.lap");
+								int lap = game.totalLaps - lapsLeft + 1;
+								msg = msg.replaceAll(Pattern.quote("%lap%"), ""
+										+ lap);
+								msg = msg.replaceAll(Pattern.quote("%total%"),
+										"" + game.totalLaps);
+								if (lap == game.totalLaps) {
+									player.getWorld().playSound(
+											player.getLocation(),
+											Sound.NOTE_STICKS, 2, 1);
+								}
+								player.sendMessage(main.colors.getInfo() + msg);
+							}
+						}
+						if (lapsLeft < 1) {
+							Boolean won = game.getWinner() == null;
+							if (won) {
+								game.setWinner(user);
+							}
+							game.finish(user);
+							if (won && game.getType() != RaceType.TIME_TRIAL) {
+								for (User u : game.getUsers()) {
+									Player p;
+									try {
+										p = u.getPlayer();
+										String msg = main.msgs
+												.get("race.end.soon");
+										msg = msg.replaceAll("%name%",
+												p.getName());
+										p.sendMessage(main.colors.getSuccess()
+												+ game.getWinner()
+												+ main.msgs.get("race.end.won"));
+										p.sendMessage(main.colors.getInfo()
+												+ msg);
+									} catch (PlayerQuitException e) {
+										// Player has left
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		main.plugin.raceScheduler.updateRace(game);
+		return;
 	}
 
 }

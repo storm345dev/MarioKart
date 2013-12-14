@@ -13,12 +13,8 @@ import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.PlayerQuitException;
-import net.stormdev.mario.utils.RaceEndEvent;
-import net.stormdev.mario.utils.RaceFinishEvent;
-import net.stormdev.mario.utils.RaceStartEvent;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
-import net.stormdev.mario.utils.RaceUpdateEvent;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
@@ -387,9 +383,7 @@ public class Race {
 									// Nothing
 								}
 							}
-							RaceUpdateEvent event = new RaceUpdateEvent(game);
-							main.plugin.getServer().getPluginManager()
-									.callEvent(event);
+							RaceExecutor.onRaceUpdate(game);
 						}
 						return;
 					}
@@ -449,8 +443,7 @@ public class Race {
 				}, this.scorerate, this.scorerate);
 		try {
 			this.startTimeMS = System.currentTimeMillis();
-			main.plugin.getServer().getPluginManager()
-					.callEvent(new RaceStartEvent(this));
+			RaceExecutor.onRaceStart(this);
 		} catch (Exception e) {
 			main.logger.log("Error starting race!", Level.SEVERE);
 			end();
@@ -546,13 +539,9 @@ public class Race {
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
-			main.plugin.getServer().getPluginManager()
-					.callEvent(new RaceFinishEvent(this, user));
+			RaceExecutor.finishRace(this, user);
 		}
-		RaceEndEvent evt = new RaceEndEvent(this);
-		if (evt != null) {
-			main.plugin.getServer().getPluginManager().callEvent(evt);
-		}
+		RaceExecutor.onRaceEnd(this);
 		clear();
 		main.plugin.raceScheduler.removeRace(this);
 		main.plugin.raceScheduler.recalculateQueues();
@@ -583,8 +572,7 @@ public class Race {
 			// Player has left
 		}
 		this.endTimeMS = System.currentTimeMillis();
-		main.plugin.getServer().getPluginManager()
-				.callEvent(new RaceFinishEvent(this, user));
+		RaceExecutor.finishRace(this, user);
 	}
 
 	public User updateUser(Player player) {
