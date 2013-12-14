@@ -20,14 +20,15 @@ public class RaceMethods {
 
 	public Race inAGame(Player player, Boolean update) {
 		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
-		for(UUID id:new ArrayList<UUID>(races.keySet())){
+		for (UUID id : new ArrayList<UUID>(races.keySet())) {
 			Race r = races.get(id);
-			if(update){
+			if (update) {
 				r.updateUser(player);
 			}
-			List<User> users = r.getUsersIn(); //Exclude those that have finished the race
-			for(User u:users){
-				if(u.getPlayerName().equals(player.getName())){
+			List<User> users = r.getUsersIn(); // Exclude those that have
+												// finished the race
+			for (User u : users) {
+				if (u.getPlayerName().equals(player.getName())) {
 					return r;
 				}
 			}
@@ -37,7 +38,7 @@ public class RaceMethods {
 
 	public RaceQueue inGameQue(Player player) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
-		for (UUID id:queues.keySet()) {
+		for (UUID id : queues.keySet()) {
 			try {
 				RaceQueue queue = queues.get(id);
 				if (queue.containsPlayer(player)) {

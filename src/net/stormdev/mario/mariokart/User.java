@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class User {
 	private Player player;
-	
+
 	private String playerName = "";
 
 	private int checkpoint;
@@ -20,16 +20,16 @@ public class User {
 	private ItemStack[] oldInventory;
 
 	private final int oldLevel;
-	
+
 	private final float oldExp;
-	
+
 	private boolean inRace;
-	
+
 	private boolean finished;
-	
+
 	private Location location;
 
-	public User(Player player, int oldLevel, float oldExp){
+	public User(Player player, int oldLevel, float oldExp) {
 		this.player = player;
 		this.playerName = player.getName();
 		this.checkpoint = 0;
@@ -41,13 +41,13 @@ public class User {
 		location = null;
 	}
 
-	public String getPlayerName(){
+	public String getPlayerName() {
 		return playerName;
 	}
-	
-	public Player getPlayer() throws PlayerQuitException{
+
+	public Player getPlayer() throws PlayerQuitException {
 		try {
-			if(player==null || !player.isOnline()){
+			if (player == null || !player.isOnline()) {
 				player = null;
 				throw new PlayerQuitException(playerName);
 			}
@@ -56,88 +56,88 @@ public class User {
 		}
 		return player;
 	}
-	
-	public void setPlayer(Player player){
+
+	public void setPlayer(Player player) {
 		this.player = player;
 		return;
 	}
-	
-	public OfflinePlayer getOfflinePlayer(Server server){
+
+	public OfflinePlayer getOfflinePlayer(Server server) {
 		return server.getOfflinePlayer(playerName);
 	}
 
-	public void setCheckpoint(int checkpoint){
+	public void setCheckpoint(int checkpoint) {
 		this.checkpoint = checkpoint;
 	}
 
-	public int getCheckpoint(){
+	public int getCheckpoint() {
 		return checkpoint;
 	}
 
-	public void setLapsLeft(int lapsLeft){
+	public void setLapsLeft(int lapsLeft) {
 		this.lapsLeft = lapsLeft;
 	}
 
-	public int getLapsLeft(){
+	public int getLapsLeft() {
 		return lapsLeft;
 	}
-	
-	public void setOldInventory(ItemStack[] contents){
+
+	public void setOldInventory(ItemStack[] contents) {
 		this.oldInventory = contents;
 	}
 
-	public ItemStack[] getOldInventory(){
+	public ItemStack[] getOldInventory() {
 		return oldInventory;
 	}
 
-	public int getOldLevel(){
+	public int getOldLevel() {
 		return oldLevel;
 	}
-	
-	public float getOldExp(){
+
+	public float getOldExp() {
 		return oldExp;
 	}
-	
-	public void setInRace(boolean inRace){
+
+	public void setInRace(boolean inRace) {
 		this.inRace = inRace;
 	}
-	
-	public boolean isInRace(){
+
+	public boolean isInRace() {
 		return inRace;
 	}
-	
-	public void setFinished(boolean finished){
+
+	public void setFinished(boolean finished) {
 		this.finished = finished;
 	}
-	
-	public boolean isFinished(){
+
+	public boolean isFinished() {
 		return finished;
 	}
-	
-	public void setLocation(Location location){
+
+	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
-	public Location getLocation(){
+
+	public Location getLocation() {
 		return location;
 	}
 
 	@Override
-	public boolean equals(Object object){
-		if (!(object instanceof User)){
+	public boolean equals(Object object) {
+		if (!(object instanceof User)) {
 			return false;
 		}
 
 		User user = (User) object;
 
-		if (!user.getPlayerName().equals(getPlayerName())){
+		if (!user.getPlayerName().equals(getPlayerName())) {
 			return false;
 		}
 
 		return true;
 	}
-	
-	public void clear(){
+
+	public void clear() {
 		this.player = null;
 	}
 }

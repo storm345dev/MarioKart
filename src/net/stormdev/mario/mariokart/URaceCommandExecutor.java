@@ -292,7 +292,8 @@ public class URaceCommandExecutor implements CommandExecutor {
 				}
 			}
 			if (player.getVehicle() != null) {
-                sender.sendMessage(main.colors.getError()+"Cannot execute whilst in a vehicle");
+				sender.sendMessage(main.colors.getError()
+						+ "Cannot execute whilst in a vehicle");
 				return true;
 			}
 			if (trackName.equalsIgnoreCase("auto")) {
@@ -372,10 +373,10 @@ public class URaceCommandExecutor implements CommandExecutor {
 					String s = "" + chars[0];
 					s = s.toUpperCase();
 					trackName = color + s + trackName.substring(1)
-							+ main.colors.getInfo() +" (" + color
-							+ queue.playerCount() + main.colors.getInfo()
-							+ "/" + queue.playerLimit() + ")" 
-							+ " ["+queue.getRaceMode().name().toLowerCase()+"]";
+							+ main.colors.getInfo() + " (" + color
+							+ queue.playerCount() + main.colors.getInfo() + "/"
+							+ queue.playerLimit() + ")" + " ["
+							+ queue.getRaceMode().name().toLowerCase() + "]";
 				}
 				sender.sendMessage(main.colors.getInfo() + trackName);
 			}
@@ -410,20 +411,21 @@ public class URaceCommandExecutor implements CommandExecutor {
 					main.plugin.raceScheduler.leaveQueue(player, queue);
 				} catch (Exception e) {
 					e.printStackTrace();
-					//Player not in a queue
+					// Player not in a queue
 					sender.sendMessage(main.colors.getError()
 							+ "ERROR occured. Please contact a member of staff.");
 					return true;
 				}
 				String msg = main.msgs.get("general.cmd.leave.success");
-				msg = msg.replaceAll(Pattern.quote("%name%"), queue.getTrackName());
+				msg = msg.replaceAll(Pattern.quote("%name%"),
+						queue.getTrackName());
 				sender.sendMessage(main.colors.getSuccess() + msg);
 				player.teleport(track.getExit(main.plugin.getServer()));
-				player.setBedSpawnLocation(track.getExit(main.plugin.getServer()), true);
+				player.setBedSpawnLocation(
+						track.getExit(main.plugin.getServer()), true);
 			}
 			return true;
-		}
-		else if(command.equalsIgnoreCase("shop")){
+		} else if (command.equalsIgnoreCase("shop")) {
 			if (player == null) {
 				sender.sendMessage(main.colors.getError()
 						+ main.msgs.get("general.cmd.playersOnly"));

@@ -109,7 +109,7 @@ public class URaceListener implements Listener {
 
 			public void run() {
 				car.getLocation().getWorld()
-				.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
+						.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
 				car.removeMetadata("car.frozen", plugin);
 			}
 		}, (time * 20));
@@ -145,7 +145,8 @@ public class URaceListener implements Listener {
 		if (r == null) {
 			return;
 		}
-		//r.broadcast(ChatColor.GREEN + event.getEntity().getName() + " respawned");
+		// r.broadcast(ChatColor.GREEN + event.getEntity().getName() +
+		// " respawned");
 		event.setDeathMessage("");
 		event.getDrops().clear();
 		return;
@@ -272,9 +273,9 @@ public class URaceListener implements Listener {
 				String msg = main.msgs.get("mario.hit");
 				msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
 				target.getLocation()
-				.getWorld()
-				.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
-						1, 0.8f);
+						.getWorld()
+						.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
+								1, 0.8f);
 				target.sendMessage(ChatColor.RED + msg);
 				penalty(((Minecart) target.getVehicle()), 4);
 				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
@@ -303,9 +304,9 @@ public class URaceListener implements Listener {
 								msg = msg.replaceAll(Pattern.quote("%name%"),
 										"green shell");
 								pl.getLocation()
-								.getWorld()
-								.playSound(pl.getLocation(),
-										Sound.ENDERDRAGON_HIT, 1, 0.8f);
+										.getWorld()
+										.playSound(pl.getLocation(),
+												Sound.ENDERDRAGON_HIT, 1, 0.8f);
 								pl.sendMessage(ChatColor.RED + msg);
 								penalty(((Minecart) pl.getVehicle()), 4);
 								shell.setMetadata("shell.destroy",
@@ -324,17 +325,18 @@ public class URaceListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void RaceEnd(RaceEndEvent event) {
 		Race game = event.getRace();
-		if(game == null){
+		if (game == null) {
 			return;
 		}
 		game.running = false;
 		try {
 			game.users.clear();
 		} catch (Exception e2) {
-			//Users already cleared
+			// Users already cleared
 		}
 		try {
-			if (plugin.raceScheduler.isTrackInUse(game.getTrack(), game.getType())) {
+			if (plugin.raceScheduler.isTrackInUse(game.getTrack(),
+					game.getType())) {
 				plugin.raceScheduler.removeRace(game);
 			}
 		} catch (Exception e1) {
@@ -345,7 +347,7 @@ public class URaceListener implements Listener {
 			}
 		}
 		plugin.raceScheduler.recalculateQueues();
-		if(!game.isEmpty()){
+		if (!game.isEmpty()) {
 			main.logger.info("MEMORY LEAK ALERT");
 		}
 	}
@@ -368,18 +370,20 @@ public class URaceListener implements Listener {
 			try {
 				player = user.getPlayer();
 			} catch (PlayerQuitException e1) {
-				//Player has left
+				// Player has left
 			}
-			if(player == null){
-				//Player has been removed from race prematurely
-				player = main.plugin.getServer().getPlayer(user.getPlayerName());
-				if(player == null || !player.isOnline()){
-					return; //Player is no longer around...
+			if (player == null) {
+				// Player has been removed from race prematurely
+				player = main.plugin.getServer()
+						.getPlayer(user.getPlayerName());
+				if (player == null || !player.isOnline()) {
+					return; // Player is no longer around...
 				}
 			}
-			if(player != null){
+			if (player != null) {
 				player.removeMetadata("car.stayIn", plugin);
-				player.setCustomName(ChatColor.stripColor(player.getCustomName()));
+				player.setCustomName(ChatColor.stripColor(player
+						.getCustomName()));
 				player.setCustomNameVisible(false);
 				if (player.getVehicle() != null) {
 					Vehicle veh = (Vehicle) player.getVehicle();
@@ -390,7 +394,8 @@ public class URaceListener implements Listener {
 				}
 				Location loc = game.getTrack().getExit(plugin.getServer());
 				if (loc == null) {
-					player.teleport(player.getLocation().getWorld().getSpawnLocation());
+					player.teleport(player.getLocation().getWorld()
+							.getSpawnLocation());
 				} else {
 					player.teleport(loc);
 				}
@@ -407,15 +412,17 @@ public class URaceListener implements Listener {
 				for (User u : game.getUsers()) {
 					try {
 						Player pp = u.getPlayer();
-						if (pp != null){
+						if (pp != null) {
 							if (pp.hasMetadata("checkpoint.distance")) {
 								List<MetadataValue> metas = pp
 										.getMetadata("checkpoint.distance");
-								checkpointDists.put(u,  (Double) ((StatValue) metas.get(0)).getValue());
+								checkpointDists.put(u,
+										(Double) ((StatValue) metas.get(0))
+												.getValue());
 							}
 						}
 					} catch (PlayerQuitException e) {
-						//Player has left
+						// Player has left
 					}
 				}
 
@@ -427,7 +434,8 @@ public class URaceListener implements Listener {
 
 						double distance = 1 / (checkpointDists.get(u));
 
-						double score = (laps * game.getMaxCheckpoints()) + checkpoints + distance;
+						double score = (laps * game.getMaxCheckpoints())
+								+ checkpoints + distance;
 
 						try {
 							if (game.getWinner().equals(u)) {
@@ -437,36 +445,57 @@ public class URaceListener implements Listener {
 						}
 						scores.put(u.getPlayerName(), score);
 					} catch (Exception e) {
-						//User has left
+						// User has left
 					}
 				}
 			}
-			if(player != null){
+			if (player != null) {
 				player.getInventory().clear();
 
 				player.getInventory().setContents(user.getOldInventory());
 			}
 			if (!finished) {
 				DoubleValueComparator com = new DoubleValueComparator(scores);
-				SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
+				SortedMap<String, Double> sorted = new TreeMap<String, Double>(
+						com);
 				sorted.putAll(scores);
 				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
 				for (int i = 0; i < pls.length; i++) {
-					Player p = plugin.getServer().getPlayer((String) pls[i]); //Evidence the dodgy PR was not tested as it was still reading string with Player in the map
+					Player p = plugin.getServer().getPlayer((String) pls[i]); // Evidence
+																				// the
+																				// dodgy
+																				// PR
+																				// was
+																				// not
+																				// tested
+																				// as
+																				// it
+																				// was
+																				// still
+																				// reading
+																				// string
+																				// with
+																				// Player
+																				// in
+																				// the
+																				// map
 					if (p.equals(player)) {
 						if (p != null) {
 							String msg = "";
 							if (!timed) {
 								msg = main.msgs.get("race.end.position");
 								if ((i + 1) <= 4
-										&& (i + 1) != game.getUsers().size()) {player.getWorld().playSound(player.getLocation(), Sound.NOTE_BASS_GUITAR, 1, 1);
+										&& (i + 1) != game.getUsers().size()) {
+									player.getWorld().playSound(
+											player.getLocation(),
+											Sound.NOTE_BASS_GUITAR, 1, 1);
 								} else {
 									player.getWorld().playSound(
-											player.getLocation(), Sound.NOTE_BASS,
-											1, 1);
+											player.getLocation(),
+											Sound.NOTE_BASS, 1, 1);
 								}
-								i = i+game.getUsersFinished().size();
+								i = i + game.getUsersFinished().size();
 								String pos = "" + (i + 1);
 								if (pos.endsWith("1")) {
 									pos = pos + "st";
@@ -478,8 +507,10 @@ public class URaceListener implements Listener {
 									pos = pos + "th";
 								}
 								msg = msg.replaceAll("%position%", "" + pos);
-								MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(player, (i + 1), pos);
-								plugin.getServer().getPluginManager().callEvent(evt);
+								MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
+										player, (i + 1), pos);
+								plugin.getServer().getPluginManager()
+										.callEvent(evt);
 							} else {
 								double tim = (game.endTimeMS - game.startTimeMS) / 10;
 								double ti = (int) tim;
@@ -499,7 +530,8 @@ public class URaceListener implements Listener {
 					int position = 1;
 
 					for (int i = 0; i < game.getUsersFinished().size(); i++) {
-						if (game.getUsersFinished().get(i).equals(user.getPlayerName())) {
+						if (game.getUsersFinished().get(i)
+								.equals(user.getPlayerName())) {
 							position = i + 1;
 						}
 					}
@@ -527,7 +559,8 @@ public class URaceListener implements Listener {
 							msg = msg.replaceAll("%position%", "" + pos);
 						} catch (Exception e) {
 						}
-						MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(player, position, pos);
+						MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
+								player, position, pos);
 						plugin.getServer().getPluginManager().callEvent(evt);
 					} else {
 						// Time trial
@@ -536,9 +569,8 @@ public class URaceListener implements Listener {
 						double t = ti / 100;
 						msg = main.msgs.get("race.end.time");
 						msg = msg.replaceAll(Pattern.quote("%time%"), t + "");
-						plugin.raceTimes
-						.addRaceTime(game.getTrack().getTrackName(),
-								player.getName(), t);
+						plugin.raceTimes.addRaceTime(game.getTrack()
+								.getTrackName(), player.getName(), t);
 					}
 					player.sendMessage(main.colors.getSuccess() + msg);
 				}
@@ -550,28 +582,29 @@ public class URaceListener implements Listener {
 				game.end();
 			}
 			final Player pl = player;
-			plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+			plugin.getServer().getScheduler()
+					.runTaskLater(plugin, new Runnable() {
 
-				public void run() {
-					String rl = main.config
-							.getString("mariokart.resourceNonMarioPack");
-					Boolean valid = true;
-					try {
-						new URL(rl);
-					} catch (MalformedURLException e2) {
-						valid = false;
-					}
-					if (valid) {
-						pl.sendMessage(main.colors.getInfo()
-								+ main.msgs.get("resource.clear"));
-						pl.setTexturePack(rl);
-					}
-					return;
-				}
-			}, 150l);
+						public void run() {
+							String rl = main.config
+									.getString("mariokart.resourceNonMarioPack");
+							Boolean valid = true;
+							try {
+								new URL(rl);
+							} catch (MalformedURLException e2) {
+								valid = false;
+							}
+							if (valid) {
+								pl.sendMessage(main.colors.getInfo()
+										+ main.msgs.get("resource.clear"));
+								pl.setTexturePack(rl);
+							}
+							return;
+						}
+					}, 150l);
 			return;
 		} catch (IllegalArgumentException e) {
-			//Player has left (Silly User system breaking everything...)
+			// Player has left (Silly User system breaking everything...)
 		}
 	}
 
@@ -641,7 +674,7 @@ public class URaceListener implements Listener {
 				updateHotBar(player);
 				player.updateInventory();
 			} catch (PlayerQuitException e) {
-				//Player has left
+				// Player has left
 				game.leave(user, true);
 			}
 		}
@@ -656,7 +689,7 @@ public class URaceListener implements Listener {
 			try {
 				user.getPlayer().sendMessage(main.colors.getInfo() + msg);
 			} catch (PlayerQuitException e) {
-				//Player has left
+				// Player has left
 			}
 		}
 		game.setUsers(users);
@@ -675,8 +708,10 @@ public class URaceListener implements Listener {
 			plugin.raceScheduler.recalculateQueues();
 			return;
 		}
-		if(!game.ending && !game.ending && main.config.getBoolean("general.race.enableTimeLimit") 
-				&& ((System.currentTimeMillis()-game.startTimeMS)*0.001)>game.timeLimitS){
+		if (!game.ending
+				&& !game.ending
+				&& main.config.getBoolean("general.race.enableTimeLimit")
+				&& ((System.currentTimeMillis() - game.startTimeMS) * 0.001) > game.timeLimitS) {
 			game.broadcast(main.msgs.get("race.end.timeLimit"));
 			game.ending = true;
 			game.end();
@@ -759,14 +794,19 @@ public class URaceListener implements Listener {
 									Player p;
 									try {
 										p = u.getPlayer();
-										String msg = main.msgs.get("race.end.soon");
-										msg = msg.replaceAll("%name%", p.getName());
-										p.sendMessage(main.colors.getSuccess() + game.getWinner() + main.msgs.get("race.end.won"));
-										p.sendMessage(main.colors.getInfo() + msg);
+										String msg = main.msgs
+												.get("race.end.soon");
+										msg = msg.replaceAll("%name%",
+												p.getName());
+										p.sendMessage(main.colors.getSuccess()
+												+ game.getWinner()
+												+ main.msgs.get("race.end.won"));
+										p.sendMessage(main.colors.getInfo()
+												+ msg);
 									} catch (PlayerQuitException e) {
-										//Player has left
+										// Player has left
 									}
-									
+
 								}
 							}
 						}
@@ -865,7 +905,7 @@ public class URaceListener implements Listener {
 			} catch (NumberFormatException e) {
 			}
 			main.cmdExecutor.urace(event.getPlayer(), new String[] { "list",
-				"" + page }, event.getPlayer());
+					"" + page }, event.getPlayer());
 		} else if (cmd.equalsIgnoreCase("leave")
 				|| cmd.equalsIgnoreCase("quit") || cmd.equalsIgnoreCase("exit")) {
 			main.cmdExecutor.urace(event.getPlayer(), new String[] { "leave" },
@@ -874,15 +914,16 @@ public class URaceListener implements Listener {
 			String mode = ChatColor.stripColor(lines[3]);
 			if (mode.length() > 0) {
 				main.cmdExecutor.urace(event.getPlayer(), new String[] {
-					"join", ChatColor.stripColor(lines[2]).toLowerCase(),
-					mode }, event.getPlayer());
+						"join", ChatColor.stripColor(lines[2]).toLowerCase(),
+						mode }, event.getPlayer());
 			} else {
 				main.cmdExecutor.urace(event.getPlayer(), new String[] {
-					"join", ChatColor.stripColor(lines[2]).toLowerCase() },
-					event.getPlayer());
+						"join", ChatColor.stripColor(lines[2]).toLowerCase() },
+						event.getPlayer());
 			}
-		} else if(cmd.equalsIgnoreCase("shop")){
-			main.cmdExecutor.urace(event.getPlayer(), new String[]{"shop"}, event.getPlayer());
+		} else if (cmd.equalsIgnoreCase("shop")) {
+			main.cmdExecutor.urace(event.getPlayer(), new String[] { "shop" },
+					event.getPlayer());
 		}
 		return;
 	}
@@ -910,9 +951,9 @@ public class URaceListener implements Listener {
 				}
 				lines[3] = main.colors.getInfo() + lines[3];
 				text = false;
-			} else if(cmd.equalsIgnoreCase("shop")){
-				lines[1] = main.colors.getInfo()+"Shop";
-				
+			} else if (cmd.equalsIgnoreCase("shop")) {
+				lines[1] = main.colors.getInfo() + "Shop";
+
 			} else if (cmd.equalsIgnoreCase("leave")
 					|| cmd.equalsIgnoreCase("exit")
 					|| cmd.equalsIgnoreCase("quit")) {
@@ -934,11 +975,11 @@ public class URaceListener implements Listener {
 						.spawnEntity(above, EntityType.ENDER_CRYSTAL);
 				above.getBlock().setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.WEST)
-				.setType(Material.COAL_BLOCK);
+						.setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.NORTH)
-				.setType(Material.COAL_BLOCK);
+						.setType(Material.COAL_BLOCK);
 				above.getBlock().getRelative(BlockFace.NORTH_WEST)
-				.setType(Material.COAL_BLOCK);
+						.setType(Material.COAL_BLOCK);
 				crystal.setFireTicks(0);
 				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
 				text = false;
@@ -973,11 +1014,11 @@ public class URaceListener implements Listener {
 				EntityType.ENDER_CRYSTAL);
 		above.getBlock().setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.WEST)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH_WEST)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		newC.setFireTicks(0);
 		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 		// }
@@ -987,31 +1028,32 @@ public class URaceListener implements Listener {
 
 	public void spawnItemPickupBox(Location previous, Boolean force) {
 		Location newL = previous;
-		newL.getChunk(); //Load chunk
+		newL.getChunk(); // Load chunk
 		Location signLoc = null;
-		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign) || force) {
+		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign)
+				|| force) {
 			signLoc = newL.add(0, -2.4, 0);
 		} else {
-			if(force){
+			if (force) {
 				double ll = newL.getY();
 				Boolean foundSign = false;
 				Boolean cancel = false;
-				while(!foundSign && !cancel){
-					if(ll < newL.getY() - 4){
+				while (!foundSign && !cancel) {
+					if (ll < newL.getY() - 4) {
 						cancel = true;
 					}
-					Location i = new Location(newL.getWorld(), newL.getX(), ll, newL.getZ());
-					if(i.getBlock().getState() instanceof Sign){
+					Location i = new Location(newL.getWorld(), newL.getX(), ll,
+							newL.getZ());
+					if (i.getBlock().getState() instanceof Sign) {
 						foundSign = true;
 						signLoc = i;
 					}
 				}
-				if(!foundSign){
+				if (!foundSign) {
 					return; // Let is be destroyed
 				}
-			}
-			else{
-			return; // Let them destroy it
+			} else {
+				return; // Let them destroy it
 			}
 		}
 		Location above = signLoc.add(0, 3.8, 0);
@@ -1019,11 +1061,11 @@ public class URaceListener implements Listener {
 				EntityType.ENDER_CRYSTAL);
 		above.getBlock().setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.WEST)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		above.getBlock().getRelative(BlockFace.NORTH_WEST)
-		.setType(Material.COAL_BLOCK);
+				.setType(Material.COAL_BLOCK);
 		newC.setFireTicks(0);
 		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 	}
@@ -1122,7 +1164,7 @@ public class URaceListener implements Listener {
 		return;
 	}
 
-	@EventHandler (priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	void playerRespawnEvent(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, false) == null) {
@@ -1132,33 +1174,33 @@ public class URaceListener implements Listener {
 		int checkpoint = 0;
 		try {
 			User user = race.getUser(player);
-			
+
 			checkpoint = user.getCheckpoint();
 		} catch (Exception e) {
 		}
 		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
-        if(!chunk.isLoaded()){
-            chunk.load(true);
-        }
+		if (!chunk.isLoaded()) {
+			chunk.load(true);
+		}
 		event.setRespawnLocation(loc);
 		return;
 	}
-	
-	@EventHandler (priority = EventPriority.HIGHEST)
-	void queueRespawns(PlayerRespawnEvent event){
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void queueRespawns(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		RaceQueue r = main.plugin.raceMethods.inGameQue(player);
-		if(r == null){
+		if (r == null) {
 			return;
 		}
 		event.setRespawnLocation(r.getTrack().getLobby(main.plugin.getServer()));
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
-	void postRespawn(PlayerRespawnEvent event){
+	void postRespawn(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
@@ -1168,21 +1210,22 @@ public class URaceListener implements Listener {
 		int checkpoint = 0;
 		try {
 			User user = race.getUser(player);
-			
+
 			checkpoint = user.getCheckpoint();
 		} catch (Exception e) {
 		}
 		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
-        if(!chunk.isLoaded()){
-            chunk.load(true);
-        }
-        if(player.getLocation().getChunk()!=chunk){
-        	Location l = new Location(chunk.getWorld(), chunk.getX(), 90, chunk.getZ());
-        	l.getChunk(); //Load the chunk
-        	player.teleport(l);
-        }
+		if (!chunk.isLoaded()) {
+			chunk.load(true);
+		}
+		if (player.getLocation().getChunk() != chunk) {
+			Location l = new Location(chunk.getWorld(), chunk.getX(), 90,
+					chunk.getZ());
+			l.getChunk(); // Load the chunk
+			player.teleport(l);
+		}
 		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
 				EntityType.MINECART);
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
@@ -1249,95 +1292,107 @@ public class URaceListener implements Listener {
 		player.setExp(xpBar);
 		return;
 	}
-	
+
 	@EventHandler
-	void raceFinish(MarioKartRaceFinishEvent event){
+	void raceFinish(MarioKartRaceFinishEvent event) {
 		Player player = event.getPlayer();
 		main.plugin.hotBarManager.clearHotBar(player.getName());
-		if(!main.config.getBoolean("general.race.rewards.enable")){
+		if (!main.config.getBoolean("general.race.rewards.enable")) {
 			return;
 		}
 		int pos = event.getFinishPosition();
 		double reward = 0;
-		switch(pos){
-		case 1:{
+		switch (pos) {
+		case 1: {
 			reward = main.config.getDouble("general.race.rewards.win");
 			break;
 		}
-		case 2:{
+		case 2: {
 			reward = main.config.getDouble("general.race.rewards.second");
 			break;
 		}
-		case 3:{
+		case 3: {
 			reward = main.config.getDouble("general.race.rewards.third");
 			break;
 		}
-		default: return;
-		}
-		if(reward <= 0){
+		default:
 			return;
 		}
-		if(!main.vault || main.economy == null){
-			plugin.setupEconomy(); //Economy plugin loaded after MarioKart
-			if(!main.vault || main.economy == null){ //No Economy plugin installed
+		if (reward <= 0) {
 			return;
+		}
+		if (!main.vault || main.economy == null) {
+			plugin.setupEconomy(); // Economy plugin loaded after MarioKart
+			if (!main.vault || main.economy == null) { // No Economy plugin
+														// installed
+				return;
 			}
 		}
-		EconomyResponse r = main.economy.depositPlayer(player.getName(), reward);
+		EconomyResponse r = main.economy
+				.depositPlayer(player.getName(), reward);
 		double b = r.balance;
-		String currency = main.config.getString("general.race.rewards.currency");
+		String currency = main.config
+				.getString("general.race.rewards.currency");
 		String msg = main.msgs.get("race.end.rewards");
-		msg = msg.replaceAll(Pattern.quote("%amount%"), Matcher.quoteReplacement(""+reward));
-		msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(""+b));
-		msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(""+currency));
-		msg = msg.replaceAll(Pattern.quote("%position%"), Matcher.quoteReplacement(""+event.getPlayerFriendlyPosition()));
-		player.sendMessage(main.colors.getInfo()+msg);
+		msg = msg.replaceAll(Pattern.quote("%amount%"),
+				Matcher.quoteReplacement("" + reward));
+		msg = msg.replaceAll(Pattern.quote("%balance%"),
+				Matcher.quoteReplacement("" + b));
+		msg = msg.replaceAll(Pattern.quote("%currency%"),
+				Matcher.quoteReplacement("" + currency));
+		msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
+				.quoteReplacement("" + event.getPlayerFriendlyPosition()));
+		player.sendMessage(main.colors.getInfo() + msg);
 		return;
 	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
-	void pvp(EntityDamageEvent event){
-		if(event.getEntity() instanceof Player 
-				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null
-				&& event.getCause() == DamageCause.ENTITY_ATTACK){
+	void pvp(EntityDamageEvent event) {
+		if (event.getEntity() instanceof Player
+				&& main.plugin.raceMethods.inAGame(
+						((Player) event.getEntity()), false) != null
+				&& event.getCause() == DamageCause.ENTITY_ATTACK) {
 			event.setDamage(0);
 			event.setCancelled(true);
 		}
 		return;
 	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
-	void pvp(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player 
-				&& main.plugin.raceMethods.inAGame(((Player)event.getEntity()), false) != null){
+	void pvp(EntityDamageByEntityEvent event) {
+		if (event.getEntity() instanceof Player
+				&& main.plugin.raceMethods.inAGame(
+						((Player) event.getEntity()), false) != null) {
 			event.setDamage(0);
 			event.setCancelled(true);
 		}
 		return;
 	}
+
 	@SuppressWarnings("deprecation")
-	public void updateHotBar(Player player){
-		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player.getName());
+	public void updateHotBar(Player player) {
+		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player
+				.getName());
 		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
 		HotBarItem scroller = hotBar.getDisplayedItem(HotBarSlot.SCROLLER);
-		if(util != null){
+		if (util != null) {
 			player.getInventory().setItem(7, util.getDisplayItem());
-		}
-		else{
+		} else {
 			player.getInventory().setItem(7, new ItemStack(Material.AIR));
 		}
-		if(scroller != null){
+		if (scroller != null) {
 			player.getInventory().setItem(6, scroller.getDisplayItem());
-		}
-		else{
+		} else {
 			player.getInventory().setItem(6, new ItemStack(Material.AIR));
 		}
 		player.getInventory().setItem(8, main.marioKart.respawn);
 		player.updateInventory();
 		return;
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	@EventHandler (priority = EventPriority.MONITOR)
-	public void hotBarClickEvent(MarioKartHotBarClickEvent event){
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void hotBarClickEvent(MarioKartHotBarClickEvent event) {
 		final Player player = event.getPlayer();
 		MarioHotBar hotBar = event.getHotBar();
 		HotBarSlot slot = event.getHotBarSlot();
@@ -1347,322 +1402,352 @@ public class URaceListener implements Listener {
 		String upgradeName = "Unknown";
 		Boolean useUpgrade = true;
 		Boolean execute = true;
-		if(data.containsKey("upgrade.name")){
+		if (data.containsKey("upgrade.name")) {
 			upgradeName = data.get("upgrade.name").toString();
 		}
-		if(type == HotBarUpgrade.LEAVE){
-			//Make the player leave the race
-			main.cmdExecutor.urace(player, new String[]{"leave"}, player);
+		if (type == HotBarUpgrade.LEAVE) {
+			// Make the player leave the race
+			main.cmdExecutor.urace(player, new String[] { "leave" }, player);
 			return;
-		}
-		else if(type == HotBarUpgrade.SPEED_BOOST){
+		} else if (type == HotBarUpgrade.SPEED_BOOST) {
 			long lengthMS = 5000;
 			double power = 5;
 			Boolean useItem = true;
-			if(data.containsKey("upgrade.length")){
+			if (data.containsKey("upgrade.length")) {
 				lengthMS = (long) data.get("upgrade.length");
 			}
-			if(data.containsKey("upgrade.power")){
+			if (data.containsKey("upgrade.power")) {
 				power = (double) data.get("upgrade.power");
 			}
-			if(data.containsKey("upgrade.useItem")){
+			if (data.containsKey("upgrade.useItem")) {
 				useItem = (Boolean) data.get("upgrade.useItem");
 			}
-			if(data.containsKey("upgrade.useUpgrade")){
+			if (data.containsKey("upgrade.useUpgrade")) {
 				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
 			}
-			if(useItem){
-				if(!hotBar.useItem(slot)){
+			if (useItem) {
+				if (!hotBar.useItem(slot)) {
 					execute = false;
 				}
 			}
-			if(execute){
-				ucars.listener.carBoost(player.getName(), power, lengthMS, ucars.config.getDouble("general.cars.defSpeed"));
+			if (execute) {
+				ucars.listener.carBoost(player.getName(), power, lengthMS,
+						ucars.config.getDouble("general.cars.defSpeed"));
 			}
-		}
-		else if(type == HotBarUpgrade.IMMUNITY){
+		} else if (type == HotBarUpgrade.IMMUNITY) {
 			long lengthMS = 5000;
 			Boolean useItem = true;
-			if(data.containsKey("upgrade.length")){
+			if (data.containsKey("upgrade.length")) {
 				lengthMS = (long) data.get("upgrade.length");
 			}
-			if(data.containsKey("upgrade.useItem")){
+			if (data.containsKey("upgrade.useItem")) {
 				useItem = (Boolean) data.get("upgrade.useItem");
 			}
-			if(data.containsKey("upgrade.useUpgrade")){
+			if (data.containsKey("upgrade.useUpgrade")) {
 				useUpgrade = (Boolean) data.get("upgrade.useUpgrade");
 			}
-			if(useItem){
-				if(!hotBar.useItem(slot)){
+			if (useItem) {
+				if (!hotBar.useItem(slot)) {
 					execute = false;
 				}
 			}
-			if(execute){
-				if(player.getVehicle() == null){
+			if (execute) {
+				if (player.getVehicle() == null) {
 					return;
 				}
 				final Entity veh = player.getVehicle();
 				veh.setMetadata("kart.immune", new StatValue(true, main.plugin));
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 
-					@Override
-					public void run() {
-						try {
-							veh.removeMetadata("kart.immune", main.plugin);
-							player.getWorld().playSound(player.getLocation(), Sound.CLICK, 0.5f, 3f);
-						} catch (Exception e) {
-							//Player or vehicle are gone
-						}
-						return;
-					}}, (long)(lengthMS*0.020));
-				player.getWorld().playSound(player.getLocation(), Sound.DRINK, 0.5f, 3f);
+							@Override
+							public void run() {
+								try {
+									veh.removeMetadata("kart.immune",
+											main.plugin);
+									player.getWorld().playSound(
+											player.getLocation(), Sound.CLICK,
+											0.5f, 3f);
+								} catch (Exception e) {
+									// Player or vehicle are gone
+								}
+								return;
+							}
+						}, (long) (lengthMS * 0.020));
+				player.getWorld().playSound(player.getLocation(), Sound.DRINK,
+						0.5f, 3f);
 			}
 		}
-		if(useUpgrade && execute){
-			if(main.plugin.upgradeManager.useUpgrade(player.getName(), new Upgrade(
-					main.plugin.upgradeManager.getUnlockable(hotBarItem.shortId), 1))){
+		if (useUpgrade && execute) {
+			if (main.plugin.upgradeManager.useUpgrade(
+					player.getName(),
+					new Upgrade(main.plugin.upgradeManager
+							.getUnlockable(hotBarItem.shortId), 1))) {
 				player.sendMessage(main.msgs.get("race.upgrades.use"));
 			}
 		}
 		player.updateInventory();
 	}
+
 	@EventHandler
-	public void hotBarScrolling(VehicleUpdateEvent event){
+	public void hotBarScrolling(VehicleUpdateEvent event) {
 		Vehicle car = event.getVehicle();
-		if(car.getPassenger() == null
-				|| !(car.getPassenger() instanceof Player)){
+		if (car.getPassenger() == null
+				|| !(car.getPassenger() instanceof Player)) {
 			return;
 		}
 		final Player player = (Player) car.getPassenger();
-		if(main.plugin.raceMethods.inAGame(player, false) == null){
+		if (main.plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		if(car.hasMetadata("car.braking")
+		if (car.hasMetadata("car.braking")
 				&& !player.hasMetadata("mariokart.slotChanging")
-				&& (player.getInventory().getHeldItemSlot() == 6
-				|| player.getInventory().getHeldItemSlot() == 7)){
-			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player.getName());
-			if(player.getInventory().getHeldItemSlot() == 6){
+				&& (player.getInventory().getHeldItemSlot() == 6 || player
+						.getInventory().getHeldItemSlot() == 7)) {
+			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player
+					.getName());
+			if (player.getInventory().getHeldItemSlot() == 6) {
 				hotBar.scroll(HotBarSlot.SCROLLER);
-			}
-			else{
+			} else {
 				hotBar.scroll(HotBarSlot.UTIL);
 			}
-			player.setMetadata("mariokart.slotChanging", new StatValue(true, main.plugin));
-			main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+			player.setMetadata("mariokart.slotChanging", new StatValue(true,
+					main.plugin));
+			main.plugin.getServer().getScheduler()
+					.runTaskLater(main.plugin, new Runnable() {
 
-				@Override
-				public void run() {
-					player.removeMetadata("mariokart.slotChanging", main.plugin);
-				}}, 15);
+						@Override
+						public void run() {
+							player.removeMetadata("mariokart.slotChanging",
+									main.plugin);
+						}
+					}, 15);
 		}
 		updateHotBar(player);
 	}
-	
+
 	@EventHandler
-	void menus(SelectMenuClickEvent event){
+	void menus(SelectMenuClickEvent event) {
 		SelectMenuType type = event.getMenuType();
 		int slot = event.getClickEvent().getPosition();
 		final Player player = event.getClickEvent().getPlayer();
-		if(type == SelectMenuType.MENU){
-			if(slot == 0){
-				//They clicked on 'Buy Upgrades'
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+		if (type == SelectMenuType.MENU) {
+			if (slot == 0) {
+				// They clicked on 'Buy Upgrades'
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, 1);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				return;
-			}
-			else if(slot == 1){
-				//They clicked on 'Sell Upgrades'
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+			} else if (slot == 1) {
+				// They clicked on 'Sell Upgrades'
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, 1);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				return;
+			} else if (slot == 8) {
+				// They clicked on 'Exit Menu'
+				return; // Menu closes on-click by default
 			}
-			else if(slot == 8){
-				//They clicked on 'Exit Menu'
-				return; //Menu closes on-click by default
-			}
-		}
-		else if(type == SelectMenuType.BUY_UPGRADES){
+		} else if (type == SelectMenuType.BUY_UPGRADES) {
 			int page = event.getPage();
-			if(slot == 0){
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+			if (slot == 0) {
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openShop(player);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else if(slot == 52){
-				if(page <= 1){
-					event.setCancelled(true); //Don't do anything
+			} else if (slot == 52) {
+				if (page <= 1) {
+					event.setCancelled(true); // Don't do anything
 					return;
 				}
-				final int p = page-1;
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+				final int p = page - 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, p);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else if(slot == 53){
-				final int p = page+1;
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+			} else if (slot == 53) {
+				final int p = page + 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, p);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else{
-				//Get and buy unlockable
-				int i = ((page-1)*51)+slot-1;
+			} else {
+				// Get and buy unlockable
+				int i = ((page - 1) * 51) + slot - 1;
 				String shortId = "";
 				Unlockable unlock = null;
-				String currency = main.config.getString("general.race.rewards.currency");
+				String currency = main.config
+						.getString("general.race.rewards.currency");
 				try {
-					shortId = (String) main.plugin.getUnlocks().keySet().toArray()[i];
+					shortId = (String) main.plugin.getUnlocks().keySet()
+							.toArray()[i];
 					unlock = main.plugin.getUnlocks().get(shortId);
 				} catch (Exception e) {
-					//Clicked in an invalid place
+					// Clicked in an invalid place
 					return;
 				}
-				if(unlock == null){
-					//Invalid unlock
+				if (unlock == null) {
+					// Invalid unlock
 					return;
 				}
 				double price = unlock.price;
-				if(main.economy == null){
-					if(!main.plugin.setupEconomy() || main.economy == null){
-						player.sendMessage(main.colors.getError()+main.msgs.get("general.shop.error"));
+				if (main.economy == null) {
+					if (!main.plugin.setupEconomy() || main.economy == null) {
+						player.sendMessage(main.colors.getError()
+								+ main.msgs.get("general.shop.error"));
 						return;
 					}
-					
+
 				}
 				double balance = main.economy.getBalance(player.getName());
-				if(balance < price){
+				if (balance < price) {
 					String msg = main.msgs.get("general.shop.notEnoughMoney");
-					msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(currency));
-					msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(balance+""));
-					player.sendMessage(main.colors.getError()+msg);
+					msg = msg.replaceAll(Pattern.quote("%currency%"),
+							Matcher.quoteReplacement(currency));
+					msg = msg.replaceAll(Pattern.quote("%balance%"),
+							Matcher.quoteReplacement(balance + ""));
+					player.sendMessage(main.colors.getError() + msg);
 					return;
 				}
-				//Confident in success of transaction
-				Boolean success = main.plugin.upgradeManager.addUpgrade(player.getName()
-						, new Upgrade(unlock, 1)); //Give them the upgrade
-				if(!success){
-					player.sendMessage(main.colors.getError()+main.msgs.get("general.shop.maxUpgrades"));
+				// Confident in success of transaction
+				Boolean success = main.plugin.upgradeManager.addUpgrade(
+						player.getName(), new Upgrade(unlock, 1)); // Give them
+																	// the
+																	// upgrade
+				if (!success) {
+					player.sendMessage(main.colors.getError()
+							+ main.msgs.get("general.shop.maxUpgrades"));
 					return;
 				}
-				EconomyResponse response = main.economy.withdrawPlayer(player.getName(), price);
+				EconomyResponse response = main.economy.withdrawPlayer(
+						player.getName(), price);
 				balance = response.balance;
 				String msg = main.msgs.get("general.shop.success");
-				msg = msg.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(currency));
-				msg = msg.replaceAll(Pattern.quote("%balance%"), Matcher.quoteReplacement(balance+""));
-				msg = msg.replaceAll(Pattern.quote("%name%"), Matcher.quoteReplacement(unlock.upgradeName));
-				msg = msg.replaceAll(Pattern.quote("%price%"), Matcher.quoteReplacement(""+price));
-				player.sendMessage(main.colors.getInfo()+msg);
+				msg = msg.replaceAll(Pattern.quote("%currency%"),
+						Matcher.quoteReplacement(currency));
+				msg = msg.replaceAll(Pattern.quote("%balance%"),
+						Matcher.quoteReplacement(balance + ""));
+				msg = msg.replaceAll(Pattern.quote("%name%"),
+						Matcher.quoteReplacement(unlock.upgradeName));
+				msg = msg.replaceAll(Pattern.quote("%price%"),
+						Matcher.quoteReplacement("" + price));
+				player.sendMessage(main.colors.getInfo() + msg);
 				event.getClickEvent().setWillDestroy(true);
 				return;
 			}
-		}
-		else if(type == SelectMenuType.SELL_UPGRADES){
+		} else if (type == SelectMenuType.SELL_UPGRADES) {
 			int page = event.getPage();
-			if(slot == 0){
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+			if (slot == 0) {
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openShop(player);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else if(slot == 52){
-				if(page <= 1){
-					event.setCancelled(true); //Don't do anything
+			} else if (slot == 52) {
+				if (page <= 1) {
+					event.setCancelled(true); // Don't do anything
 					return;
 				}
-				final int p = page-1;
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+				final int p = page - 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else if(slot == 53){
-				final int p = page+1;
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+			} else if (slot == 53) {
+				final int p = page + 1;
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				return;
-			}
-			else{
-				//Get and buy unlockable
-				int i = ((page-1)*51)+slot-1;
+			} else {
+				// Get and buy unlockable
+				int i = ((page - 1) * 51) + slot - 1;
 				Upgrade upgrade = null;
 				try {
-					List<Upgrade> ups = main.plugin.upgradeManager.getUpgrades(player.getName());
+					List<Upgrade> ups = main.plugin.upgradeManager
+							.getUpgrades(player.getName());
 					upgrade = ups.get(i);
 				} catch (Exception e) {
-					//Clicked on invalid slot
+					// Clicked on invalid slot
 					return;
 				}
-				if(upgrade == null){
-					return; //Clicked on invalid slot
+				if (upgrade == null) {
+					return; // Clicked on invalid slot
 				}
-				main.plugin.upgradeManager.useUpgrade(player.getName(), upgrade);
+				main.plugin.upgradeManager
+						.useUpgrade(player.getName(), upgrade);
 				String msg = main.msgs.get("general.shop.sellSuccess");
-				msg = msg.replaceAll(Pattern.quote("%amount%"), ""+upgrade.getQuantity());
-				msg = msg.replaceAll(Pattern.quote("%name%"), Matcher.quoteReplacement(upgrade.getUnlockedAble().upgradeName));
-				player.sendMessage(main.colors.getInfo()+msg);
+				msg = msg.replaceAll(Pattern.quote("%amount%"),
+						"" + upgrade.getQuantity());
+				msg = msg
+						.replaceAll(Pattern.quote("%name%"),
+								Matcher.quoteReplacement(upgrade
+										.getUnlockedAble().upgradeName));
+				player.sendMessage(main.colors.getInfo() + msg);
 				event.getClickEvent().setWillClose(true);
 				event.getClickEvent().setWillDestroy(true);
 				final int p = page;
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, 
-						new Runnable(){
+				main.plugin.getServer().getScheduler()
+						.runTaskLater(main.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);
 								return;
-							}}, 2l);
+							}
+						}, 2l);
 				return;
 			}
 		}

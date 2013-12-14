@@ -82,8 +82,9 @@ public class MarioKart {
 				return;
 			}
 			final Minecart car = (Minecart) evt.getPlayer().getVehicle();
-			if ((evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_AIR
-					|| evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) && !timed) {
+			if ((evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_AIR || evt
+					.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK)
+					&& !timed) {
 				ItemStack inHand = evt.getPlayer().getItemInHand();
 				// If green shell, throw forward
 				if (ItemStackFromId.equals(
@@ -115,8 +116,8 @@ public class MarioKart {
 							((Integer) 3), plugin));
 					shell.setMetadata("shell.expiry", new StatValue(
 							((Integer) 50), plugin));
-					BukkitTask task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(
-							plugin, new Runnable() {
+					BukkitTask task = plugin.getServer().getScheduler()
+							.runTaskTimerAsynchronously(plugin, new Runnable() {
 
 								public void run() {
 									if (shell.hasMetadata("shell.destroy")) {
@@ -199,33 +200,31 @@ public class MarioKart {
 			ItemStack inHand = evt.getPlayer().getItemInHand();
 			Player ply = evt.getPlayer();
 			if (inHand.equals(this.respawn)) {
-				if(!car.hasMetadata("car.frozen")){
+				if (!car.hasMetadata("car.frozen")) {
 					player.sendMessage(ChatColor.GREEN + "Respawning...");
 					player.setHealth(0);
 					evt.setCancelled(true);
 				}
 				return;
 			}
-			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply.getName());
-			if(hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
-					&& player.getInventory().getHeldItemSlot() == 7){
-				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
-						hotBar,
-						HotBarSlot.UTIL);
+			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply
+					.getName());
+			if (hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
+					&& player.getInventory().getHeldItemSlot() == 7) {
+				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(
+						ply, hotBar, HotBarSlot.UTIL);
+				main.plugin.getServer().getPluginManager().callEvent(evet);
+				evt.setCancelled(true);
+				return;
+			} else if (hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
+					&& player.getInventory().getHeldItemSlot() == 6) {
+				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(
+						ply, hotBar, HotBarSlot.SCROLLER);
 				main.plugin.getServer().getPluginManager().callEvent(evet);
 				evt.setCancelled(true);
 				return;
 			}
-			else if(hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
-					&& player.getInventory().getHeldItemSlot() == 6){
-				MarioKartHotBarClickEvent evet = new MarioKartHotBarClickEvent(ply,
-						hotBar,
-						HotBarSlot.SCROLLER);
-				main.plugin.getServer().getPluginManager().callEvent(evet);
-				evt.setCancelled(true);
-				return;
-			}
-			if(timed){
+			if (timed) {
 				return;
 			}
 			if (ItemStackFromId.equals(
@@ -723,7 +722,7 @@ public class MarioKart {
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
 			main.listener.updateHotBar(player);
-			if(timed){
+			if (timed) {
 				return;
 			}
 			if (under.getType() == Material.COAL_BLOCK
@@ -902,28 +901,31 @@ public class MarioKart {
 								ent.remove();
 							}
 						}
-						if(eLoc == null){
-							//Set crystal spawn loc from signLoc
+						if (eLoc == null) {
+							// Set crystal spawn loc from signLoc
 							eLoc = signLoc.clone().add(0, 2.4, 0);
 						}
 						final Location loc = eLoc;
 						plugin.getServer().getScheduler()
-						.runTaskLater(plugin, new Runnable() {
+								.runTaskLater(plugin, new Runnable() {
 
-							public void run() {
-								if(!r.reloadingItemBoxes.contains(signLoc)){
-									return; //ItemBox has been respawned
-								}
-								Chunk c = loc.getChunk();
-								if(c.isLoaded()){
-									c.load(true);
-								}
-								r.reloadingItemBoxes.remove(signLoc);
-								main.listener.spawnItemPickupBox(loc, true);
-								main.plugin.raceScheduler.updateRace(r);
-								return;
-							}
-						}, 200l);
+									public void run() {
+										if (!r.reloadingItemBoxes
+												.contains(signLoc)) {
+											return; // ItemBox has been
+													// respawned
+										}
+										Chunk c = loc.getChunk();
+										if (c.isLoaded()) {
+											c.load(true);
+										}
+										r.reloadingItemBoxes.remove(signLoc);
+										main.listener.spawnItemPickupBox(loc,
+												true);
+										main.plugin.raceScheduler.updateRace(r);
+										return;
+									}
+								}, 200l);
 					}
 				}
 			}

@@ -8,9 +8,9 @@ package com.rosaloves.bitlyj;
  * 
  */
 public class Url {
-	
+
 	private String shortBase;
-	
+
 	private String globalHash;
 
 	private String userHash;
@@ -18,18 +18,20 @@ public class Url {
 	private String shortUrl;
 
 	private String longUrl;
-	
-	Url() {}
-	
-	Url(String shortBase, String globalHash, String userHash, String shortUrl, String longUrl) {
+
+	Url() {
+	}
+
+	Url(String shortBase, String globalHash, String userHash, String shortUrl,
+			String longUrl) {
 		super();
 		this.shortBase = shortBase;
 		this.globalHash = globalHash;
 		this.userHash = userHash;
 		this.shortUrl = shortUrl;
 		this.longUrl = longUrl;
-		
-		if(this.shortUrl.length() == 0)
+
+		if (this.shortUrl.length() == 0)
 			this.shortUrl = shortBase + userHash;
 	}
 
@@ -52,8 +54,8 @@ public class Url {
 	@Override
 	public String toString() {
 		return "Url [shortBase=" + shortBase + ", globalHash=" + globalHash
-			+ ", longUrl=" + longUrl + ", shortUrl=" + shortUrl
-			+ ", userHash=" + userHash + "]";
+				+ ", longUrl=" + longUrl + ", shortUrl=" + shortUrl
+				+ ", userHash=" + userHash + "]";
 	}
 
 }

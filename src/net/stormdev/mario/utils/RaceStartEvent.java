@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList;
 public class RaceStartEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private Race race = null;
+
 	public RaceStartEvent(Race race) {
 		this.race = race;
 	}

@@ -8,36 +8,45 @@ import org.bukkit.event.HandlerList;
 /**
  * An event to be used to dish out rewards, etc... at the end of a race
  */
-public class MarioKartRaceFinishEvent extends Event implements Cancellable{
-    public Boolean cancelled = false;
-    private static final HandlerList handlers = new HandlerList();
-    Player player = null;
-    int position = 1;
-    String pos = "";
-	public MarioKartRaceFinishEvent(Player player, int position, String positionFriendly) {
+public class MarioKartRaceFinishEvent extends Event implements Cancellable {
+	public Boolean cancelled = false;
+	private static final HandlerList handlers = new HandlerList();
+	Player player = null;
+	int position = 1;
+	String pos = "";
+
+	public MarioKartRaceFinishEvent(Player player, int position,
+			String positionFriendly) {
 		this.player = player;
 		this.position = position;
 		this.pos = positionFriendly;
 	}
+
 	public boolean isCancelled() {
 		return this.cancelled;
 	}
+
 	public void setCancelled(boolean arg0) {
 		this.cancelled = arg0;
 	}
-	public Integer getFinishPosition(){
+
+	public Integer getFinishPosition() {
 		return position;
 	}
-	public String getPlayerFriendlyPosition(){
+
+	public String getPlayerFriendlyPosition() {
 		return pos;
 	}
-	public Player getPlayer(){
+
+	public Player getPlayer() {
 		return player;
 	}
+
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-	public static HandlerList getHandlerList(){
+
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

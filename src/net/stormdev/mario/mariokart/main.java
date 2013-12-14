@@ -59,7 +59,7 @@ public class main extends JavaPlugin {
 	public RaceTrackManager trackManager = null;
 	public RaceScheduler raceScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
-	public HashMap<String, Map<UUID,RaceQueue>> queues = new HashMap<String, Map<UUID,RaceQueue>>();
+	public HashMap<String, Map<UUID, RaceQueue>> queues = new HashMap<String, Map<UUID, RaceQueue>>();
 	public RaceQueueManager raceQueues = null;
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;
@@ -69,22 +69,22 @@ public class main extends JavaPlugin {
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
-	
+
 	Map<String, Unlockable> unlocks = null;
-	
+
 	public UnlockableManager upgradeManager = null;
-	
+
 	BukkitTask lagReducer = null;
-	
+
 	public static Boolean vault = false;
 	public static Economy economy = null;
 
 	public void onEnable() {
 		System.gc();
-		if(listener != null || cmdExecutor != null
-				|| logger != null || msgs != null 
-				|| marioKart != null || economy != null){
-			getLogger().log(Level.WARNING, "Previous plugin instance found, performing clearup...");
+		if (listener != null || cmdExecutor != null || logger != null
+				|| msgs != null || marioKart != null || economy != null) {
+			getLogger().log(Level.WARNING,
+					"Previous plugin instance found, performing clearup...");
 			listener = null;
 			cmdExecutor = null;
 			logger = null;
@@ -172,7 +172,8 @@ public class main extends JavaPlugin {
 						"You are not allowed to own more than 64 of an upgrade!");
 			}
 			if (!lang.contains("general.shop.success")) {
-				lang.set("general.shop.success",
+				lang.set(
+						"general.shop.success",
 						"Successfully bought %name% for %price% %currency%! You now have %balance% %currency%!");
 			}
 			if (!lang.contains("general.shop.sellSuccess")) {
@@ -278,7 +279,8 @@ public class main extends JavaPlugin {
 				lang.set("race.end.won", " won the race!");
 			}
 			if (!lang.contains("race.end.rewards")) {
-				lang.set("race.end.rewards", "&6+&a%amount%&6 %currency% for %position%! You now have %balance% %currency%!");
+				lang.set("race.end.rewards",
+						"&6+&a%amount%&6 %currency% for %position%! You now have %balance% %currency%!");
 			}
 			if (!lang.contains("race.end.time")) {
 				lang.set("race.end.time", "Your time was %time% seconds!");
@@ -452,7 +454,8 @@ public class main extends JavaPlugin {
 				config.getString("colorScheme.title"),
 				config.getString("colorScheme.title"));
 		logger.info("Config loaded!");
-		this.checkpointRadiusSquared = Math.pow(config.getDouble("general.checkpointRadius"),2);
+		this.checkpointRadiusSquared = Math.pow(
+				config.getDouble("general.checkpointRadius"), 2);
 		logger.info("Searching for uCars...");
 		Plugin[] plugins = getServer().getPluginManager().getPlugins();
 		Boolean installed = false;
@@ -488,7 +491,8 @@ public class main extends JavaPlugin {
 				+ "tracks.uracetracks"));
 		this.raceQueues = new RaceQueueManager();
 		this.raceMethods = new RaceMethods();
-		this.raceScheduler = new RaceScheduler(config.getInt("general.raceLimit"));
+		this.raceScheduler = new RaceScheduler(
+				config.getInt("general.raceLimit"));
 		// Setup marioKart
 		marioKart = new MarioKart(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()
@@ -508,35 +512,40 @@ public class main extends JavaPlugin {
 				}
 			} catch (Exception e) {
 				plugin.getLogger()
-				.warning(
-						"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
-		        plugin.getLogger().warning("Disabling reward system...");
-		        config.set("general.race.rewards.enable", false);
+						.warning(
+								"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
+				plugin.getLogger().warning("Disabling reward system...");
+				config.set("general.race.rewards.enable", false);
 			}
 		}
 		String rl = main.config.getString("mariokart.resourcePack");
-		
+
 		Boolean valid = true;
 		try {
 			new URL(rl);
 		} catch (MalformedURLException e2) {
 			valid = false;
 		}
-		if(valid && main.config.getBoolean("bitlyUrlShortner")){
-			//Shorten url
-				//Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
-				Url url = Bitly.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(Bitly.shorten(rl));
-                this.packUrl = url.getShortUrl();
-		}
-		else{
+		if (valid && main.config.getBoolean("bitlyUrlShortner")) {
+			// Shorten url
+			// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+			Url url = Bitly
+					.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
+							Bitly.shorten(rl));
+			this.packUrl = url.getShortUrl();
+		} else {
 			this.packUrl = rl;
 		}
-		this.upgradeManager = new UnlockableManager(new File(getDataFolder().getAbsolutePath()
-				+ File.separator + "Data"+File.separator+"upgradesData.mkdata"),
+		this.upgradeManager = new UnlockableManager(new File(getDataFolder()
+				.getAbsolutePath()
+				+ File.separator
+				+ "Data"
+				+ File.separator
+				+ "upgradesData.mkdata"),
 				config.getBoolean("general.upgrades.useSQL"), getUnlocks());
 		this.hotBarManager = new HotBarManager();
-		this.lagReducer = getServer().getScheduler().runTaskTimer(this, new DynamicLagReducer(), 
-				100L, 1L);
+		this.lagReducer = getServer().getScheduler().runTaskTimer(this,
+				new DynamicLagReducer(), 100L, 1L);
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
@@ -546,14 +555,15 @@ public class main extends JavaPlugin {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
-		HashMap<UUID, Race> races = new HashMap<UUID, Race>(this.raceScheduler.getRaces());
-		for(UUID id:races.keySet()){
-			races.get(id).end(); //End the race
+		HashMap<UUID, Race> races = new HashMap<UUID, Race>(
+				this.raceScheduler.getRaces());
+		for (UUID id : races.keySet()) {
+			races.get(id).end(); // End the race
 		}
 		raceQueues.clear();
 		Player[] players = getServer().getOnlinePlayers().clone();
-		for(Player player:players){
-			if(player.hasMetadata("car.stayIn")){
+		for (Player player : players) {
+			if (player.hasMetadata("car.stayIn")) {
 				player.removeMetadata("car.stayIn", plugin);
 			}
 		}
@@ -562,7 +572,7 @@ public class main extends JavaPlugin {
 		try {
 			Shop.getShop().destroy();
 		} catch (Exception e) {
-			//Shop is invalid anyway
+			// Shop is invalid anyway
 		}
 		System.gc();
 		logger.info("MarioKart has been disabled!");
@@ -587,7 +597,7 @@ public class main extends JavaPlugin {
 	public static String colorise(String prefix) {
 		return ChatColor.translateAlternateColorCodes('&', prefix);
 	}
-	
+
 	protected boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider = getServer()
 				.getServicesManager().getRegistration(
@@ -597,117 +607,131 @@ public class main extends JavaPlugin {
 		}
 		return (economy != null);
 	}
-	
-	public Map<String, Unlockable> getUnlocks(){
-		if(unlocks != null){
+
+	public Map<String, Unlockable> getUnlocks() {
+		if (unlocks != null) {
 			return unlocks;
 		}
 		main.logger.info("Loading upgrades...");
-		//Begin load them from a YAML file
-	    Map<String, Unlockable> unlockables = new HashMap<String, Unlockable>();
-	    File saveFile = new File(getDataFolder().getAbsolutePath()
+		// Begin load them from a YAML file
+		Map<String, Unlockable> unlockables = new HashMap<String, Unlockable>();
+		File saveFile = new File(getDataFolder().getAbsolutePath()
 				+ File.separator + "upgrades.yml");
-	    YamlConfiguration upgrades = new YamlConfiguration();
-	    saveFile.getParentFile().mkdirs();
-	    Boolean setDefaults = false;
-	    try {
+		YamlConfiguration upgrades = new YamlConfiguration();
+		saveFile.getParentFile().mkdirs();
+		Boolean setDefaults = false;
+		try {
 			upgrades.load(saveFile);
 		} catch (Exception e) {
 			setDefaults = true;
 		}
-	    if(!saveFile.exists() || saveFile.length() < 1 || setDefaults){
-	    	try {
+		if (!saveFile.exists() || saveFile.length() < 1 || setDefaults) {
+			try {
 				saveFile.createNewFile();
 			} catch (IOException e) {
 				return unlockables;
 			}
-	    	//Set defaults
-	    	upgrades.set("upgrades.speedBurstI.name", "Speed Burst I (5s)");
-	    	upgrades.set("upgrades.speedBurstI.id", "aa");
-	    	upgrades.set("upgrades.speedBurstI.type", HotBarUpgrade.SPEED_BOOST.name().toUpperCase());
-	    	upgrades.set("upgrades.speedBurstI.item", Material.APPLE.name().toUpperCase());
-	    	upgrades.set("upgrades.speedBurstI.length", 5000l);
-	    	upgrades.set("upgrades.speedBurstI.power", 10d);
-	    	upgrades.set("upgrades.speedBurstI.useItem", true);
-	    	upgrades.set("upgrades.speedBurstI.useUpgrade", true);
-	    	upgrades.set("upgrades.speedBurstI.price", 3d);
-	    	upgrades.set("upgrades.speedBurstII.name", "Speed Burst II (10s)");
-	    	upgrades.set("upgrades.speedBurstII.id", "ab");
-	    	upgrades.set("upgrades.speedBurstII.type", HotBarUpgrade.SPEED_BOOST.name().toUpperCase());
-	    	upgrades.set("upgrades.speedBurstII.item", Material.CARROT_ITEM.name().toUpperCase());
-	    	upgrades.set("upgrades.speedBurstII.length", 10000l);
-	    	upgrades.set("upgrades.speedBurstII.power", 13d);
-	    	upgrades.set("upgrades.speedBurstII.useItem", true);
-	    	upgrades.set("upgrades.speedBurstII.useUpgrade", true);
-	    	upgrades.set("upgrades.speedBurstII.price", 6d);
-	    	upgrades.set("upgrades.immunityI.name", "Immunity I (5s)");
-	    	upgrades.set("upgrades.immunityI.id", "ac");
-	    	upgrades.set("upgrades.immunityI.type", HotBarUpgrade.IMMUNITY.name().toUpperCase());
-	    	upgrades.set("upgrades.immunityI.item", Material.IRON_HELMET.name().toUpperCase());
-	    	upgrades.set("upgrades.immunityI.length", 5000l);
-	    	upgrades.set("upgrades.immunityI.useItem", true);
-	    	upgrades.set("upgrades.immunityI.useUpgrade", true);
-	    	upgrades.set("upgrades.immunityI.price", 6d);
-	    	upgrades.set("upgrades.immunityII.name", "Immunity II (10s)");
-	    	upgrades.set("upgrades.immunityII.id", "ad");
-	    	upgrades.set("upgrades.immunityII.type", HotBarUpgrade.IMMUNITY.name().toUpperCase());
-	    	upgrades.set("upgrades.immunityII.item", Material.GOLD_HELMET.name().toUpperCase());
-	    	upgrades.set("upgrades.immunityII.length", 10000l);
-	    	upgrades.set("upgrades.immunityII.useItem", true);
-	    	upgrades.set("upgrades.immunityII.useUpgrade", true);
-	    	upgrades.set("upgrades.immunityII.price", 12d);
-	    	try {
+			// Set defaults
+			upgrades.set("upgrades.speedBurstI.name", "Speed Burst I (5s)");
+			upgrades.set("upgrades.speedBurstI.id", "aa");
+			upgrades.set("upgrades.speedBurstI.type", HotBarUpgrade.SPEED_BOOST
+					.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstI.item", Material.APPLE.name()
+					.toUpperCase());
+			upgrades.set("upgrades.speedBurstI.length", 5000l);
+			upgrades.set("upgrades.speedBurstI.power", 10d);
+			upgrades.set("upgrades.speedBurstI.useItem", true);
+			upgrades.set("upgrades.speedBurstI.useUpgrade", true);
+			upgrades.set("upgrades.speedBurstI.price", 3d);
+			upgrades.set("upgrades.speedBurstII.name", "Speed Burst II (10s)");
+			upgrades.set("upgrades.speedBurstII.id", "ab");
+			upgrades.set("upgrades.speedBurstII.type",
+					HotBarUpgrade.SPEED_BOOST.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstII.item", Material.CARROT_ITEM
+					.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstII.length", 10000l);
+			upgrades.set("upgrades.speedBurstII.power", 13d);
+			upgrades.set("upgrades.speedBurstII.useItem", true);
+			upgrades.set("upgrades.speedBurstII.useUpgrade", true);
+			upgrades.set("upgrades.speedBurstII.price", 6d);
+			upgrades.set("upgrades.immunityI.name", "Immunity I (5s)");
+			upgrades.set("upgrades.immunityI.id", "ac");
+			upgrades.set("upgrades.immunityI.type", HotBarUpgrade.IMMUNITY
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityI.item", Material.IRON_HELMET.name()
+					.toUpperCase());
+			upgrades.set("upgrades.immunityI.length", 5000l);
+			upgrades.set("upgrades.immunityI.useItem", true);
+			upgrades.set("upgrades.immunityI.useUpgrade", true);
+			upgrades.set("upgrades.immunityI.price", 6d);
+			upgrades.set("upgrades.immunityII.name", "Immunity II (10s)");
+			upgrades.set("upgrades.immunityII.id", "ad");
+			upgrades.set("upgrades.immunityII.type", HotBarUpgrade.IMMUNITY
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityII.item", Material.GOLD_HELMET
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityII.length", 10000l);
+			upgrades.set("upgrades.immunityII.useItem", true);
+			upgrades.set("upgrades.immunityII.useUpgrade", true);
+			upgrades.set("upgrades.immunityII.price", 12d);
+			try {
 				upgrades.save(saveFile);
 			} catch (IOException e) {
-				main.logger.info(main.colors.getError()+"[WARNING] Failed to create upgrades.yml!");
+				main.logger.info(main.colors.getError()
+						+ "[WARNING] Failed to create upgrades.yml!");
 			}
-	    }
-	    //Load them
-	    ConfigurationSection ups = upgrades.getConfigurationSection("upgrades");
-	    Set<String> upgradeKeys = ups.getKeys(false);
-	    for(String key:upgradeKeys){
-	    	ConfigurationSection sect = ups.getConfigurationSection(key);
-	        if(!sect.contains("name") || !sect.contains("type") || !sect.contains("id")
-	        		|| !sect.contains("useItem") || !sect.contains("useUpgrade")
-	        		|| !sect.contains("price") || !sect.contains("item")){
-	        	//Invalid upgrade
-	        	main.logger.info(main.colors.getError()+"[WARNING] Invalid upgrade: "+key);
-	        	continue;
-	        }
-	        String name = sect.getString("name");
-	        HotBarUpgrade type = null;
-	        Material item = null;
-	        try {
+		}
+		// Load them
+		ConfigurationSection ups = upgrades.getConfigurationSection("upgrades");
+		Set<String> upgradeKeys = ups.getKeys(false);
+		for (String key : upgradeKeys) {
+			ConfigurationSection sect = ups.getConfigurationSection(key);
+			if (!sect.contains("name") || !sect.contains("type")
+					|| !sect.contains("id") || !sect.contains("useItem")
+					|| !sect.contains("useUpgrade") || !sect.contains("price")
+					|| !sect.contains("item")) {
+				// Invalid upgrade
+				main.logger.info(main.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
+				continue;
+			}
+			String name = sect.getString("name");
+			HotBarUpgrade type = null;
+			Material item = null;
+			try {
 				type = HotBarUpgrade.valueOf(sect.getString("type"));
 				item = Material.valueOf(sect.getString("item"));
 			} catch (Exception e) {
-				//Invalid upgrade
-				main.logger.info(main.colors.getError()+"[WARNING] Invalid upgrade: "+key);
+				// Invalid upgrade
+				main.logger.info(main.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
 				continue;
 			}
-	        if(type == null || item == null){
-	        	//Invalid upgrade
-	        	main.logger.info(main.colors.getError()+"[WARNING] Invalid upgrade: "+key);
-	        	continue;
-	        }
-	        String shortId = sect.getString("id");
-	        Boolean useItem = sect.getBoolean("useItem");
-	        Boolean useUpgrade = sect.getBoolean("useUpgrade");
-	        double price = sect.getDouble("price");
-	        Map<String, Object> data = new HashMap<String, Object>();
-	        data.put("upgrade.name", name);
-	        data.put("upgrade.useItem", useItem);
-	        data.put("upgrade.useUpgrade", useUpgrade);
-	        if(sect.contains("power")){
-	        	data.put("upgrade.power", sect.getDouble("power"));
-	        }
-	        if(sect.contains("length")){
-	        	data.put("upgrade.length", sect.getLong("length"));
-	        }
-	        Unlockable unlock = new Unlockable(type, data, price, name, shortId, item);
-	        unlockables.put(shortId, unlock);
-	    }
-	    unlocks = unlockables;
+			if (type == null || item == null) {
+				// Invalid upgrade
+				main.logger.info(main.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
+				continue;
+			}
+			String shortId = sect.getString("id");
+			Boolean useItem = sect.getBoolean("useItem");
+			Boolean useUpgrade = sect.getBoolean("useUpgrade");
+			double price = sect.getDouble("price");
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("upgrade.name", name);
+			data.put("upgrade.useItem", useItem);
+			data.put("upgrade.useUpgrade", useUpgrade);
+			if (sect.contains("power")) {
+				data.put("upgrade.power", sect.getDouble("power"));
+			}
+			if (sect.contains("length")) {
+				data.put("upgrade.length", sect.getLong("length"));
+			}
+			Unlockable unlock = new Unlockable(type, data, price, name,
+					shortId, item);
+			unlockables.put(shortId, unlock);
+		}
+		unlocks = unlockables;
 		return unlockables;
 	}
 }

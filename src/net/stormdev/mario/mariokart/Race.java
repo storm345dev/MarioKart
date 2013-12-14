@@ -83,56 +83,60 @@ public class Race {
 					+ "Race Time(s)", "dummy");
 		}
 		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
-		this.timeLimitS = main.config.getInt("general.race.maxTimePerCheckpoint") * track.getCheckpoints().size() + 60;
+		this.timeLimitS = main.config
+				.getInt("general.race.maxTimePerCheckpoint")
+				* track.getCheckpoints().size() + 60;
 	}
 
 	public RaceType getType() {
 		return this.type;
 	}
 
-	public User getUser(Player player){
+	public User getUser(Player player) {
 		String pname = player.getName();
-		for (User user : getUsers()){
+		for (User user : getUsers()) {
 			try {
-				if (user.getPlayerName().equals(pname)){
+				if (user.getPlayerName().equals(pname)) {
 					return user;
 				}
 			} catch (Exception e) {
-				if(!forceRemoveUser(user)){
+				if (!forceRemoveUser(user)) {
 					main.logger.info("getUser() failed to remove user");
 				}
 			}
 		}
 		return null;
 	}
-	
-	public User getUser(String playerName){
-		for (User user : getUsers()){
-			if (user.getPlayerName().equals(playerName)){
+
+	public User getUser(String playerName) {
+		for (User user : getUsers()) {
+			if (user.getPlayerName().equals(playerName)) {
 				return user;
 			}
 		}
 		return null;
 	}
 
-	public List<User> getUsers(){
+	public List<User> getUsers() {
 		return new ArrayList<User>(users);
 	}
-    public void setUsers(List<User> users){
-    	this.users = users;
-    	return;
-    }
-	public List<User> getUsersIn(){
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+		return;
+	}
+
+	public List<User> getUsersIn() {
 		List<User> inUsers = new ArrayList<User>();
-		for (User user : getUsers()){
-			if (user.isInRace()){
+		for (User user : getUsers()) {
+			if (user.isInRace()) {
 				inUsers.add(user);
 			}
 		}
 		return inUsers;
 	}
-	
-	public List<String> getUsersFinished(){
+
+	public List<String> getUsersFinished() {
 		return new ArrayList<String>(finished);
 	}
 
@@ -143,7 +147,8 @@ public class Race {
 		try {
 			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
-			if(!forceRemoveUser(user) && playerUserRegistered(user.getPlayerName())){
+			if (!forceRemoveUser(user)
+					&& playerUserRegistered(user.getPlayerName())) {
 				main.logger.info("race.playerOut failed to remove user");
 			}
 			return;
@@ -169,22 +174,24 @@ public class Race {
 			player = user.getPlayer();
 			player.setLevel(user.getOldLevel());
 		} catch (PlayerQuitException e1) {
-			//User quit
+			// User quit
 		}
 		if (quit) {
-			if(!forceRemoveUser(user)){
+			if (!forceRemoveUser(user)) {
 				main.logger.info("race.quit failed to remove user");
 			}
-			if(type != RaceType.TIME_TRIAL){
+			if (type != RaceType.TIME_TRIAL) {
 				if (users.size() < 2) {
 					for (User u : getUsersIn()) {
 						String msg = main.msgs.get("race.end.soon");
 						try {
-							u.getPlayer().sendMessage(main.colors.getInfo() + msg);
+							u.getPlayer().sendMessage(
+									main.colors.getInfo() + msg);
 						} catch (PlayerQuitException e) {
-							//Player is no longer in the game
-							if(!forceRemoveUser(u)){
-								main.logger.info("race.leave failed to remove user");
+							// Player is no longer in the game
+							if (!forceRemoveUser(u)) {
+								main.logger
+										.info("race.leave failed to remove user");
 							}
 						}
 					}
@@ -193,11 +200,11 @@ public class Race {
 			}
 		}
 		playerOut(user);
-		if(player != null){
-		    player.removeMetadata("car.stayIn", main.plugin);
+		if (player != null) {
+			player.removeMetadata("car.stayIn", main.plugin);
 		}
 		if (quit) {
-			if(player != null){
+			if (player != null) {
 				scoresBoard.getScore(player).setScore(0);
 				this.board.resetScores(player);
 				player.getInventory().clear();
@@ -214,19 +221,23 @@ public class Race {
 				} catch (Exception e) {
 					player.teleport(player.getWorld().getSpawnLocation());
 				}
-				player.sendMessage(ChatColor.GOLD + "Successfully quit the race!");
-				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-			    player.updateInventory();
+				player.sendMessage(ChatColor.GOLD
+						+ "Successfully quit the race!");
+				player.setScoreboard(main.plugin.getServer()
+						.getScoreboardManager().getMainScoreboard());
+				player.updateInventory();
 			}
-				for (User us : getUsers()) {
-					try {
-						us.getPlayer().sendMessage(ChatColor.GOLD + player.getName() + " quit the race!");
-					} catch (PlayerQuitException e) {
-						if(!forceRemoveUser(us)){
-							main.logger.info("race.quit failed to remove user");
-						}
+			for (User us : getUsers()) {
+				try {
+					us.getPlayer().sendMessage(
+							ChatColor.GOLD + player.getName()
+									+ " quit the race!");
+				} catch (PlayerQuitException e) {
+					if (!forceRemoveUser(us)) {
+						main.logger.info("race.quit failed to remove user");
 					}
-			    }
+				}
+			}
 		}
 		try {
 			recalculateGame();
@@ -273,49 +284,49 @@ public class Race {
 
 	public void startEndCount() {
 		final int count = this.finishCountdown;
-		
+
 		main.plugin.getServer().getScheduler()
-		.runTaskAsynchronously(main.plugin, new Runnable() {
+				.runTaskAsynchronously(main.plugin, new Runnable() {
 
-			public void run() {
-				int z = count;
-				while (z > 0) {
-					z--;
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
-				}
-				if (!ended) {
-					try {
-						try {
-							main.plugin
-							.getServer()
-							.getScheduler()
-							.runTask(main.plugin,
-									new Runnable() {
+					public void run() {
+						int z = count;
+						while (z > 0) {
+							z--;
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							}
+						}
+						if (!ended) {
+							try {
+								try {
+									main.plugin
+											.getServer()
+											.getScheduler()
+											.runTask(main.plugin,
+													new Runnable() {
 
-								public void run() {
+														public void run() {
+															end();
+
+															return;
+														}
+													});
+								} catch (Exception e) {
 									end();
-									
-									return;
 								}
-							});
-						} catch (Exception e) {
-							end();
+							} catch (IllegalArgumentException e) {
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e1) {
+								}
+								run();
+								return;
+							}
 						}
-					} catch (IllegalArgumentException e) {
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e1) {
-						}
-						run();
 						return;
 					}
-				}
-				return;
-			}
-		});
+				});
 	}
 
 	public String getWinner() {
@@ -337,51 +348,48 @@ public class Race {
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (PlayerQuitException e) {
-				//User has left
+				// User has left
 				this.leave(user, true);
 			}
 		}
-		final long ms = tickrate*50;
-		this.task = main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable() {
+		final long ms = tickrate * 50;
+		this.task = main.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(main.plugin, new Runnable() {
 
 					public void run() {
 						long mis = ms;
-						while(running && !ended){
-					    double tps = DynamicLagReducer.getTPS();
-					    if(tps<19.9){
-					    	if(tps< 13){
-					    		mis = (long) (ms+(tps*100));
-					    	}
-					        else if(tps<15){
-					    		mis = ms+1000; //Go all out to keep up
-					    	}
-					    	else if(tps<17){
-					    		main.logger.info("[WARNING] Server running out of resources! - "
-					    				+ "Compensating by reducing MarioKart tickRate (Accuracy)");
-					    		mis = ms+500; //Reduce lag
-					    	}
-					    	else if(tps<19){
-					    		mis = ms+100;
-					    	}
-					    	else{
-					    		mis = ms+10; //Slow down a tad
-					    	}
-					    	try {
-								Thread.sleep(mis);
-							} catch (InterruptedException e) {
-								//Nothing
+						while (running && !ended) {
+							double tps = DynamicLagReducer.getTPS();
+							if (tps < 19.9) {
+								if (tps < 13) {
+									mis = (long) (ms + (tps * 100));
+								} else if (tps < 15) {
+									mis = ms + 1000; // Go all out to keep up
+								} else if (tps < 17) {
+									main.logger
+											.info("[WARNING] Server running out of resources! - "
+													+ "Compensating by reducing MarioKart tickRate (Accuracy)");
+									mis = ms + 500; // Reduce lag
+								} else if (tps < 19) {
+									mis = ms + 100;
+								} else {
+									mis = ms + 10; // Slow down a tad
+								}
+								try {
+									Thread.sleep(mis);
+								} catch (InterruptedException e) {
+									// Nothing
+								}
+							} else {
+								try {
+									Thread.sleep(ms);
+								} catch (InterruptedException e) {
+									// Nothing
+								}
 							}
-					    }
-					    else{
-					    	try {
-								Thread.sleep(ms);
-							} catch (InterruptedException e) {
-								//Nothing
-							}
-					    }
-						RaceUpdateEvent event = new RaceUpdateEvent(game);
-						main.plugin.getServer().getPluginManager()
-						.callEvent(event);
+							RaceUpdateEvent event = new RaceUpdateEvent(game);
+							main.plugin.getServer().getPluginManager()
+									.callEvent(event);
 						}
 						return;
 					}
@@ -391,7 +399,8 @@ public class Race {
 
 					public void run() {
 						if (!(type == RaceType.TIME_TRIAL)) {
-							SortedMap<String, Double> sorted = game.getRaceOrder();
+							SortedMap<String, Double> sorted = game
+									.getRaceOrder();
 							Object[] keys = sorted.keySet().toArray();
 							for (int i = 0; i < sorted.size(); i++) {
 								int pos = i + 1;
@@ -400,15 +409,17 @@ public class Race {
 								try {
 									Player pl = u.getPlayer();
 									game.scores.getScore(pl).setScore(pos);
-									game.scoresBoard.getScore(pl).setScore(-pos);
+									game.scoresBoard.getScore(pl)
+											.setScore(-pos);
 								} catch (IllegalStateException e) {
 									e.printStackTrace();
 								} catch (IllegalArgumentException e) {
 									e.printStackTrace();
 								} catch (PlayerQuitException e) {
-									//Player has left
-									if(!forceRemoveUser(u)){
-										main.logger.info("race.scores failed to remove invalid user");
+									// Player has left
+									if (!forceRemoveUser(u)) {
+										main.logger
+												.info("race.scores failed to remove invalid user");
 									}
 								}
 							}
@@ -417,7 +428,7 @@ public class Race {
 							try {
 								user = game.getUsers().get(0);
 							} catch (Exception e1) {
-								return; //No players
+								return; // No players
 							}
 							try {
 								Player pl = user.getPlayer();
@@ -427,18 +438,19 @@ public class Race {
 								game.scores.getScore(pl).setScore((int) time);
 								game.scoresBoard.getScore(pl).setScore(
 										(int) time);
-							} catch (Exception e) {	
+							} catch (Exception e) {
 								return;
-								// Game ended or user has left or random error with above code
+								// Game ended or user has left or random error
+								// with above code
 							}
 						}
 						return;
 					}
 				}, this.scorerate, this.scorerate);
 		try {
-		    this.startTimeMS = System.currentTimeMillis();
+			this.startTimeMS = System.currentTimeMillis();
 			main.plugin.getServer().getPluginManager()
-			.callEvent(new RaceStartEvent(this));
+					.callEvent(new RaceStartEvent(this));
 		} catch (Exception e) {
 			main.logger.log("Error starting race!", Level.SEVERE);
 			end();
@@ -456,11 +468,12 @@ public class Race {
 				if (player.hasMetadata("checkpoint.distance")) {
 					List<MetadataValue> metas = player
 							.getMetadata("checkpoint.distance");
-					checkpointDists.put(user.getPlayerName(), (Double) ((StatValue) metas.get(0)).getValue());
+					checkpointDists.put(user.getPlayerName(),
+							(Double) ((StatValue) metas.get(0)).getValue());
 				}
 			} catch (PlayerQuitException e) {
 				leave(user, true);
-				//Player is no longer in the race
+				// Player is no longer in the race
 			}
 		}
 		Map<String, Double> scores = new HashMap<String, Double>();
@@ -491,7 +504,7 @@ public class Race {
 	@SuppressWarnings("unchecked")
 	public void end() {
 		this.running = false;
-		for(Location l:((List<Location>)this.reloadingItemBoxes.clone())){
+		for (Location l : ((List<Location>) this.reloadingItemBoxes.clone())) {
 			main.listener.spawnItemPickupBox(l.add(0, 2.4, 0), false);
 			this.reloadingItemBoxes.remove(l);
 		}
@@ -517,22 +530,24 @@ public class Race {
 			this.scoresBoard.unregister();
 		} catch (IllegalStateException e) {
 		}
-		
+
 		this.endTimeMS = System.currentTimeMillis();
 		for (User user : getUsersIn()) {
 			Player player = null;
 			try {
 				player = user.getPlayer();
-				
-				player.setScoreboard(main.plugin.getServer().getScoreboardManager().getMainScoreboard());
-				
+
+				player.setScoreboard(main.plugin.getServer()
+						.getScoreboardManager().getMainScoreboard());
+
 				player.setLevel(user.getOldLevel());
-				
+
 				player.setExp(user.getOldExp());
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
-			main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
+			main.plugin.getServer().getPluginManager()
+					.callEvent(new RaceFinishEvent(this, user));
 		}
 		RaceEndEvent evt = new RaceEndEvent(this);
 		if (evt != null) {
@@ -549,7 +564,7 @@ public class Race {
 			startEndCount();
 		}
 		finished.add(user.getPlayerName());
-		if(!forceRemoveUser(user)){
+		if (!forceRemoveUser(user)) {
 			main.logger.info("race.finish failed to remove user");
 		}
 		user.setFinished(true);
@@ -557,23 +572,26 @@ public class Race {
 		users.add(user);
 		try {
 			Player player = user.getPlayer();
-			if(player == null){
-				player = main.plugin.getServer().getPlayer(user.getPlayerName()); //Player removed prematurely
+			if (player == null) {
+				player = main.plugin.getServer()
+						.getPlayer(user.getPlayerName()); // Player removed
+															// prematurely
 			}
 			player.setLevel(user.getOldLevel());
 			player.setExp(user.getOldExp());
 		} catch (Exception e) {
-			//Player has left
+			// Player has left
 		}
 		this.endTimeMS = System.currentTimeMillis();
-		main.plugin.getServer().getPluginManager().callEvent(new RaceFinishEvent(this, user));
+		main.plugin.getServer().getPluginManager()
+				.callEvent(new RaceFinishEvent(this, user));
 	}
-	
-	public User updateUser(Player player){
+
+	public User updateUser(Player player) {
 		String playerName = player.getName();
-		for(User u:getUsers()){
-			if(u.getPlayerName().equals(playerName)){
-				if(!forceRemoveUser(u)){
+		for (User u : getUsers()) {
+			if (u.getPlayerName().equals(playerName)) {
+				if (!forceRemoveUser(u)) {
 					main.logger.info("updateUser() failed to remove user");
 				}
 				u.setPlayer(player);
@@ -596,7 +614,8 @@ public class Race {
 				try {
 					SerializableLocation sloc = schecks.get(key);
 					Location check = sloc.getLocation(server);
-					double dist = check.distanceSquared(pl); // Squared because of
+					double dist = check.distanceSquared(pl); // Squared because
+																// of
 					// better
 					// performance
 					p.removeMetadata("checkpoint.distance", main.plugin);
@@ -608,7 +627,7 @@ public class Race {
 						return new CheckpointCheck(at, checkpoint);
 					}
 				} catch (Exception e) {
-					//Un-measureable distance (Diff. world or sommat)
+					// Un-measureable distance (Diff. world or sommat)
 				}
 			}
 		}
@@ -693,29 +712,32 @@ public class Race {
 			if (player == null) {
 				leave(user, true);
 			} else {
-				player.sendMessage(main.colors.getInfo()+msg);
+				player.sendMessage(main.colors.getInfo() + msg);
 			}
 		}
 		return;
 	}
-	public void clear(){
+
+	public void clear() {
 		users.clear();
 		finished.clear();
 		this.ended = true;
 		this.ending = true;
 		return;
 	}
-	public Boolean removeUser(User user){
-		if(!users.contains(user)){
+
+	public Boolean removeUser(User user) {
+		if (!users.contains(user)) {
 			return false;
 		}
 		users.remove(user);
 		user.clear();
 		return true;
 	}
-	public Boolean removeUser(String user){
-		for(User u:getUsers()){
-			if(u.getPlayerName().equals(user)){
+
+	public Boolean removeUser(String user) {
+		for (User u : getUsers()) {
+			if (u.getPlayerName().equals(user)) {
 				u.clear();
 				users.remove(u);
 				return true;
@@ -723,9 +745,10 @@ public class Race {
 		}
 		return false;
 	}
-	public Boolean forceRemoveUser(User user){
-		if(!removeUser(user)){
-			if(!removeUser(user.getPlayerName())){
+
+	public Boolean forceRemoveUser(User user) {
+		if (!removeUser(user)) {
+			if (!removeUser(user.getPlayerName())) {
 				user.clear();
 				return false;
 			}
@@ -733,9 +756,10 @@ public class Race {
 		user.clear();
 		return true;
 	}
-	public Boolean playerUserRegistered(String name){
-		for(User u:getUsers()){
-			if(u.getPlayerName().equals(name)){
+
+	public Boolean playerUserRegistered(String name) {
+		for (User u : getUsers()) {
+			if (u.getPlayerName().equals(name)) {
 				return true;
 			}
 		}

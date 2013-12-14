@@ -15,9 +15,10 @@ public class Unlockable implements Serializable {
 	public String upgradeName = "Speed Burst";
 	public String shortId = "";
 	public Material displayItem = null;
+
 	public Unlockable(HotBarUpgrade type, Map<String, Object> data,
-			double price, String upgradeName,
-			String shortId, Material displayItem){
+			double price, String upgradeName, String shortId,
+			Material displayItem) {
 		this.type = type;
 		this.data = data;
 		this.upgradeName = upgradeName;

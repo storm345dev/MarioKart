@@ -123,7 +123,8 @@ public class RaceTrack implements Serializable {
 	}
 
 	final public Map<Integer, SerializableLocation> getCheckpoints() {
-		final Map<Integer, SerializableLocation> m = new HashMap<Integer, SerializableLocation>(this.checkPoints);
+		final Map<Integer, SerializableLocation> m = new HashMap<Integer, SerializableLocation>(
+				this.checkPoints);
 		return m;
 	}
 
