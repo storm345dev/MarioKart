@@ -89,6 +89,20 @@ public class RaceQueueManager {
 		}
 		return trackQueues;
 	}
+	
+	public Map<UUID, RaceQueue> getQueues(String trackName, RaceType type) {
+		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+		if (main.plugin.queues.containsKey(trackName)) {
+			trackQueues.putAll(main.plugin.queues.get(trackName));
+		}
+		for(UUID id:new HashMap<UUID, RaceQueue>(trackQueues).keySet()){
+			RaceQueue q = trackQueues.get(id);
+			if(q.getRaceMode() != type){
+				trackQueues.remove(id);
+			}
+		}
+		return trackQueues;
+	}
 
 	public void removeQueue(String trackName, UUID queueId) {
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();

@@ -68,7 +68,6 @@ public class RaceScheduler {
 			List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
 			List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
 			List<RaceTrack> openNoQueueTracks = new ArrayList<RaceTrack>();
-			List<RaceTrack> clearQueuedTracks = new ArrayList<RaceTrack>();
 			for (RaceTrack t : tracks) {
 				if (!isTrackInUse(t, type)) {
 					openTracks.add(t);
@@ -77,44 +76,42 @@ public class RaceScheduler {
 					}
 					if (main.plugin.raceQueues.getQueues(t.getTrackName())
 							.size() < 1) {
-						clearQueuedTracks.add(t);
+						openNoQueueTracks.add(t);
 					}
 				}
 			}
 			RaceTrack track = null;
-			if (clearQueuedTracks.size() > 0 && type != RaceType.TIME_TRIAL) {
-				track = clearQueuedTracks.get(main.plugin.random
-						.nextInt(clearQueuedTracks.size()));
+			if (openNoQueueTracks.size() > 0 && type != RaceType.TIME_TRIAL) {
+				track = openNoQueueTracks.get(main.plugin.random
+						.nextInt(openNoQueueTracks.size()));
 			} else {
 				if (openNoQueueTracks.size() > 0) {
 					track = openNoQueueTracks.get(main.plugin.random
 							.nextInt(openNoQueueTracks.size()));
-				} else if (openTracks.size() > 0) {
-					// - They're going to have to wait for another race to
-					// finish before them...
-					track = openTracks.get(main.plugin.random
-							.nextInt(openTracks.size()));
 				} else {
 					if (type == RaceType.TIME_TRIAL
-							&& clearQueuedTracks.size() > 0) {
+							&& openNoQueueTracks.size() > 0) {
 						// Put them on a track to themselves
-						track = clearQueuedTracks.get(main.plugin.random
-								.nextInt(clearQueuedTracks.size()));
+						track = openNoQueueTracks.get(main.plugin.random
+								.nextInt(openNoQueueTracks.size()));
 					} else {
 						if (tracks.size() < 1) {
 							// No tracks exist
 							// No tracks created
 							player.sendMessage(main.colors.getError()
-									+ main.msgs.get("general.cmd.full"));
+									+ main.msgs.get("general.cmd.delete.exists"));
 							return;
 						}
-						track = tracks.get(main.plugin.random.nextInt(tracks
-								.size()));
-						// -They are going to have to wait for a game to finish
+						//All queues and tracks full...
+						player.sendMessage(main.colors.getError()
+								+ main.msgs.get("general.cmd.overflow"));
+						track = tracks.get(main.plugin.random.nextInt(tracks.size()));
+						//Joining a new queue for that track (Low priority)
 					}
 				}
 			}
 			if (track == null) {
+				//Track doesn't exist
 				player.sendMessage(main.colors.getError()
 						+ main.msgs.get("general.cmd.delete.exists"));
 				return;
@@ -136,12 +133,22 @@ public class RaceScheduler {
 	}
 
 	public void joinQueue(Player player, RaceTrack track, RaceType type) {
-		RaceQueue queue = main.plugin.raceQueues.getQueue(track.getTrackName(),
-				type); // Get the oldest queue of that type for that track
-		if (queue == null) {
+		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
+		RaceQueue queue = null;
+		if (queues.size() < 1) {
 			queue = new RaceQueue(track, type, player);
 		} else {
-			queue.addPlayer(player);
+			for(UUID id:queues.keySet()){
+				RaceQueue q = queues.get(id);
+				if(q.playerCount() < q.playerLimit()){
+					queue = q;
+				}
+			}
+			if(queue == null){ //No queues of that type available, so create and schedule a new one
+				queue = new RaceQueue(track, type, player);
+				player.sendMessage(main.colors.getInfo()
+						+ main.msgs.get("general.cmd.overflow"));
+			}
 		}
 		queue.broadcast(main.colors.getTitle() + "[MarioKart:] "
 				+ main.colors.getInfo() + player.getName()

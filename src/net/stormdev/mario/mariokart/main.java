@@ -140,6 +140,10 @@ public class main extends JavaPlugin {
 				lang.set("general.cmd.full",
 						"There are no race tracks available!");
 			}
+			if (!lang.contains("general.cmd.overflow")) {
+				lang.set("general.cmd.overflow",
+						"Queues are full, joining new low-priority queue!");
+			}
 			if (!lang.contains("general.cmd.playersOnly")) {
 				lang.set("general.cmd.playersOnly",
 						"This command is for players only!");
