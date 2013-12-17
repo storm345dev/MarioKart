@@ -38,6 +38,21 @@ public class RaceScheduler {
 				.getOpenQueues(type); // Joinable queues for that racemode
 		RaceQueue toJoin = null;
 		Boolean added = false;
+		List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
+		List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
+		List<RaceTrack> openNoQueueTracks = new ArrayList<RaceTrack>();
+		for (RaceTrack t : tracks) {
+			if (!isTrackInUse(t, type)) {
+				openTracks.add(t);
+				if (!main.plugin.raceQueues.queuesFor(t, type)) {
+					openNoQueueTracks.add(t);
+				}
+				if (main.plugin.raceQueues.getQueues(t.getTrackName())
+						.size() < 1) {
+					openNoQueueTracks.add(t);
+				}
+			}
+		}
 		if (queues.size() > 0 && type != RaceType.TIME_TRIAL) { // Check if
 																// queues
 																// existing and
@@ -58,28 +73,21 @@ public class RaceScheduler {
 						.nextInt(recommendedQueues.size())];
 				toJoin = recommendedQueues.get(random);
 			} else {
-				// Join from 'queues'
-				UUID random = (UUID) queues.keySet().toArray()[main.plugin.random
-						.nextInt(queues.size())];
-				toJoin = queues.get(random);
+				if(main.plugin.random.nextBoolean() && openNoQueueTracks.size() > 0){
+					//Chance that will join a new track in a new queue
+					RaceTrack t = openNoQueueTracks.get(main.plugin.random.nextInt(
+							openNoQueueTracks.size()));
+					toJoin = new RaceQueue(t, type, player);
+				}
+				else{
+					// Join from 'queues'
+					UUID random = (UUID) queues.keySet().toArray()[main.plugin.random
+					                       						.nextInt(queues.size())];
+					                       				toJoin = queues.get(random);
+				}
 			}
 		} else {
 			// Create a random queue
-			List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
-			List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
-			List<RaceTrack> openNoQueueTracks = new ArrayList<RaceTrack>();
-			for (RaceTrack t : tracks) {
-				if (!isTrackInUse(t, type)) {
-					openTracks.add(t);
-					if (!main.plugin.raceQueues.queuesFor(t, type)) {
-						openNoQueueTracks.add(t);
-					}
-					if (main.plugin.raceQueues.getQueues(t.getTrackName())
-							.size() < 1) {
-						openNoQueueTracks.add(t);
-					}
-				}
-			}
 			RaceTrack track = null;
 			if (openNoQueueTracks.size() > 0 && type != RaceType.TIME_TRIAL) {
 				track = openNoQueueTracks.get(main.plugin.random
