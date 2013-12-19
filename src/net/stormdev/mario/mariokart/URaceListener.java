@@ -1,5 +1,6 @@
 package net.stormdev.mario.mariokart;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,7 +117,12 @@ public class URaceListener implements Listener {
 		}
 		Entity e = veh.getPassenger();
 		if (!(e instanceof Player)) {
-			return;
+			while(!(e instanceof Player) && e.getPassenger() != null){
+				e = e.getPassenger();
+			}
+			if(!(e instanceof Player)){
+				return;
+			}
 		}
 		Player player = (Player) e;
 		if (plugin.raceMethods.inAGame(player, false) == null) {
@@ -165,7 +171,7 @@ public class URaceListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	void powerups(ucarUpdateEvent event) {
-		Player player = (Player) event.getVehicle().getPassenger();
+		Player player = event.getPlayer();
 		try {
 			if (plugin.raceMethods.inAGame(player, false) == null) {
 				return;
@@ -233,7 +239,19 @@ public class URaceListener implements Listener {
 						.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
 								1, 0.8f);
 				target.sendMessage(ChatColor.RED + msg);
-				RaceExecutor.penalty(((Minecart) target.getVehicle()), 4);
+				Entity cart = target.getVehicle();
+				if(cart == null){
+					return;
+				}
+				if(!(cart instanceof Minecart)){
+					while(!(cart instanceof Minecart) && cart.getVehicle() != null){
+						cart = cart.getVehicle();
+					}
+					if(!(cart instanceof Minecart)){
+						return;
+					}
+				}
+				RaceExecutor.penalty(((Minecart) cart), 4);
 				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
 				return;
 			}
@@ -264,7 +282,19 @@ public class URaceListener implements Listener {
 										.playSound(pl.getLocation(),
 												Sound.ENDERDRAGON_HIT, 1, 0.8f);
 								pl.sendMessage(ChatColor.RED + msg);
-								RaceExecutor.penalty(((Minecart) pl.getVehicle()), 4);
+								Entity cart = pl.getVehicle();
+								if(cart == null){
+									return;
+								}
+								if(!(cart instanceof Minecart)){
+									while(!(cart instanceof Minecart) && cart.getVehicle() != null){
+										cart = cart.getVehicle();
+									}
+									if(!(cart instanceof Minecart)){
+										return;
+									}
+								}
+								RaceExecutor.penalty(((Minecart) cart), 4);
 								shell.setMetadata("shell.destroy",
 										new StatValue(0, plugin));
 							}
@@ -318,10 +348,16 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Minecart car = (Minecart) event.getVehicle();
-		if (!(event.getExited() instanceof Player)) {
-			return;
+		Entity e = event.getExited();
+		if (!(e instanceof Player)) {
+			while(e!=null && !(e instanceof Player) && e.getPassenger() != null){
+				e = e.getPassenger();
+			}
+			if(e==null || !(e instanceof Player)){
+				return;
+			}
 		}
-		Player player = (Player) event.getExited();
+		Player player = (Player) e;
 		if (!(player.hasMetadata("car.stayIn"))) {
 			return;
 		}
@@ -664,8 +700,16 @@ public class URaceListener implements Listener {
 			return;
 		}
 		if (!(player.getVehicle() == null)) {
-			player.getVehicle().eject();
-			player.getVehicle().remove();
+			Entity e = player.getVehicle();
+			List<Entity> stack = new ArrayList<Entity>();
+			while(e != null){
+				stack.add(e);
+				e = e.getVehicle();
+			}
+			for(Entity e1:stack){
+				e1.eject();
+				e1.remove();
+			}
 		}
 		List<MetadataValue> metas = null;
 		if (player.hasMetadata("car.stayIn")) {
@@ -783,7 +827,12 @@ public class URaceListener implements Listener {
 		Minecart car = (Minecart) veh;
 		Entity pass = car.getPassenger();
 		if (!(pass instanceof Player)) {
-			return;
+			while(pass != null && !(pass instanceof Player) && pass.getPassenger() != null){
+				pass = pass.getPassenger();
+			}
+			if(!(pass instanceof Player)){
+				return;
+			}
 		}
 		Player player = (Player) pass;
 		if (plugin.raceMethods.inAGame(player, false) == null) {
@@ -885,11 +934,19 @@ public class URaceListener implements Listener {
 	@EventHandler
 	public void hotBarScrolling(VehicleUpdateEvent event) {
 		Vehicle car = event.getVehicle();
-		if (car.getPassenger() == null
-				|| !(car.getPassenger() instanceof Player)) {
-			return;
+		Entity e = car.getPassenger();
+		if(event instanceof ucarUpdateEvent){
+			e = ((ucarUpdateEvent) event).getPlayer();
 		}
-		final Player player = (Player) car.getPassenger();
+		else{
+			while(e!=null && !(e instanceof Player) && e.getPassenger() != null){
+				e = e.getPassenger();
+			}
+			if(!(e instanceof Player)){
+				return;
+			}
+		}
+		final Player player = (Player) e;
 		if (main.plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}

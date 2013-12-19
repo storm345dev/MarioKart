@@ -820,7 +820,7 @@ public class MarioKart {
 							} else {
 								give = a;
 							}
-							Player ply = ((Player) car.getPassenger());
+							Player ply = evt.getPlayer();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
 									while (ItemStackFromId.equals(main.config
@@ -833,7 +833,7 @@ public class MarioKart {
 							}
 						} else {
 							// Give mario items
-							Player ply = ((Player) car.getPassenger());
+							Player ply = evt.getPlayer();
 							give = this.getRandomPowerup();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
@@ -846,7 +846,7 @@ public class MarioKart {
 								}
 							}
 						}
-						final Player ply = ((Player) car.getPassenger());
+						final Player ply = evt.getPlayer();
 						ply.setMetadata("kart.rolling", new StatValue(true,
 								plugin));
 						final ItemStack get = give;
