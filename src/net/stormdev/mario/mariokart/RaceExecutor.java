@@ -2,6 +2,7 @@ package net.stormdev.mario.mariokart;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 
@@ -88,11 +89,16 @@ public class RaceExecutor {
 						.getCustomName()));
 				player.setCustomNameVisible(false);
 				if (player.getVehicle() != null) {
-					Vehicle veh = (Vehicle) player.getVehicle();
-
-					veh.eject();
-
-					veh.remove();
+					Entity e = player.getVehicle();
+					List<Entity> stack = new ArrayList<Entity>();
+					while(e!=null){
+						stack.add(e);
+						e = e.getVehicle();
+					}
+					for(Entity veh:stack){
+						veh.eject();
+						veh.remove();
+					}
 				}
 				Location loc = game.getTrack().getExit(main.plugin.getServer());
 				if (loc == null) {

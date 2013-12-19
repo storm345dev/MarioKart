@@ -344,10 +344,15 @@ public class URaceListener implements Listener {
 
 	@EventHandler
 	void stayInCar(VehicleExitEvent event) {
-		if (!(event.getVehicle() instanceof Minecart)) {
+		Entity v = event.getVehicle();
+		while(v != null && !(v instanceof Minecart)
+				&& v.getVehicle() != null){
+			v = v.getVehicle();
+		}
+		if(!(v instanceof Minecart)){
 			return;
 		}
-		Minecart car = (Minecart) event.getVehicle();
+		Minecart car = (Minecart) v;
 		Entity e = event.getExited();
 		if (!(e instanceof Player)) {
 			while(e!=null && !(e instanceof Player) && e.getPassenger() != null){

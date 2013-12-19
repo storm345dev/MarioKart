@@ -81,7 +81,16 @@ public class MarioKart {
 			if (player.hasMetadata("kart.rolling")) {
 				return;
 			}
-			final Minecart car = (Minecart) evt.getPlayer().getVehicle();
+			Entity e = evt.getPlayer().getVehicle();
+			if(!(evt.getPlayer().getVehicle() instanceof Minecart)){
+				while(e != null && !(e instanceof Minecart) && e.getVehicle() != null){
+					e = e.getVehicle();
+				}
+				if(!(e instanceof Minecart)){
+					return;
+				}
+			}
+			final Minecart car = (Minecart) e;
 			if ((evt.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_AIR || evt
 					.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK)
 					&& !timed) {
@@ -558,19 +567,15 @@ public class MarioKart {
 						Player pl = plugin.getServer().getPlayer(
 								(String) pls[i]);
 						pl.getWorld().strikeLightningEffect(pl.getLocation());
-						if (pl.getVehicle() != null) {
-							if (pl.getVehicle() instanceof Minecart) {
-								RaceExecutor.penalty(
-										(Minecart) pl.getVehicle(), 4);
-								ucars.listener
-										.carBoost(
-												pl.getName(),
-												power,
-												8000,
-												ucars.config
-														.getDouble("general.cars.defSpeed"));
-							}
-						}
+						RaceExecutor.penalty(
+								car, 4);
+						ucars.listener
+								.carBoost(
+										pl.getName(),
+										power,
+										8000,
+										ucars.config
+												.getDouble("general.cars.defSpeed"));
 					}
 				}
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -615,35 +620,38 @@ public class MarioKart {
 															.getServer()
 															.getPlayer(
 																	(String) pls[i]);
-													if (pl.getVehicle() != null) {
-														if (pl.getVehicle() instanceof Minecart) {
-															if (!pl.getVehicle()
+													Entity e = pl.getVehicle();
+													while(e!=null && !(e instanceof Minecart) && e.getVehicle() != null){
+														e = e.getVehicle();
+													}
+													if(e == null || !(e instanceof Player)){
+														return;
+													}
+													Minecart cart = (Minecart) e;
+													if (!cart
+															.hasMetadata(
+																	"car.braking")
+															&& !cart
 																	.hasMetadata(
-																			"car.braking")
-																	&& !pl.getVehicle()
-																			.hasMetadata(
-																					"kart.immune")) {
-																String msg = main.msgs
-																		.get("mario.hit");
-																msg = msg
-																		.replaceAll(
-																				Pattern.quote("%name%"),
-																				"pow block");
-																pl.getWorld()
-																		.playSound(
-																				pl.getLocation(),
-																				Sound.STEP_WOOD,
-																				1f,
-																				0.25f);
-																pl.sendMessage(ChatColor.RED
-																		+ msg);
-																
-																RaceExecutor.penalty(
-																				(Minecart) pl
-																						.getVehicle(),
-																				2);
-															}
-														}
+																			"kart.immune")) {
+														String msg = main.msgs
+																.get("mario.hit");
+														msg = msg
+																.replaceAll(
+																		Pattern.quote("%name%"),
+																		"pow block");
+														pl.getWorld()
+																.playSound(
+																		pl.getLocation(),
+																		Sound.STEP_WOOD,
+																		1f,
+																		0.25f);
+														pl.sendMessage(ChatColor.RED
+																+ msg);
+														
+														RaceExecutor.penalty(
+																		(Minecart) cart,
+																		2);
 													}
 												}
 												return;
