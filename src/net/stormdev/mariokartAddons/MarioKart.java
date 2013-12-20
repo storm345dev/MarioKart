@@ -70,7 +70,7 @@ public class MarioKart {
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		Race race = plugin.raceMethods.inAGame(player, false);
+		final Race race = plugin.raceMethods.inAGame(player, false);
 		Boolean timed = race.getType() == RaceType.TIME_TRIAL;
 		// Start calculations
 		if (event instanceof PlayerInteractEvent) {
@@ -206,7 +206,7 @@ public class MarioKart {
 					.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK)) {
 				return;
 			}
-			ItemStack inHand = evt.getPlayer().getItemInHand();
+			final ItemStack inHand = evt.getPlayer().getItemInHand();
 			Player ply = evt.getPlayer();
 			if (inHand.equals(this.respawn)) {
 				if (!car.hasMetadata("car.frozen")) {
@@ -675,48 +675,54 @@ public class MarioKart {
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.boo"), inHand.getTypeId(),
 					inHand.getDurability())) {
-				PotionEffect effect = new PotionEffect(
-						PotionEffectType.INVISIBILITY, 120, 10);
-				SortedMap<String, Double> sorted = race.getRaceOrder();
-				Set<String> keys = sorted.keySet();
-				final Object[] pls = (Object[]) keys.toArray();
-				int pppos = 0;
-				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player.getName())) {
-						pppos = i;
-					}
-				}
-				int pos = pppos - 1;
-				if (!(pos < 0)) {
-					final Player pl = main.plugin.getServer().getPlayer(
-							(String) pls[pos]);
-					pl.setMetadata("kart.rolling", new StatValue(true, plugin));
-					pl.getInventory().clear();
-					main.plugin.hotBarManager.updateHotBar(pl);
-					pl.getInventory().addItem(
-							PowerupMaker.getPowerup(Powerup.BOO, 1));
-					PotionEffect nausea = new PotionEffect(
-							PotionEffectType.CONFUSION, 240, 10);
-					pl.addPotionEffect(nausea, true);
-					pl.getWorld().playSound(pl.getLocation(),
-							Sound.AMBIENCE_CAVE, 1, 1);
-					pl.updateInventory();
-					String msg = main.msgs.get("mario.hit");
-					msg = msg.replaceAll("%name%", "ghost");
-					pl.sendMessage(main.colors.getInfo() + msg);
-					plugin.getServer().getScheduler()
-							.runTaskLater(plugin, new Runnable() {
+				main.plugin.getServer().getScheduler().runTask(main.plugin, new Runnable(){
 
-								public void run() {
-									pl.removeMetadata("kart.rolling", plugin);
-									pl.getInventory().clear();
-									main.plugin.hotBarManager.updateHotBar(pl);
-									pl.updateInventory();
-								}
-							}, 240l);
-				}
-				player.addPotionEffect(effect, true);
-				inHand.setAmount(inHand.getAmount() - 1);
+					@Override
+					public void run() {
+						PotionEffect effect = new PotionEffect(
+								PotionEffectType.INVISIBILITY, 120, 10);
+						SortedMap<String, Double> sorted = race.getRaceOrder();
+						Set<String> keys = sorted.keySet();
+						final Object[] pls = (Object[]) keys.toArray();
+						int pppos = 0;
+						for (int i = 0; i < pls.length; i++) {
+							if (pls[i].equals(player.getName())) {
+								pppos = i;
+							}
+						}
+						int pos = pppos - 1;
+						if (!(pos < 0)) {
+							final Player pl = main.plugin.getServer().getPlayer(
+									(String) pls[pos]);
+							pl.setMetadata("kart.rolling", new StatValue(true, plugin));
+							pl.getInventory().clear();
+							main.plugin.hotBarManager.updateHotBar(pl);
+							pl.getInventory().addItem(
+									PowerupMaker.getPowerup(Powerup.BOO, 1));
+							PotionEffect nausea = new PotionEffect(
+									PotionEffectType.CONFUSION, 240, 10);
+							pl.addPotionEffect(nausea, true);
+							pl.getWorld().playSound(pl.getLocation(),
+									Sound.AMBIENCE_CAVE, 1, 1);
+							pl.updateInventory();
+							String msg = main.msgs.get("mario.hit");
+							msg = msg.replaceAll("%name%", "ghost");
+							pl.sendMessage(main.colors.getInfo() + msg);
+							plugin.getServer().getScheduler()
+									.runTaskLater(plugin, new Runnable() {
+
+										public void run() {
+											pl.removeMetadata("kart.rolling", plugin);
+											pl.getInventory().clear();
+											main.plugin.hotBarManager.updateHotBar(pl);
+											pl.updateInventory();
+										}
+									}, 240l);
+						}
+						player.addPotionEffect(effect, true);
+						inHand.setAmount(inHand.getAmount() - 1);
+						return;
+					}});
 			}
 			evt.getPlayer().setItemInHand(inHand);
 			evt.getPlayer().updateInventory(); // Fix 1.6 bug with inventory not

@@ -179,13 +179,7 @@ public class URaceListener implements Listener {
 		} catch (Exception e) {
 			return;
 		}
-		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable(){
-
-			@Override
-			public void run() {
-				main.marioKart.calculate(player, event);
-				return;
-			}});
+	    main.marioKart.calculate(player, event);
 		return;
 	}
 
