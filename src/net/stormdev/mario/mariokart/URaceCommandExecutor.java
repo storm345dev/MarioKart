@@ -196,11 +196,13 @@ public class URaceCommandExecutor implements CommandExecutor {
 			Object[] keys = topTimes.keySet().toArray();
 			int pos = 1;
 			for (Object o : keys) {
-				String name = (String) o;
-				sender.sendMessage(main.colors.getTitle() + pos + ")"
-						+ main.colors.getInfo() + name + "- " + times.get(name)
-						+ "s");
-				pos++;
+				if(pos <= d){
+					String name = (String) o;
+					sender.sendMessage(main.colors.getTitle() + pos + ")"
+							+ main.colors.getInfo() + name + "- " + times.get(name)
+							+ "s");
+					pos++;
+				}
 			}
 			return true;
 		}
