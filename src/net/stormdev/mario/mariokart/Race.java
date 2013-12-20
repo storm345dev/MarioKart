@@ -57,6 +57,7 @@ public class Race {
 	public Objective scores = null;
 	public RaceType type = RaceType.RACE;
 	public Objective scoresBoard = null;
+	private int strikes = 0;
 
 	public Race(RaceTrack track, String trackName, RaceType type) {
 		this.type = type;
@@ -358,8 +359,24 @@ public class Race {
 							double tps = DynamicLagReducer.getTPS();
 							if (tps < 19.9) {
 								if (tps < 13) {
+									if(strikes < 5){
+										main.logger
+										.info("[WARNING] Server at critical, Race "+getGameId()+" strike: "+strikes+"/5");
+										strikes++;
+									}
+									else{
+										main.logger
+										.info("[WARNING] Cancelling Race to compensate for resource loss!");
+										broadcast(main.colors.getError()+"[Error] Race cancelled to compensate for "
+												+ "server resource loss!");
+										end();
+										return;
+									}
 									mis = (long) (ms + (tps * 100));
 								} else if (tps < 15) {
+									main.logger
+									.info("[WARNING] Server running out of resources! - "
+											+ "Compensating by reducing MarioKart tickRate (Accuracy)");
 									mis = ms + 1000; // Go all out to keep up
 								} else if (tps < 17) {
 									main.logger
