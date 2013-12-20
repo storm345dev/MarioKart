@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class main extends JavaPlugin {
 	public RaceTrackManager trackManager = null;
 	public RaceScheduler raceScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
-	public HashMap<String, Map<UUID, RaceQueue>> queues = new HashMap<String, Map<UUID, RaceQueue>>();
+	public HashMap<String, LinkedHashMap<UUID, RaceQueue>> queues = new HashMap<String, LinkedHashMap<UUID, RaceQueue>>();
 	public RaceQueueManager raceQueues = null;
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;

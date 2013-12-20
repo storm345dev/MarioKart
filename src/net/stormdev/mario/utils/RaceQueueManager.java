@@ -2,6 +2,7 @@ package net.stormdev.mario.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,7 +125,7 @@ public class RaceQueueManager {
 
 	public void removeQueue(RaceQueue queue) {
 		queue.clear();
-		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(queue.getTrackName())) {
 			trackQueues = main.plugin.queues.get(queue.getTrackName());
 		}
@@ -142,7 +143,7 @@ public class RaceQueueManager {
 	}
 
 	public void updateQueue(RaceQueue queue) {
-		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(queue.getTrackName())) {
 			trackQueues = main.plugin.queues.get(queue.getTrackName());
 		}

@@ -2,6 +2,7 @@ package net.stormdev.mario.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class RaceQueue {
 		this.queueId = UUID.randomUUID();
 		this.playerLimit = track.getMaxPlayers();
 		this.players.add(creator);
-		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(getTrackName())) {
 			trackQueues = main.plugin.queues.get(getTrackName());
 		}
@@ -100,7 +101,7 @@ public class RaceQueue {
 		}
 		if (!valid) { // If there's not enough players in the queue
 			clear();
-			Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+			LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 			if (main.plugin.queues.containsKey(getTrackName())) {
 				trackQueues = main.plugin.queues.get(getTrackName());
 			}
