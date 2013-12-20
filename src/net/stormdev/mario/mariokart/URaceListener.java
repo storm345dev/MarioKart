@@ -170,8 +170,8 @@ public class URaceListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	void powerups(ucarUpdateEvent event) {
-		Player player = event.getPlayer();
+	void powerups(final ucarUpdateEvent event) {
+		final Player player = event.getPlayer();
 		try {
 			if (plugin.raceMethods.inAGame(player, false) == null) {
 				return;
@@ -179,7 +179,13 @@ public class URaceListener implements Listener {
 		} catch (Exception e) {
 			return;
 		}
-		main.marioKart.calculate(player, event);
+		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				main.marioKart.calculate(player, event);
+				return;
+			}});
 		return;
 	}
 
