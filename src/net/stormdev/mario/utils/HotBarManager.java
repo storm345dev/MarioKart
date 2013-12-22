@@ -191,9 +191,12 @@ public class HotBarManager {
 					new Upgrade(main.plugin.upgradeManager
 							.getUnlockable(hotBarItem.shortId), 1))) {
 				player.sendMessage(main.msgs.get("race.upgrades.use"));
+				updateHotBar(player);
+				return;
 			}
 		}
-		player.updateInventory();
+		updateHotBar(player);
+		return;
 	}
 
 }

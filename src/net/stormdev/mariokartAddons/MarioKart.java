@@ -731,7 +731,6 @@ public class MarioKart {
 			ucarUpdateEvent evt = (ucarUpdateEvent) event;
 			Minecart car = (Minecart) evt.getVehicle();
 			Block under = car.getLocation().add(0, -1, 0).getBlock();
-			main.plugin.hotBarManager.updateHotBar(player);
 			if (timed) {
 				return;
 			}

@@ -977,7 +977,8 @@ public class URaceListener implements Listener {
 									main.plugin);
 						}
 					}, 15);
+			plugin.hotBarManager.updateHotBar(player);
 		}
-		plugin.hotBarManager.updateHotBar(player);
+		return;
 	}
 }
