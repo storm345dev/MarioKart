@@ -574,6 +574,7 @@ public class main extends JavaPlugin {
 		}
 		this.lagReducer.cancel();
 		getServer().getScheduler().cancelTasks(this);
+		System.gc();
 		try {
 			Shop.getShop().destroy();
 		} catch (Exception e) {

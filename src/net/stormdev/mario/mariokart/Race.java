@@ -728,6 +728,9 @@ public class Race {
 		finished.clear();
 		this.ended = true;
 		this.ending = true;
+		this.gameId = null;
+		this.scoreCalcs.cancel();
+		System.gc();
 		return;
 	}
 
