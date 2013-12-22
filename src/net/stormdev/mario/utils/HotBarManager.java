@@ -18,7 +18,6 @@ import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 public class HotBarManager {
-	// TODO
 
 	Map<String, MarioHotBar> hotBars = new HashMap<String, MarioHotBar>();
 
