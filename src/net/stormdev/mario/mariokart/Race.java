@@ -578,12 +578,24 @@ public class Race {
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
-			RaceExecutor.finishRace(this, user);
+			try {
+				RaceExecutor.finishRace(this, user);
+			} catch (Exception e) {
+				//Race has been voided
+			}
 		}
-		RaceExecutor.onRaceEnd(this);
-		clear();
-		main.plugin.raceScheduler.removeRace(this);
-		main.plugin.raceScheduler.recalculateQueues();
+		try {
+			RaceExecutor.onRaceEnd(this);
+		} catch (Exception e) {
+			//Race voided
+		}
+		try {
+			clear();
+			main.plugin.raceScheduler.removeRace(this);
+			main.plugin.raceScheduler.recalculateQueues();
+		} catch (Exception e) {
+			//Race Voided
+		}
 	}
 
 	public void finish(User user) {

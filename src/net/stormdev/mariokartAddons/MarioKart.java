@@ -577,6 +577,9 @@ public class MarioKart {
 										ucars.config
 												.getDouble("general.cars.defSpeed"));
 					}
+					else{
+						main.logger.info("Found striker");
+					}
 				}
 				inHand.setAmount(inHand.getAmount() - 1);
 			} else if (ItemStackFromId.equals(

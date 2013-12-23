@@ -515,6 +515,9 @@ public class RaceScheduler {
 	}
 
 	public void updateRace(Race race) {
+		if(race == null){
+			return;
+		}
 		if(this.races == null){
 			this.races = new ConcurrentHashMap<UUID, Race>();
 		}
