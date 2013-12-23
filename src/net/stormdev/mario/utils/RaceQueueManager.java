@@ -31,7 +31,7 @@ public class RaceQueueManager {
 	}
 
 	public RaceQueue getQueue(String trackName, RaceType raceMode) {
-		Map<UUID, RaceQueue> trackQueues = getQueues(trackName);
+		LinkedHashMap<UUID, RaceQueue> trackQueues = getQueues(trackName);
 		if (trackQueues.size() < 1) {
 			return null;
 		}
@@ -60,8 +60,8 @@ public class RaceQueueManager {
 		return null;
 	}
 
-	public Map<UUID, RaceQueue> getQueues(RaceType type) {
-		Map<UUID, RaceQueue> trackQueues = getAllQueues();
+	public LinkedHashMap<UUID, RaceQueue> getQueues(RaceType type) {
+		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
 			if (queue.getRaceMode() != type) {
@@ -71,8 +71,8 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 
-	public Map<UUID, RaceQueue> getOpenQueues(RaceType type) {
-		Map<UUID, RaceQueue> trackQueues = getAllQueues();
+	public LinkedHashMap<UUID, RaceQueue> getOpenQueues(RaceType type) {
+		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
 			if (queue.getRaceMode() != type
@@ -83,8 +83,8 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 
-	public Map<UUID, RaceQueue> getQueues(String trackName) {
-		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
+	public LinkedHashMap<UUID, RaceQueue> getQueues(String trackName) {
+		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(trackName)) {
 			trackQueues = main.plugin.queues.get(trackName);
 		}
@@ -133,9 +133,9 @@ public class RaceQueueManager {
 		main.plugin.queues.put(queue.getTrackName(), trackQueues);
 	}
 
-	public Map<UUID, RaceQueue> getAllQueues() {
+	public LinkedHashMap<UUID, RaceQueue> getAllQueues() {
 		List<String> tracks = new ArrayList<String>(main.plugin.queues.keySet());
-		Map<UUID, RaceQueue> queues = new HashMap<UUID, RaceQueue>();
+		LinkedHashMap<UUID, RaceQueue> queues = new LinkedHashMap<UUID, RaceQueue>();
 		for (String tName : tracks) {
 			queues.putAll(getQueues(tName));
 		}
@@ -155,16 +155,18 @@ public class RaceQueueManager {
 	}
 
 	public void clear() {
-		Map<UUID, RaceQueue> queues = getAllQueues();
+		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
 		for (UUID id : queues.keySet()) {
 			RaceQueue q = ((RaceQueue) queues.get(id));
 			q.clear();
-			main.plugin.queues.remove(id);
+		}
+		for (String trackId:main.plugin.queues.keySet()){ //ConcurrentHashMap allows this
+			main.plugin.queues.remove(trackId);
 		}
 	}
 
 	public Boolean queuesFor(RaceTrack track, RaceType type) {
-		Map<UUID, RaceQueue> queues = getAllQueues();
+		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
 		for (UUID id : queues.keySet()) {
 			RaceQueue q = queues.get(id);
 			if (!(q.getRaceMode() == RaceType.TIME_TRIAL && type == RaceType.TIME_TRIAL)) {

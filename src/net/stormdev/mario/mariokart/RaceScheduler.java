@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ import org.bukkit.entity.Player;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceScheduler {
-	private HashMap<UUID, Race> races = new HashMap<UUID, Race>();
+	private ConcurrentHashMap<UUID, Race> races = new ConcurrentHashMap<UUID, Race>();
 	private int raceLimit = 5;
 
 	public RaceScheduler(int raceLimit) {

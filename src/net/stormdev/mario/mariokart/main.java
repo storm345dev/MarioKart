@@ -1,7 +1,6 @@
 package net.stormdev.mario.mariokart;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
@@ -33,7 +33,6 @@ import net.stormdev.mariokartAddons.MarioKart;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -60,7 +59,7 @@ public class main extends JavaPlugin {
 	public RaceTrackManager trackManager = null;
 	public RaceScheduler raceScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
-	public HashMap<String, LinkedHashMap<UUID, RaceQueue>> queues = new HashMap<String, LinkedHashMap<UUID, RaceQueue>>();
+	public ConcurrentHashMap<String, LinkedHashMap<UUID, RaceQueue>> queues = new ConcurrentHashMap<String, LinkedHashMap<UUID, RaceQueue>>();
 	public RaceQueueManager raceQueues = null;
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;

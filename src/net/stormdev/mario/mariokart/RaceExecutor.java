@@ -30,7 +30,6 @@ import org.bukkit.util.Vector;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceExecutor {
-	// TODO
 	public static void onRaceEnd(Race game) {
 		if (game == null) {
 			return;

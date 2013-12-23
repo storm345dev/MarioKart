@@ -2,8 +2,9 @@ package net.stormdev.mario.utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -19,7 +20,7 @@ public class RaceTrack implements Serializable {
 	SerializableLocation line1 = null;
 	SerializableLocation line2 = null;
 	ArrayList<SerializableLocation> startGrid = new ArrayList<SerializableLocation>();
-	Map<Integer, SerializableLocation> checkPoints = new HashMap<Integer, SerializableLocation>();
+	ConcurrentMap<Integer, SerializableLocation> checkPoints = new ConcurrentHashMap<Integer, SerializableLocation>();
 
 	public RaceTrack(String trackname, int maxplayers, int minplayers, int laps) {
 		this.trackname = trackname;
@@ -123,12 +124,10 @@ public class RaceTrack implements Serializable {
 	}
 
 	final public Map<Integer, SerializableLocation> getCheckpoints() {
-		final Map<Integer, SerializableLocation> m = new HashMap<Integer, SerializableLocation>(
-				this.checkPoints);
-		return m;
+		return checkPoints;
 	}
 
-	public void setCheckpoints(Map<Integer, SerializableLocation> checkpoints) {
+	public void setCheckpoints(ConcurrentMap<Integer, SerializableLocation> checkpoints) {
 		this.checkPoints = checkpoints;
 		calculateMaxMinPlayers();
 		return;
