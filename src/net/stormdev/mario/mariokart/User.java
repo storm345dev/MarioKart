@@ -28,6 +28,8 @@ public class User {
 	private boolean finished;
 
 	private Location location;
+	
+	private boolean respawning = false;
 
 	public User(Player player, int oldLevel, float oldExp) {
 		this.player = player;
@@ -40,6 +42,14 @@ public class User {
 		finished = false;
 		location = null;
 	}
+	
+	public void setRespawning(Boolean respawning){
+		this.respawning = respawning;
+	}
+	
+	public Boolean isRespawning(){
+		return respawning;
+	}
 
 	public String getPlayerName() {
 		return playerName;
@@ -47,6 +57,9 @@ public class User {
 
 	public Player getPlayer() throws PlayerQuitException {
 		try {
+			if(isRespawning() && player == null){
+				return null;
+			}
 			if (player == null || !player.isOnline()) {
 				player = null;
 				throw new PlayerQuitException(playerName);

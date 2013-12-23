@@ -736,8 +736,9 @@ public class URaceListener implements Listener {
 		int checkpoint = 0;
 		try {
 			User user = race.getUser(player);
-
+            user.setRespawning(true);
 			checkpoint = user.getCheckpoint();
+			race.updateUser(user);
 		} catch (Exception e) {
 		}
 		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
@@ -768,14 +769,10 @@ public class URaceListener implements Listener {
 			return;
 		}
 		Race race = plugin.raceMethods.inAGame(player, false);
-		race.updateUser(player);
-		int checkpoint = 0;
-		try {
-			User user = race.getUser(player);
-
-			checkpoint = user.getCheckpoint();
-		} catch (Exception e) {
-		}
+		User u = race.updateUser(player);
+		u.setRespawning(false);
+		int checkpoint = u.getCheckpoint();
+		race.updateUser(u);
 		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
 				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();

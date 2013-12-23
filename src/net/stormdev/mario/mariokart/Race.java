@@ -150,8 +150,10 @@ public class Race {
 			}
 			return;
 		}
-		player.setLevel(user.getOldLevel());
-		player.setExp(user.getOldExp());
+		if(player != null){
+			player.setLevel(user.getOldLevel());
+			player.setExp(user.getOldExp());
+		}
 		return;
 	}
 
@@ -169,7 +171,9 @@ public class Race {
 		Player player = null;
 		try {
 			player = user.getPlayer();
-			player.setLevel(user.getOldLevel());
+			if(player != null){
+				player.setLevel(user.getOldLevel());
+			}
 		} catch (PlayerQuitException e1) {
 			// User quit
 		}
@@ -190,6 +194,8 @@ public class Race {
 								main.logger
 										.info("race.leave failed to remove user");
 							}
+						} catch (Exception e){
+							//User is respawning
 						}
 					}
 					startEndCount();
@@ -233,6 +239,8 @@ public class Race {
 					if (!forceRemoveUser(us)) {
 						main.logger.info("race.quit failed to remove user");
 					}
+				} catch (Exception e){
+					//User is respawning
 				}
 			}
 		}
@@ -347,6 +355,8 @@ public class Race {
 			} catch (PlayerQuitException e) {
 				// User has left
 				this.leave(user, true);
+			} catch (Exception e){
+				//User has quit
 			}
 		}
 		final long ms = tickrate * 50;
@@ -419,9 +429,11 @@ public class Race {
 								User u = getUser(pname);
 								try {
 									Player pl = u.getPlayer();
-									game.scores.getScore(pl).setScore(pos);
-									game.scoresBoard.getScore(pl)
+									if(pl != null){
+										game.scores.getScore(pl).setScore(pos);
+										game.scoresBoard.getScore(pl)
 											.setScore(-pos);
+									}
 								} catch (IllegalStateException e) {
 									e.printStackTrace();
 								} catch (IllegalArgumentException e) {
@@ -443,12 +455,14 @@ public class Race {
 							}
 							try {
 								Player pl = user.getPlayer();
-								long time = System.currentTimeMillis()
-										- startTimeMS;
-								time = time / 1000; // In s
-								game.scores.getScore(pl).setScore((int) time);
-								game.scoresBoard.getScore(pl).setScore(
-										(int) time);
+								if(pl != null){
+									long time = System.currentTimeMillis()
+											- startTimeMS;
+									time = time / 1000; // In s
+									game.scores.getScore(pl).setScore((int) time);
+									game.scoresBoard.getScore(pl).setScore(
+											(int) time);
+								}
 							} catch (Exception e) {
 								return;
 								// Game ended or user has left or random error
@@ -475,11 +489,13 @@ public class Race {
 		for (User user : users) {
 			try {
 				Player player = user.getPlayer();
-				if (player.hasMetadata("checkpoint.distance")) {
-					List<MetadataValue> metas = player
-							.getMetadata("checkpoint.distance");
-					checkpointDists.put(user.getPlayerName(),
-							(Double) ((StatValue) metas.get(0)).getValue());
+				if(player != null){
+					if (player.hasMetadata("checkpoint.distance")) {
+						List<MetadataValue> metas = player
+								.getMetadata("checkpoint.distance");
+						checkpointDists.put(user.getPlayerName(),
+								(Double) ((StatValue) metas.get(0)).getValue());
+					}
 				}
 			} catch (PlayerQuitException e) {
 				leave(user, true);
@@ -546,13 +562,14 @@ public class Race {
 			Player player = null;
 			try {
 				player = user.getPlayer();
+                if(player != null){
+                	player.setScoreboard(main.plugin.getServer()
+    						.getScoreboardManager().getMainScoreboard());
 
-				player.setScoreboard(main.plugin.getServer()
-						.getScoreboardManager().getMainScoreboard());
+    				player.setLevel(user.getOldLevel());
 
-				player.setLevel(user.getOldLevel());
-
-				player.setExp(user.getOldExp());
+    				player.setExp(user.getOldExp());
+                }
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
@@ -583,8 +600,10 @@ public class Race {
 						.getPlayer(user.getPlayerName()); // Player removed
 															// prematurely
 			}
-			player.setLevel(user.getOldLevel());
-			player.setExp(user.getOldExp());
+			if(player != null){
+				player.setLevel(user.getOldLevel());
+				player.setExp(user.getOldExp());
+			}
 		} catch (Exception e) {
 			// Player has left
 		}
@@ -602,6 +621,19 @@ public class Race {
 				u.setPlayer(player);
 				users.add(u);
 				return u;
+			}
+		}
+		return null;
+	}
+	
+	public User updateUser(User user) {
+		for (User u : getUsers()) {
+			if (u.equals(user)) {
+				if (!forceRemoveUser(u)) {
+					main.logger.info("updateUser() failed to remove user");
+				}
+				users.add(user);
+				return user;
 			}
 		}
 		return null;
@@ -714,9 +746,7 @@ public class Race {
 			} catch (PlayerQuitException e) {
 				leave(user, true);
 			}
-			if (player == null) {
-				leave(user, true);
-			} else {
+			if(player != null){
 				player.sendMessage(main.colors.getInfo() + msg);
 			}
 		}
