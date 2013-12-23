@@ -764,7 +764,6 @@ public class URaceListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	void postRespawn(PlayerRespawnEvent event) {
-		main.logger.info("Player finished respawning");
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
