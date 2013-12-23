@@ -221,6 +221,18 @@ public class RaceScheduler {
 																// the track
 																// ahead of it?
 					&& getRacesRunning() < raceLimit && !queue.isStarting()) {
+				double predicted = 110; //Predicted Memory needed
+				if(DynamicLagReducer.getResourceScore(predicted) < 30){
+					main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+						@Override
+						public void run() {
+							//Make sure queues don't lock
+							recalculateQueues();
+							return;
+						}}, 600l);
+					return; //Cancel - Not enough memory
+				}
+				//Memory should be available
 				queue.setStarting(true);
 				List<Player> q = new ArrayList<Player>(queue.getPlayers());
 				for (Player p : q) {
