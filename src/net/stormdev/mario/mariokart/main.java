@@ -323,7 +323,7 @@ public class main extends JavaPlugin {
 				config.set("general.raceLimit", 10);
 			}
 			if (!config.contains("general.raceTickrate")) {
-				config.set("general.raceTickrate", 2l);
+				config.set("general.raceTickrate", 4l);
 			}
 			if (!config.contains("general.checkpointRadius")) {
 				config.set("general.checkpointRadius", (double) 10.0);
