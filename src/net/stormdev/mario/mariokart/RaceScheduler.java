@@ -223,13 +223,15 @@ public class RaceScheduler {
 					&& getRacesRunning() < raceLimit && !queue.isStarting()) {
 				double predicted = 110; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
-					main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+					if(getRacesRunning() < 1){
+						main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 						@Override
 						public void run() {
 							//Make sure queues don't lock
 							recalculateQueues();
 							return;
 						}}, 600l);
+					}
 					return; //Cancel - Not enough memory
 				}
 				//Memory should be available
@@ -262,13 +264,14 @@ public class RaceScheduler {
 				int c = queue.playerCount();
 				double predicted = c*60+50; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
-					main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+					if(getRacesRunning() < 1){main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 						@Override
 						public void run() {
 							//Make sure queues don't lock
 							recalculateQueues();
 							return;
 						}}, 600l);
+					}
 					return; //Cancel - Not enough memory
 				}
 				queuedTracks.add(queue.getTrack());
@@ -512,6 +515,9 @@ public class RaceScheduler {
 	}
 
 	public void updateRace(Race race) {
+		if(this.races == null){
+			this.races = new ConcurrentHashMap<UUID, Race>();
+		}
 		if (this.races.containsKey(race.getGameId())) {
 			this.races.put(race.getGameId(), race);
 		}
