@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
@@ -195,6 +196,18 @@ public class RaceScheduler {
 		if (getRacesRunning() >= raceLimit) {
 			return; // Cannot start any more races for now...
 		}
+		if(DynamicLagReducer.getResourceScore() < 30){
+			if(getRacesRunning() < 1){ //Else when race ends it will fire again anyway
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+					@Override
+					public void run() {
+						//Make sure queues don't lock
+						recalculateQueues();
+						return;
+					}}, 600l);
+			}
+			return; //Not enough memory/resource to run more races
+		}
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		ArrayList<RaceTrack> queuedTracks = new ArrayList<RaceTrack>();
 		for (UUID id : new ArrayList<UUID>(queues.keySet())) {
@@ -234,6 +247,18 @@ public class RaceScheduler {
 																// not reserved
 					&& queue.getRaceMode() != RaceType.TIME_TRIAL
 					&& !queue.isStarting()) {
+				int c = queue.playerCount();
+				double predicted = c*60+50; //Predicted Memory needed
+				if(DynamicLagReducer.getResourceScore(predicted) < 30){
+					main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+						@Override
+						public void run() {
+							//Make sure queues don't lock
+							recalculateQueues();
+							return;
+						}}, 600l);
+					return; //Cancel - Not enough memory
+				}
 				queuedTracks.add(queue.getTrack());
 				// Queue can be initiated
 				queue.setStarting(true);

@@ -9,6 +9,56 @@ public class DynamicLagReducer implements Runnable {
 		return getTPS(100);
 	}
 
+	public static double getAvailableMemory(){
+		return Runtime.getRuntime().freeMemory();
+	}
+	
+	public static double getMaxMemory(){
+		return Runtime.getRuntime().maxMemory();
+	}
+	
+	public static double getMemoryUse(){
+		return getMaxMemory()-getAvailableMemory();
+	}
+	
+	public static int getResourceScore(){
+		double tps = getTPS(100);
+		double mem = getAvailableMemory();
+		if(tps>19 && mem>500){
+			return 100;
+		}
+		else if(mem < 200){
+			return 10;
+		}
+		else{
+			int i = 100;
+			i -= 100-(tps*5);
+			if(mem < 300){
+				i -=20;
+			}
+			return i;
+		}
+	}
+	
+	public static int getResourceScore(double requestedMemory){
+		double tps = getTPS(100);
+		double mem = getAvailableMemory();
+		if(tps>19 && mem>requestedMemory+20){
+			return 100;
+		}
+		else if(mem < requestedMemory){
+			return 10;
+		}
+		else{
+			int i = 100;
+			i -= 100-(tps*5);
+			if(mem < requestedMemory){
+				i -=50;
+			}
+			return i;
+		}
+	}
+	
 	public static double getTPS(int ticks) {
 		if (TICK_COUNT < ticks) {
 			return 20.0D;
