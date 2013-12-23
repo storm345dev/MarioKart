@@ -56,9 +56,15 @@ public class User {
 	}
 
 	public Player getPlayer() throws PlayerQuitException {
+		if(player == null){
+			player = main.plugin.getServer().getPlayer(getPlayerName());
+		}
 		try {
 			if(isRespawning() && player == null){
 				return null;
+			}
+			else if(isRespawning() && player != null){
+				setRespawning(false);
 			}
 			if (player == null || !player.isOnline()) {
 				player = null;

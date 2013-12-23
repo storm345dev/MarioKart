@@ -313,7 +313,6 @@ public class Race {
 
 														public void run() {
 															end();
-
 															return;
 														}
 													});
@@ -504,19 +503,25 @@ public class Race {
 		}
 		Map<String, Double> scores = new HashMap<String, Double>();
 		for (User user : users) {
-			int laps = game.totalLaps - user.getLapsLeft() + 1;
-			int checkpoints = user.getCheckpoint();
-			double distance = 1 / (checkpointDists.get(user.getPlayerName()));
+			if(!user.isRespawning()){
+				try {
+					int laps = game.totalLaps - user.getLapsLeft() + 1;
+					int checkpoints = user.getCheckpoint();
+					double distance = 1 / (checkpointDists.get(user.getPlayerName()));
 
-			double score = (laps * game.getMaxCheckpoints()) + checkpoints
-					+ distance;
-			try {
-				if (game.getWinner().equals(user)) {
-					score = score + 1;
+					double score = (laps * game.getMaxCheckpoints()) + checkpoints
+							+ distance;
+					try {
+						if (game.getWinner().equals(user)) {
+							score = score + 1;
+						}
+					} catch (Exception e) {
+					}
+					scores.put(user.getPlayerName(), score);
+				} catch (Exception e) {
+					//User is respawning
 				}
-			} catch (Exception e) {
 			}
-			scores.put(user.getPlayerName(), score);
 		}
 		DoubleValueComparator com = new DoubleValueComparator(scores);
 		SortedMap<String, Double> sorted = new TreeMap<String, Double>(com);
@@ -628,7 +633,7 @@ public class Race {
 	
 	public User updateUser(User user) {
 		for (User u : getUsers()) {
-			if (u.equals(user)) {
+			if (u.getPlayerName().equals(user.getPlayerName())) {
 				if (!forceRemoveUser(u)) {
 					main.logger.info("updateUser() failed to remove user");
 				}

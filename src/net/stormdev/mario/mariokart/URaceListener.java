@@ -764,13 +764,13 @@ public class URaceListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	void postRespawn(PlayerRespawnEvent event) {
+		main.logger.info("Player finished respawning");
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
 		}
 		Race race = plugin.raceMethods.inAGame(player, false);
 		User u = race.updateUser(player);
-		u.setRespawning(false);
 		int checkpoint = u.getCheckpoint();
 		race.updateUser(u);
 		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
