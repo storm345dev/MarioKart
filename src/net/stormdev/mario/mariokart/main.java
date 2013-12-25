@@ -21,6 +21,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarManager;
 import net.stormdev.mario.utils.HotBarUpgrade;
+import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;
@@ -42,6 +43,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.comphenix.protocol.PacketType;
@@ -755,30 +757,46 @@ public class main extends JavaPlugin {
 		return unlockables;
 	}
 	
-	public Boolean playCustomSound(Player recipient, Location location, 
-			String soundPath, float volume, float pitch){
+	public Boolean playCustomSound(final Player recipient, final Location location, 
+			final String soundPath, final float volume, final float pitch){
 		if(main.prototcolManager == null){
 			//No protocolLib
 			return false;
 		}
-		//Play the sound
-		PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
+		getServer().getScheduler().runTaskAsynchronously(this, new BukkitRunnable(){
+			@Override
+			public void run() {
+				//Play the sound
+				try {
+					//TODO WRONG V?
+					PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
 
-		customSound.getSpecificModifier(String.class).
-		    write(0, soundPath);
-		customSound.getSpecificModifier(double.class).
-		    write(0, location.getX()).
-		    write(1, location.getY()).
-		    write(2, location.getZ());
-		customSound.getSpecificModifier(float.class).
-		    write(0, volume).
-		    write(1, pitch);
-		try {
-			main.prototcolManager.sendServerPacket(recipient, customSound);
-		} catch (InvocationTargetException e) {
-			main.logger.info(main.colors.getError()+"Error playing custom sound!");
-			return false;
-		}
+					customSound.getSpecificModifier(String.class).
+					    write(0, soundPath);
+					customSound.getSpecificModifier(int.class).
+					    write(0, location.getBlockX()).
+					    write(1, location.getBlockY()).
+					    write(2, location.getBlockZ());
+					customSound.getSpecificModifier(float.class).
+					    write(0, volume);
+					    //write(1, pitch);
+					main.prototcolManager.sendServerPacket(recipient, customSound);
+				} catch (InvocationTargetException e) {
+					main.logger.info(main.colors.getError()+"Error playing custom sound: "+soundPath+"!");
+					return;
+				}
+				return;
+			}});
 		return true;
+	}
+	
+	public Boolean playCustomSound(Player recipient, Location location,
+			MarioKartSound sound, float volume, float pitch){
+		return playCustomSound(recipient, location, sound.getPath(), volume, pitch);
+	}
+	
+	public Boolean playCustomSound(Player recipient, MarioKartSound sound){
+		return playCustomSound(recipient, recipient.getLocation(),
+				sound, 50f, 1f);
 	}
 }

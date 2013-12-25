@@ -13,6 +13,7 @@ import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
+import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
@@ -274,11 +275,13 @@ public class MarioKart {
 								int amount = 5;
 								while (amount > 0) {
 									if (ucars.listener.inACar(player)) {
-										player.getLocation()
-												.getWorld()
-												.playSound(
-														player.getLocation(),
-														Sound.BURP, 3, 1);
+										if(!plugin.playCustomSound(player, MarioKartSound.STAR_RIFF)){
+											player.getLocation()
+											.getWorld()
+											.playSound(
+													player.getLocation(),
+													Sound.BURP, 3, 1);
+										}
 									}
 									try {
 										Thread.sleep(3000);

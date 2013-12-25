@@ -198,6 +198,7 @@ public class RaceScheduler {
 			return; // Cannot start any more races for now...
 		}
 		if(DynamicLagReducer.getResourceScore() < 30){
+			main.logger.info("Delayed re-queueing due to lack of server resources!");
 			if(getRacesRunning() < 1){ //Else when race ends it will fire again anyway
 				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 					@Override
@@ -224,6 +225,7 @@ public class RaceScheduler {
 					&& getRacesRunning() < raceLimit && !queue.isStarting()) {
 				double predicted = 110; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
+					main.logger.info("Delayed re-queueing due to lack of server resources!");
 					if(getRacesRunning() < 1){
 						main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 						@Override
@@ -265,6 +267,7 @@ public class RaceScheduler {
 				int c = queue.playerCount();
 				double predicted = c*60+50; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
+					main.logger.info("Delayed re-queueing due to lack of server resources!");
 					if(getRacesRunning() < 1){main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 						@Override
 						public void run() {
