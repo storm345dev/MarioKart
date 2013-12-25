@@ -277,8 +277,8 @@ public class RaceExecutor {
 				game.end();
 			}
 			return;
-		} catch (IllegalArgumentException e) {
-			// Player has left (Silly User system breaking everything...)
+		} catch (Exception e) {
+			// Player has left
 		}
 	}
 	@SuppressWarnings("deprecation")
