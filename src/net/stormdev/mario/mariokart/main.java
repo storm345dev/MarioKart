@@ -77,7 +77,6 @@ public class main extends JavaPlugin {
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
-	public static ProtocolManager prototcolManager = null;
 
 	Map<String, Unlockable> unlocks = null;
 
@@ -485,13 +484,6 @@ public class main extends JavaPlugin {
 		ucars.hookPlugin(this);
 		logger.info("uCars found and hooked!");
 		logger.info("Searching for ProtocolLib...");
-		try {
-			main.prototcolManager = ProtocolLibrary.getProtocolManager();
-			logger.info("ProtocolLib found!");
-		} catch (Exception e1) {
-			main.prototcolManager = null;
-			logger.info("Unable to find ProtocolLib!");
-		}
 		PluginDescriptionFile pldesc = plugin.getDescription();
 		Map<String, Map<String, Object>> commands = pldesc.getCommands();
 		Set<String> keys = commands.keySet();
@@ -757,8 +749,12 @@ public class main extends JavaPlugin {
 		return unlockables;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public Boolean playCustomSound(final Player recipient, final Location location, 
 			final String soundPath, final float volume, final float pitch){
+		recipient.playSound(location, soundPath, volume, pitch);
+		return true;
+		/*
 		if(main.prototcolManager == null){
 			//No protocolLib
 			return false;
@@ -768,9 +764,8 @@ public class main extends JavaPlugin {
 			public void run() {
 				//Play the sound
 				try {
-					//TODO WRONG V?
+					//WRONG V?
 					PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
-
 					customSound.getSpecificModifier(String.class).
 					    write(0, soundPath);
 					customSound.getSpecificModifier(int.class).
@@ -781,13 +776,15 @@ public class main extends JavaPlugin {
 					    write(0, volume);
 					    //write(1, pitch);
 					main.prototcolManager.sendServerPacket(recipient, customSound);
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					main.logger.info(main.colors.getError()+"Error playing custom sound: "+soundPath+"!");
+					e.printStackTrace();
 					return;
 				}
 				return;
 			}});
 		return true;
+		*/
 	}
 	
 	public Boolean playCustomSound(Player recipient, Location location,
