@@ -294,39 +294,43 @@ public class Race {
 				.runTaskAsynchronously(main.plugin, new Runnable() {
 
 					public void run() {
-						int z = count;
-						while (z > 0) {
-							z--;
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-							}
-						}
-						if (!ended) {
-							try {
-								try {
-									main.plugin
-											.getServer()
-											.getScheduler()
-											.runTask(main.plugin,
-													new Runnable() {
-
-														public void run() {
-															end();
-															return;
-														}
-													});
-								} catch (Exception e) {
-									end();
-								}
-							} catch (IllegalArgumentException e) {
+						try {
+							int z = count;
+							while (z > 0) {
+								z--;
 								try {
 									Thread.sleep(1000);
-								} catch (InterruptedException e1) {
+								} catch (InterruptedException e) {
 								}
-								run();
-								return;
 							}
+							if (!ended) {
+								try {
+									try {
+										main.plugin
+												.getServer()
+												.getScheduler()
+												.runTask(main.plugin,
+														new Runnable() {
+
+															public void run() {
+																end();
+																return;
+															}
+														});
+									} catch (Exception e) {
+										end();
+									}
+								} catch (IllegalArgumentException e) {
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e1) {
+									}
+									run();
+									return;
+								}
+							}
+						} catch (Exception e) {
+							//User has left
 						}
 						return;
 					}

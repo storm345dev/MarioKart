@@ -279,6 +279,7 @@ public class RaceExecutor {
 			return;
 		} catch (Exception e) {
 			// Player has left
+			return;
 		}
 	}
 	@SuppressWarnings("deprecation")
