@@ -183,6 +183,7 @@ public class RaceScheduler {
 		msg = msg.replaceAll(Pattern.quote("%url%"),
 				Matcher.quoteReplacement(ChatColor.RESET + rl));
 		player.sendMessage(main.colors.getInfo() + msg);
+		//TODO Use setResourePack, but would remove old version support
 		player.setTexturePack(main.config.getString("mariokart.resourcePack"));
 		return;
 	}

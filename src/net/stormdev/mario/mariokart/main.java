@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import net.stormdev.mario.utils.UnlockableManager;
 import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,6 +44,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Url;
 import com.useful.ucars.Colors;
@@ -69,6 +75,7 @@ public class main extends JavaPlugin {
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
+	public static ProtocolManager prototcolManager = null;
 
 	Map<String, Unlockable> unlocks = null;
 
@@ -475,6 +482,14 @@ public class main extends JavaPlugin {
 		}
 		ucars.hookPlugin(this);
 		logger.info("uCars found and hooked!");
+		logger.info("Searching for ProtocolLib...");
+		try {
+			main.prototcolManager = ProtocolLibrary.getProtocolManager();
+			logger.info("ProtocolLib found!");
+		} catch (Exception e1) {
+			main.prototcolManager = null;
+			logger.info("Unable to find ProtocolLib!");
+		}
 		PluginDescriptionFile pldesc = plugin.getDescription();
 		Map<String, Map<String, Object>> commands = pldesc.getCommands();
 		Set<String> keys = commands.keySet();
@@ -738,5 +753,32 @@ public class main extends JavaPlugin {
 		}
 		unlocks = unlockables;
 		return unlockables;
+	}
+	
+	public Boolean playCustomSound(Player recipient, Location location, 
+			String soundPath, float volume, float pitch){
+		if(main.prototcolManager == null){
+			//No protocolLib
+			return false;
+		}
+		//Play the sound
+		PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
+
+		customSound.getSpecificModifier(String.class).
+		    write(0, soundPath);
+		customSound.getSpecificModifier(double.class).
+		    write(0, location.getX()).
+		    write(1, location.getY()).
+		    write(2, location.getZ());
+		customSound.getSpecificModifier(float.class).
+		    write(0, volume).
+		    write(1, pitch);
+		try {
+			main.prototcolManager.sendServerPacket(recipient, customSound);
+		} catch (InvocationTargetException e) {
+			main.logger.info(main.colors.getError()+"Error playing custom sound!");
+			return false;
+		}
+		return true;
 	}
 }
