@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
+import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceType;
 
@@ -181,13 +182,11 @@ public class RaceExecutor {
 								msg = main.msgs.get("race.end.position");
 								if ((i + 1) <= 4
 										&& (i + 1) != game.getUsers().size()) {
-									player.getWorld().playSound(
-											player.getLocation(),
-											Sound.NOTE_BASS_GUITAR, 1, 1);
+									//Winning sound
+									main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 								} else {
-									player.getWorld().playSound(
-											player.getLocation(),
-											Sound.NOTE_BASS, 1, 1);
+									//Lose sound
+									main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 								}
 								i = i + game.getUsersFinished().size();
 								String pos = "" + (i + 1);
@@ -234,11 +233,11 @@ public class RaceExecutor {
 					if (!timed) {
 						msg = main.msgs.get("race.end.position");
 						if (position <= 4 && position != game.getUsers().size()) {
-							player.getWorld().playSound(player.getLocation(),
-									Sound.NOTE_BASS_GUITAR, 1, 1);
+							//Win sound
+							main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 						} else {
-							player.getWorld().playSound(player.getLocation(),
-									Sound.NOTE_BASS, 1, 1);
+							//Lose sound
+							main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 						}
 						String pos = "" + position;
 						if (pos.endsWith("1")) {
@@ -277,27 +276,6 @@ public class RaceExecutor {
 				game.ended = true;
 				game.end();
 			}
-			final Player pl = player;
-			main.plugin.getServer().getScheduler()
-					.runTaskLater(main.plugin, new Runnable() {
-
-						public void run() {
-							String rl = main.config
-									.getString("mariokart.resourceNonMarioPack");
-							Boolean valid = true;
-							try {
-								new URL(rl);
-							} catch (MalformedURLException e2) {
-								valid = false;
-							}
-							if (valid) {
-								pl.sendMessage(main.colors.getInfo()
-										+ main.msgs.get("resource.clear"));
-								pl.setTexturePack(rl);
-							}
-							return;
-						}
-					}, 150l);
 			return;
 		} catch (IllegalArgumentException e) {
 			// Player has left (Silly User system breaking everything...)
@@ -414,9 +392,8 @@ public class RaceExecutor {
 									msg = msg.replaceAll(Pattern.quote("%total%"),
 											"" + game.totalLaps);
 									if (lap == game.totalLaps) {
-										player.getWorld().playSound(
-												player.getLocation(),
-												Sound.NOTE_STICKS, 2, 1);
+										//Last lap
+										main.plugin.playCustomSound(player, MarioKartSound.LAST_LAP);
 									}
 									player.sendMessage(main.colors.getInfo() + msg);
 								}
@@ -459,7 +436,7 @@ public class RaceExecutor {
 		return;
 	}
 	
-	public static void penalty(final Minecart car, long time) {
+	public static void penalty(final Player player, final Minecart car, long time) {
 		if (car == null) {
 			return;
 		}
@@ -475,8 +452,7 @@ public class RaceExecutor {
 		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable() {
 
 			public void run() {
-				car.getLocation().getWorld()
-						.playSound(car.getLocation(), Sound.WOOD_CLICK, 1f, 1f);
+				main.plugin.playCustomSound(player, MarioKartSound.PENALTY_END);
 				car.removeMetadata("car.frozen", main.plugin);
 			}
 		}, (time * 20));

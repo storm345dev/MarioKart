@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.utils.DynamicLagReducer;
+import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
@@ -450,23 +451,35 @@ public class RaceScheduler {
 						for (int i = 10; i > 0; i--) {
 							try {
 								if (i == 10) {
+									//Beginning of race countdown sound...
 									try {
-										Player player = users.get(0)
-												.getPlayer();
-										player.getWorld().playSound(
-												player.getLocation(),
-												Sound.BREATH, 8, 1);
+										for(User u:users){
+											try {
+												Player p = u.getPlayer();
+												if(p!=null){
+													main.plugin.playCustomSound(p, MarioKartSound.RACE_START_COUNTDOWN);
+												}
+											} catch (Exception e) {
+												//Player has left
+											}
+										}
 									} catch (Exception e) {
 										// Player has left
 									}
 								}
 								if (i == 3) {
+									//Last 3..2..1.. countdown sound
 									try {
-										Player player = users.get(0)
-												.getPlayer();
-										player.getWorld().playSound(
-												player.getLocation(),
-												Sound.NOTE_BASS_DRUM, 8, 1);
+										for(User u:users){
+											try {
+												Player p = u.getPlayer();
+												if(p!=null){
+													main.plugin.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
+												}
+											} catch (Exception e) {
+												//Player has left
+											}
+										}
 									} catch (Exception e) {
 										// Player has left
 									}

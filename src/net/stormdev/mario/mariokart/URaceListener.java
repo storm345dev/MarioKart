@@ -9,6 +9,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
+import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mario.utils.shellUpdateEvent;
@@ -85,10 +86,9 @@ public class URaceListener implements Listener {
 		}
 		if (ItemStackFromId.equals(main.config.getString("mariokart.banana"),
 				stack.getTypeId(), stack.getDurability())) {
-			player.getWorld().playSound(player.getLocation(), Sound.SPLASH2,
-					1f, 0.5f);
+			main.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
 			item.remove();
-			RaceExecutor.penalty(((Minecart) player.getVehicle()), 1);
+			RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
 			event.setCancelled(true);
 			return;
 		}
@@ -194,8 +194,13 @@ public class URaceListener implements Listener {
 					.get(0)).getValue();
 		}
 		if (sound < 1) {
-			shellLoc.getWorld().playSound(shellLoc, Sound.NOTE_PLING, 1.25f,
-					1.8f);
+			//Shell Tracking sound
+			List<Entity> nearby = shell.getNearbyEntities(10, 5, 10);
+			for(Entity e:nearby){
+				if(e instanceof Player){
+					main.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
+				}
+			}
 			sound = 3;
 			shell.removeMetadata("shell.sound", plugin);
 			shell.setMetadata("shell.sound", new StatValue(sound, plugin));
@@ -234,10 +239,7 @@ public class URaceListener implements Listener {
 			if (pz < 1.1 && px < 1.1) {
 				String msg = main.msgs.get("mario.hit");
 				msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-				target.getLocation()
-						.getWorld()
-						.playSound(target.getLocation(), Sound.ENDERDRAGON_HIT,
-								1, 0.8f);
+				main.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
 				target.sendMessage(ChatColor.RED + msg);
 				Entity cart = target.getVehicle();
 				if(cart == null){
@@ -251,7 +253,7 @@ public class URaceListener implements Listener {
 						return;
 					}
 				}
-				RaceExecutor.penalty(((Minecart) cart), 4);
+				RaceExecutor.penalty(target, ((Minecart) cart), 4);
 				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
 				return;
 			}
@@ -277,10 +279,7 @@ public class URaceListener implements Listener {
 								String msg = main.msgs.get("mario.hit");
 								msg = msg.replaceAll(Pattern.quote("%name%"),
 										"green shell");
-								pl.getLocation()
-										.getWorld()
-										.playSound(pl.getLocation(),
-												Sound.ENDERDRAGON_HIT, 1, 0.8f);
+								main.plugin.playCustomSound(pl, MarioKartSound.SHELL_HIT);
 								pl.sendMessage(ChatColor.RED + msg);
 								Entity cart = pl.getVehicle();
 								if(cart == null){
@@ -294,7 +293,7 @@ public class URaceListener implements Listener {
 										return;
 									}
 								}
-								RaceExecutor.penalty(((Minecart) cart), 4);
+								RaceExecutor.penalty(pl, ((Minecart) cart), 4);
 								shell.setMetadata("shell.destroy",
 										new StatValue(0, plugin));
 							}
@@ -425,10 +424,19 @@ public class URaceListener implements Listener {
 				EntityType type = listent.getType();
 				if (type == EntityType.MINECART) {
 					if (ucars.listener.isACar((Minecart) listent)) {
+						Minecart car = ((Minecart) listent);
+						Entity e = car.getPassenger();
+						while(e!=null && !(e instanceof Player)
+								&& e.getPassenger() != null){
+							e = e.getPassenger();
+						}
 						try {
-							((Minecart) listent).setDamage(0);
-							RaceExecutor.penalty((Minecart) listent, 4);
-						} catch (Exception e) {
+							car.setDamage(0);
+							if(e != null && e instanceof Player){
+								RaceExecutor.penalty((Player) e, car, 4);
+							}
+							
+						} catch (Exception e1) {
 						}
 					}
 				}

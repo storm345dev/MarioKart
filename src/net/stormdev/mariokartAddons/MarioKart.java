@@ -1,5 +1,6 @@
 package net.stormdev.mariokartAddons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -552,10 +553,10 @@ public class MarioKart {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
 				Object[] pls = (Object[]) keys.toArray();
-				int ppos = 0;
+				ArrayList<Integer> ppos = new ArrayList<Integer>();
 				for (int i = 0; i < pls.length; i++) {
 					if (pls[i].equals(player.getName())) {
-						ppos = i;
+						ppos.add(i);
 					}
 				}
 				double Cur = ucars.config.getDouble("general.cars.defSpeed");
@@ -566,11 +567,11 @@ public class MarioKart {
 				}
 				power = -power;
 				for (int i = 0; i < pls.length; i++) {
-					if (ppos != i) { // If not the player toggling the lightning
+					if (!ppos.contains(i)) { // If not the player toggling the lightning
 						Player pl = plugin.getServer().getPlayer(
 								(String) pls[i]);
 						pl.getWorld().strikeLightningEffect(pl.getLocation());
-						RaceExecutor.penalty(
+						RaceExecutor.penalty(pl,
 								car, 4);
 						ucars.listener
 								.carBoost(
@@ -579,9 +580,6 @@ public class MarioKart {
 										8000,
 										ucars.config
 												.getDouble("general.cars.defSpeed"));
-					}
-					else{
-						main.logger.info("Found striker");
 					}
 				}
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -630,7 +628,7 @@ public class MarioKart {
 													while(e!=null && !(e instanceof Minecart) && e.getVehicle() != null){
 														e = e.getVehicle();
 													}
-													if(e == null || !(e instanceof Player)){
+													if(e == null || !(e instanceof Minecart)){
 														return;
 													}
 													Minecart cart = (Minecart) e;
@@ -655,7 +653,7 @@ public class MarioKart {
 														pl.sendMessage(ChatColor.RED
 																+ msg);
 														
-														RaceExecutor.penalty(
+														RaceExecutor.penalty(pl, 
 																		(Minecart) cart,
 																		2);
 													}
@@ -885,9 +883,7 @@ public class MarioKart {
 											ply.getInventory().addItem(
 													getRandomPowerup());
 											ply.updateInventory();
-											world.playSound(ply.getLocation(),
-													Sound.NOTE_PIANO, 0.2f,
-													1.5f);
+											main.plugin.playCustomSound(ply, MarioKartSound.ITEM_SELECT_BEEP);
 											try {
 												Thread.sleep(delay);
 											} catch (InterruptedException e) {
