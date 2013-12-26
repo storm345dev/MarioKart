@@ -441,7 +441,7 @@ public class RaceExecutor {
 		return;
 	}
 	
-	public static void penalty(final Player player, final Minecart car, long time) {
+	public static void penalty(Player player, final Minecart car, long time) {
 		if (car == null) {
 			return;
 		}
@@ -454,10 +454,11 @@ public class RaceExecutor {
 		}
 		car.setMetadata("car.frozen", new StatValue(time, main.plugin));
 		car.setVelocity(new Vector(0, power, 0));
+		final Player pl = player;
 		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable() {
 
 			public void run() {
-				main.plugin.playCustomSound(player, MarioKartSound.PENALTY_END);
+				main.plugin.playCustomSound(pl, MarioKartSound.PENALTY_END);
 				car.removeMetadata("car.frozen", main.plugin);
 			}
 		}, (time * 20));

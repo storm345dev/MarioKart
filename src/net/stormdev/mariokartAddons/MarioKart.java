@@ -1,6 +1,5 @@
 package net.stormdev.mariokartAddons;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -552,13 +551,6 @@ public class MarioKart {
 					inHand.getTypeId(), inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
-				Object[] pls = (Object[]) keys.toArray();
-				ArrayList<Integer> ppos = new ArrayList<Integer>();
-				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player.getName())) {
-						ppos.add(i);
-					}
-				}
 				double Cur = ucars.config.getDouble("general.cars.defSpeed");
 				double desired = 10;
 				double power = Cur - desired;
@@ -566,22 +558,22 @@ public class MarioKart {
 					power = 0;
 				}
 				power = -power;
-				for (int i = 0; i < pls.length; i++) {
-					if (!ppos.contains(i)) { // If not the player toggling the lightning
-						Player pl = plugin.getServer().getPlayer(
-								(String) pls[i]);
-						pl.getWorld().strikeLightningEffect(pl.getLocation());
-						RaceExecutor.penalty(pl,
-								car, 4);
+				for (String name:keys) {
+					if(!name.equals(player.getName())){
+						Player pla = plugin.getServer().getPlayer(
+								(String) name);
+						pla.getWorld().strikeLightningEffect(pla.getLocation());
+						RaceExecutor.penalty(pla,
+								car, 1);
 						ucars.listener
 								.carBoost(
-										pl.getName(),
+										pla.getName(),
 										power,
 										8000,
 										ucars.config
 												.getDouble("general.cars.defSpeed"));
 					}
-				}
+			    }
 				inHand.setAmount(inHand.getAmount() - 1);
 			} else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.pow"), inHand.getTypeId(),
