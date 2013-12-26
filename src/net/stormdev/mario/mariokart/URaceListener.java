@@ -195,7 +195,7 @@ public class URaceListener implements Listener {
 		}
 		if (sound < 1) {
 			//Shell Tracking sound
-			List<Entity> nearby = shell.getNearbyEntities(10, 5, 10);
+			List<Entity> nearby = shell.getNearbyEntities(15, 5, 15);
 			for(Entity e:nearby){
 				if(e instanceof Player){
 					main.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
