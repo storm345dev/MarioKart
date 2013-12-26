@@ -562,9 +562,19 @@ public class MarioKart {
 					if(!name.equals(player.getName())){
 						Player pla = plugin.getServer().getPlayer(
 								(String) name);
+						Entity c = pla.getVehicle();
+						while(c!=null && !(c instanceof Minecart) && c.getVehicle() != null){
+							c = c.getVehicle();
+						}
+						if(!(c instanceof Minecart)){
+							c = null;
+						}
+						Minecart cart = (Minecart) c;
 						pla.getWorld().strikeLightningEffect(pla.getLocation());
-						RaceExecutor.penalty(pla,
-								car, 1);
+						if(cart != null){
+							RaceExecutor.penalty(pla,
+									cart, (long) 1.5);
+						}
 						ucars.listener
 								.carBoost(
 										pla.getName(),
