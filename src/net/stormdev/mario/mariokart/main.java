@@ -796,7 +796,6 @@ public class main extends JavaPlugin {
 	}
 	
 	public Boolean playCustomSound(Player recipient, MarioKartSound sound){
-		main.logger.info("Playing sound: "+sound.getPath()+" to "+recipient.getName());
 		return playCustomSound(recipient, recipient.getLocation(),
 				sound, Float.MAX_VALUE, 1f);
 	}

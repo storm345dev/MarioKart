@@ -213,7 +213,7 @@ public class RaceExecutor {
 								msg = main.msgs.get("race.end.time");
 								msg = msg.replaceAll(Pattern.quote("%time%"), t
 										+ "");
-								main.plugin.playCustomSound(p, MarioKartSound.RACE_WIN);
+								main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 								main.plugin.raceTimes.addRaceTime(game
 										.getTrack().getTrackName(), player
 										.getName(), t);
@@ -267,6 +267,7 @@ public class RaceExecutor {
 						double t = ti / 100;
 						msg = main.msgs.get("race.end.time");
 						msg = msg.replaceAll(Pattern.quote("%time%"), t + "");
+						main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 						main.plugin.raceTimes.addRaceTime(game.getTrack()
 								.getTrackName(), player.getName(), t);
 					}
