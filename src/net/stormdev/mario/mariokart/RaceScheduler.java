@@ -185,7 +185,10 @@ public class RaceScheduler {
 				Matcher.quoteReplacement(ChatColor.RESET + rl));
 		player.sendMessage(main.colors.getInfo() + msg);
 		//TODO Use setResourePack, but would remove old version support
-		player.setTexturePack(main.config.getString("mariokart.resourcePack"));
+		if(!main.plugin.resourcedPlayers.contains(player.getName())){
+			player.setTexturePack(main.config.getString("mariokart.resourcePack"));
+			main.plugin.resourcedPlayers.add(player.getName());
+		}
 		return;
 	}
 

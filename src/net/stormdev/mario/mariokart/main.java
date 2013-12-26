@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -77,6 +79,7 @@ public class main extends JavaPlugin {
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
+	public List<String> resourcedPlayers = new ArrayList<String>();
 
 	Map<String, Unlockable> unlocks = null;
 
