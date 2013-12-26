@@ -755,7 +755,13 @@ public class main extends JavaPlugin {
 	@SuppressWarnings("deprecation")
 	public Boolean playCustomSound(final Player recipient, final Location location, 
 			final String soundPath, final float volume, final float pitch){
-		recipient.playSound(location, soundPath, volume, pitch); //Deprecated but still best way
+		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				//Running async keeps TPS higher
+				recipient.playSound(location, soundPath, volume, pitch); //Deprecated but still best way
+			}});
 		return true;
 		/* Not needed
 		if(main.prototcolManager == null){

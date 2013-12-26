@@ -724,9 +724,9 @@ public class MarioKart {
 									}, 240l);
 						}
 						player.addPotionEffect(effect, true);
-						inHand.setAmount(inHand.getAmount() - 1);
 						return;
 					}});
+				inHand.setAmount(inHand.getAmount() - 1);
 			}
 			evt.getPlayer().setItemInHand(inHand);
 			evt.getPlayer().updateInventory(); // Fix 1.6 bug with inventory not

@@ -335,6 +335,7 @@ public class RaceScheduler {
 				}
 			}
 			if (getRacesRunning() >= raceLimit) {
+				main.logger.info("[INFO] Max races running");
 				return; // No more races can be run for now
 			}
 		}
