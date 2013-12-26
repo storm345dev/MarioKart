@@ -179,6 +179,7 @@ public class RaceExecutor {
 						if (p != null) {
 							String msg = "";
 							if (!timed) {
+								//Normal race, or cup
 								msg = main.msgs.get("race.end.position");
 								if ((i + 1) <= 4
 										&& (i + 1) != game.getUsers().size()) {
@@ -205,6 +206,7 @@ public class RaceExecutor {
 								main.plugin.getServer().getPluginManager()
 										.callEvent(evt);
 							} else {
+								//Time trial
 								double tim = (game.endTimeMS - game.startTimeMS) / 10;
 								double ti = (int) tim;
 								double t = ti / 100;
@@ -214,6 +216,7 @@ public class RaceExecutor {
 								main.plugin.raceTimes.addRaceTime(game
 										.getTrack().getTrackName(), player
 										.getName(), t);
+								main.plugin.playCustomSound(p, MarioKartSound.RACE_WIN);
 							}
 							p.sendMessage(main.colors.getSuccess() + msg);
 						}

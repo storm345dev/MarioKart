@@ -276,7 +276,8 @@ public class RaceScheduler {
 				double predicted = c*60+50; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
 					main.logger.info("Delayed re-queueing due to lack of server resources!");
-					if(getRacesRunning() < 1){main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+					if(getRacesRunning() < 1){
+						main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 						@Override
 						public void run() {
 							//Make sure queues don't lock

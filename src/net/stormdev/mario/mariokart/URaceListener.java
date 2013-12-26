@@ -328,6 +328,7 @@ public class URaceListener implements Listener {
 	@EventHandler
 	void gameQuitting(PlayerKickEvent event) {
 		Player player = event.getPlayer();
+		main.plugin.resourcedPlayers.remove(player.getName());
 		Race game = plugin.raceMethods.inAGame(player, false);
 		if (game == null) {
 			RaceQueue queue = plugin.raceMethods.inGameQue(player);
