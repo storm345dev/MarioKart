@@ -558,6 +558,9 @@ public class MarioKart {
 					power = 0;
 				}
 				power = -power;
+				if(power < -Cur){
+					power = -Cur + 5;
+				}
 				for (String name:keys) {
 					if(!name.equals(player.getName())){
 						Player pla = plugin.getServer().getPlayer(
