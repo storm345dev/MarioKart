@@ -227,6 +227,7 @@ public class RaceScheduler {
 																// the track
 																// ahead of it?
 					&& getRacesRunning() < raceLimit && !queue.isStarting()) {
+				//Time trial races
 				double predicted = 110; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
 					main.logger.info("Delayed re-queueing due to lack of server resources!");
@@ -371,7 +372,7 @@ public class RaceScheduler {
 		}
 		for (int i = 0; i < count; i++) {
 			int max = users.size();
-			if (!(max < 1)) {
+			if (max>0) {
 				Player p = null;
 				int randomNumber = main.plugin.random.nextInt(max);
 				User user = users.get(randomNumber);
@@ -453,7 +454,7 @@ public class RaceScheduler {
 								if (i == 10) {
 									//Beginning of race countdown sound...
 									try {
-										for(User u:users){
+										for(User u:users2){
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
@@ -470,7 +471,7 @@ public class RaceScheduler {
 								if (i == 3) {
 									//Last 3..2..1.. countdown sound
 									try {
-										for(User u:users){
+										for(User u:users2){
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
@@ -535,7 +536,7 @@ public class RaceScheduler {
 	}
 
 	public void updateRace(Race race) {
-		if(race == null){
+		if(race == null || race.getGameId() == null){
 			return;
 		}
 		if(this.races == null){
@@ -546,8 +547,8 @@ public class RaceScheduler {
 		}
 	}
 
-	public HashMap<UUID, Race> getRaces() {
-		return new HashMap<UUID, Race>(races);
+	public ConcurrentHashMap<UUID, Race> getRaces() {
+		return races;
 	}
 
 	public int getRacesRunning() {
