@@ -114,20 +114,10 @@ public class Race {
 		return null;
 	}
 
-	/**
-	 * @Deprecated In favour use methods on object
-	 * 
-	 */
-	@Deprecated
 	protected synchronized List<User> getUsers() {
 		return new ArrayList<User>(users);
 	}
 
-	/**
-	 * @Deprecated In favour use methods on object
-	 * 
-	 */
-	@Deprecated
 	protected synchronized void setUsers(List<User> users) {
 		this.users = users;
 		return;
