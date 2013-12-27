@@ -247,7 +247,7 @@ public class UnlockableManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void load() {
+	public synchronized void load() {
 		if (!sql) {
 			if (!(this.saveFile.length() < 1 || !this.saveFile.exists())) {
 				// Load from file
@@ -273,7 +273,7 @@ public class UnlockableManager {
 		}
 	}
 
-	public void save(final String playerName) {
+	public synchronized void save(final String playerName) {
 		main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {
 

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,10 +47,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Url;
 import com.useful.ucars.Colors;
@@ -81,7 +76,7 @@ public class main extends JavaPlugin {
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
 
-	Map<String, Unlockable> unlocks = null;
+	ConcurrentHashMap<String, Unlockable> unlocks = null;
 
 	public UnlockableManager upgradeManager = null;
 
@@ -90,7 +85,7 @@ public class main extends JavaPlugin {
 	public static Boolean vault = false;
 	public static Economy economy = null;
 
-	public void onEnable() {
+	public synchronized void onEnable() {
 		System.gc();
 		if (listener != null || cmdExecutor != null || logger != null
 				|| msgs != null || marioKart != null || economy != null) {
@@ -567,7 +562,7 @@ public class main extends JavaPlugin {
 				+ " has been enabled!");
 	}
 
-	public void onDisable() {
+	public synchronized void onDisable() {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
@@ -625,13 +620,17 @@ public class main extends JavaPlugin {
 		return (economy != null);
 	}
 
-	public Map<String, Unlockable> getUnlocks() {
+	public ConcurrentHashMap<String, Unlockable> getUnlocks() {
 		if (unlocks != null) {
 			return unlocks;
 		}
+		return reloadAndGetUnlocks();
+	}
+	
+	public final synchronized ConcurrentHashMap<String, Unlockable> reloadAndGetUnlocks(){
 		main.logger.info("Loading upgrades...");
 		// Begin load them from a YAML file
-		Map<String, Unlockable> unlockables = new HashMap<String, Unlockable>();
+		ConcurrentHashMap<String, Unlockable> unlockables = new ConcurrentHashMap<String, Unlockable>();
 		File saveFile = new File(getDataFolder().getAbsolutePath()
 				+ File.separator + "upgrades.yml");
 		YamlConfiguration upgrades = new YamlConfiguration();

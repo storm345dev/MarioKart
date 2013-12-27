@@ -59,14 +59,9 @@ public class RaceExecutor {
 		}
 	}
 
-	public static void finishRace(Race game, User user) {
+	public static synchronized void finishRace(Race game, User user) {
 		try {
 			Boolean timed = game.getType() == RaceType.TIME_TRIAL;
-			List<User> usersIn = game.getUsersIn();
-			String in = "";
-			for (User us : usersIn) {
-				in = in + ", " + us.getPlayerName();
-			}
 			Map<String, Double> scores = new HashMap<String, Double>();
 			Boolean finished = false;
 			Player player = null;
@@ -80,6 +75,9 @@ public class RaceExecutor {
 				player = main.plugin.getServer()
 						.getPlayer(user.getPlayerName());
 				if (player == null || !player.isOnline()) {
+					try {
+						game.leave(user, true);
+					} catch (Exception e) {} //Ignore if race has been ended already
 					return; // Player is no longer around...
 				}
 			}
@@ -113,7 +111,7 @@ public class RaceExecutor {
 					player.getInventory().setContents(user.getOldInventory());
 				}
 			}
-			if (game.finished.contains(user.getPlayerName())) {
+			if (game.isUserFinished(user.getPlayerName())) {
 				finished = true;
 			} else {
 				HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
@@ -182,15 +180,15 @@ public class RaceExecutor {
 								//Normal race, or cup
 								msg = main.msgs.get("race.end.position");
 								if ((i + 1) <= 4
-										&& (i + 1) != game.getUsers().size()) {
+										&& (i + 1) != game.howManyPlayers()) {
 									//Winning sound
 									main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 								} else {
 									//Lose sound
 									main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 								}
-								i = i + game.getUsersFinished().size();
-								String pos = "" + (i + 1);
+								i = i + game.getFinishPosition(user.getPlayerName());
+								String pos = "" + i;
 								if (pos.endsWith("1")) {
 									pos = pos + "st";
 								} else if (pos.endsWith("2")) {
@@ -224,18 +222,11 @@ public class RaceExecutor {
 				}
 			} else {
 				if (player != null) {
-					int position = 1;
-
-					for (int i = 0; i < game.getUsersFinished().size(); i++) {
-						if (game.getUsersFinished().get(i)
-								.equals(user.getPlayerName())) {
-							position = i + 1;
-						}
-					}
+					int position = game.getFinishPosition(user.getPlayerName());
 					String msg = "";
 					if (!timed) {
 						msg = main.msgs.get("race.end.position");
-						if (position <= 4 && position != game.getUsers().size()) {
+						if (position <= 4 && position != game.howManyPlayers()) {
 							//Win sound
 							main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 						} else {
@@ -276,8 +267,9 @@ public class RaceExecutor {
 			}
 			game.leave(user, false);
 			main.plugin.raceScheduler.updateRace(game);
-			if (game.getUsersIn().size() < 1) {
+			if (game.howManyPlayersIn() < 1) {
 				game.ended = true;
+				game.ending = true;
 				game.end();
 			}
 			return;
@@ -287,7 +279,7 @@ public class RaceExecutor {
 		}
 	}
 	@SuppressWarnings("deprecation")
-	public static void onRaceStart(Race game){
+	public static synchronized void onRaceStart(Race game){
 		List<User> users = game.getUsers();
 		for (User user : users) {
 			try {
@@ -410,26 +402,13 @@ public class RaceExecutor {
 								}
 								game.finish(user);
 								if (won && game.getType() != RaceType.TIME_TRIAL) {
-									for (User u : game.getUsers()) {
-										Player p;
-										try {
-											p = u.getPlayer();
-											String msg = main.msgs
-													.get("race.end.soon");
-											msg = msg.replaceAll("%name%",
-													p.getName());
-											p.sendMessage(main.colors.getSuccess()
+									String msg = main.msgs
+											.get("race.end.soon");
+									game.broadcast(main.colors.getSuccess()
 													+ game.getWinner()
 													+ main.msgs.get("race.end.won"));
-											p.sendMessage(main.colors.getInfo()
-													+ msg);
-										} catch (PlayerQuitException e) {
-											// Player has left
-										} catch (Exception e){
-											//Player is respawning
-										}
-
-									}
+									game.broadcast(main.colors.getInfo()
+											        + msg);
 								}
 							}
 						}

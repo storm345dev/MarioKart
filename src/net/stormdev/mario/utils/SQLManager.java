@@ -28,7 +28,7 @@ public class SQLManager {
 		}
 	}
 
-	public void closeConnection() {
+	public synchronized void closeConnection() {
 		try {
 			c.close();
 		} catch (SQLException e) {

@@ -38,7 +38,7 @@ public class RaceQueue {
 		return track.getTrackName();
 	}
 
-	public void setTrack(RaceTrack track) {
+	public synchronized void setTrack(RaceTrack track) {
 		this.track = track;
 		this.playerLimit = track.getMaxPlayers();
 		main.plugin.raceQueues.updateQueue(this);
@@ -81,7 +81,7 @@ public class RaceQueue {
 		main.plugin.raceQueues.updateQueue(this);
 	}
 
-	public Boolean validatePlayers() {
+	public synchronized Boolean validatePlayers() {
 		Boolean valid = true;
 		ArrayList<String> leftPlayers = new ArrayList<String>();
 		try {
@@ -131,7 +131,7 @@ public class RaceQueue {
 		return new ArrayList<Player>(players);
 	}
 
-	public Boolean addPlayer(Player player) {
+	public synchronized Boolean addPlayer(Player player) {
 		if (player != null && player.isOnline()
 				&& (playerCount() + 1 < playerLimit)) {
 			players.add(player);
@@ -142,7 +142,7 @@ public class RaceQueue {
 		return false;
 	}
 
-	public void removePlayer(Player player) {
+	public synchronized void removePlayer(Player player) {
 		players.remove(player);
 		validatePlayers();
 		broadcast(main.colors.getTitle() + "[MarioKart:] "
@@ -152,7 +152,7 @@ public class RaceQueue {
 		main.plugin.raceScheduler.recalculateQueues();
 	}
 
-	public void removePlayer(String player) {
+	public synchronized void removePlayer(String player) {
 		for (Player p : getPlayers()) {
 			if (p.getName().equals(player)) {
 				removePlayer(p);
@@ -161,18 +161,18 @@ public class RaceQueue {
 		}
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		this.players.clear();
 		this.type = RaceType.RACE;
 		starting = false;
 		main.plugin.raceQueues.updateQueue(this);
 	}
 
-	public Boolean containsPlayer(Player player) {
+	public synchronized Boolean containsPlayer(Player player) {
 		return players.contains(player);
 	}
 
-	public void broadcast(String message) {
+	public synchronized void broadcast(String message) {
 		validatePlayers();
 		for (Player p : getPlayers()) {
 			p.sendMessage(main.colors.getInfo() + message);

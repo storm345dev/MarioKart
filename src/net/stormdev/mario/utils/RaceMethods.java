@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.User;
@@ -18,9 +19,9 @@ public class RaceMethods {
 		this.plugin = main.plugin;
 	}
 
-	public Race inAGame(Player player, Boolean update) {
-		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
-		for (UUID id : new ArrayList<UUID>(races.keySet())) {
+	public synchronized Race inAGame(Player player, Boolean update) {
+		ConcurrentHashMap<UUID, Race> races = main.plugin.raceScheduler.getRaces();
+		for (UUID id : races.keySet()) {
 			Race r = races.get(id);
 			if (update) {
 				r.updateUser(player);
@@ -36,7 +37,7 @@ public class RaceMethods {
 		return null;
 	}
 
-	public RaceQueue inGameQue(Player player) {
+	public synchronized RaceQueue inGameQue(Player player) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		for (UUID id : queues.keySet()) {
 			try {

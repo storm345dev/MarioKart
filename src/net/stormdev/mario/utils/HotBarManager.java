@@ -36,26 +36,26 @@ public class HotBarManager {
 		return hotBar;
 	}
 
-	public MarioHotBar getHotBar(String player) {
+	public synchronized MarioHotBar getHotBar(String player) {
 		if (!hotBars.containsKey(player)) {
 			return createHotBar(player);
 		}
 		return hotBars.get(player);
 	}
 
-	protected void removeHotBar(String player) {
+	protected synchronized void removeHotBar(String player) {
 		hotBars.remove(player);
 		return;
 	}
 
-	public void clearHotBar(String player) {
+	public synchronized void clearHotBar(String player) {
 		if (hotBars.containsKey(player)) {
 			hotBars.get(player).clear();
 		}
 		return;
 	}
 
-	public Map<HotBarSlot, List<HotBarItem>> calculateHotbarContents(
+	public synchronized Map<HotBarSlot, List<HotBarItem>> calculateHotbarContents(
 			String player) {
 		Map<HotBarSlot, List<HotBarItem>> contents = new HashMap<HotBarSlot, List<HotBarItem>>();
 		ArrayList<HotBarItem> defaultItems = new ArrayList<HotBarItem>();
@@ -80,7 +80,7 @@ public class HotBarManager {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void updateHotBar(Player player) {
+	public synchronized void updateHotBar(Player player) {
 		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player
 				.getName());
 		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
@@ -100,7 +100,7 @@ public class HotBarManager {
 		return;
 	}
 	
-	@SuppressWarnings("deprecation")
+	
 	public void executeClick(final Player player, MarioHotBar hotBar, HotBarSlot slot){
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
 		Map<String, Object> data = hotBarItem.getData();
