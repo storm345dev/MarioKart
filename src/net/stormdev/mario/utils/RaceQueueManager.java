@@ -15,7 +15,7 @@ public class RaceQueueManager {
 	public RaceQueueManager() {
 	}
 
-	public synchronized Boolean queueExists(String trackName, RaceType raceMode) {
+	public Boolean queueExists(String trackName, RaceType raceMode) {
 		Map<UUID, RaceQueue> trackQueues = getQueues(trackName);
 		if (trackQueues.size() < 1) {
 			return false;
@@ -30,7 +30,7 @@ public class RaceQueueManager {
 		return false;
 	}
 
-	public synchronized RaceQueue getQueue(String trackName, RaceType raceMode) {
+	public RaceQueue getQueue(String trackName, RaceType raceMode) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = getQueues(trackName);
 		if (trackQueues.size() < 1) {
 			return null;
@@ -45,7 +45,7 @@ public class RaceQueueManager {
 		return null;
 	}
 
-	public synchronized RaceQueue getQueue(String trackName, UUID queueId) {
+	public RaceQueue getQueue(String trackName, UUID queueId) {
 		Map<UUID, RaceQueue> trackQueues = getQueues(trackName);
 		if (trackQueues.size() < 1) {
 			return null;
@@ -60,7 +60,7 @@ public class RaceQueueManager {
 		return null;
 	}
 
-	public synchronized LinkedHashMap<UUID, RaceQueue> getQueues(RaceType type) {
+	public LinkedHashMap<UUID, RaceQueue> getQueues(RaceType type) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
@@ -71,7 +71,7 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 
-	public synchronized LinkedHashMap<UUID, RaceQueue> getOpenQueues(RaceType type) {
+	public LinkedHashMap<UUID, RaceQueue> getOpenQueues(RaceType type) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
@@ -83,7 +83,7 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 
-	public synchronized LinkedHashMap<UUID, RaceQueue> getQueues(String trackName) {
+	public LinkedHashMap<UUID, RaceQueue> getQueues(String trackName) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(trackName)) {
 			trackQueues = main.plugin.queues.get(trackName);
@@ -91,7 +91,7 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 	
-	public synchronized Map<UUID, RaceQueue> getQueues(String trackName, RaceType type) {
+	public Map<UUID, RaceQueue> getQueues(String trackName, RaceType type) {
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(trackName)) {
 			trackQueues.putAll(main.plugin.queues.get(trackName));
@@ -105,7 +105,7 @@ public class RaceQueueManager {
 		return trackQueues;
 	}
 
-	public synchronized void removeQueue(String trackName, UUID queueId) {
+	public void removeQueue(String trackName, UUID queueId) {
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(trackName)) {
 			trackQueues = main.plugin.queues.get(trackName);
@@ -123,7 +123,7 @@ public class RaceQueueManager {
 		}
 	}
 
-	public synchronized void removeQueue(RaceQueue queue) {
+	public void removeQueue(RaceQueue queue) {
 		queue.clear();
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(queue.getTrackName())) {
@@ -142,7 +142,7 @@ public class RaceQueueManager {
 		return queues;
 	}
 
-	public synchronized void updateQueue(RaceQueue queue) {
+	public void updateQueue(RaceQueue queue) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
 		if (main.plugin.queues.containsKey(queue.getTrackName())) {
 			trackQueues = main.plugin.queues.get(queue.getTrackName());
@@ -154,7 +154,7 @@ public class RaceQueueManager {
 		return;
 	}
 
-	public synchronized void clear() {
+	public void clear() {
 		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
 		for (UUID id : queues.keySet()) {
 			RaceQueue q = ((RaceQueue) queues.get(id));
@@ -165,7 +165,7 @@ public class RaceQueueManager {
 		}
 	}
 
-	public synchronized Boolean queuesFor(RaceTrack track, RaceType type) {
+	public Boolean queuesFor(RaceTrack track, RaceType type) {
 		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
 		for (UUID id : queues.keySet()) {
 			RaceQueue q = queues.get(id);

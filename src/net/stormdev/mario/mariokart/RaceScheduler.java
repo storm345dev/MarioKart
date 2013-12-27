@@ -21,6 +21,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class RaceScheduler {
 		this.raceLimit = raceLimit;
 	}
 
-	public synchronized void joinAutoQueue(Player player, RaceType type) {
+	public void joinAutoQueue(Player player, RaceType type) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues
 				.getOpenQueues(type); // Joinable queues for that racemode
 		RaceQueue toJoin = null;
@@ -142,7 +143,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public synchronized void joinQueue(Player player, RaceTrack track, RaceType type) {
+	public void joinQueue(Player player, RaceTrack track, RaceType type) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
 		RaceQueue queue = null;
 		if (queues.size() < 1) {
@@ -196,7 +197,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public synchronized void recalculateQueues() {
+	public void recalculateQueues() {
 		if (getRacesRunning() >= raceLimit) {
 			main.logger.info("[INFO] Max races running");
 			return; // Cannot start any more races for now...
@@ -253,7 +254,7 @@ public class RaceScheduler {
 						Race race = new Race(queue.getTrack(),
 								queue.getTrackName(), RaceType.TIME_TRIAL);
 						race.join(p);
-						if (race.howManyPlayers() > 0) {
+						if (race.getUsers().size() > 0) {
 							startRace(race.getTrackName(), race);
 						}
 						queue.removePlayer(p);
@@ -316,7 +317,7 @@ public class RaceScheduler {
 									}
 								}
 								q.clear();
-								if (race.howManyPlayers() >= main.config
+								if (race.getUsers().size() >= main.config
 										.getInt("race.que.minPlayers")) {
 									queue.clear();
 									main.plugin.raceQueues.removeQueue(queue);
@@ -340,9 +341,9 @@ public class RaceScheduler {
 		}
 	}
 
-	public synchronized void startRace(String trackName, final Race race) {
+	public void startRace(String trackName, final Race race) {
 		this.races.put(race.getGameId(), race);
-		final List<User> users = new ArrayList<User>(race.getUsers());
+		final List<User> users = race.getUsers();
 		for (User user : users) {
 			Player player = null;
 			try {
@@ -435,7 +436,7 @@ public class RaceScheduler {
 				// Player has left
 			}
 		}
-		final List<User> users2 = new ArrayList<User>(race.getUsers());
+		final List<User> users2 = race.getUsers();
 		for (User user2 : users2) {
 			user2.setInRace(true);
 		}
@@ -526,7 +527,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public synchronized void stopRace(Race race) {
+	public void stopRace(Race race) {
 		race.end();
 		race.clear();
 		this.races.put(race.getGameId(), race);
@@ -534,7 +535,7 @@ public class RaceScheduler {
 		recalculateQueues();
 	}
 
-	public synchronized void removeRace(Race race) {
+	public void removeRace(Race race) {
 		race.clear();
 		this.races.remove(race.getGameId());
 	}
@@ -560,8 +561,9 @@ public class RaceScheduler {
 	}
 
 	public Boolean isTrackInUse(RaceTrack track, RaceType type) {
-		for (UUID id : races.keySet()) {
-			Race r = races.get(id);
+		HashMap<UUID, Race> rs = new HashMap<UUID, Race>(races);
+		for (UUID id : rs.keySet()) {
+			Race r = rs.get(id);
 			if (r.getTrackName().equals(track.getTrackName())) {
 				if (type == RaceType.TIME_TRIAL
 						&& r.getType() == RaceType.TIME_TRIAL) {

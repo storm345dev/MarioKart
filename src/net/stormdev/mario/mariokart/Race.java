@@ -89,9 +89,9 @@ public class Race {
 		return this.type;
 	}
 
-	public synchronized User getUser(Player player) {
+	public User getUser(Player player) {
 		String pname = player.getName();
-		for (User user : users) {
+		for (User user : getUsers()) {
 			try {
 				if (user.getPlayerName().equals(pname)) {
 					return user;
@@ -105,8 +105,8 @@ public class Race {
 		return null;
 	}
 
-	public synchronized User getUser(String playerName) {
-		for (User user : users) {
+	public User getUser(String playerName) {
+		for (User user : getUsers()) {
 			if (user.getPlayerName().equals(playerName)) {
 				return user;
 			}
@@ -114,46 +114,18 @@ public class Race {
 		return null;
 	}
 
-	protected synchronized List<User> getUsers() {
+	public List<User> getUsers() {
 		return new ArrayList<User>(users);
 	}
 
-	protected synchronized void setUsers(List<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 		return;
 	}
 
-	public Boolean isUserFinished(String playerName){
-		return finished.contains(playerName);
-	}
-	
-	/**
-	 * 
-	 * @return Finish position or -1 if not finished
-	 */
-	public int getFinishPosition(String playerName){
-		return finished.indexOf(playerName)+1;
-	}
-	
-	public int howManyPlayers(){
-		return users.size();
-	}
-	
-	public int howManyPlayersIn(){
-		return getUsersIn().size();
-	}
-	
-	public User getFinishedUser(int finishPosition){
-		try {
-			return getUser(finished.get(finishPosition-1));
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	public synchronized List<User> getUsersIn() {
+	public List<User> getUsersIn() {
 		List<User> inUsers = new ArrayList<User>();
-		for (User user : users) {
+		for (User user : getUsers()) {
 			if (user.isInRace()) {
 				inUsers.add(user);
 			}
@@ -161,12 +133,7 @@ public class Race {
 		return inUsers;
 	}
 
-	/**
-	 * @Deprecated use methods on object to check if user if finished 
-	 * 
-	 */
-	@Deprecated
-	public synchronized List<String> getUsersFinished() {
+	public List<String> getUsersFinished() {
 		return new ArrayList<String>(finished);
 	}
 
@@ -190,7 +157,7 @@ public class Race {
 		return;
 	}
 
-	public synchronized Boolean join(Player player) {
+	public Boolean join(Player player) {
 		if (users.size() < this.track.getMaxPlayers()) {
 			User user = new User(player, player.getLevel(), player.getExp());
 			users.add(user);
@@ -200,7 +167,7 @@ public class Race {
 	}
 
 	@SuppressWarnings("deprecation")
-	public synchronized void leave(User user, boolean quit) {
+	public void leave(User user, boolean quit) {
 		Player player = null;
 		try {
 			player = user.getPlayer();
@@ -263,8 +230,19 @@ public class Race {
 						.getScoreboardManager().getMainScoreboard());
 				player.updateInventory();
 			}
-			broadcast(ChatColor.GOLD + player.getName()
-						+ " quit the race!");
+			for (User us : getUsers()) {
+				try {
+					us.getPlayer().sendMessage(
+							ChatColor.GOLD + player.getName()
+									+ " quit the race!");
+				} catch (PlayerQuitException e) {
+					if (!forceRemoveUser(us)) {
+						main.logger.info("race.quit failed to remove user");
+					}
+				} catch (Exception e){
+					//User is respawning
+				}
+			}
 		}
 		try {
 			recalculateGame();
@@ -287,7 +265,7 @@ public class Race {
 	}
 
 	public Boolean isEmpty() {
-		if (users.size() < 1) {
+		if (getUsers().size() < 1) {
 			return true;
 		}
 		return false;
@@ -367,7 +345,7 @@ public class Race {
 		return this.running;
 	}
 
-	public synchronized void start() {
+	public void start() {
 		this.running = true;
 		final Race game = this;
 		for (User user : getUsersIn()) {
@@ -507,7 +485,7 @@ public class Race {
 		return;
 	}
 
-	public synchronized SortedMap<String, Double> getRaceOrder() {
+	public SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
 		HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
 		List<User> users = game.getUsers();
@@ -523,6 +501,8 @@ public class Race {
 					}
 				}
 			} catch (PlayerQuitException e) {
+				leave(user, true);
+				// Player is no longer in the race
 			}
 		}
 		Map<String, Double> scores = new HashMap<String, Double>();
@@ -622,7 +602,7 @@ public class Race {
 		}
 	}
 
-	public synchronized void finish(User user) {
+	public void finish(User user) {
 		if (!ending) {
 			ending = true;
 			startEndCount();
@@ -652,29 +632,30 @@ public class Race {
 		RaceExecutor.finishRace(this, user);
 	}
 
-	public synchronized User updateUser(Player player) {
+	public User updateUser(Player player) {
 		String playerName = player.getName();
-		User u = getUser(playerName);
-		if (u.getPlayerName().equals(playerName)) {
-			if (!forceRemoveUser(u)) {
-				main.logger.info("updateUser() failed to remove user");
+		for (User u : getUsers()) {
+			if (u.getPlayerName().equals(playerName)) {
+				if (!forceRemoveUser(u)) {
+					main.logger.info("updateUser() failed to remove user");
+				}
+				u.setPlayer(player);
+				users.add(u);
+				return u;
 			}
-			u.setPlayer(player);
-			users.add(u);
-			return u;
 		}
 		return null;
 	}
 	
-	public synchronized User updateUser(User user) {
-		String playerName = user.getPlayerName();
-		User u = getUser(playerName);
-		if (u.getPlayerName().equals(playerName)) {
-			if (!forceRemoveUser(u)) {
-				main.logger.info("updateUser() failed to remove user");
+	public User updateUser(User user) {
+		for (User u : getUsers()) {
+			if (u.getPlayerName().equals(user.getPlayerName())) {
+				if (!forceRemoveUser(u)) {
+					main.logger.info("updateUser() failed to remove user");
+				}
+				users.add(user);
+				return user;
 			}
-			users.add(user);
-			return u;
 		}
 		return null;
 	}
@@ -778,13 +759,13 @@ public class Race {
 		return false;
 	}
 
-	public synchronized void broadcast(String msg) {
+	public void broadcast(String msg) {
 		for (User user : getUsersIn()) {
 			Player player = null;
 			try {
 				player = user.getPlayer();
 			} catch (PlayerQuitException e) {
-				//User is probably respawning...
+				leave(user, true);
 			}
 			if(player != null){
 				player.sendMessage(main.colors.getInfo() + msg);
@@ -793,7 +774,7 @@ public class Race {
 		return;
 	}
 
-	public synchronized void clear() {
+	public void clear() {
 		users.clear();
 		finished.clear();
 		this.ended = true;
@@ -804,7 +785,7 @@ public class Race {
 		return;
 	}
 
-	public synchronized Boolean removeUser(User user) {
+	public Boolean removeUser(User user) {
 		if (!users.contains(user)) {
 			return false;
 		}
@@ -813,8 +794,8 @@ public class Race {
 		return true;
 	}
 
-	public synchronized Boolean removeUser(String user) {
-		for (User u : users) {
+	public Boolean removeUser(String user) {
+		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(user)) {
 				u.clear();
 				users.remove(u);
@@ -824,7 +805,7 @@ public class Race {
 		return false;
 	}
 
-	public synchronized Boolean forceRemoveUser(User user) {
+	public Boolean forceRemoveUser(User user) {
 		if (!removeUser(user)) {
 			if (!removeUser(user.getPlayerName())) {
 				user.clear();
@@ -835,8 +816,8 @@ public class Race {
 		return true;
 	}
 
-	public synchronized Boolean playerUserRegistered(String name) {
-		for (User u : users) {
+	public Boolean playerUserRegistered(String name) {
+		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(name)) {
 				return true;
 			}

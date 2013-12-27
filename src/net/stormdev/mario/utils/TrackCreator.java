@@ -26,7 +26,7 @@ public class TrackCreator {
 		return;
 	}
 
-	public synchronized void set(Boolean wand) {
+	public void set(Boolean wand) {
 		if (complete) {
 			saveTrack();
 			return;

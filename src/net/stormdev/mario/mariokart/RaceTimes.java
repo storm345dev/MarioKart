@@ -33,7 +33,7 @@ public class RaceTimes {
 		this.saved = saved;
 	}
 
-	public synchronized void addRaceTime(String trackName, String playerName, double time) {
+	public void addRaceTime(String trackName, String playerName, double time) {
 		if (saved) {
 			ConcurrentHashMap<String, Double> scores = new ConcurrentHashMap<String, Double>();
 			scores = getTimes(trackName);
@@ -53,7 +53,7 @@ public class RaceTimes {
 		return;
 	}
 
-	public synchronized void clearRaceTimes(String trackName) {
+	public void clearRaceTimes(String trackName) {
 		times.remove(trackName);
 		return;
 	}
@@ -68,7 +68,7 @@ public class RaceTimes {
 		return sorted;
 	}
 
-	public synchronized ConcurrentHashMap<String, Double> getTimes(String trackName) {
+	public ConcurrentHashMap<String, Double> getTimes(String trackName) {
 		ConcurrentHashMap<String, Double> t = new ConcurrentHashMap<String, Double>();
 		if (times.containsKey(trackName)) {
 			t = times.get(trackName);
@@ -77,7 +77,7 @@ public class RaceTimes {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static synchronized  ConcurrentHashMap<String, ConcurrentHashMap<String, Double>> load(String path) {
+	public static ConcurrentHashMap<String, ConcurrentHashMap<String, Double>> load(String path) {
 		try {
 			System.out.println("Loading information!");
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
@@ -108,7 +108,7 @@ public class RaceTimes {
 		save(this.times, this.saveFile.getAbsolutePath());
 	}
 
-	public static synchronized void save(ConcurrentHashMap<String, ConcurrentHashMap<String, Double>> map,
+	public static void save(ConcurrentHashMap<String, ConcurrentHashMap<String, Double>> map,
 			String path) {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(

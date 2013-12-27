@@ -28,7 +28,7 @@ public class RaceTrackManager {
 		load();
 	}
 
-	public synchronized void save() {
+	public void save() {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(
 					new FileOutputStream(this.saveFile));
@@ -41,7 +41,7 @@ public class RaceTrackManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized void load() {
+	public void load() {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
 					this.saveFile));
@@ -53,8 +53,8 @@ public class RaceTrackManager {
 		}
 	}
 
-	public synchronized RaceTrack getRaceTrack(String trackName) {
-		for (RaceTrack track : tracks) {
+	public RaceTrack getRaceTrack(String trackName) {
+		for (RaceTrack track : getRaceTracks()) {
 			if (track.getTrackName().equalsIgnoreCase(trackName)) {
 				return track;
 			}
@@ -66,9 +66,9 @@ public class RaceTrackManager {
 		return new ArrayList<RaceTrack>(tracks);
 	}
 
-	public synchronized ArrayList<String> getRaceTrackNames() {
+	public ArrayList<String> getRaceTrackNames() {
 		ArrayList<String> names = new ArrayList<String>();
-		for (RaceTrack tr : tracks) {
+		for (RaceTrack tr : getRaceTracks()) {
 			names.add(tr.getTrackName());
 		}
 		return names;
@@ -79,8 +79,10 @@ public class RaceTrackManager {
 		this.save();
 	}
 
-	public synchronized void setRaceTrack(String name, RaceTrack track) {
-		for (RaceTrack tr : new ArrayList<RaceTrack>(tracks)) {
+	public void setRaceTrack(String name, RaceTrack track) {
+		@SuppressWarnings("unchecked")
+		ArrayList<RaceTrack> Tracks = (ArrayList<RaceTrack>) tracks.clone();
+		for (RaceTrack tr : Tracks) {
 			if (tr.getTrackName().equalsIgnoreCase(name)) {
 				tracks.remove(tr);
 			}
@@ -89,7 +91,7 @@ public class RaceTrackManager {
 		this.save();
 	}
 
-	public synchronized void deleteRaceTrack(String name) {
+	public void deleteRaceTrack(String name) {
 		@SuppressWarnings("unchecked")
 		ArrayList<RaceTrack> Tracks = (ArrayList<RaceTrack>) tracks.clone();
 		for (RaceTrack tr : Tracks) {
