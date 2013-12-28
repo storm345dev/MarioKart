@@ -18,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
@@ -45,6 +44,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -132,6 +132,12 @@ public class URaceListener implements Listener {
 		return;
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR)
+	void playerJoin(PlayerJoinEvent event){
+		System.gc();
+		return;
+	}
+	
 	@EventHandler
 	void invClick(InventoryClickEvent event) {
 		HumanEntity player = event.getWhoClicked();

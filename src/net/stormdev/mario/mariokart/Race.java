@@ -600,6 +600,8 @@ public class Race {
 		} catch (Exception e) {
 			//Race Voided
 		}
+		System.gc();
+		return;
 	}
 
 	public void finish(User user) {
@@ -630,6 +632,7 @@ public class Race {
 		}
 		this.endTimeMS = System.currentTimeMillis();
 		RaceExecutor.finishRace(this, user);
+		System.gc();
 	}
 
 	public User updateUser(Player player) {
