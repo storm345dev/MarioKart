@@ -104,7 +104,7 @@ public class RaceExecutor {
 				finished = true;
 			} else {
 				HashMap<User, Double> checkpointDists = new HashMap<User, Double>();
-				for (User u : game.getUsers()) {
+				for (User u : game.getUsersIn()) {
 					try {
 						Player pp = u.getPlayer();
 						if (pp != null) {
@@ -121,7 +121,7 @@ public class RaceExecutor {
 					}
 				}
 
-				for (User u : game.getUsers()) {
+				for (User u : game.getUsersIn()) {
 					try {
 						int laps = game.totalLaps - u.getLapsLeft() + 1;
 
@@ -150,6 +150,7 @@ public class RaceExecutor {
 				player.getInventory().setContents(user.getOldInventory());
 			}
 			if (!finished) {
+				//Auto finish
 				DoubleValueComparator com = new DoubleValueComparator(scores);
 				SortedMap<String, Double> sorted = new TreeMap<String, Double>(
 						com);
@@ -210,6 +211,7 @@ public class RaceExecutor {
 					}
 				}
 			} else {
+				//Finish as is they-crossed-the-line
 				if (player != null) {
 					int position = game.getFinishPosition(player.getName());
 					String msg = "";
