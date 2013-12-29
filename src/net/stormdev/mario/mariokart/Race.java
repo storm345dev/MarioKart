@@ -643,6 +643,14 @@ public class Race {
 		RaceExecutor.finishRace(this, user, false);
 		System.gc();
 	}
+	
+	/**
+     * 
+     * @return Finish position or -1 if not finished
+     */
+    public int getFinishPosition(String playerName){
+            return finished.indexOf(playerName)+1;
+    }
 
 	public User updateUser(Player player) {
 		String playerName = player.getName();
