@@ -22,10 +22,12 @@ public class MarioKartRaceFinishEvent extends Event implements Cancellable {
 		this.pos = positionFriendly;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return this.cancelled;
 	}
 
+	@Override
 	public void setCancelled(boolean arg0) {
 		this.cancelled = arg0;
 	}
@@ -42,6 +44,7 @@ public class MarioKartRaceFinishEvent extends Event implements Cancellable {
 		return player;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

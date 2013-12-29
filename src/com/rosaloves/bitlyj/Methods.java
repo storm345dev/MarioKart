@@ -27,6 +27,7 @@ final class Methods {
 
 	public static BitlyMethod<UrlInfo> info(String value) {
 		return new MethodBase<UrlInfo>("info", getUrlMethodArgs(value)) {
+			@Override
 			public UrlInfo apply(Provider provider, Document document) {
 				return parseInfo(provider, document
 						.getElementsByTagName("info").item(0));
@@ -36,6 +37,7 @@ final class Methods {
 
 	public static BitlyMethod<Set<UrlInfo>> info(String... values) {
 		return new MethodBase<Set<UrlInfo>>("info", getUrlMethodArgs(values)) {
+			@Override
 			public Set<UrlInfo> apply(Provider provider, Document document) {
 				HashSet<UrlInfo> inf = new HashSet<UrlInfo>();
 				NodeList infos = document.getElementsByTagName("info");
@@ -49,6 +51,7 @@ final class Methods {
 
 	public static BitlyMethod<Url> expand(String values) {
 		return new MethodBase<Url>("expand", getUrlMethodArgs(values)) {
+			@Override
 			public Url apply(Provider provider, Document document) {
 				return parseUrl(provider, document
 						.getElementsByTagName("entry").item(0));
@@ -58,6 +61,7 @@ final class Methods {
 
 	public static BitlyMethod<Set<Url>> expand(String... values) {
 		return new MethodBase<Set<Url>>("expand", getUrlMethodArgs(values)) {
+			@Override
 			public Set<Url> apply(Provider provider, Document document) {
 
 				HashSet<Url> inf = new HashSet<Url>();
@@ -75,6 +79,7 @@ final class Methods {
 	public static BitlyMethod<ShortenedUrl> shorten(final String longUrl) {
 		return new MethodBase<ShortenedUrl>("shorten", Pair.p("longUrl",
 				longUrl)) {
+			@Override
 			public ShortenedUrl apply(Provider provider, Document document) {
 				NodeList infos = document.getElementsByTagName("data");
 				return parseShortenedUrl(provider, infos.item(0));
@@ -85,6 +90,7 @@ final class Methods {
 	public static BitlyMethod<UrlClicks> clicks(String string) {
 		return new MethodBase<UrlClicks>("clicks", Pair.p(hashOrUrl(string),
 				string)) {
+			@Override
 			public UrlClicks apply(Provider provider, Document document) {
 				return parseClicks(provider,
 						document.getElementsByTagName("clicks").item(0));
@@ -95,6 +101,7 @@ final class Methods {
 	public static BitlyMethod<Set<UrlClicks>> clicks(String... string) {
 		return new MethodBase<Set<UrlClicks>>("clicks",
 				getUrlMethodArgs(string)) {
+			@Override
 			public Set<UrlClicks> apply(Provider provider, Document document) {
 				HashSet<UrlClicks> clicks = new HashSet<UrlClicks>();
 				NodeList nl = document.getElementsByTagName("clicks");

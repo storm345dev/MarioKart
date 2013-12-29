@@ -42,6 +42,10 @@ public class Shop {
 	}
 
 	public static void openShop(Player player) {
+		if(!main.config.getBoolean("general.upgrades.enable")){
+			player.sendMessage(main.colors.getError()+main.msgs.get("general.disabled"));
+			return;
+		}
 		getShop().open(player);
 		return;
 	}
@@ -63,6 +67,7 @@ public class Shop {
 				main.plugin.getUnlocks());
 		final IconMenu menu = new IconMenu(title, 54,
 				new IconMenu.OptionClickEventHandler() {
+					@Override
 					public void onOptionClick(IconMenu.OptionClickEvent event) {
 						event.setWillClose(true);
 						event.setWillDestroy(true);
@@ -114,6 +119,7 @@ public class Shop {
 		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
 		final IconMenu menu = new IconMenu(title, 54,
 				new IconMenu.OptionClickEventHandler() {
+					@Override
 					public void onOptionClick(IconMenu.OptionClickEvent event) {
 						event.setWillClose(true);
 						event.setWillDestroy(true);

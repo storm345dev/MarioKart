@@ -85,6 +85,7 @@ public class main extends JavaPlugin {
 	public static Boolean vault = false;
 	public static Economy economy = null;
 
+	@Override
 	public void onEnable() {
 		System.gc();
 		if (listener != null || cmdExecutor != null || logger != null
@@ -138,6 +139,10 @@ public class main extends JavaPlugin {
 			if (!lang.contains("error.memoryLockdown")) {
 				lang.set("error.memoryLockdown",
 						"Operation failed due to lack of System Memory!");
+			}
+			if (!lang.contains("general.disabled")) {
+				lang.set("general.disabled",
+						"Error: Disabled");
 			}
 			if (!lang.contains("general.cmd.leave.success")) {
 				lang.set("general.cmd.leave.success",
@@ -336,10 +341,10 @@ public class main extends JavaPlugin {
 				config.set("general.raceTickrate", 4l);
 			}
 			if (!config.contains("general.checkpointRadius")) {
-				config.set("general.checkpointRadius", (double) 10.0);
+				config.set("general.checkpointRadius", 10.0);
 			}
 			if (!config.contains("general.raceGracePeriod")) {
-				config.set("general.raceGracePeriod", (double) 10.0);
+				config.set("general.raceGracePeriod", 10.0);
 			}
 			if (!config.contains("general.race.timed.log")) {
 				config.set("general.race.timed.log", true);
@@ -367,6 +372,9 @@ public class main extends JavaPlugin {
 			}
 			if (!config.contains("general.race.rewards.currency")) {
 				config.set("general.race.rewards.currency", "Dollars");
+			}
+			if(!config.contains("general.upgrades.enable")){
+				config.set("general.upgrades.enable", true);
 			}
 			if (!config.contains("general.upgrades.useSQL")) {
 				config.set("general.upgrades.useSQL", false);
@@ -512,21 +520,22 @@ public class main extends JavaPlugin {
 				config.getBoolean("general.race.timed.log"));
 		if (config.getBoolean("general.race.rewards.enable")) {
 			try {
+				vault = this.vaultInstalled();
 				if (!setupEconomy()) {
 					plugin.getLogger()
 							.warning(
 									"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
 					plugin.getLogger().warning("Disabling reward system...");
 					config.set("general.race.rewards.enable", false);
-				} else {
-					vault = true;
 				}
 			} catch (Exception e) {
 				plugin.getLogger()
 						.warning(
-								"Attempted to enable rewards but Vault/Economy NOT found. Please install vault to use this feature!");
+								"Attempted to enable rewards and shop but Vault/Economy NOT found. Please install vault to use these features!");
 				plugin.getLogger().warning("Disabling reward system...");
-				config.set("general.race.rewards.enable", false);
+				plugin.getLogger().warning("Disabling shop system...");
+				main.config.set("general.race.rewards.enable", false);
+				main.config.set("general.upgrades.enable", false);
 			}
 		}
 		String rl = main.config.getString("mariokart.resourcePack");
@@ -554,7 +563,7 @@ public class main extends JavaPlugin {
 				+ File.separator
 				+ "upgradesData.mkdata"),
 				config.getBoolean("general.upgrades.useSQL"), getUnlocks());
-		this.hotBarManager = new HotBarManager();
+		this.hotBarManager = new HotBarManager(config.getBoolean("general.upgrades.enable"));
 		this.lagReducer = getServer().getScheduler().runTaskTimer(this,
 				new DynamicLagReducer(), 100L, 1L);
 		System.gc();
@@ -562,6 +571,7 @@ public class main extends JavaPlugin {
 				+ " has been enabled!");
 	}
 
+	@Override
 	public void onDisable() {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
@@ -611,7 +621,20 @@ public class main extends JavaPlugin {
 		return ChatColor.translateAlternateColorCodes('&', prefix);
 	}
 
+	public boolean vaultInstalled(){
+		Plugin[] plugins = getServer().getPluginManager().getPlugins();
+		for (Plugin p : plugins) {
+			if (p.getName().equals("Vault")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean setupEconomy() {
+		if(!vault){
+			return false;
+		}
 		RegisteredServiceProvider<Economy> economyProvider = getServer()
 				.getServicesManager().getRegistration(
 						net.milkbowl.vault.economy.Economy.class);

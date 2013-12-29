@@ -155,7 +155,7 @@ public class RaceExecutor {
 						com);
 				sorted.putAll(scores);
 				Set<String> keys = sorted.keySet();
-				Object[] pls = (Object[]) keys.toArray();
+				Object[] pls = keys.toArray();
 				for (int i = 0; i < pls.length; i++) {
 					Player p = main.plugin.getServer().getPlayer(
 							(String) pls[i]); // Evidence the dodgy PR was not
@@ -444,6 +444,7 @@ public class RaceExecutor {
 		final Player pl = player;
 		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable() {
 
+			@Override
 			public void run() {
 				main.plugin.playCustomSound(pl, MarioKartSound.PENALTY_END);
 				car.removeMetadata("car.frozen", main.plugin);

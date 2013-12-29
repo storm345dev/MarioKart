@@ -157,7 +157,7 @@ public class RaceQueueManager {
 	public synchronized void clear() {
 		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
 		for (UUID id : queues.keySet()) {
-			RaceQueue q = ((RaceQueue) queues.get(id));
+			RaceQueue q = (queues.get(id));
 			q.clear();
 		}
 		for (String trackId:main.plugin.queues.keySet()){ //ConcurrentHashMap allows this

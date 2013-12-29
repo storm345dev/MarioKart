@@ -40,12 +40,14 @@ class SimpleProvider implements Provider {
 		this.endPoint = endPoint;
 	}
 
+	@Override
 	public <A> A call(BitlyMethod<A> m) {
 		String url = getUrlForCall(m);
 		Document response = filterErrorResponse(fetchUrl(url));
 		return m.apply(this, response);
 	}
 
+	@Override
 	public String getUrl() {
 		return this.url;
 	}

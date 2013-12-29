@@ -18,7 +18,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 
 public class URaceCommandExecutor implements CommandExecutor {
@@ -28,6 +27,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 		this.plugin = plugin;
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias,
 			String[] args) {
 		Player player = null;
@@ -431,6 +431,10 @@ public class URaceCommandExecutor implements CommandExecutor {
 			if (player == null) {
 				sender.sendMessage(main.colors.getError()
 						+ main.msgs.get("general.cmd.playersOnly"));
+				return true;
+			}
+			if(!main.config.getBoolean("general.upgrades.enable")){
+				sender.sendMessage(main.colors.getError()+main.msgs.get("general.disabled"));
 				return true;
 			}
 			Shop.openShop(player);

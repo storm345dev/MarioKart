@@ -293,6 +293,7 @@ public class Race {
 		main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {
 
+					@Override
 					public void run() {
 						try {
 							int z = count;
@@ -312,6 +313,7 @@ public class Race {
 												.runTask(main.plugin,
 														new Runnable() {
 
+															@Override
 															public void run() {
 																end();
 																return;
@@ -367,6 +369,7 @@ public class Race {
 		this.task = main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {
 
+					@Override
 					public void run() {
 						long mis = ms;
 						while (running && !ended) {
@@ -422,6 +425,7 @@ public class Race {
 		this.scoreCalcs = main.plugin.getServer().getScheduler()
 				.runTaskTimer(main.plugin, new Runnable() {
 
+					@Override
 					public void run() {
 						if (!(type == RaceType.TIME_TRIAL)) {
 							SortedMap<String, Double> sorted = game

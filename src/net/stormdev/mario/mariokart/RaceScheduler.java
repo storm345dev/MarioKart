@@ -21,7 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -456,6 +455,7 @@ public class RaceScheduler {
 		}
 		main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {
+					@Override
 					public void run() {
 						for (User user : users2) {
 							try {

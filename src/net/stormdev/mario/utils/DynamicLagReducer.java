@@ -73,6 +73,7 @@ public class DynamicLagReducer implements Runnable {
 		return System.currentTimeMillis() - time;
 	}
 
+	@Override
 	public void run() {
 		TICKS[(TICK_COUNT % TICKS.length)] = System.currentTimeMillis();
 		TICK_COUNT += 1;

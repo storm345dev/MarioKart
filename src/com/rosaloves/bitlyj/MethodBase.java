@@ -26,10 +26,12 @@ public abstract class MethodBase<A> implements BitlyMethod<A> {
 		this.parameters = parameters;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public Iterable<Pair<String, String>> getParameters() {
 		return parameters;
 	}

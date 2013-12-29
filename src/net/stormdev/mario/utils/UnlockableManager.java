@@ -20,14 +20,16 @@ public class UnlockableManager {
 	private Map<String, String> data = new HashMap<String, String>();
 	private Map<String, Unlockable> unlocks = new HashMap<String, Unlockable>(); // ShortId:Unlockable
 	private File saveFile = null;
-	private Boolean sql = false;
+	private boolean sql = false;
 	private SQLManager sqlManager = null;
+	private boolean enabled = true;
 
 	public UnlockableManager(File saveFile, Boolean sql,
 			Map<String, Unlockable> unlocks) {
 		this.saveFile = saveFile;
 		this.sql = sql;
 		this.unlocks = unlocks;
+		this.enabled = main.config.getBoolean("general.upgrades.enable");
 		if (sql) {
 			try {
 				sqlManager = new SQLManager(
@@ -54,12 +56,14 @@ public class UnlockableManager {
 	}
 	
 	public synchronized void unloadSQL(){
-		this.sqlManager.closeConnection();
+		if(this.sqlManager != null){
+			this.sqlManager.closeConnection();
+		}
 		return;
 	}
 
 	public List<Upgrade> getUpgrades(String playerName) {
-		if (!data.containsKey(playerName)) {
+		if (!data.containsKey(playerName) || !enabled) {
 			return new ArrayList<Upgrade>();
 		}
 		List<Upgrade> upgrades = new ArrayList<Upgrade>();
@@ -84,6 +88,9 @@ public class UnlockableManager {
 	}
 
 	public Boolean useUpgrade(String player, Upgrade upgrade) {
+		if(!enabled){
+			return false;
+		}
 		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
 		String[] un = unlocks.clone();
 		Boolean used = false;
@@ -145,6 +152,9 @@ public class UnlockableManager {
 	}
 
 	public Boolean addUpgrade(String player, Upgrade upgrade) {
+		if(!enabled){
+			return false;
+		}
 		String[] un = new String[] {};
 		String[] unlocks = new String[] {};
 		if (this.data.containsKey(player)) {
@@ -204,7 +214,7 @@ public class UnlockableManager {
 			save(player); // Save to file/sql
 			return true;
 		}
-		return false; // They have too many upgrade
+		return false; // They have too many upgrades
 	}
 
 	public Boolean hasUpgradeById(String player, String shortId) {
@@ -228,6 +238,9 @@ public class UnlockableManager {
 	}
 
 	public void resetUpgrades(String player) {
+		if(!enabled){
+			return;
+		}
 		this.data.remove(player);
 		save(player);
 		return;

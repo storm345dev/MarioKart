@@ -123,9 +123,9 @@ public class MarioKart {
 					shell.setMetadata("shell.target", new StatValue(null,
 							plugin));
 					shell.setMetadata("shell.cooldown", new StatValue(
-							((Integer) 3), plugin));
+							(3), plugin));
 					shell.setMetadata("shell.expiry", new StatValue(
-							((Integer) 50), plugin));
+							(50), plugin));
 					Vector direction = player.getEyeLocation()
 							.getDirection(); //The direction to fire the shell
 					double speed = 1.2; //The speed to fire it at
@@ -154,6 +154,7 @@ public class MarioKart {
 					BukkitTask task = plugin.getServer().getScheduler()
 							.runTaskTimerAsynchronously(plugin, new Runnable() {
 
+								@Override
 								public void run() {
 									if (shell.hasMetadata("shell.destroy")) {
 										shell.remove();
@@ -263,6 +264,7 @@ public class MarioKart {
 				plugin.getServer().getScheduler()
 						.runTaskLater(plugin, new Runnable() {
 
+							@Override
 							public void run() {
 								Player pl = main.plugin.getServer().getPlayer(
 										pname);
@@ -276,6 +278,7 @@ public class MarioKart {
 				plugin.getServer().getScheduler()
 						.runTaskAsynchronously(plugin, new Runnable() {
 
+							@Override
 							public void run() {
 								int amount = 5;
 								while (amount > 0) {
@@ -314,7 +317,7 @@ public class MarioKart {
 					inHand.getTypeId(), inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
-				Object[] pls = (Object[]) keys.toArray();
+				Object[] pls = keys.toArray();
 				int ppos = 0;
 				for (int i = 0; i < pls.length; i++) {
 					if (pls[i].equals(player.getName())) {
@@ -340,11 +343,12 @@ public class MarioKart {
 				shell.setPickupDelay(Integer.MAX_VALUE);
 				shell.setMetadata("shell.target", new StatValue(targetName,
 						plugin));
-				shell.setMetadata("shell.expiry", new StatValue(((Integer) 33),
+				shell.setMetadata("shell.expiry", new StatValue((33),
 						plugin));
 				BukkitTask task = plugin.getServer().getScheduler()
 						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
+							@Override
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
 									shell.remove();
@@ -382,7 +386,7 @@ public class MarioKart {
 					inHand.getTypeId(), inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
-				Object[] pls = (Object[]) keys.toArray();
+				Object[] pls = keys.toArray();
 				final String targetName = (String) pls[0];
 				inHand.setAmount(inHand.getAmount() - 1);
 				ItemStack toDrop = ItemStackFromId.get(main.config
@@ -395,11 +399,12 @@ public class MarioKart {
 				shell.setPickupDelay(Integer.MAX_VALUE);
 				shell.setMetadata("shell.target", new StatValue(targetName,
 						plugin));
-				shell.setMetadata("shell.expiry", new StatValue(((Integer) 66),
+				shell.setMetadata("shell.expiry", new StatValue((66),
 						plugin));
 				BukkitTask task = plugin.getServer().getScheduler()
 						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
+							@Override
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
 									shell.remove();
@@ -451,8 +456,8 @@ public class MarioKart {
 				shell.setPickupDelay(Integer.MAX_VALUE);
 				shell.setMetadata("shell.target", new StatValue(null, plugin));
 				shell.setMetadata("shell.cooldown", new StatValue(
-						((Integer) 2), plugin));
-				shell.setMetadata("shell.expiry", new StatValue(((Integer) 50),
+						(2), plugin));
+				shell.setMetadata("shell.expiry", new StatValue((50),
 						plugin));
 				final Vector direction = player.getEyeLocation()
 						.getDirection();
@@ -481,6 +486,7 @@ public class MarioKart {
 				BukkitTask task = plugin.getServer().getScheduler()
 						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
+							@Override
 							public void run() {
 								if (shell.hasMetadata("shell.destroy")) {
 									shell.remove();
@@ -537,6 +543,7 @@ public class MarioKart {
 				final MoveableInt count = new MoveableInt(12);
 				plugin.getServer().getScheduler()
 						.runTaskAsynchronously(plugin, new Runnable() {
+							@Override
 							public void run() {
 								if (count.getInt() > 0) {
 									count.setInt(count.getInt() - 1);
@@ -566,7 +573,7 @@ public class MarioKart {
 				power = -power;
 				for (String name:keys) {
 					Player pla = plugin.getServer().getPlayer(
-							(String) name);
+							name);
 					if(!name.equals(player.getName())
 							&& !isPlayerImmune(pla)){
 						Entity c = pla.getVehicle();
@@ -597,7 +604,7 @@ public class MarioKart {
 					inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
 				Set<String> keys = sorted.keySet();
-				final Object[] pls = (Object[]) keys.toArray();
+				final Object[] pls = keys.toArray();
 				int pppos = 0;
 				for (int i = 0; i < pls.length; i++) {
 					if (pls[i].equals(player.getName())) {
@@ -607,6 +614,7 @@ public class MarioKart {
 				final int ppos = pppos;
 				plugin.getServer().getScheduler()
 						.runTaskAsynchronously(plugin, new Runnable() {
+							@Override
 							public void run() {
 								int count = 3;
 								while (count > 0) {
@@ -626,6 +634,7 @@ public class MarioKart {
 								}
 								plugin.getServer().getScheduler()
 										.runTask(plugin, new Runnable() {
+											@Override
 											public void run() {
 												for (int i = 0; i < pls.length
 														&& i < ppos; i++) {
@@ -661,7 +670,7 @@ public class MarioKart {
 																+ msg);
 														
 														RaceExecutor.penalty(pl, 
-																		(Minecart) cart,
+																		cart,
 																		2);
 													}
 												}
@@ -694,7 +703,7 @@ public class MarioKart {
 								PotionEffectType.INVISIBILITY, 120, 10);
 						SortedMap<String, Double> sorted = race.getRaceOrder();
 						Set<String> keys = sorted.keySet();
-						final Object[] pls = (Object[]) keys.toArray();
+						final Object[] pls = keys.toArray();
 						int pppos = 0;
 						for (int i = 0; i < pls.length; i++) {
 							if (pls[i].equals(player.getName())) {
@@ -723,6 +732,7 @@ public class MarioKart {
 								plugin.getServer().getScheduler()
 										.runTaskLater(plugin, new Runnable() {
 
+											@Override
 											public void run() {
 												pl.removeMetadata("kart.rolling", plugin);
 												pl.getInventory().clear();
@@ -751,7 +761,7 @@ public class MarioKart {
 					|| under.getType() == Material.COAL_BLOCK
 					|| under.getType() == Material.COAL_BLOCK) {
 				Sign sign = null;
-				Location uu = (Location) under.getRelative(BlockFace.DOWN)
+				Location uu = under.getRelative(BlockFace.DOWN)
 						.getLocation();
 				Location first = uu;
 				try {
@@ -879,6 +889,7 @@ public class MarioKart {
 						plugin.getServer().getScheduler()
 								.runTaskAsynchronously(plugin, new Runnable() {
 
+									@Override
 									public void run() {
 										int min = 0;
 										int max = 20;
@@ -929,6 +940,7 @@ public class MarioKart {
 						plugin.getServer().getScheduler()
 								.runTaskLater(plugin, new Runnable() {
 
+									@Override
 									public void run() {
 										if (!r.reloadingItemBoxes
 												.contains(signLoc)) {

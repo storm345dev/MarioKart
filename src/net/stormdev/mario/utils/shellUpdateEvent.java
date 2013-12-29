@@ -20,6 +20,7 @@ public class shellUpdateEvent extends Event {
 		this.cooldown = cooldown;
 	}
 
+	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

@@ -20,9 +20,10 @@ import com.useful.ucarsCommon.StatValue;
 public class HotBarManager {
 
 	Map<String, MarioHotBar> hotBars = new HashMap<String, MarioHotBar>();
+	private boolean upgrades = true;
 
-	public HotBarManager() {
-
+	public HotBarManager(boolean upgradesEnabled) {
+		this.upgrades = upgradesEnabled;
 	}
 
 	public void setHotBar(String player, MarioHotBar hotBar) {
@@ -66,6 +67,7 @@ public class HotBarManager {
 				new HashMap<String, Object>(), "null");
 		defaultItems.add(exit_door);
 		contents.put(HotBarSlot.UTIL, defaultItems);
+		if(upgrades){
 		// Look-up purchased upgrades in a menu and add them too
 		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
 		for (Upgrade upgrade : unlocks) {
@@ -74,6 +76,7 @@ public class HotBarManager {
 					ChatColor.GREEN + u.upgradeName, upgrade.getQuantity(),
 					u.type, u.data, u.shortId);
 			unlockedItems.add(item);
+		}
 		}
 		contents.put(HotBarSlot.SCROLLER, unlockedItems);
 		return contents;
