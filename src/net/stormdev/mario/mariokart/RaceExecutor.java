@@ -176,8 +176,8 @@ public class RaceExecutor {
 									//Lose sound
 									main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 								}
-								i = i + game.getFinishPosition(user.getPlayerName());
-                                String pos = "" + i;
+								i += game.getUsersFinished().size();
+								String pos = "" + (i + 1);
 								if (pos.endsWith("1")) {
 									pos = pos + "st";
 								} else if (pos.endsWith("2")) {
@@ -211,7 +211,7 @@ public class RaceExecutor {
 				}
 			} else {
 				if (player != null) {
-					int position = game.getFinishPosition(user.getPlayerName());
+					int position = game.getFinishPosition(player.getName());
 					String msg = "";
 					if (!timed) {
 						msg = main.msgs.get("race.end.position");
