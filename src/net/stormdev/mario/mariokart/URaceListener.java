@@ -1,7 +1,9 @@
 package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +43,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -766,6 +769,68 @@ public class URaceListener implements Listener {
 			chunk.load(true);
 		}
 		event.setRespawnLocation(loc);
+		return;
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	void interact(PlayerInteractEvent e){
+		overloadPrevention();
+		return;
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	void respawn(PlayerRespawnEvent e){
+		overloadPrevention();
+		return;
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	void join(PlayerJoinEvent e){
+		overloadPrevention();
+		return;
+	}
+	
+	//PlayerInteractEvent e1, PlayerRespawnEvent e2, PlayerJoinEvent e3
+	private void overloadPrevention(){
+		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
+		main.logger.info("Available memory: "+freeMemory);
+		if(Runtime.getRuntime().freeMemory() < 150){
+			System.gc();
+			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
+			if(Runtime.getRuntime().freeMemory() < 150){
+				if(!plugin.raceScheduler.isLockedDown()){
+					plugin.raceScheduler.lockdown(); //Lock all queues
+				}
+				else{
+					//Re-occuring issue
+					if(main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean()
+							&& main.plugin.random.nextBoolean()){ //Small chance races will get cancelled
+						if(main.plugin.raceScheduler.getRacesRunning() > 0){
+							//Terminate a race
+							try {
+								HashMap<UUID, Race> races = new HashMap<UUID, Race>(main.plugin.raceScheduler.getRaces());
+								Object[] ids = races.keySet().toArray();
+								UUID id = (UUID) ids[main.plugin.random.nextInt(ids.length)];
+								Race r = races.get(id);
+								r.broadcast(main.colors.getError()+"Terminating race due to depleted system resources, sorry.");
+								main.plugin.raceScheduler.stopRace(r);
+								main.logger.info("[WARNING] Low memory resulted in termination of race: "
+										+ id);
+							} catch (Exception e) {
+								//Error ending race
+							}
+							return;
+						}
+					}
+				}
+			}
+		}
+		else{
+			if(plugin.raceScheduler.isLockedDown() &&
+					freeMemory > 200){
+				plugin.raceScheduler.unlockDown();
+			}
+		}
 		return;
 	}
 

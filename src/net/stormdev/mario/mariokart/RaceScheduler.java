@@ -31,12 +31,17 @@ import com.useful.ucarsCommon.StatValue;
 public class RaceScheduler {
 	private ConcurrentHashMap<UUID, Race> races = new ConcurrentHashMap<UUID, Race>();
 	private int raceLimit = 5;
+	private boolean lockdown = false;
 
 	public RaceScheduler(int raceLimit) {
 		this.raceLimit = raceLimit;
 	}
 
 	public void joinAutoQueue(Player player, RaceType type) {
+		if(lockdown){
+			player.sendMessage(main.colors.getError()+main.msgs.get("error.memoryLockdown"));
+			return;
+		}
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues
 				.getOpenQueues(type); // Joinable queues for that racemode
 		RaceQueue toJoin = null;
@@ -92,8 +97,6 @@ public class RaceScheduler {
 		} else {
 			// Create a random queue
 			RaceTrack track = null;
-			main.logger.info("OpenNoQueueTracks: "+openNoQueueTracks.size()
-					+"  Type= "+type.name());
 			if (openNoQueueTracks.size() > 0) {
 				track = openNoQueueTracks.get(main.plugin.random
 						.nextInt(openNoQueueTracks.size()));
@@ -134,6 +137,10 @@ public class RaceScheduler {
 	}
 
 	public synchronized void joinQueue(Player player, RaceTrack track, RaceType type) {
+		if(lockdown){
+			player.sendMessage(main.colors.getError()+main.msgs.get("error.memoryLockdown"));
+			return;
+		}
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
 		RaceQueue queue = null;
 		if (queues.size() < 1) {
@@ -188,6 +195,20 @@ public class RaceScheduler {
 	}
 
 	public void recalculateQueues() {
+		if(lockdown){
+			//No more races allowed
+			if(getRacesRunning() < 1){
+				//Need to recall recalculateQueues else all will freeze
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						recalculateQueues();
+						return;
+					}}, 600l);
+			}
+			return;
+		}
 		if (getRacesRunning() >= raceLimit) {
 			main.logger.info("[INFO] Max races running");
 			return; // Cannot start any more races for now...
@@ -544,6 +565,25 @@ public class RaceScheduler {
 		if (this.races.containsKey(race.getGameId())) {
 			this.races.put(race.getGameId(), race);
 		}
+	}
+	
+	public synchronized void lockdown(){
+		//Running out of system memory!
+		this.lockdown = true;
+		main.logger.info("[WANRING] Memory resources low, MarioKart has locked down all queues "
+				+ "and may start to terminate races if condition persists!");
+		return;
+	}
+	
+	public boolean isLockedDown(){
+		return this.lockdown;
+	}
+	
+	public synchronized void unlockDown(){
+		//System regained necessary memory
+		this.lockdown = false;
+		main.logger.info("[INFO] System memory stable once more, MarioKart has unlocked all queues!");
+		return;
 	}
 
 	public ConcurrentHashMap<UUID, Race> getRaces() {

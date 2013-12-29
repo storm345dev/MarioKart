@@ -135,6 +135,10 @@ public class main extends JavaPlugin {
 		logger = new CustomLogger(getServer().getConsoleSender(), getLogger());
 		try {
 			// Setup the Lang file
+			if (!lang.contains("error.memoryLockdown")) {
+				lang.set("error.memoryLockdown",
+						"Operation failed due to lack of System Memory!");
+			}
 			if (!lang.contains("general.cmd.leave.success")) {
 				lang.set("general.cmd.leave.success",
 						"Successfully left %name%!");

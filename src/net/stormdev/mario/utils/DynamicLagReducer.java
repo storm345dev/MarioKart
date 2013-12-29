@@ -10,11 +10,11 @@ public class DynamicLagReducer implements Runnable {
 	}
 
 	public static double getAvailableMemory(){
-		return Runtime.getRuntime().freeMemory();
+		return Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975; //In MB
 	}
 	
 	public static double getMaxMemory(){
-		return Runtime.getRuntime().maxMemory();
+		return Runtime.getRuntime().maxMemory() * 0.00097560975 * 0.00097560975; //In MB
 	}
 	
 	public static double getMemoryUse(){
