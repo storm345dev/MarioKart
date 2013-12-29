@@ -591,8 +591,9 @@ public class main extends JavaPlugin {
 		} catch (Exception e) {
 			// Shop is invalid anyway
 		}
-		System.gc();
+		this.upgradeManager.unloadSQL();
 		logger.info("MarioKart has been disabled!");
+		System.gc();
 	}
 
 	private void copy(InputStream in, File file) {

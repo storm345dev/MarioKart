@@ -89,9 +89,9 @@ public class Race {
 		return this.type;
 	}
 
-	public User getUser(Player player) {
+	public synchronized User getUser(Player player) {
 		String pname = player.getName();
-		for (User user : getUsers()) {
+		for (User user : users) {
 			try {
 				if (user.getPlayerName().equals(pname)) {
 					return user;
@@ -105,8 +105,8 @@ public class Race {
 		return null;
 	}
 
-	public User getUser(String playerName) {
-		for (User user : getUsers()) {
+	public synchronized User getUser(String playerName) {
+		for (User user : users) {
 			if (user.getPlayerName().equals(playerName)) {
 				return user;
 			}
@@ -118,7 +118,7 @@ public class Race {
 		return new ArrayList<User>(users);
 	}
 
-	public void setUsers(List<User> users) {
+	public synchronized void setUsers(List<User> users) {
 		this.users = users;
 		return;
 	}
@@ -264,8 +264,8 @@ public class Race {
 		}
 	}
 
-	public Boolean isEmpty() {
-		if (getUsers().size() < 1) {
+	public synchronized Boolean isEmpty() {
+		if (users.size() < 1) {
 			return true;
 		}
 		return false;
@@ -335,6 +335,7 @@ public class Race {
 						return;
 					}
 				});
+		return;
 	}
 
 	public String getWinner() {
@@ -485,10 +486,9 @@ public class Race {
 		return;
 	}
 
-	public SortedMap<String, Double> getRaceOrder() {
+	public synchronized SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
 		HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
-		List<User> users = game.getUsers();
 		for (User user : users) {
 			try {
 				Player player = user.getPlayer();
@@ -777,7 +777,7 @@ public class Race {
 		return;
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		users.clear();
 		finished.clear();
 		this.ended = true;
@@ -788,7 +788,7 @@ public class Race {
 		return;
 	}
 
-	public Boolean removeUser(User user) {
+	public synchronized Boolean removeUser(User user) {
 		if (!users.contains(user)) {
 			return false;
 		}
@@ -797,8 +797,8 @@ public class Race {
 		return true;
 	}
 
-	public Boolean removeUser(String user) {
-		for (User u : getUsers()) {
+	public synchronized Boolean removeUser(String user) {
+		for (User u : new ArrayList<User>(users)) {
 			if (u.getPlayerName().equals(user)) {
 				u.clear();
 				users.remove(u);
@@ -819,8 +819,8 @@ public class Race {
 		return true;
 	}
 
-	public Boolean playerUserRegistered(String name) {
-		for (User u : getUsers()) {
+	public synchronized Boolean playerUserRegistered(String name) {
+		for (User u : users) {
 			if (u.getPlayerName().equals(name)) {
 				return true;
 			}

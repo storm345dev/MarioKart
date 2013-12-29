@@ -143,7 +143,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public void joinQueue(Player player, RaceTrack track, RaceType type) {
+	public synchronized void joinQueue(Player player, RaceTrack track, RaceType type) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
 		RaceQueue queue = null;
 		if (queues.size() < 1) {
@@ -192,7 +192,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public void leaveQueue(Player player, RaceQueue queue) {
+	public synchronized void leaveQueue(Player player, RaceQueue queue) {
 		queue.removePlayer(player);
 		return;
 	}
@@ -535,12 +535,12 @@ public class RaceScheduler {
 		recalculateQueues();
 	}
 
-	public void removeRace(Race race) {
+	public synchronized void removeRace(Race race) {
 		race.clear();
 		this.races.remove(race.getGameId());
 	}
 
-	public void updateRace(Race race) {
+	public synchronized void updateRace(Race race) {
 		if(race == null || race.getGameId() == null){
 			return;
 		}

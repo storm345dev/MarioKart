@@ -52,6 +52,11 @@ public class UnlockableManager {
 		// SQL setup...
 		load(); // Load the data
 	}
+	
+	public synchronized void unloadSQL(){
+		this.sqlManager.closeConnection();
+		return;
+	}
 
 	public List<Upgrade> getUpgrades(String playerName) {
 		if (!data.containsKey(playerName)) {

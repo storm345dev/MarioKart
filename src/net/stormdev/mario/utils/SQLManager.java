@@ -28,12 +28,16 @@ public class SQLManager {
 		}
 	}
 
-	public void closeConnection() {
+	public synchronized void closeConnection() {
 		try {
 			c.close();
 		} catch (SQLException e) {
 			main.logger.info("Error occured when closing sql connection!");
 		}
+		if(MySQL != null){
+			MySQL.closeConnection();
+		}
+		return;
 	}
 
 	public Object searchTable(String tableName, String keyName,

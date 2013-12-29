@@ -28,7 +28,7 @@ public class RaceTrackManager {
 		load();
 	}
 
-	public void save() {
+	public synchronized void save() {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(
 					new FileOutputStream(this.saveFile));
@@ -41,7 +41,7 @@ public class RaceTrackManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void load() {
+	public synchronized void load() {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
 					this.saveFile));

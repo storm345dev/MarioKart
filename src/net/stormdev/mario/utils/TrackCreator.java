@@ -11,6 +11,7 @@ public class TrackCreator {
 	RaceTrack track = null;
 	int stage = 0;
 	Boolean complete = false;
+	Boolean completed = false;
 
 	public TrackCreator(Player player, RaceTrack track) {
 		this.player = player;
@@ -26,7 +27,7 @@ public class TrackCreator {
 		return;
 	}
 
-	public void set(Boolean wand) {
+	public synchronized void set(Boolean wand) {
 		if (complete) {
 			saveTrack();
 			return;
@@ -119,8 +120,11 @@ public class TrackCreator {
 		return;
 	}
 
-	public void saveTrack() {
-		complete = true;
+	public synchronized void saveTrack() {
+		if(completed){
+			return;
+		}
+		completed = true;
 		main.plugin.trackManager.setRaceTrack(track.getTrackName(), track);
 		String msg = main.msgs.get("setup.create.done");
 		msg = msg.replaceAll(Pattern.quote("%name%"), track.getTrackName());

@@ -18,7 +18,7 @@ public class RaceMethods {
 		this.plugin = main.plugin;
 	}
 
-	public Race inAGame(Player player, Boolean update) {
+	public synchronized Race inAGame(Player player, Boolean update) {
 		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
 		for (UUID id : new ArrayList<UUID>(races.keySet())) {
 			Race r = races.get(id);
@@ -36,7 +36,7 @@ public class RaceMethods {
 		return null;
 	}
 
-	public RaceQueue inGameQue(Player player) {
+	public synchronized RaceQueue inGameQue(Player player) {
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		for (UUID id : queues.keySet()) {
 			try {
