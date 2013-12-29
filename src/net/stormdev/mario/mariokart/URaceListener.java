@@ -793,10 +793,10 @@ public class URaceListener implements Listener {
 	//PlayerInteractEvent e1, PlayerRespawnEvent e2, PlayerJoinEvent e3
 	private void overloadPrevention(){
 		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
-		if(Runtime.getRuntime().freeMemory() < 150){
+		if(freeMemory < 150){
 			System.gc();
 			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
-			if(Runtime.getRuntime().freeMemory() < 150){
+			if(freeMemory < 150){
 				if(!plugin.raceScheduler.isLockedDown()){
 					plugin.raceScheduler.lockdown(); //Lock all queues
 				}
