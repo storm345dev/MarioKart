@@ -539,6 +539,7 @@ public class Race {
 	@SuppressWarnings("unchecked")
 	public void end() {
 		this.running = false;
+		ended = true;
 		for (Location l : ((List<Location>) this.reloadingItemBoxes.clone())) {
 			main.listener.spawnItemPickupBox(l.add(0, 2.4, 0), false);
 			this.reloadingItemBoxes.remove(l);
@@ -583,7 +584,7 @@ public class Race {
 				leave(user, true);
 			}
 			try {
-				RaceExecutor.finishRace(this, user);
+				RaceExecutor.finishRace(this, user, true);
 			} catch (Exception e) {
 				//Race has been voided
 			}
@@ -591,6 +592,8 @@ public class Race {
 		try {
 			RaceExecutor.onRaceEnd(this);
 		} catch (Exception e) {
+			main.logger.info("[IMPORTANT] Failed to process trailing end of race!");
+			e.printStackTrace();
 			//Race voided
 		}
 		try {
@@ -598,6 +601,8 @@ public class Race {
 			main.plugin.raceScheduler.removeRace(this);
 			main.plugin.raceScheduler.recalculateQueues();
 		} catch (Exception e) {
+			main.logger.info("[IMPORTANT] Failed to remove race");
+			e.printStackTrace();
 			//Race Voided
 		}
 		System.gc();
@@ -631,7 +636,7 @@ public class Race {
 			// Player has left
 		}
 		this.endTimeMS = System.currentTimeMillis();
-		RaceExecutor.finishRace(this, user);
+		RaceExecutor.finishRace(this, user, false);
 		System.gc();
 	}
 
@@ -782,7 +787,6 @@ public class Race {
 		finished.clear();
 		this.ended = true;
 		this.ending = true;
-		this.gameId = null;
 		this.scoreCalcs.cancel();
 		System.gc();
 		return;

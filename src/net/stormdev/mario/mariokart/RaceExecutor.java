@@ -38,27 +38,14 @@ public class RaceExecutor {
 		} catch (Exception e2) {
 			// Users already cleared
 		}
-		try {
-			if (main.plugin.raceScheduler.isTrackInUse(game.getTrack(),
-					game.getType())) {
-				main.plugin.raceScheduler.removeRace(game);
-			}
-		} catch (Exception e1) {
-			try {
-				main.plugin.raceScheduler.removeRace(game);
-			} catch (Exception e) {
-				// Nothing
-			}
-		}
 		if (!game.isEmpty()) {
 			main.logger.info("Game not correctly cleared!");
-			game.clear(); //Tidy up and make sure all is reset to plug 'Player' leak
 		}
 		main.plugin.raceScheduler.recalculateQueues();
 		return;
 	}
 
-	public static void finishRace(Race game, User user) {
+	public static void finishRace(Race game, User user, Boolean gameEnded) {
 		try {
 			Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 			List<User> usersIn = game.getUsersIn();
@@ -110,6 +97,7 @@ public class RaceExecutor {
 					player.getInventory().clear();
 
 					player.getInventory().setContents(user.getOldInventory());
+					player.setGameMode(user.getOldGameMode());
 				}
 			}
 			if (game.finished.contains(user.getPlayerName())) {
@@ -275,7 +263,7 @@ public class RaceExecutor {
 			}
 			game.leave(user, false);
 			main.plugin.raceScheduler.updateRace(game);
-			if (game.getUsersIn().size() < 1) {
+			if (game.getUsersIn().size() < 1 && !game.ended && !gameEnded) {
 				game.ended = true;
 				game.end();
 			}

@@ -2,6 +2,7 @@ package net.stormdev.mario.mariokart;
 
 import net.stormdev.mario.utils.PlayerQuitException;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -29,6 +30,8 @@ public class User {
 
 	private Location location;
 	
+	private GameMode oldGameMode;
+	
 	private boolean respawning = false;
 
 	public User(Player player, int oldLevel, float oldExp) {
@@ -38,6 +41,12 @@ public class User {
 		this.lapsLeft = 3;
 		this.oldLevel = oldLevel;
 		this.oldExp = oldExp;
+		try {
+			this.oldGameMode = player.getGameMode();
+		} catch (Exception e) {
+			//Invalid player/they left
+			this.oldGameMode = GameMode.SURVIVAL;
+		}
 		inRace = false;
 		finished = false;
 		location = null;
@@ -45,6 +54,10 @@ public class User {
 	
 	public void setRespawning(Boolean respawning){
 		this.respawning = respawning;
+	}
+	
+	public GameMode getOldGameMode(){
+		return oldGameMode;
 	}
 	
 	public Boolean isRespawning(){
