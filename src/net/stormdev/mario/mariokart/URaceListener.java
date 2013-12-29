@@ -791,7 +791,7 @@ public class URaceListener implements Listener {
 	}
 	
 	//PlayerInteractEvent e1, PlayerRespawnEvent e2, PlayerJoinEvent e3
-	private void overloadPrevention(){
+	private Boolean overloadPrevention(){
 		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
 		if(freeMemory < 150){
 			System.gc();
@@ -818,10 +818,10 @@ public class URaceListener implements Listener {
 							} catch (Exception e) {
 								//Error ending race
 							}
-							return;
 						}
 					}
 				}
+				return true;
 			}
 		}
 		else{
@@ -830,7 +830,7 @@ public class URaceListener implements Listener {
 				plugin.raceScheduler.unlockDown();
 			}
 		}
-		return;
+		return false;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
