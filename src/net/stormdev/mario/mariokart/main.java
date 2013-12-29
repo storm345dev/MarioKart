@@ -397,10 +397,6 @@ public class main extends JavaPlugin {
 						"mariokart.resourcePack",
 						"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip");
 			}
-			if (!config.contains("mariokart.resourceNonMarioPack")) {
-				config.set("mariokart.resourceNonMarioPack",
-						"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/defaults.zip");
-			}
 			if (!config.contains("mariokart.enable")) {
 				config.set("mariokart.enable", true);
 			}
