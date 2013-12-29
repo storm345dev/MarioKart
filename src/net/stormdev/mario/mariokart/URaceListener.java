@@ -86,9 +86,11 @@ public class URaceListener implements Listener {
 		}
 		if (ItemStackFromId.equals(main.config.getString("mariokart.banana"),
 				stack.getTypeId(), stack.getDurability())) {
-			main.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
-			item.remove();
-			RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
+			if(!main.marioKart.isPlayerImmune(player)){
+				main.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
+				item.remove();
+				RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
+			}
 			event.setCancelled(true);
 			return;
 		}

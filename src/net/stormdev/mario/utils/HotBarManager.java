@@ -162,13 +162,15 @@ public class HotBarManager {
 					return;
 				}
 				final Entity veh = player.getVehicle();
-				veh.setMetadata("kart.immune", new StatValue(true, main.plugin));
+				veh.setMetadata("kart.immune", new StatValue(lengthMS, main.plugin));
+				player.setMetadata("kart.immune", new StatValue(lengthMS, main.plugin));
 				main.plugin.getServer().getScheduler()
 						.runTaskLater(main.plugin, new Runnable() {
 
 							@Override
 							public void run() {
 								try {
+									player.removeMetadata("kart.immune", main.plugin);
 									veh.removeMetadata("kart.immune",
 											main.plugin);
 									player.getWorld().playSound(

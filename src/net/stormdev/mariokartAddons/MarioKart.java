@@ -126,6 +126,31 @@ public class MarioKart {
 							((Integer) 3), plugin));
 					shell.setMetadata("shell.expiry", new StatValue(
 							((Integer) 50), plugin));
+					Vector direction = player.getEyeLocation()
+							.getDirection(); //The direction to fire the shell
+					double speed = 1.2; //The speed to fire it at
+					Boolean ux = true; //If abs.x(True) or abs.z(False) is smaller
+					double x = direction.getX();
+					double z = direction.getZ();
+					double px = Math.abs(x);  //Make negatives become positive
+					double pz = Math.abs(z);
+					if (px > pz) {
+						ux = false; //Set ux according to sizes
+					}
+
+					if (ux) {
+						// x is smaller
+						// long mult = (long) (pz/speed); - Calculate Multiplier
+						x = (x / pz) * speed;
+						z = (z / pz) * speed;
+					} else {
+						// z is smaller
+						// long mult = (long) (px/speed);
+						x = (x / px) * speed;
+						z = (z / px) * speed;
+					}
+					final double fx = x;
+					final double fz = z;
 					BukkitTask task = plugin.getServer().getScheduler()
 							.runTaskTimerAsynchronously(plugin, new Runnable() {
 
@@ -169,30 +194,7 @@ public class MarioKart {
 											main.plugin);
 									shell.setMetadata("shell.expiry",
 											new StatValue(expiry, main.plugin));
-									Vector direction = player.getEyeLocation()
-											.getDirection();
-									double speed = 1.2;
-									Boolean ux = true;
-									double x = direction.getX();
-									double z = direction.getZ();
-									double px = Math.abs(x);
-									double pz = Math.abs(z);
-									if (px > pz) {
-										ux = false;
-									}
-
-									if (ux) {
-										// x is smaller
-										// long mult = (long) (pz/speed);
-										x = (x / pz) * speed;
-										z = (z / pz) * speed;
-									} else {
-										// z is smaller
-										// long mult = (long) (px/speed);
-										x = (x / px) * speed;
-										z = (z / px) * speed;
-									}
-									Vector vel = new Vector(x, 0, z);
+									Vector vel = new Vector(fx, 0, fz);
 									shellUpdateEvent event = new shellUpdateEvent(
 											shell, null, vel, cool);
 									main.plugin.getServer().getPluginManager()
@@ -255,6 +257,8 @@ public class MarioKart {
 				car.setMetadata("kart.immune",
 						new StatValue(15000, main.plugin)); // Value =
 															// length(millis)
+				ply.setMetadata("kart.immune",
+						new StatValue(15000, main.plugin));
 				final String pname = ply.getName();
 				plugin.getServer().getScheduler()
 						.runTaskLater(plugin, new Runnable() {
@@ -263,6 +267,7 @@ public class MarioKart {
 								Player pl = main.plugin.getServer().getPlayer(
 										pname);
 								if (pl != null) {
+									pl.removeMetadata("kart.immune", main.plugin);
 									car.removeMetadata("kart.immune",
 											main.plugin);
 								}
@@ -449,6 +454,30 @@ public class MarioKart {
 						((Integer) 2), plugin));
 				shell.setMetadata("shell.expiry", new StatValue(((Integer) 50),
 						plugin));
+				final Vector direction = player.getEyeLocation()
+						.getDirection();
+				final double speed = 1.2;
+				Boolean ux = true;
+				double x = direction.getX();
+				double z = direction.getZ();
+				final double px = Math.abs(x);
+				final double pz = Math.abs(z);
+				if (px > pz) {
+					ux = false;
+				}
+				if (ux) {
+					// x is smaller
+					// long mult = (long) (pz/speed);
+					x = (x / pz) * speed;
+					z = (z / pz) * speed;
+				} else {
+					// z is smaller
+					// long mult = (long) (px/speed);
+					x = (x / px) * speed;
+					z = (z / px) * speed;
+				}
+				final double fx = x;
+				final double fz = z;
 				BukkitTask task = plugin.getServer().getScheduler()
 						.runTaskTimerAsynchronously(plugin, new Runnable() {
 
@@ -485,30 +514,7 @@ public class MarioKart {
 										main.plugin);
 								shell.setMetadata("shell.expiry",
 										new StatValue(expiry, main.plugin));
-								Vector direction = player.getEyeLocation()
-										.getDirection();
-								double speed = 1.2;
-								Boolean ux = true;
-								double x = direction.getX();
-								double z = direction.getZ();
-								double px = Math.abs(x);
-								double pz = Math.abs(z);
-								if (px > pz) {
-									ux = false;
-								}
-
-								if (ux) {
-									// x is smaller
-									// long mult = (long) (pz/speed);
-									x = (x / pz) * speed;
-									z = (z / pz) * speed;
-								} else {
-									// z is smaller
-									// long mult = (long) (px/speed);
-									x = (x / px) * speed;
-									z = (z / px) * speed;
-								}
-								Vector vel = new Vector(-x, 0, -z);
+								Vector vel = new Vector(-fx, 0, -fz);
 								shellUpdateEvent event = new shellUpdateEvent(
 										shell, null, vel, cool);
 								main.plugin.getServer().getPluginManager()
@@ -559,9 +565,10 @@ public class MarioKart {
 				}
 				power = -power;
 				for (String name:keys) {
-					if(!name.equals(player.getName())){
-						Player pla = plugin.getServer().getPlayer(
-								(String) name);
+					Player pla = plugin.getServer().getPlayer(
+							(String) name);
+					if(!name.equals(player.getName())
+							&& !isPlayerImmune(pla)){
 						Entity c = pla.getVehicle();
 						while(c!=null && !(c instanceof Minecart) && c.getVehicle() != null){
 							c = c.getVehicle();
@@ -637,9 +644,7 @@ public class MarioKart {
 													if (!cart
 															.hasMetadata(
 																	"car.braking")
-															&& !cart
-																	.hasMetadata(
-																			"kart.immune")) {
+															&& !isCarImmune(cart)) {
 														String msg = main.msgs
 																.get("mario.hit");
 														msg = msg
@@ -700,30 +705,32 @@ public class MarioKart {
 						if (!(pos < 0)) {
 							final Player pl = main.plugin.getServer().getPlayer(
 									(String) pls[pos]);
-							pl.setMetadata("kart.rolling", new StatValue(true, plugin));
-							pl.getInventory().clear();
-							main.plugin.hotBarManager.updateHotBar(pl);
-							pl.getInventory().addItem(
-									PowerupMaker.getPowerup(Powerup.BOO, 1));
-							PotionEffect nausea = new PotionEffect(
-									PotionEffectType.CONFUSION, 240, 10);
-							pl.addPotionEffect(nausea, true);
-							pl.getWorld().playSound(pl.getLocation(),
-									Sound.AMBIENCE_CAVE, 1, 1);
-							pl.updateInventory();
-							String msg = main.msgs.get("mario.hit");
-							msg = msg.replaceAll("%name%", "ghost");
-							pl.sendMessage(main.colors.getInfo() + msg);
-							plugin.getServer().getScheduler()
-									.runTaskLater(plugin, new Runnable() {
+							if(!isPlayerImmune(pl)){
+								pl.setMetadata("kart.rolling", new StatValue(true, plugin));
+								pl.getInventory().clear();
+								main.plugin.hotBarManager.updateHotBar(pl);
+								pl.getInventory().addItem(
+										PowerupMaker.getPowerup(Powerup.BOO, 1));
+								PotionEffect nausea = new PotionEffect(
+										PotionEffectType.CONFUSION, 240, 10);
+								pl.addPotionEffect(nausea, true);
+								pl.getWorld().playSound(pl.getLocation(),
+										Sound.AMBIENCE_CAVE, 1, 1);
+								pl.updateInventory();
+								String msg = main.msgs.get("mario.hit");
+								msg = msg.replaceAll("%name%", "ghost");
+								pl.sendMessage(main.colors.getInfo() + msg);
+								plugin.getServer().getScheduler()
+										.runTaskLater(plugin, new Runnable() {
 
-										public void run() {
-											pl.removeMetadata("kart.rolling", plugin);
-											pl.getInventory().clear();
-											main.plugin.hotBarManager.updateHotBar(pl);
-											pl.updateInventory();
-										}
-									}, 240l);
+											public void run() {
+												pl.removeMetadata("kart.rolling", plugin);
+												pl.getInventory().clear();
+												main.plugin.hotBarManager.updateHotBar(pl);
+												pl.updateInventory();
+											}
+										}, 240l);
+							}
 						}
 						player.addPotionEffect(effect, true);
 						return;
@@ -982,6 +989,14 @@ public class MarioKart {
 		}
 		randomNumber = plugin.random.nextInt(max - min) + min;
 		return PowerupMaker.getPowerup(pow, amts[randomNumber]);
+	}
+	
+	public Boolean isPlayerImmune(Player player){
+		return player.hasMetadata("kart.immune");
+	}
+	
+	public Boolean isCarImmune(Entity carBase){
+		return carBase.hasMetadata("kart.immune");
 	}
 
 }
