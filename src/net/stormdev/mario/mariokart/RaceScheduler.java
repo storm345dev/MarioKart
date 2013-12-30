@@ -140,10 +140,12 @@ public class RaceScheduler {
 			player.sendMessage(main.colors.getError()+main.msgs.get("error.memoryLockdown"));
 			return;
 		}
+		Boolean added = false;
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
 		RaceQueue queue = null;
 		if (queues.size() < 1) {
 			queue = new RaceQueue(track, type, player);
+			added = true;
 		} else {
 			for(UUID id:queues.keySet()){
 				RaceQueue q = queues.get(id);
@@ -155,7 +157,12 @@ public class RaceScheduler {
 				queue = new RaceQueue(track, type, player);
 				player.sendMessage(main.colors.getInfo()
 						+ main.msgs.get("general.cmd.overflow"));
+				added = true;
 			}
+		}
+		if(!added){
+			queue.addPlayer(player);
+			added = true;
 		}
 		queue.broadcast(main.colors.getTitle() + "[MarioKart:] "
 				+ main.colors.getInfo() + player.getName()

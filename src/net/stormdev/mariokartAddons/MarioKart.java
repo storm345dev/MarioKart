@@ -350,33 +350,38 @@ public class MarioKart {
 
 							@Override
 							public void run() {
-								if (shell.hasMetadata("shell.destroy")) {
-									shell.remove();
-									tasks.get(shell.getUniqueId()).cancel();
-									tasks.remove(shell.getUniqueId());
+								try {
+									if (shell.hasMetadata("shell.destroy")) {
+										shell.remove();
+										tasks.get(shell.getUniqueId()).cancel();
+										tasks.remove(shell.getUniqueId());
+										return;
+									}
+									List<MetadataValue> metas = shell
+											.getMetadata("shell.expiry");
+									int expiry = (Integer) ((StatValue) metas
+											.get(0)).getValue();
+									expiry--;
+									if (expiry < 0) {
+										shell.remove();
+										tasks.get(shell.getUniqueId()).cancel();
+										tasks.remove(shell.getUniqueId());
+										return;
+									}
+									shell.setTicksLived(1);
+									shell.setPickupDelay(Integer.MAX_VALUE);
+									shell.removeMetadata("shell.expiry",
+											main.plugin);
+									shell.setMetadata("shell.expiry",
+											new StatValue(expiry, main.plugin));
+									shellUpdateEvent event = new shellUpdateEvent(
+											shell, targetName, null, false);
+									main.plugin.getServer().getPluginManager()
+											.callEvent(event);
+								} catch (IllegalStateException e) {
+									// Shell has despawned
 									return;
 								}
-								List<MetadataValue> metas = shell
-										.getMetadata("shell.expiry");
-								int expiry = (Integer) ((StatValue) metas
-										.get(0)).getValue();
-								expiry--;
-								if (expiry < 0) {
-									shell.remove();
-									tasks.get(shell.getUniqueId()).cancel();
-									tasks.remove(shell.getUniqueId());
-									return;
-								}
-								shell.setTicksLived(1);
-								shell.setPickupDelay(Integer.MAX_VALUE);
-								shell.removeMetadata("shell.expiry",
-										main.plugin);
-								shell.setMetadata("shell.expiry",
-										new StatValue(expiry, main.plugin));
-								shellUpdateEvent event = new shellUpdateEvent(
-										shell, targetName, null, false);
-								main.plugin.getServer().getPluginManager()
-										.callEvent(event);
 								return;
 							}
 						}, 3l, 3l);
