@@ -793,6 +793,9 @@ public class main extends JavaPlugin {
 				//Play the sound
 				try {
 					//WRONG V?
+					if(pitch > 255){
+						pitch = 255;
+					}
 					PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
 					customSound.getSpecificModifier(String.class).
 					    write(0, soundPath);
@@ -800,9 +803,9 @@ public class main extends JavaPlugin {
 					    write(0, location.getBlockX()).
 					    write(1, location.getBlockY()).
 					    write(2, location.getBlockZ());
+					    write(3, (int) pitch);
 					customSound.getSpecificModifier(float.class).
 					    write(0, volume);
-					    //write(1, pitch);
 					main.prototcolManager.sendServerPacket(recipient, customSound);
 				} catch (Exception e) {
 					main.logger.info(main.colors.getError()+"Error playing custom sound: "+soundPath+"!");
