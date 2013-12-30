@@ -792,7 +792,6 @@ public class main extends JavaPlugin {
 			public void run() {
 				//Play the sound
 				try {
-					//WRONG V?
 					if(pitch > 255){
 						pitch = 255;
 					}

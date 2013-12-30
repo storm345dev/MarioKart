@@ -374,7 +374,7 @@ public class Race {
 						long mis = ms;
 						while (running && !ended) {
 							double tps = DynamicLagReducer.getTPS();
-							if (tps < 19.9) {
+							if (tps < 19.9) {								
 								if (tps < 13) {
 									if(strikes < 5){
 										main.logger
@@ -404,6 +404,10 @@ public class Race {
 									mis = ms + 100;
 								} else {
 									mis = ms + 10; // Slow down a tad
+								}
+								if(tps < 17){
+									//Check that server still has capacity to handle
+									DynamicLagReducer.overloadPrevention();
 								}
 								try {
 									Thread.sleep(mis);

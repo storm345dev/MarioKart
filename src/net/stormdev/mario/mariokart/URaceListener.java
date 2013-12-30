@@ -1,13 +1,12 @@
 package net.stormdev.mario.mariokart;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
@@ -773,63 +772,20 @@ public class URaceListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	void interact(PlayerInteractEvent e){
-		overloadPrevention();
+		DynamicLagReducer.overloadPrevention();
 		return;
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	void respawn(PlayerRespawnEvent e){
-		overloadPrevention();
+		DynamicLagReducer.overloadPrevention();
 		return;
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	void join(PlayerJoinEvent e){
-		overloadPrevention();
+		DynamicLagReducer.overloadPrevention();
 		return;
-	}
-	
-	//PlayerInteractEvent e1, PlayerRespawnEvent e2, PlayerJoinEvent e3
-	private Boolean overloadPrevention(){
-		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
-		if(freeMemory < 150){
-			System.gc();
-			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
-			if(freeMemory < 150){
-				if(!plugin.raceScheduler.isLockedDown()){
-					plugin.raceScheduler.lockdown(); //Lock all queues
-				}
-				else{
-					//Re-occuring issue
-					if(main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean()
-							&& main.plugin.random.nextBoolean()){ //Small chance races will get cancelled
-						if(main.plugin.raceScheduler.getRacesRunning() > 0){
-							//Terminate a race
-							try {
-								HashMap<UUID, Race> races = new HashMap<UUID, Race>(main.plugin.raceScheduler.getRaces());
-								Object[] ids = races.keySet().toArray();
-								UUID id = (UUID) ids[main.plugin.random.nextInt(ids.length)];
-								Race r = races.get(id);
-								r.broadcast(main.colors.getError()+"Terminating race due to depleted system resources, sorry.");
-								main.plugin.raceScheduler.stopRace(r);
-								main.logger.info("[WARNING] Low memory resulted in termination of race: "
-										+ id);
-							} catch (Exception e) {
-								//Error ending race
-							}
-						}
-					}
-				}
-				return true;
-			}
-		}
-		else{
-			if(plugin.raceScheduler.isLockedDown() &&
-					freeMemory > 200){
-				plugin.raceScheduler.unlockDown();
-			}
-		}
-		return false;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

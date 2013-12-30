@@ -1,5 +1,11 @@
 package net.stormdev.mario.utils;
 
+import java.util.HashMap;
+import java.util.UUID;
+
+import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.main;
+
 public class DynamicLagReducer implements Runnable {
 	public static int TICK_COUNT = 0;
 	public static long[] TICKS = new long[600];
@@ -19,6 +25,48 @@ public class DynamicLagReducer implements Runnable {
 	
 	public static double getMemoryUse(){
 		return getMaxMemory()-getAvailableMemory();
+	}
+	
+	public static boolean overloadPrevention(){
+		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
+		if(freeMemory < 150){
+			System.gc();
+			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
+			if(freeMemory < 150){
+				if(!main.plugin.raceScheduler.isLockedDown()){
+					main.plugin.raceScheduler.lockdown(); //Lock all queues
+				}
+				else{
+					//Re-occuring issue
+					if(main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean()
+							&& main.plugin.random.nextBoolean()){ //Small chance races will get cancelled
+						if(main.plugin.raceScheduler.getRacesRunning() > 0){
+							//Terminate a race
+							try {
+								HashMap<UUID, Race> races = new HashMap<UUID, Race>(main.plugin.raceScheduler.getRaces());
+								Object[] ids = races.keySet().toArray();
+								UUID id = (UUID) ids[main.plugin.random.nextInt(ids.length)];
+								Race r = races.get(id);
+								r.broadcast(main.colors.getError()+"Terminating race due to depleted system resources, sorry.");
+								main.plugin.raceScheduler.stopRace(r);
+								main.logger.info("[WARNING] Low memory resulted in termination of race: "
+										+ id);
+							} catch (Exception e) {
+								//Error ending race
+							}
+						}
+					}
+				}
+				return true;
+			}
+		}
+		else{
+			if(main.plugin.raceScheduler.isLockedDown() &&
+					freeMemory > 200){
+				main.plugin.raceScheduler.unlockDown();
+			}
+		}
+		return false;
 	}
 	
 	public static int getResourceScore(){
