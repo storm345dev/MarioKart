@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarSlot;
+import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.MarioKartSound;
@@ -59,7 +60,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.useful.ucars.ItemStackFromId;
 import com.useful.ucars.ucarUpdateEvent;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
