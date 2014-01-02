@@ -123,10 +123,10 @@ public class HotBarManager {
 			double power = 5;
 			Boolean useItem = true;
 			if (data.containsKey("upgrade.length")) {
-				lengthMS = (long) data.get("upgrade.length");
+				lengthMS = (Long) data.get("upgrade.length");
 			}
 			if (data.containsKey("upgrade.power")) {
-				power = (double) data.get("upgrade.power");
+				power = (Double) data.get("upgrade.power");
 			}
 			if (data.containsKey("upgrade.useItem")) {
 				useItem = (Boolean) data.get("upgrade.useItem");
@@ -147,7 +147,7 @@ public class HotBarManager {
 			long lengthMS = 5000;
 			Boolean useItem = true;
 			if (data.containsKey("upgrade.length")) {
-				lengthMS = (long) data.get("upgrade.length");
+				lengthMS = (Long) data.get("upgrade.length");
 			}
 			if (data.containsKey("upgrade.useItem")) {
 				useItem = (Boolean) data.get("upgrade.useItem");
