@@ -7,15 +7,21 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.RaceQueue;
+import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SignManager {
@@ -28,9 +34,128 @@ public class SignManager {
 		load();
 	}
 	
-	public List<SerializableLocation> getQueueSigns(String trackName, Server server){
-		List<SerializableLocation> sl = queueSigns.get(getCorrectName(trackName));
-		return sl;
+	public void updateSigns(){
+		@SuppressWarnings("unchecked")
+		List<RaceTrack> tracks = (List<RaceTrack>) main.plugin.trackManager.getRaceTracks().clone();
+		for(RaceTrack t:tracks){
+			updateSigns(t);
+		}
+		return;
+	}
+	
+	public void clearSigns(){
+		@SuppressWarnings("unchecked")
+		List<RaceTrack> tracks = (List<RaceTrack>) main.plugin.trackManager.getRaceTracks().clone();
+		for(RaceTrack t:tracks){
+			clearSigns(t, main.plugin.getServer());
+		}
+		return;
+	}
+	
+	public void updateSigns(String trackName){
+		RaceTrack track = main.plugin.trackManager.getRaceTrack(trackName);
+		updateSigns(track);
+		return;
+	}
+	
+	public synchronized void updateSigns(RaceTrack track){
+		Server server = main.plugin.getServer();
+		String name = track.getTrackName();
+		ArrayList<SerializableLocation> slocs = getLocs(name);
+		if(slocs.size() < 1){
+			return; //No signs
+		}
+		
+		Boolean update = false;
+	    LinkedHashMap<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(name);
+	    
+	    String line0 = main.colors.getTitle()+"["+name+":]"; //eg. [MyTrack:]
+	    if(line0.length() > 15){
+	    	line0 = name;
+	    	if(line0.length() > 15){
+	    		line0 = name.substring(15);
+	    	}
+	    }
+	    ArrayList<String> otherLines = new ArrayList<String>();
+	    int l = 0;
+	    for(UUID id:queues.keySet()){
+	    	if(l >= 3){ //Signs lines have 0-3
+	    		continue; //Sign full
+	    	} 
+	    	//Signs have 15 chars per line
+	    	RaceQueue queue = queues.get(id);
+	    	if(queue != null){
+	    		try {
+					String line = main.colors.getInfo()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]("
+							+queue.getRaceMode().name().toLowerCase()+")";
+					if(line.length() > 15){
+						line = main.colors.getInfo()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]";
+					}
+					otherLines.add(line);
+				} catch (Exception e) {
+					//Queue updated mid-operation
+				}
+		    	l++;
+	    	}
+	    }
+		
+		for(SerializableLocation sloc:new ArrayList<SerializableLocation>(slocs)){
+			Location loc = sloc.getLocation(server);
+			BlockState s = loc.getBlock().getState();
+			if(!(s instanceof Sign)){
+				update = true;
+				slocs.remove(s);
+				continue;
+			}
+			Sign sign = (Sign)s;
+			sign.setLine(0, line0);
+			sign.setLine(1,  otherLines.size() > 0 ? otherLines.get(0):"");
+			sign.setLine(2,  otherLines.size() > 1 ? otherLines.get(1):"");
+			sign.setLine(3,  otherLines.size() > 2 ? otherLines.get(2):"");
+			sign.update(true);
+		}
+		
+		if(update){
+			queueSigns.put(name, slocs);
+			asyncSave();
+		}
+		
+		return;
+	}
+	
+	public synchronized void clearSigns(RaceTrack track, Server server){
+		String name = track.getTrackName();
+		ArrayList<SerializableLocation> slocs = getLocs(name);
+		if(slocs.size() < 1){
+			return; //No signs
+		}
+		
+		Boolean update = false;
+	    
+	    String line0 = main.colors.getTitle()+"["+name+":]"; //eg. [MyTrack:]
+		
+		for(SerializableLocation sloc:new ArrayList<SerializableLocation>(slocs)){
+			Location loc = sloc.getLocation(server);
+			BlockState s = loc.getBlock().getState();
+			if(!(s instanceof Sign)){
+				update = true;
+				slocs.remove(s);
+				continue;
+			}
+			Sign sign = (Sign)s;
+			sign.getLines()[0] = line0;
+			sign.getLines()[1] = "";
+			sign.getLines()[2] = "";
+			sign.getLines()[3] = "";
+			sign.update(true);
+		}
+		
+		if(update){
+			queueSigns.put(name, slocs);
+			asyncSave();
+		}
+		
+		return;
 	}
 	
 	public Boolean queueSignsExistsFor(String trackName){

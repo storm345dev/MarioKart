@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarManager;
 import net.stormdev.mario.utils.HotBarUpgrade;
@@ -79,6 +80,7 @@ public class main extends JavaPlugin {
 	Map<String, Unlockable> unlocks = null;
 
 	public UnlockableManager upgradeManager = null;
+	public SignManager signManager = null;
 
 	BukkitTask lagReducer = null;
 
@@ -102,6 +104,8 @@ public class main extends JavaPlugin {
 		}
 		random = new Random();
 		plugin = this;
+		File queueSignFile = new File(getDataFolder().getAbsolutePath()
+				+ File.separator + "Data" + File.separator + "queueSigns.signData");
 		File langFile = new File(getDataFolder().getAbsolutePath()
 				+ File.separator + "lang.yml");
 		if (langFile.exists() == false || langFile.length() < 1) {
@@ -245,6 +249,14 @@ public class main extends JavaPlugin {
 			if (!lang.contains("setup.create.done")) {
 				lang.set("setup.create.done",
 						"Successfully created Race Track %name%!");
+			}
+			if (!lang.contains("setup.fail.queueSign")) {
+				lang.set("setup.fail.queueSign",
+						"That track doesn't exist!");
+			}
+			if (!lang.contains("setup.create.queueSign")) {
+				lang.set("setup.create.queueSign",
+						"Successfully registered queue sign!");
 			}
 			if (!lang.contains("race.que.existing")) {
 				lang.set("race.que.existing",
@@ -566,6 +578,9 @@ public class main extends JavaPlugin {
 		this.hotBarManager = new HotBarManager(config.getBoolean("general.upgrades.enable"));
 		this.lagReducer = getServer().getScheduler().runTaskTimer(this,
 				new DynamicLagReducer(), 100L, 1L);
+		
+		this.signManager = new SignManager(queueSignFile);
+		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");

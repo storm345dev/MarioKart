@@ -201,6 +201,8 @@ public class RaceScheduler {
 	}
 
 	public void recalculateQueues() {
+		main.plugin.signManager.updateSigns();
+		
 		if(lockdown){
 			//No more races allowed
 			if(getRacesRunning() < 1){

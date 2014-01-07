@@ -96,6 +96,7 @@ public class RaceTrackManager {
 		ArrayList<RaceTrack> Tracks = (ArrayList<RaceTrack>) tracks.clone();
 		for (RaceTrack tr : Tracks) {
 			if (tr.getTrackName().equalsIgnoreCase(name)) {
+				main.signManager.delQueueSigns(tr.getTrackName());
 				tracks.remove(tr);
 			}
 		}

@@ -119,7 +119,15 @@ public class RaceQueue {
 	}
 
 	public int playerCount() {
-		validatePlayers();
+		try {
+			validatePlayers();
+		} catch (Exception e) {
+			//Game voided
+		}
+		return players.size();
+	}
+	
+	public int currentPlayerCount() {
 		return players.size();
 	}
 
@@ -137,6 +145,7 @@ public class RaceQueue {
 			players.add(player);
 			main.plugin.raceQueues.updateQueue(this);
 			main.plugin.raceScheduler.recalculateQueues();
+			main.plugin.signManager.updateSigns(getTrack());
 			return true;
 		}
 		return false;
@@ -149,10 +158,21 @@ public class RaceQueue {
 				+ main.colors.getInfo() + player.getName()
 				+ main.msgs.get("race.que.left"));
 		main.plugin.raceQueues.updateQueue(this);
+		main.plugin.signManager.updateSigns(getTrack());
 		main.plugin.raceScheduler.recalculateQueues();
 	}
 
 	public void removePlayer(String player) {
+		for (Player p : getPlayers()) {
+			if (p.getName().equals(player)) {
+				main.plugin.signManager.updateSigns(getTrack());
+				removePlayer(p);
+				return;
+			}
+		}
+	}
+	
+	public void quietRemovePlayer(String player) {
 		for (Player p : getPlayers()) {
 			if (p.getName().equals(player)) {
 				removePlayer(p);

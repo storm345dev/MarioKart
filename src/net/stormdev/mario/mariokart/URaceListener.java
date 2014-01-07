@@ -21,6 +21,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -37,6 +38,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -58,6 +60,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.useful.ucars.ucarUpdateEvent;
@@ -70,8 +73,6 @@ public class URaceListener implements Listener {
 	public URaceListener(main plugin) {
 		this.plugin = plugin;
 	}
-
-	
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
@@ -555,6 +556,30 @@ public class URaceListener implements Listener {
 						.setType(Material.COAL_BLOCK);
 				crystal.setFireTicks(0);
 				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
+				text = false;
+			} else if(cmd.equalsIgnoreCase("queues")){ 
+				String track = ChatColor.stripColor(lines[2]);
+				if(track.length() < 1){
+					return; //No track
+				}
+				track = plugin.signManager.getCorrectName(track);
+				if(!plugin.trackManager.raceTrackExists(track)){
+					event.getPlayer().sendMessage(main.colors.getSuccess()+main.msgs.get("setup.fail.queueSign"));
+					return;
+				}
+				//Register sign
+				plugin.signManager.addQueueSign(track, event.getBlock().getLocation());
+				//Tell the player it was registered successfully
+				event.getPlayer().sendMessage(main.colors.getSuccess()+main.msgs.get("setup.create.queueSign"));
+				final String t = track;
+				main.plugin.getServer().getScheduler().runTaskLater(plugin, new BukkitRunnable(){
+
+					@Override
+					public void run() {
+						plugin.signManager.updateSigns(t);
+						return;
+					}}, 2l);
+				
 				text = false;
 			} else {
 				text = false;
