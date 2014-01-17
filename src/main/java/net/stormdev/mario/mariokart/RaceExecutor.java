@@ -23,6 +23,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.useful.ucarsCommon.StatValue;
@@ -45,7 +46,18 @@ public class RaceExecutor {
 		return;
 	}
 
-	public static void finishRace(Race game, User user, Boolean gameEnded) {
+	public static void finishRace(final Race game, final User user, final Boolean gameEnded){
+		//Call finishRaceSync, syncrhonously
+		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				finishRaceSync(game, user, gameEnded);
+				return;
+			}}, 2l);
+	}
+	
+	private static void finishRaceSync(Race game, User user, Boolean gameEnded) {
 		try {
 			Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 			List<User> usersIn = game.getUsersIn();
