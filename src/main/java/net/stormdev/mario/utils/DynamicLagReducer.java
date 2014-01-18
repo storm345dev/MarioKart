@@ -3,6 +3,8 @@ package net.stormdev.mario.utils;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
 
@@ -10,12 +12,19 @@ public class DynamicLagReducer implements Runnable {
 	public static int TICK_COUNT = 0;
 	public static long[] TICKS = new long[600];
 	public static long LAST_TICK = 0L;
+	public static long finalTime = 0L;
 
 	public static double getTPS() {
+		if(!main.dynamicLagReduce){
+			return 20;
+		}
 		return getTPS(100);
 	}
 
 	public static double getAvailableMemory(){
+		if(!main.dynamicLagReduce){
+			return 1000;
+		}
 		return Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975; //In MB
 	}
 	
@@ -24,6 +33,9 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static double getMemoryUse(){
+		if(!main.dynamicLagReduce){
+			return 10;
+		}
 		return getMaxMemory()-getAvailableMemory();
 	}
 	
@@ -70,6 +82,9 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static int getResourceScore(){
+		if(!main.dynamicLagReduce){
+			return 1000;
+		}
 		double tps = getTPS(100);
 		double mem = getAvailableMemory();
 		if(tps>19 && mem>500){
@@ -89,6 +104,9 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static int getResourceScore(double requestedMemory){
+		if(!main.dynamicLagReduce){
+			return 1000;
+		}
 		double tps = getTPS(100);
 		double mem = getAvailableMemory();
 		if(tps>19 && mem>requestedMemory+20){
@@ -123,8 +141,24 @@ public class DynamicLagReducer implements Runnable {
 
 	@Override
 	public void run() {
-		TICKS[(TICK_COUNT % TICKS.length)] = System.currentTimeMillis();
+		if(finalTime < 1){
+			finalTime = System.currentTimeMillis() + 28800;
+		}
+		long current = System.currentTimeMillis();
+		if(current > finalTime){
+			//Restart
+			restart();
+			return;
+		}
+		TICKS[(TICK_COUNT % TICKS.length)] = current;
 		TICK_COUNT += 1;
+		return;
+	}
+	
+	public void restart(){
+		Bukkit.getScheduler().cancelTask(main.plugin.lagReducer.getTaskId());
+		main.plugin.lagReducer = Bukkit.getScheduler().runTaskTimer(main.plugin,
+				new DynamicLagReducer(), 100L, 1L);
 		return;
 	}
 }

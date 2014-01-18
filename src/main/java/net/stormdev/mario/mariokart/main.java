@@ -76,13 +76,15 @@ public class main extends JavaPlugin {
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
+	
+	public static boolean dynamicLagReduce = true;
 
 	Map<String, Unlockable> unlocks = null;
 
 	public UnlockableManager upgradeManager = null;
 	public SignManager signManager = null;
 
-	BukkitTask lagReducer = null;
+	public BukkitTask lagReducer = null;
 
 	public static Boolean vault = false;
 	public static Economy economy = null;
@@ -409,6 +411,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);
 			}
+			if (!config.contains("general.optimiseAtRuntime")) {
+				config.set("general.optimiseAtRuntime", true);
+			}
 			if (!config.contains("bitlyUrlShortner")) {
 				config.set("bitlyUrlShortner", true);
 			}
@@ -580,6 +585,7 @@ public class main extends JavaPlugin {
 				new DynamicLagReducer(), 100L, 1L);
 		
 		this.signManager = new SignManager(queueSignFile);
+		dynamicLagReduce = config.getBoolean("general.optimiseAtRuntime");
 		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
