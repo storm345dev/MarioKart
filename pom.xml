@@ -115,7 +115,7 @@
             <version>LATEST</version>
         </dependency>
 	   <dependency>
-            <groupId>net.stormdev</groupId>
+            <groupId>com.useful</groupId>
             <artifactId>uCars</artifactId>
             <version>LATEST</version>
         </dependency>
