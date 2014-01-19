@@ -15,9 +15,6 @@ public class DynamicLagReducer implements Runnable {
 	public static long finalTime = 0L;
 
 	public static double getTPS() {
-		if(!main.dynamicLagReduce){
-			return 20;
-		}
 		return getTPS(100);
 	}
 
