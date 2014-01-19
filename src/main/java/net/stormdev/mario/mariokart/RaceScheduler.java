@@ -216,21 +216,6 @@ public class RaceScheduler {
 			main.logger.info("[INFO] Max races running");
 			return; // Cannot start any more races for now...
 		}
-		/* Don't bother
-		if(DynamicLagReducer.getResourceScore() < 30){
-			main.logger.info("Delayed re-queueing due to lack of server resources!");
-			if(getRacesRunning() < 1){ //Else when race ends it will fire again anyway
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
-					@Override
-					public void run() {
-						//Make sure queues don't lock
-						recalculateQueues();
-						return;
-					}}, 600l);
-			}
-			return; //Not enough memory/resource to run more races
-		}
-		*/
 		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
 		if(queues.size() < 1){
 			return;

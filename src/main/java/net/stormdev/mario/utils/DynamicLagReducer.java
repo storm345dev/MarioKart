@@ -96,17 +96,15 @@ public class DynamicLagReducer implements Runnable {
 		if(tps>19 && mem>500){
 			return 100;
 		}
-		else if(mem < 200){
+		else if(mem < 50){
 			return 10;
 		}
-		else{
-			int i = 100;
-			i -= 100-(tps*5);
-			if(mem < 300){
-				i -=20;
-			}
-			return i;
+		int i = 100;
+		i -= 100-(tps*5);
+		if(mem < 300){
+			i -=20;
 		}
+		return i;
 	}
 	
 	public static int getResourceScore(double requestedMemory){

@@ -57,7 +57,7 @@ public class RaceExecutor {
 			}}, 2l);
 	}
 	
-	private static void finishRaceSync(Race game, User user, Boolean gameEnded) {
+	private static void finishRaceSync(Race game, final User user, Boolean gameEnded) {
 		try {
 			Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 			List<User> usersIn = game.getUsersIn();
@@ -98,19 +98,28 @@ public class RaceExecutor {
 						veh.remove();
 					}
 				}
-				Location loc = game.getTrack().getExit(main.plugin.getServer());
-				if (loc == null) {
-					player.teleport(player.getLocation().getWorld()
-							.getSpawnLocation());
-				} else {
-					player.teleport(loc);
-				}
-				if (player.isOnline()) {
-					player.getInventory().clear();
+				
+				final Location loc = game.getTrack().getExit(main.plugin.getServer());
+				final Player pl = player;
+				
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
 
-					player.getInventory().setContents(user.getOldInventory());
-					player.setGameMode(user.getOldGameMode());
-				}
+					@Override
+					public void run() {
+						if (loc == null) {
+							pl.teleport(pl.getLocation().getWorld()
+									.getSpawnLocation());
+						} else {
+							pl.teleport(loc);
+						}
+						if (pl.isOnline()) {
+							pl.getInventory().clear();
+
+							pl.getInventory().setContents(user.getOldInventory());
+							pl.setGameMode(user.getOldGameMode());
+						}
+						return;
+					}}, 3l);
 			}
 			if (game.finished.contains(user.getPlayerName())) {
 				finished = true;

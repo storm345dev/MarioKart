@@ -141,7 +141,7 @@ public class RaceQueue {
 
 	public Boolean addPlayer(Player player) {
 		if (player != null && player.isOnline()
-				&& (playerCount() + 1 < playerLimit)) {
+				&& (playerCount() < playerLimit)) {
 			players.add(player);
 			main.plugin.raceQueues.updateQueue(this);
 			main.plugin.raceScheduler.recalculateQueues();

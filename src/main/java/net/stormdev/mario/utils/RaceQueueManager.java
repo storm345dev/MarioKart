@@ -53,7 +53,7 @@ public class RaceQueueManager {
 		Set<UUID> keys = trackQueues.keySet();
 		for (UUID key : keys) {
 			RaceQueue r = trackQueues.get(key);
-			if (r.getQueueId() == queueId) {
+			if (r.getQueueId().equals(queueId)) {
 				return r;
 			}
 		}
@@ -96,7 +96,7 @@ public class RaceQueueManager {
 		if (main.plugin.queues.containsKey(trackName)) {
 			trackQueues.putAll(main.plugin.queues.get(trackName));
 		}
-		for(UUID id:new HashMap<UUID, RaceQueue>(trackQueues).keySet()){
+		for(UUID id:trackQueues.keySet()){
 			RaceQueue q = trackQueues.get(id);
 			if(q.getRaceMode() != type){
 				trackQueues.remove(id);

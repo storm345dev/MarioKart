@@ -380,6 +380,9 @@ public class Race {
 										main.logger
 										.info("[WARNING] Server at critical, Race "+getGameId()+" strike: "+strikes+"/5");
 										strikes++;
+										if(strikes > 3){
+											System.gc(); //Try to prevent crash
+										}
 									}
 									else{
 										main.logger
@@ -389,7 +392,7 @@ public class Race {
 										end();
 										return;
 									}
-									mis = (long) (ms + (tps * 100));
+									mis = (long) (ms + (tps * 150));
 								} else if (tps < 15) {
 									main.logger
 									.info("[WARNING] Server running out of resources! - "
