@@ -60,12 +60,7 @@ public class RaceScheduler {
 				NoQueueTracks.add(t);
 			}
 		}
-		if (queues.size() > 0 && type != RaceType.TIME_TRIAL) { // Check if
-																// queues
-																// existing and
-																// for Time
-																// Trial force a
-																// new queue
+		if (queues.size() > 0) {
 			int targetPlayers = main.config
 					.getInt("general.race.targetPlayers");
 			Map<UUID, RaceQueue> recommendedQueues = new HashMap<UUID, RaceQueue>();
