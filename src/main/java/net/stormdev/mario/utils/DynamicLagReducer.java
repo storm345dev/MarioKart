@@ -40,12 +40,17 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static boolean overloadPrevention(){
+		if(!main.dynamicLagReduce){
+			return false;
+		}
 		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
 		if(freeMemory < 150){
+			main.logger.info("[INFO] Current system available memory: "+freeMemory);
 			System.gc();
 			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
-			if(freeMemory < 150){
+			if(freeMemory < 150){ //If, after gc, the memory is still running out
 				if(!main.plugin.raceScheduler.isLockedDown()){
+					main.logger.info("[INFO] Current system available memory (Post cleanup) : "+freeMemory);
 					main.plugin.raceScheduler.lockdown(); //Lock all queues
 				}
 				else{
@@ -75,6 +80,7 @@ public class DynamicLagReducer implements Runnable {
 		else{
 			if(main.plugin.raceScheduler.isLockedDown() &&
 					freeMemory > 200){
+				main.logger.info("[INFO] Current system available memory (Reopening queues): "+freeMemory);
 				main.plugin.raceScheduler.unlockDown();
 			}
 		}
@@ -105,7 +111,7 @@ public class DynamicLagReducer implements Runnable {
 	
 	public static int getResourceScore(double requestedMemory){
 		if(!main.dynamicLagReduce){
-			return 1000;
+			return 100;
 		}
 		double tps = getTPS(100);
 		double mem = getAvailableMemory();
