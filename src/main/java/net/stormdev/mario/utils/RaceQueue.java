@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.stormdev.mario.mariokart.main;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class RaceQueue {
@@ -19,6 +20,15 @@ public class RaceQueue {
 
 	public RaceQueue(RaceTrack track, RaceType type, Player creator) {
 		this.track = track;
+		if(type == RaceType.AUTO){
+			if((main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean())
+					|| Bukkit.getOnlinePlayers().length < main.config.getInt("race.que.minPlayers")){
+				type = RaceType.TIME_TRIAL;
+			}
+			else{
+				type = RaceType.RACE;
+			}
+		}
 		this.type = type;
 		this.queueId = UUID.randomUUID();
 		this.playerLimit = track.getMaxPlayers();

@@ -979,14 +979,14 @@ public class MarioKart {
 		int randomNumber = plugin.random.nextInt(max - min) + min;
 		type = amts[randomNumber];
 		if (type == 1) {
-			return ItemStackFromId.get(ucars.config
-					.getString("general.cars.lowBoost"));
+			return com.useful.ucars.ItemStackFromId.get(ucars.config
+					.getStringList("general.cars.lowBoost").get(0));
 		} else if (type == 2) {
-			return ItemStackFromId.get(ucars.config
-					.getString("general.cars.medBoost"));
+			return com.useful.ucars.ItemStackFromId.get(ucars.config
+					.getStringList("general.cars.medBoost").get(0));
 		}
-		return ItemStackFromId.get(ucars.config
-				.getString("general.cars.highBoost"));
+		return com.useful.ucars.ItemStackFromId.get(ucars.config
+				.getStringList("general.cars.highBoost").get(0));
 	}
 
 	public ItemStack getRandomPowerup() {

@@ -23,7 +23,7 @@ public class RaceQueueManager {
 		Set<UUID> keys = trackQueues.keySet();
 		for (UUID key : keys) {
 			RaceQueue r = trackQueues.get(key);
-			if (r.getRaceMode() == raceMode) {
+			if (r.getRaceMode() == raceMode || raceMode.equals(RaceType.AUTO)) {
 				return true;
 			}
 		}
@@ -38,7 +38,7 @@ public class RaceQueueManager {
 		Set<UUID> keys = trackQueues.keySet();
 		for (UUID key : keys) {
 			RaceQueue r = trackQueues.get(key);
-			if (r.getRaceMode() == raceMode) {
+			if (r.getRaceMode() == raceMode || raceMode.equals(RaceType.AUTO)) {
 				return r;
 			}
 		}
@@ -64,7 +64,7 @@ public class RaceQueueManager {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
-			if (queue.getRaceMode() != type) {
+			if (queue.getRaceMode() != type && type != RaceType.AUTO) {
 				trackQueues.remove(queue);
 			}
 		}
@@ -75,7 +75,7 @@ public class RaceQueueManager {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = getAllQueues();
 		for (UUID id : new ArrayList<UUID>(trackQueues.keySet())) {
 			RaceQueue queue = trackQueues.get(id);
-			if (queue.getRaceMode() != type
+			if ((queue.getRaceMode() != type && type != RaceType.AUTO)
 					|| queue.playerCount() >= queue.playerLimit()) {
 				trackQueues.remove(queue.getQueueId());
 			}
@@ -98,7 +98,7 @@ public class RaceQueueManager {
 		}
 		for(UUID id:trackQueues.keySet()){
 			RaceQueue q = trackQueues.get(id);
-			if(q.getRaceMode() != type){
+			if(q.getRaceMode() != type && type != RaceType.AUTO){
 				trackQueues.remove(id);
 			}
 		}
@@ -165,8 +165,11 @@ public class RaceQueueManager {
 		}
 	}
 
-	public Boolean queuesFor(RaceTrack track, RaceType type) {
+	public boolean queuesFor(RaceTrack track, RaceType type) {
 		LinkedHashMap<UUID, RaceQueue> queues = getAllQueues();
+		if(type == RaceType.AUTO && queues.size() > 0){
+			return true;
+		}
 		for (UUID id : queues.keySet()) {
 			RaceQueue q = queues.get(id);
 			if (!(q.getRaceMode() == RaceType.TIME_TRIAL && type == RaceType.TIME_TRIAL)) {

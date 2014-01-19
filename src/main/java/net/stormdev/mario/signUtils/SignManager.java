@@ -17,6 +17,7 @@ import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.SerializableLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -32,6 +33,21 @@ public class SignManager {
 	public SignManager(File queueSaveFile){
 		this.queueSaveFile = queueSaveFile;
 		load();
+	}
+	
+	public boolean isQueueSign(Sign sign){
+		String trackName = ChatColor.stripColor(sign.getLine(0));
+		if(trackName == null || !queueSigns.containsKey(trackName)){
+			return false;
+		}
+		Location loc = sign.getLocation();
+		for(SerializableLocation sloc:queueSigns.get(trackName)){
+			if(sloc.getLocation(Bukkit.getServer()).equals(loc)){
+				//Is a queue sign
+				return true;
+			}
+		}
+		return false; //Not a queue sign
 	}
 	
 	public void updateSigns(){
@@ -69,7 +85,7 @@ public class SignManager {
 		Boolean update = false;
 	    LinkedHashMap<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(name);
 	    
-	    String line0 = main.colors.getTitle()+"["+name+":]"; //eg. [MyTrack:]
+	    String line0 = name; //eg. [MyTrack:]
 	    if(line0.length() > 15){
 	    	line0 = name;
 	    	if(line0.length() > 15){
@@ -132,8 +148,13 @@ public class SignManager {
 		
 		Boolean update = false;
 	    
-	    String line0 = main.colors.getTitle()+"["+name+":]"; //eg. [MyTrack:]
-		
+	    String line0 = name; //eg. [MyTrack:]
+	    if(line0.length() > 15){
+	    	line0 = name;
+	    	if(line0.length() > 15){
+	    		line0 = name.substring(15);
+	    	}
+	    }
 		for(SerializableLocation sloc:new ArrayList<SerializableLocation>(slocs)){
 			Location loc = sloc.getLocation(server);
 			BlockState s = loc.getBlock().getState();

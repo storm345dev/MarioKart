@@ -119,7 +119,7 @@ public class RaceExecutor {
 							pl.setGameMode(user.getOldGameMode());
 						}
 						return;
-					}}, 3l);
+					}}, 4l);
 			}
 			if (game.finished.contains(user.getPlayerName())) {
 				finished = true;

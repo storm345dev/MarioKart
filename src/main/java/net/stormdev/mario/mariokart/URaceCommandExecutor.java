@@ -291,6 +291,9 @@ public class URaceCommandExecutor implements CommandExecutor {
 						|| t.equalsIgnoreCase("grand-prix")
 						|| t.equalsIgnoreCase("grand_prix")) {
 					type = RaceType.GRAND_PRIX;
+				} else if(t.equalsIgnoreCase("auto")
+						|| t.equalsIgnoreCase("random")){
+					type = RaceType.AUTO;
 				}
 			}
 			if (player.getVehicle() != null) {

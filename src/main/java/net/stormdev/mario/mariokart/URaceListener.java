@@ -458,7 +458,7 @@ public class URaceListener implements Listener {
 	}
 
 	@EventHandler
-	void signClicker(PlayerInteractEvent event) {
+	void signClicker(final PlayerInteractEvent event) {
 		main.marioKart.calculate(event.getPlayer(), event);
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
@@ -466,8 +466,20 @@ public class URaceListener implements Listener {
 		if (!(event.getClickedBlock().getState() instanceof Sign)) {
 			return;
 		}
-		Sign sign = (Sign) event.getClickedBlock().getState();
+		final Sign sign = (Sign) event.getClickedBlock().getState();
 		String[] lines = sign.getLines();
+		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				if(plugin.signManager.isQueueSign(sign)){
+					String trackName = ChatColor.stripColor(sign.getLine(0));
+					main.cmdExecutor.urace(event.getPlayer(), new String[] {
+						"join", trackName, "auto" },
+						event.getPlayer());
+				}
+				return;
+			}});
 		if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase("[MarioKart]")) {
 			return;
 		}
