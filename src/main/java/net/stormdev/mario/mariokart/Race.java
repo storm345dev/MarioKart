@@ -394,6 +394,7 @@ public class Race {
 									}
 									mis = (long) (ms + (tps * 150));
 								} else if (tps < 15) {
+									main.logger.info("[INFO] Current system TPS (From independent service): "+tps);
 									main.logger
 									.info("[WARNING] Server running out of resources! - "
 											+ "Compensating by reducing MarioKart tickRate (Accuracy)");
