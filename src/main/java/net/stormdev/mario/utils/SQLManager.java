@@ -104,28 +104,24 @@ public class SQLManager {
 		return true;
 	}
 
-	public Boolean setInTable(String tableName, String keyName,
-			String keyValue, String valueName, Object value)
-			throws SQLException {
-		// Make so it overrides key
-		/*
-		 * IF EXISTS( SELECT ORDER_ID FROM DBO.ORDER_DETAILS WHERE ORDER_ID =
-		 * 11032 ) BEGIN DELETE FROM DBO.ORDER_DETAILS WHERE ORDER_ID = 11032
-		 * END
-		 */
-		String del = "DELETE FROM " + tableName + " WHERE " + tableName + "."
-				+ keyName + " = ?;";
-		PreparedStatement delStatement = c.prepareStatement(del);
-		delStatement.setString(1, keyValue);
-		delStatement.executeUpdate();
-		delStatement.close();
-		String replace = "REPLACE INTO " + tableName + " (`" + keyName + "`, `"
-				+ valueName + "`) VALUES (?, ?);";
+	public boolean setInTable(String tableName, String keyName, String keyValue, String valueName, Object value) throws SQLException{
+		String replace = "INSERT INTO "+tableName+" (`"+keyName+"`, `"+valueName+"`) VALUES (?, ?)"
+				+ " ON DUPLICATE KEY UPDATE "+valueName+" = ?;";
 		PreparedStatement placeStatement = c.prepareStatement(replace);
 		placeStatement.setString(1, keyValue);
-		placeStatement.setString(2, value + "");
+		placeStatement.setString(2, value+"");
+		placeStatement.setString(3, value+"");
 		placeStatement.executeUpdate();
 		placeStatement.close();
+		
+		/*
+		String replace = "REPLACE INTO "+tableName+" (`"+keyName+"`, `"+valueName+"`) VALUES (?, ?);";
+		PreparedStatement placeStatement = c.prepareStatement(replace);
+		placeStatement.setString(1, keyValue);
+		placeStatement.setString(2, value+"");
+		placeStatement.executeUpdate();
+		placeStatement.close();
+		*/
 		return true;
 	}
 
