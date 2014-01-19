@@ -587,6 +587,15 @@ public class main extends JavaPlugin {
 		this.signManager = new SignManager(queueSignFile);
 		dynamicLagReduce = config.getBoolean("general.optimiseAtRuntime");
 		
+		if(!dynamicLagReduce){
+			logger.info(ChatColor.RED+"[WARNING] The plugin's self optimisation has been disabled,"
+					+ " this is risky as if one config value isn't set optimally - MarioKart has a chance"
+					+ " of crashing your server! I recommend you turn it back on!");
+			try {
+				Thread.sleep(1000); //Show it to then for 1s
+			} catch (InterruptedException e) {}
+		}
+		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
