@@ -12,10 +12,11 @@ public class DynamicLagReducer implements Runnable {
 	public static int TICK_COUNT = 0;
 	public static long[] TICKS = new long[600];
 	public static long LAST_TICK = 0L;
-	public static long finalTime = 0L;
+	private long finalTime = 0L;
+	private static boolean running = false;
 
 	public static double getTPS() {
-		return getTPS(100);
+		return getTPS(200);
 	}
 
 	public static double getAvailableMemory(){
@@ -127,12 +128,17 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static double getTPS(int ticks) {
-		if (TICK_COUNT < ticks) {
-			return 20.0D;
+		try {
+			if (TICK_COUNT < ticks || !running) {
+				return 20.0D;
+			}
+			int target = (TICK_COUNT - 1 - ticks) % TICKS.length;
+			long elapsed = System.currentTimeMillis() - TICKS[target];
+			return ticks / (elapsed / 1000.0D);
+		} catch (Exception e) {
+			//Has been restarted
+			return 20;
 		}
-		int target = (TICK_COUNT - 1 - ticks) % TICKS.length;
-		long elapsed = System.currentTimeMillis() - TICKS[target];
-		return ticks / (elapsed / 1000.0D);
 	}
 
 	public static long getElapsed(int tickID) {
@@ -142,8 +148,9 @@ public class DynamicLagReducer implements Runnable {
 
 	@Override
 	public void run() {
+		running = true;
 		if(finalTime < 1){
-			finalTime = System.currentTimeMillis() + 28800;
+			finalTime = System.currentTimeMillis() + 1200000; //20 mins later...
 		}
 		long current = System.currentTimeMillis();
 		if(current > finalTime){
@@ -157,7 +164,11 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public void restart(){
-		Bukkit.getScheduler().cancelTask(main.plugin.lagReducer.getTaskId());
+		TICK_COUNT = 0;
+		TICKS = new long[600];
+		LAST_TICK = 0L;
+		running = false;
+		main.plugin.lagReducer.cancel();
 		main.plugin.lagReducer = Bukkit.getScheduler().runTaskTimer(main.plugin,
 				new DynamicLagReducer(), 100L, 1L);
 		return;

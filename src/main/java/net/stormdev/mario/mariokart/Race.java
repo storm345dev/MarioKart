@@ -383,7 +383,7 @@ public class Race {
 								if (tps < 13) {
 									if(strikes < 5){
 										main.logger
-										.info("[WARNING] Server at critical, Race "+getGameId()+" strike: "+strikes+"/5");
+										.info("[WARNING] Server at critical, Race "+getGameId()+" strike: "+strikes+"/5  (TPS: "+tps+")");
 										strikes++;
 										if(strikes > 3){
 											System.gc(); //Try to prevent crash
@@ -407,7 +407,7 @@ public class Race {
 								} else if (tps < 17) {
 									main.logger
 											.info("[WARNING] Server running out of resources! - "
-													+ "Compensating by reducing MarioKart tickRate (Accuracy)");
+													+ "Compensating by reducing MarioKart tickRate (Accuracy) (TPS: "+tps+")");
 									mis = ms + 500; // Reduce lag
 								} else if (tps < 19) {
 									mis = ms + 100;
