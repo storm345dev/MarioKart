@@ -21,7 +21,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -38,7 +37,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -63,15 +61,18 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import com.useful.uCarsAPI.uCarsAPI;
 import com.useful.ucars.ucarUpdateEvent;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 public class URaceListener implements Listener {
 	main plugin = null;
+	private boolean fairCars = true;
 
 	public URaceListener(main plugin) {
 		this.plugin = plugin;
+		fairCars = main.config.getBoolean("general.ensureEqualCarSpeed");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -862,6 +863,9 @@ public class URaceListener implements Listener {
 				EntityType.MINECART);
 		cart.setMetadata("kart.racing", new StatValue(null, main.plugin));
 		cart.setPassenger(player);
+		if(fairCars){
+			uCarsAPI.getAPI().setUseRaceControls(cart.getUniqueId(), plugin);
+		}
 		player.setMetadata("car.stayIn", new StatValue(null, plugin));
 		plugin.hotBarManager.updateHotBar(player);
 		player.updateInventory();

@@ -25,15 +25,18 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 
+import com.useful.uCarsAPI.uCarsAPI;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceScheduler {
 	private ConcurrentHashMap<UUID, Race> races = new ConcurrentHashMap<UUID, Race>();
 	private int raceLimit = 5;
 	private boolean lockdown = false;
+	private boolean fairCars = true;
 
 	public RaceScheduler(int raceLimit) {
 		this.raceLimit = raceLimit;
+		fairCars = main.config.getBoolean("general.ensureEqualCarSpeed");
 	}
 
 	public void joinAutoQueue(Player player, RaceType type) {
@@ -412,6 +415,9 @@ public class RaceScheduler {
 					p.setMetadata("car.stayIn",
 							new StatValue(null, main.plugin));
 					cars.add(car);
+					if(fairCars){
+						uCarsAPI.getAPI().setUseRaceControls(car.getUniqueId(), main.plugin);
+					}
 				}
 			}
 		}

@@ -50,6 +50,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Url;
+import com.useful.uCarsAPI.uCarsAPI;
 import com.useful.ucars.Colors;
 import com.useful.ucars.ucars;
 
@@ -408,6 +409,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.upgrades.sqlPassword")) {
 				config.set("general.upgrades.sqlPassword", "password123");
 			}
+			if (!config.contains("general.ensureEqualCarSpeed")) {
+				config.set("general.ensureEqualCarSpeed", true);
+			}
 			if (!config.contains("race.que.minPlayers")) {
 				config.set("race.que.minPlayers", 2);
 			}
@@ -482,6 +486,7 @@ public class main extends JavaPlugin {
 		} catch (IOException e1) {
 			getLogger().info("Error parsing lang file!");
 		}
+		uCarsAPI.getAPI().hookPlugin(this);
 		// Load the colour scheme
 		colors = new Colors(config.getString("colorScheme.success"),
 				config.getString("colorScheme.error"),
