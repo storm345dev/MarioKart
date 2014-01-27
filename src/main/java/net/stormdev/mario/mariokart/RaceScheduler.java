@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DynamicLagReducer;
-import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;

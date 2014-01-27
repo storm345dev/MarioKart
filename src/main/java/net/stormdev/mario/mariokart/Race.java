@@ -88,6 +88,10 @@ public class Race {
 	public RaceType getType() {
 		return this.type;
 	}
+	
+	public long getTimeLimitS(){
+		return this.timeLimitS;
+	}
 
 	public synchronized User getUser(Player player) {
 		String pname = player.getName();
@@ -365,6 +369,7 @@ public class Race {
 				//User has quit
 			}
 		}
+		main.plugin.musicManager.playMusic(this);
 		final long ms = tickrate * 50;
 		this.task = main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {

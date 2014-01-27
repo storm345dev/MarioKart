@@ -9,10 +9,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
-import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.RaceType;
 

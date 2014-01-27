@@ -20,10 +20,11 @@ import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
 import net.stormdev.mario.signUtils.SignManager;
+import net.stormdev.mario.sound.MarioKartSound;
+import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.HotBarManager;
 import net.stormdev.mario.utils.HotBarUpgrade;
-import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;
@@ -77,6 +78,8 @@ public class main extends JavaPlugin {
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
+	
+	public MusicManager musicManager = null;
 	
 	public static boolean dynamicLagReduce = true;
 
@@ -388,6 +391,9 @@ public class main extends JavaPlugin {
 			if (!config.contains("general.race.rewards.currency")) {
 				config.set("general.race.rewards.currency", "Dollars");
 			}
+			if (!config.contains("general.race.music.enable")) {
+				config.set("general.race.music.enable", true);
+			}
 			if(!config.contains("general.upgrades.enable")){
 				config.set("general.upgrades.enable", true);
 			}
@@ -525,6 +531,7 @@ public class main extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		this.musicManager = new MusicManager(this);
 		main.listener = new URaceListener(this);
 		getServer().getPluginManager().registerEvents(main.listener, this);
 		this.trackManager = new RaceTrackManager(this, new File(getDataFolder()

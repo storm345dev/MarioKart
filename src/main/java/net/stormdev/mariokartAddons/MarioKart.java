@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.RaceExecutor;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
-import net.stormdev.mario.utils.MarioKartSound;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 
