@@ -16,7 +16,7 @@ public class DynamicLagReducer implements Runnable {
 	private static boolean running = false;
 
 	public static double getTPS() {
-		return getTPS(200);
+		return getTPS(100);
 	}
 
 	public static double getAvailableMemory(){
