@@ -80,9 +80,9 @@ public class Race {
 					+ "Race Time(s)", "dummy");
 		}
 		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
-		this.timeLimitS = main.config
+		this.timeLimitS = ((main.config
 				.getInt("general.race.maxTimePerCheckpoint")
-				* track.getCheckpoints().size() + 60;
+				* track.getCheckpoints().size()) * track.getLaps()) + 60;
 	}
 
 	public RaceType getType() {
