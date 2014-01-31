@@ -16,6 +16,8 @@ import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
+import net.stormdev.mariokartAddons.items.PowerupMaker;
+import net.stormdev.mariokartAddons.items.PowerupType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -724,7 +726,7 @@ public class MarioKart {
 								pl.getInventory().clear();
 								main.plugin.hotBarManager.updateHotBar(pl);
 								pl.getInventory().addItem(
-										PowerupMaker.getPowerup(Powerup.BOO, 1));
+										PowerupMaker.getPowerup(PowerupType.BOO, 1));
 								PotionEffect nausea = new PotionEffect(
 										PotionEffectType.CONFUSION, 240, 10);
 								pl.addPotionEffect(nausea, true);
@@ -990,11 +992,11 @@ public class MarioKart {
 	}
 
 	public ItemStack getRandomPowerup() {
-		Powerup[] pows = Powerup.values();
+		PowerupType[] pows = PowerupType.values();
 		int min = 0;
 		int max = pows.length;
 		int randomNumber = plugin.random.nextInt(max - min) + min;
-		Powerup pow = pows[randomNumber];
+		PowerupType pow = pows[randomNumber];
 		Integer[] amts = new Integer[] { 1, 1, 1, 1, 1, 1, 1, 3, 1 };
 		min = 0;
 		max = amts.length - 1;

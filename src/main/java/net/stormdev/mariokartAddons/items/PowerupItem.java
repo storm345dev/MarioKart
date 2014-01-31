@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons;
+package net.stormdev.mariokartAddons.items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +10,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PowerupItem extends ItemStack {
 	public PowerupItem(PowerupData powerupRaw) {
-		super(powerupRaw.raw.getTypeId());
+		super(powerupRaw.raw.getType());
 		this.setDurability(powerupRaw.raw.getDurability());
 		this.setAmount(powerupRaw.raw.getAmount());
-		Powerup powerup = powerupRaw.powerup;
+		PowerupType powerup = powerupRaw.powerup;
 		String pow = powerup.toString().toLowerCase();
 		if (pow.length() > 1) {
 			String body = pow.substring(1);
@@ -24,40 +24,40 @@ public class PowerupItem extends ItemStack {
 		meta.setDisplayName(main.colors.getInfo() + pow);
 		// Set lore based on Item
 		List<String> lore = new ArrayList<String>();
-		if (powerup == Powerup.BANANA) {
+		if (powerup == PowerupType.BANANA) {
 			lore.add("+Slows players down");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.BLUE_SHELL) {
+		} else if (powerup == PowerupType.BLUE_SHELL) {
 			lore.add("+Targets and slows the leader");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.BOMB) {
+		} else if (powerup == PowerupType.BOMB) {
 			lore.add("+Throws an ignited bomb");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.BOO) {
+		} else if (powerup == PowerupType.BOO) {
 			lore.add("+Invisible for 6s");
 			lore.add("+Apply nausea to racer ahead");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.GREEN_SHELL) {
+		} else if (powerup == PowerupType.GREEN_SHELL) {
 			lore.add("+Slows down the victim");
 			lore.add("*Left click to throw forwards");
 			lore.add("*Right click to throw backwards");
-		} else if (powerup == Powerup.LIGHTNING) {
+		} else if (powerup == PowerupType.LIGHTNING) {
 			lore.add("+Strikes all lightning on enemies");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.MUSHROOM) {
+		} else if (powerup == PowerupType.MUSHROOM) {
 			lore.add("+Applies a short speed boost");
 			lore.add("*Right click to use");
-		} else if (powerup == Powerup.POW) {
+		} else if (powerup == PowerupType.POW) {
 			lore.add("+Freezes other players");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.RED_SHELL) {
+		} else if (powerup == PowerupType.RED_SHELL) {
 			lore.add("+Slows down the victim");
 			lore.add("*Right click to deploy");
-		} else if (powerup == Powerup.STAR) {
+		} else if (powerup == PowerupType.STAR) {
 			lore.add("+Applies a large speed boost");
 			lore.add("+Immunity to other powerups");
 			lore.add("*Right click to use");
-		} else if (powerup == Powerup.RANDOM) {
+		} else if (powerup == PowerupType.RANDOM) {
 			lore.add("+Gives a random powerup");
 			lore.add("*Right click to use");
 		}

@@ -1,12 +1,12 @@
-package net.stormdev.mariokartAddons;
+package net.stormdev.mariokartAddons.items;
 
 import org.bukkit.inventory.ItemStack;
 
 public class PowerupData {
-	public Powerup powerup = null;
+	public PowerupType powerup = null;
 	public ItemStack raw = null;
 
-	public PowerupData(Powerup powerup, ItemStack raw) {
+	public PowerupData(PowerupType powerup, ItemStack raw) {
 		this.powerup = powerup;
 		this.raw = raw;
 	}
