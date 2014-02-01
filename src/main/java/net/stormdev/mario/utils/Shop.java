@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Shop {
 
@@ -160,7 +161,7 @@ public class Shop {
 	}
 	
 	public static OptionClickEvent onClick(SelectMenuType type, int slot, 
-			IconMenu.OptionClickEvent event, int page){
+			IconMenu.OptionClickEvent event, final int page){
 		final Player player = event.getPlayer();
 		if (type == SelectMenuType.MENU) {
 			if (slot == 0) {
@@ -297,6 +298,13 @@ public class Shop {
 						Matcher.quoteReplacement("" + price));
 				player.sendMessage(main.colors.getInfo() + msg);
 				event.setWillDestroy(true);
+				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new BukkitRunnable(){
+
+					@Override
+					public void run() {
+						getUpgradesForSaleMenu(page).open(player);
+						return;
+					}}, 2l);
 				return event;
 			}
 		} else if (type == SelectMenuType.SELL_UPGRADES) {
