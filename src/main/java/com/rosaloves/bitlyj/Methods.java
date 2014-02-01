@@ -76,6 +76,7 @@ final class Methods {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	public static BitlyMethod<ShortenedUrl> shorten(final String longUrl) {
 		return new MethodBase<ShortenedUrl>("shorten", Pair.p("longUrl",
 				longUrl)) {
@@ -87,6 +88,7 @@ final class Methods {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	public static BitlyMethod<UrlClicks> clicks(String string) {
 		return new MethodBase<UrlClicks>("clicks", Pair.p(hashOrUrl(string),
 				string)) {
