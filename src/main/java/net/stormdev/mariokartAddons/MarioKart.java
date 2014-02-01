@@ -1,64 +1,50 @@
 package net.stormdev.mariokartAddons;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.Race;
-import net.stormdev.mario.mariokart.RaceExecutor;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.RaceType;
-import net.stormdev.mario.utils.shellUpdateEvent;
 import net.stormdev.mariokartAddons.items.BananaPowerup;
 import net.stormdev.mariokartAddons.items.BlueShellPowerup;
+import net.stormdev.mariokartAddons.items.BombPowerup;
+import net.stormdev.mariokartAddons.items.BooPowerup;
+import net.stormdev.mariokartAddons.items.BoxPowerup;
 import net.stormdev.mariokartAddons.items.GreenShellPowerup;
+import net.stormdev.mariokartAddons.items.LightningPowerup;
+import net.stormdev.mariokartAddons.items.MushroomPowerup;
+import net.stormdev.mariokartAddons.items.PowPowerup;
 import net.stormdev.mariokartAddons.items.Powerup;
-import net.stormdev.mariokartAddons.items.PowerupMaker;
-import net.stormdev.mariokartAddons.items.PowerupType;
 import net.stormdev.mariokartAddons.items.RedShellPowerup;
+import net.stormdev.mariokartAddons.items.StarPowerup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
-import com.useful.ucars.ClosestFace;
 import com.useful.ucars.ucarUpdateEvent;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 public class MarioKart {
 	main plugin = null;
-	private HashMap<UUID, BukkitTask> tasks = new HashMap<UUID, BukkitTask>();
 	Boolean enabled = true;
 	public ItemStack respawn = null;
 
@@ -141,306 +127,45 @@ public class MarioKart {
 			if (timed) {
 				return;
 			}
-			if (ItemStackFromId.equals(
-					main.config.getString("mariokart.random"),
-					inHand.getTypeId(), inHand.getDurability())) {
-				inHand.setAmount(inHand.getAmount() - 1);
-				ItemStack give = this.getRandomPowerup();
-				if (race != null) {
-					if (ply.getName().equals(race.winning)) {
-						while (ItemStackFromId.equals(
-								main.config.getString("mariokart.blueShell"),
-								give.getTypeId(), give.getDurability())) {
-							give = this.getRandomPowerup();
-						}
-					}
-				}
-				evt.getPlayer().getInventory().addItem(give);
-			} else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.star"),
-					inHand.getTypeId(), inHand.getDurability())) {
-				inHand.setAmount(inHand.getAmount() - 1);
-				car.setMetadata("kart.immune",
-						new StatValue(15000, main.plugin)); // Value =
-															// length(millis)
-				ply.setMetadata("kart.immune",
-						new StatValue(15000, main.plugin));
-				final String pname = ply.getName();
-				plugin.getServer().getScheduler()
-						.runTaskLater(plugin, new Runnable() {
-
-							@Override
-							public void run() {
-								Player pl = main.plugin.getServer().getPlayer(
-										pname);
-								if (pl != null) {
-									pl.removeMetadata("kart.immune", main.plugin);
-									car.removeMetadata("kart.immune",
-											main.plugin);
-								}
-							}
-						}, 300l);
-				plugin.getServer().getScheduler()
-						.runTaskAsynchronously(plugin, new Runnable() {
-
-							@Override
-							public void run() {
-								int amount = 5;
-								while (amount > 0) {
-									if (ucars.listener.inACar(player)) {
-										if(!plugin.playCustomSound(player, MarioKartSound.STAR_RIFF)){
-											player.getLocation()
-											.getWorld()
-											.playSound(
-													player.getLocation(),
-													Sound.BURP, 3, 1);
-										}
-									}
-									try {
-										Thread.sleep(3000);
-									} catch (InterruptedException e) {
-									}
-									amount--;
-								}
-								return;
-							}
-						});
-				ucars.listener.carBoost(ply.getName(), 35, 15000,
-						ucars.config.getDouble("general.cars.defSpeed")); // Apply
-																			// speed
-																			// boost
-			} else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.mushroom"),
-					inHand.getTypeId(), inHand.getDurability())) {
-				inHand.setAmount(inHand.getAmount() - 1);
-				ucars.listener.carBoost(ply.getName(), 19, 9000,
-						ucars.config.getDouble("general.cars.defSpeed")); // Apply
-																			// speed
-																			// boost
-			} else if(RedShellPowerup.isItemSimilar(inHand)){
-				RedShellPowerup powerup = new RedShellPowerup();
-				powerup.setOwner(player.getName());
-				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+			Powerup powerup = null;
+			
+			if(BananaPowerup.isItemSimilar(inHand)){
+				powerup = new BananaPowerup();
 			}
 			else if(BlueShellPowerup.isItemSimilar(inHand)){
-				BlueShellPowerup powerup = new BlueShellPowerup();
-				powerup.setOwner(player.getName());
-				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+				powerup = new BlueShellPowerup();
+			}
+			else if(BombPowerup.isItemSimilar(inHand)){
+				powerup = new BombPowerup();
+			}
+			else if(BooPowerup.isItemSimilar(inHand)){
+				powerup = new BooPowerup();
+			}
+			else if(BoxPowerup.isItemSimilar(inHand)){
+				powerup = new BoxPowerup();
 			}
 			else if(GreenShellPowerup.isItemSimilar(inHand)){
-				GreenShellPowerup powerup = new GreenShellPowerup();
-				powerup.setOwner(player.getName());
-				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+				powerup = new GreenShellPowerup();
 			}
-			else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.bomb"),
-					inHand.getTypeId(), inHand.getDurability())) {
-				inHand.setAmount(inHand.getAmount() - 1);
-				final Vector vel = ply.getEyeLocation().getDirection();
-				final TNTPrimed tnt = (TNTPrimed) car.getLocation().getWorld()
-						.spawnEntity(car.getLocation(), EntityType.PRIMED_TNT);
-				tnt.setFuseTicks(80);
-				tnt.setMetadata("explosion.none", new StatValue(null, plugin));
-				vel.setY(0.2); // Distance to throw it
-				tnt.setVelocity(vel);
-				final MoveableInt count = new MoveableInt(12);
-				plugin.getServer().getScheduler()
-						.runTaskAsynchronously(plugin, new Runnable() {
-							@Override
-							public void run() {
-								if (count.getInt() > 0) {
-									count.setInt(count.getInt() - 1);
-									tnt.setVelocity(vel);
-									tnt.setMetadata("explosion.none",
-											new StatValue(null, plugin));
-									try {
-										Thread.sleep(50);
-									} catch (InterruptedException e) {
-									}
-								} else {
-									return;
-								}
-							}
-						});
-			} else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.lightning"),
-					inHand.getTypeId(), inHand.getDurability())) {
-				SortedMap<String, Double> sorted = race.getRaceOrder();
-				Set<String> keys = sorted.keySet();
-				double Cur = ucars.config.getDouble("general.cars.defSpeed");
-				double desired = 10;
-				double power = Cur - desired;
-				if (power < 0) {
-					power = 0;
-				}
-				power = -power;
-				for (String name:keys) {
-					Player pla = plugin.getServer().getPlayer(
-							name);
-					if(!name.equals(player.getName())
-							&& !isPlayerImmune(pla)){
-						Entity c = pla.getVehicle();
-						while(c!=null && !(c instanceof Minecart) && c.getVehicle() != null){
-							c = c.getVehicle();
-						}
-						if(!(c instanceof Minecart)){
-							c = null;
-						}
-						Minecart cart = (Minecart) c;
-						pla.getWorld().strikeLightningEffect(pla.getLocation());
-						if(cart != null){
-							RaceExecutor.penalty(pla,
-									cart, (long) 1.5);
-						}
-						ucars.listener
-								.carBoost(
-										pla.getName(),
-										power,
-										8000,
-										ucars.config
-												.getDouble("general.cars.defSpeed"));
-					}
-			    }
-				inHand.setAmount(inHand.getAmount() - 1);
-			} else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.pow"), inHand.getTypeId(),
-					inHand.getDurability())) {
-				SortedMap<String, Double> sorted = race.getRaceOrder();
-				Set<String> keys = sorted.keySet();
-				final Object[] pls = keys.toArray();
-				int pppos = 0;
-				for (int i = 0; i < pls.length; i++) {
-					if (pls[i].equals(player.getName())) {
-						pppos = i;
-					}
-				}
-				final int ppos = pppos;
-				plugin.getServer().getScheduler()
-						.runTaskAsynchronously(plugin, new Runnable() {
-							@Override
-							public void run() {
-								int count = 3;
-								while (count > 0) {
-									for (int i = 0; i < pls.length && i <= ppos; i++) {
-										Player pl = plugin.getServer()
-												.getPlayer((String) pls[i]);
-										pl.sendMessage(main.colors.getTitle()
-												+ "[MarioKart:] "
-												+ main.colors.getInfo() + count);
-									}
-									try {
-										Thread.sleep(1000);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
-									}
-									count--;
-								}
-								plugin.getServer().getScheduler()
-										.runTask(plugin, new Runnable() {
-											@Override
-											public void run() {
-												for (int i = 0; i < pls.length
-														&& i < ppos; i++) {
-													Player pl = plugin
-															.getServer()
-															.getPlayer(
-																	(String) pls[i]);
-													Entity e = pl.getVehicle();
-													while(e!=null && !(e instanceof Minecart) && e.getVehicle() != null){
-														e = e.getVehicle();
-													}
-													if(e == null || !(e instanceof Minecart)){
-														return;
-													}
-													Minecart cart = (Minecart) e;
-													if (!cart
-															.hasMetadata(
-																	"car.braking")
-															&& !isCarImmune(cart)) {
-														String msg = main.msgs
-																.get("mario.hit");
-														msg = msg
-																.replaceAll(
-																		Pattern.quote("%name%"),
-																		"pow block");
-														pl.getWorld()
-																.playSound(
-																		pl.getLocation(),
-																		Sound.STEP_WOOD,
-																		1f,
-																		0.25f);
-														pl.sendMessage(ChatColor.RED
-																+ msg);
-														
-														RaceExecutor.penalty(pl, 
-																		cart,
-																		2);
-													}
-												}
-												return;
-											}
-										});
-							}
-						});
-				inHand.setAmount(inHand.getAmount() - 1);
-			} else if (BananaPowerup.isItemSimilar(inHand)) {
-				BananaPowerup powerup = new BananaPowerup();
+			else if(LightningPowerup.isItemSimilar(inHand)){
+				powerup = new LightningPowerup();
+			}
+			else if(MushroomPowerup.isItemSimilar(inHand)){
+				powerup = new MushroomPowerup();
+			}
+			else if(PowPowerup.isItemSimilar(inHand)){
+				powerup = new PowPowerup();
+			}
+			else if(RedShellPowerup.isItemSimilar(inHand)){
+				powerup = new RedShellPowerup();
+			}
+			else if(StarPowerup.isItemSimilar(inHand)){
+				powerup = new StarPowerup();
+			}
+			
+			if(powerup != null){
 				powerup.setOwner(player.getName());
 				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
-			} else if (ItemStackFromId.equals(
-					main.config.getString("mariokart.boo"), inHand.getTypeId(),
-					inHand.getDurability())) {
-				main.plugin.getServer().getScheduler().runTask(main.plugin, new Runnable(){
-
-					@Override
-					public void run() {
-						PotionEffect effect = new PotionEffect(
-								PotionEffectType.INVISIBILITY, 120, 10);
-						SortedMap<String, Double> sorted = race.getRaceOrder();
-						Set<String> keys = sorted.keySet();
-						final Object[] pls = keys.toArray();
-						int pppos = 0;
-						for (int i = 0; i < pls.length; i++) {
-							if (pls[i].equals(player.getName())) {
-								pppos = i;
-							}
-						}
-						int pos = pppos - 1;
-						if (!(pos < 0)) {
-							final Player pl = main.plugin.getServer().getPlayer(
-									(String) pls[pos]);
-							if(!isPlayerImmune(pl)){
-								pl.setMetadata("kart.rolling", new StatValue(true, plugin));
-								pl.getInventory().clear();
-								main.plugin.hotBarManager.updateHotBar(pl);
-								pl.getInventory().addItem(
-										PowerupMaker.getPowerup(PowerupType.BOO, 1));
-								PotionEffect nausea = new PotionEffect(
-										PotionEffectType.CONFUSION, 240, 10);
-								pl.addPotionEffect(nausea, true);
-								pl.getWorld().playSound(pl.getLocation(),
-										Sound.AMBIENCE_CAVE, 1, 1);
-								pl.updateInventory();
-								String msg = main.msgs.get("mario.hit");
-								msg = msg.replaceAll("%name%", "ghost");
-								pl.sendMessage(main.colors.getInfo() + msg);
-								plugin.getServer().getScheduler()
-										.runTaskLater(plugin, new Runnable() {
-
-											@Override
-											public void run() {
-												pl.removeMetadata("kart.rolling", plugin);
-												pl.getInventory().clear();
-												main.plugin.hotBarManager.updateHotBar(pl);
-												pl.updateInventory();
-											}
-										}, 240l);
-							}
-						}
-						player.addPotionEffect(effect, true);
-						return;
-					}});
-				inHand.setAmount(inHand.getAmount() - 1);
 			}
 			evt.getPlayer().setItemInHand(inHand);
 			evt.getPlayer().updateInventory(); // Fix 1.6 bug with inventory not
@@ -587,7 +312,6 @@ public class MarioKart {
 										int min = 0;
 										int max = 20;
 										int delay = 100;
-										World world = ply.getWorld();
 										int z = plugin.random
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
@@ -689,6 +413,13 @@ public class MarioKart {
 		pows.add(BlueShellPowerup.class);
 		pows.add(GreenShellPowerup.class);
 		pows.add(BananaPowerup.class);
+		pows.add(BombPowerup.class);
+		pows.add(BooPowerup.class);
+		pows.add(BoxPowerup.class);
+		pows.add(LightningPowerup.class);
+		pows.add(MushroomPowerup.class);
+		pows.add(PowPowerup.class);
+		pows.add(StarPowerup.class);
 		Class<? extends Powerup> rand = pows.get(main.plugin.random.nextInt(pows.size()));
 		
 		Powerup power = null;

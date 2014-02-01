@@ -14,34 +14,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BananaPowerup extends PowerupBase {
+public class BoxPowerup extends PowerupBase {
 	
-	public BananaPowerup(){
+	public BoxPowerup(){
 		super.setItemStack(getBaseItem());
-	}
-	
-	@Override
-	public ItemStack getNewItem(){
-		//Shells can be between 1 and 3 in quantity
-				ItemStack s = super.stack.clone();
-				
-				int rand = main.plugin.random.nextInt(6); //Between 0 and 5
-				rand -= 2; //Between -2 and 3
-				if(rand < 1)
-					rand = 1;
-				
-				s.setAmount(rand);
-				
-				return s;
 	}
 
 	@Override
 	public void doRightClickAction(User user, Player player, Minecart car,
 			Location carLoc, Race race, ItemStack inHand) {
-		Location loc = player.getLocation().add(
-				player.getEyeLocation().getDirection().multiply(-1));
-		loc.getWorld().dropItem(loc, getNewItem());
-		inHand.setAmount(inHand.getAmount()-1);
+		inHand.setAmount(inHand.getAmount() - 1);
+		ItemStack give = main.marioKart.getRandomPowerup();
+		if (race != null) {
+			if (player.getName().equals(race.winning)) {
+				while (BlueShellPowerup.isItemSimilar(give)) {
+					give = main.marioKart.getRandomPowerup();
+				}
+			}
+		}
+		player.getInventory().addItem(give);
 	}
 
 	@Override
@@ -51,16 +42,16 @@ public class BananaPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.banana");
+		String id = main.config.getString("mariokart.random");
 		ItemStack i = ItemStackFromId.get(id);
 		
 		List<String> lore = new ArrayList<String>();
-		lore.add("+Slows players down");
-		lore.add("*Right click to deploy");
+		lore.add("+Gives a random powerup");
+		lore.add("*Right click to use");
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Banana");
+		im.setDisplayName(main.colors.getInfo()+"Random");
 		i.setItemMeta(im);
 		
 		return i;
@@ -72,11 +63,11 @@ public class BananaPowerup extends PowerupBase {
 
 	@Override
 	public PowerupType getType() {
-		return PowerupType.BANANA;
+		return PowerupType.RANDOM;
 	}
 	
 	public static PowerupType getPowerupType() {
-		return PowerupType.BANANA;
+		return PowerupType.RANDOM;
 	}
 
 }
