@@ -2,9 +2,8 @@ package net.stormdev.mariokartAddons.items;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.useful.ucars.ItemStackFromId;
-
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.ItemStackFromId;
 
 public class PowerupMaker {
 	public static PowerupData getPowerupRaw(PowerupType powerup, int amount) {

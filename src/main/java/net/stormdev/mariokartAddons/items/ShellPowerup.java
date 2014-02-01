@@ -11,7 +11,7 @@ public abstract class ShellPowerup implements Powerup, Shell {
 	private ItemStack stack = null;
 	protected Item item = null;
 	protected String owner = null;
-	private int expiry = 0;
+	private int expiry = 33;
 	private int cooldown = 0;
 
 	public void setItemStack(ItemStack stack) {
@@ -55,7 +55,7 @@ public abstract class ShellPowerup implements Powerup, Shell {
 	
 	@Override
 	public void spawn(Location loc, Player owner){
-		if(!isFired())
+		if(isFired())
 			return;
 		
 		this.owner = owner.getName(); //Set owner
@@ -101,7 +101,7 @@ public abstract class ShellPowerup implements Powerup, Shell {
 	
 	@Override
 	public boolean isExpired(){
-		return this.expiry > 0;
+		return !(this.expiry > 0);
 	}
 	
 	@Override

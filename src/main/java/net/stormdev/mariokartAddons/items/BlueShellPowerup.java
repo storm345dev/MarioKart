@@ -8,14 +8,13 @@ import java.util.SortedMap;
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.useful.ucars.ItemStackFromId;
 
 public class BlueShellPowerup extends TrackingShellPowerup {
 	
@@ -41,7 +40,7 @@ public class BlueShellPowerup extends TrackingShellPowerup {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Blue Shell");
+		im.setDisplayName(main.colors.getInfo()+"Blue shell");
 		i.setItemMeta(im);
 		
 		return i;

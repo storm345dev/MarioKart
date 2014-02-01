@@ -1,5 +1,6 @@
 package net.stormdev.mariokartAddons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +17,11 @@ import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
+import net.stormdev.mariokartAddons.items.BlueShellPowerup;
+import net.stormdev.mariokartAddons.items.Powerup;
 import net.stormdev.mariokartAddons.items.PowerupMaker;
 import net.stormdev.mariokartAddons.items.PowerupType;
+import net.stormdev.mariokartAddons.items.RedShellPowerup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -314,7 +318,13 @@ public class MarioKart {
 						ucars.config.getDouble("general.cars.defSpeed")); // Apply
 																			// speed
 																			// boost
-			} else if (ItemStackFromId.equals(
+			} else if(RedShellPowerup.isItemSimilar(inHand)){
+				RedShellPowerup powerup = new RedShellPowerup();
+				powerup.setOwner(player.getName());
+				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+			}
+			/*
+			else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.redShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
@@ -388,7 +398,15 @@ public class MarioKart {
 							}
 						}, 3l, 3l);
 				tasks.put(shell.getUniqueId(), task);
-			} else if (ItemStackFromId.equals(
+			}
+			*/
+			else if(BlueShellPowerup.isItemSimilar(inHand)){
+				BlueShellPowerup powerup = new BlueShellPowerup();
+				powerup.setOwner(player.getName());
+				powerup.doRightClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+			}
+			/*
+			else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.blueShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				SortedMap<String, Double> sorted = race.getRaceOrder();
@@ -444,7 +462,9 @@ public class MarioKart {
 							}
 						}, 3l, 3l);
 				tasks.put(shell.getUniqueId(), task);
-			} else if (ItemStackFromId.equals(
+			} 
+			*/
+			else if (ItemStackFromId.equals(
 					main.config.getString("mariokart.greenShell"),
 					inHand.getTypeId(), inHand.getDurability())) {
 				inHand.setAmount(inHand.getAmount() - 1);
@@ -764,9 +784,7 @@ public class MarioKart {
 			if (timed) {
 				return;
 			}
-			if (under.getType() == Material.COAL_BLOCK
-					|| under.getType() == Material.COAL_BLOCK
-					|| under.getType() == Material.COAL_BLOCK) {
+			if (under.getType() == Material.COAL_BLOCK) {
 				Sign sign = null;
 				Location uu = under.getRelative(BlockFace.DOWN)
 						.getLocation();
@@ -991,6 +1009,7 @@ public class MarioKart {
 				.getStringList("general.cars.highBoost").get(0));
 	}
 
+	/*
 	public ItemStack getRandomPowerup() {
 		PowerupType[] pows = PowerupType.values();
 		int min = 0;
@@ -1009,6 +1028,26 @@ public class MarioKart {
 		randomNumber = plugin.random.nextInt(max - min) + min;
 		return PowerupMaker.getPowerup(pow, amts[randomNumber]);
 	}
+	*/
+	public ItemStack getRandomPowerup() {
+		List<Class<? extends Powerup>> pows = new ArrayList<Class<? extends Powerup>>();
+		pows.add(RedShellPowerup.class);
+		pows.add(BlueShellPowerup.class);
+		Class<? extends Powerup> rand = pows.get(main.plugin.random.nextInt(pows.size()));
+		
+		Powerup power = null;
+		try {
+			power = rand.newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ItemStack(Material.STONE);
+		}
+		
+		ItemStack i = power.getNewItem();
+		
+		return i;
+	}
+	
 	
 	public Boolean isPlayerImmune(Player player){
 		return player.hasMetadata("kart.immune");

@@ -126,8 +126,8 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 			return;
 		}
 		
-		setCooldown(0); //No cooldown for tracking shells
-		setExpiry(33); //Expire after moving 33 times
+		super.setCooldown(0); //No cooldown for tracking shells
+		super.setExpiry(33); //Expire after moving 33 times
 		
 		task = Bukkit.getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
 
@@ -157,15 +157,15 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 	
 	@Override
 	public boolean remove(){
-		if(!isExpired()){
+		if(!super.isExpired()){
 			return false;
 		}
 		target = null;
-		super.item.remove();
+		if(super.item != null)
+			super.item.remove();
 		super.item = null;
 		super.owner = null;
 		if(task != null){
-			task.notifyAll();
 			task.cancel();
 		}
 		return true;

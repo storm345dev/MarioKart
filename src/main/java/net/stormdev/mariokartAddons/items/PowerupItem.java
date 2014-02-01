@@ -2,6 +2,8 @@ package net.stormdev.mariokartAddons.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.main;
 
@@ -21,6 +23,7 @@ public class PowerupItem extends ItemStack {
 			pow = start.toUpperCase() + body;
 		}
 		ItemMeta meta = this.getItemMeta();
+		pow = pow.replaceAll(Pattern.quote("_"), Matcher.quoteReplacement(" "));
 		meta.setDisplayName(main.colors.getInfo() + pow);
 		// Set lore based on Item
 		List<String> lore = new ArrayList<String>();

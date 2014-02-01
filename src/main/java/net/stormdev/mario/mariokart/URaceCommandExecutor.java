@@ -13,12 +13,14 @@ import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.Shop;
 import net.stormdev.mario.utils.TrackCreator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class URaceCommandExecutor implements CommandExecutor {
 	main plugin = null;
@@ -209,7 +211,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 		return false;
 	}
 
-	public Boolean urace(CommandSender sender, String[] args, Player player) {
+	public Boolean urace(CommandSender sender, String[] args, final Player player) {
 		if (args.length < 1) {
 			return false;
 		}
@@ -411,7 +413,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 				race.leave(u, true);
 				u.clear();
 			} else {
-				RaceTrack track = queue.getTrack();
+				final RaceTrack track = queue.getTrack();
 				try {
 					main.plugin.raceScheduler.leaveQueue(player, queue);
 				} catch (Exception e) {
@@ -426,6 +428,14 @@ public class URaceCommandExecutor implements CommandExecutor {
 						queue.getTrackName());
 				sender.sendMessage(main.colors.getSuccess() + msg);
 				player.teleport(track.getExit(main.plugin.getServer()));
+				Bukkit.getScheduler().runTaskLater(plugin, new BukkitRunnable(){
+
+					@Override
+					public void run() {
+						//Combat uCarsTrade's safeExit
+						player.teleport(track.getExit(main.plugin.getServer()));
+						return;
+					}}, 4l);
 				player.setBedSpawnLocation(
 						track.getExit(main.plugin.getServer()), true);
 			}
