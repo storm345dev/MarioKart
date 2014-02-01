@@ -48,7 +48,7 @@ public class RaceExecutor {
 
 	public static void finishRace(final Race game, final User user, final Boolean gameEnded){
 		//Call finishRaceSync, syncrhonously
-		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new BukkitRunnable(){
+		main.plugin.getServer().getScheduler().runTaskLaterAsynchronously(main.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {

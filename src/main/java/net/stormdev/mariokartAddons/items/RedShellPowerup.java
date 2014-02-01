@@ -35,8 +35,8 @@ public class RedShellPowerup extends TrackingShellPowerup {
 		ItemStack i = ItemStackFromId.get(id);
 		
 		List<String> lore = new ArrayList<String>();
-		lore.add(main.colors.getInfo()+"+Slows down the victim");
-		lore.add(main.colors.getInfo()+"*Right click to deploy");
+		lore.add("+Slows down the victim");
+		lore.add("*Right click to deploy");
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
