@@ -7,7 +7,6 @@ import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
-import net.stormdev.mariokartAddons.MoveableInt;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -37,13 +36,13 @@ public class BombPowerup extends PowerupBase {
 		tnt.setMetadata("explosion.none", new StatValue(null, main.plugin));
 		vel.setY(0.2); // Distance to throw it
 		tnt.setVelocity(vel);
-		final MoveableInt count = new MoveableInt(12);
 		main.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(main.plugin, new Runnable() {
 					@Override
 					public void run() {
-						if (count.getInt() > 0) {
-							count.setInt(count.getInt() - 1);
+						int count = 12;
+						if (count > 0) {
+							count--;
 							tnt.setVelocity(vel);
 							tnt.setMetadata("explosion.none",
 									new StatValue(null, main.plugin));
