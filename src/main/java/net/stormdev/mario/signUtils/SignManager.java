@@ -102,10 +102,10 @@ public class SignManager {
 	    	RaceQueue queue = queues.get(id);
 	    	if(queue != null){
 	    		try {
-					String line = main.colors.getInfo()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]("
+					String line = main.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]("
 							+queue.getRaceMode().name().toLowerCase()+")";
 					if(line.length() > 15){
-						line = main.colors.getInfo()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]";
+						line = main.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]";
 					}
 					otherLines.add(line);
 				} catch (Exception e) {
