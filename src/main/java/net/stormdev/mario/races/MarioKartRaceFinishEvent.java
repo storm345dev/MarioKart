@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.races;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

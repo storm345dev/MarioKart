@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
-import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.races.Race;
 
 public class DynamicLagReducer implements Runnable {
 	public static int TICK_COUNT = 0;

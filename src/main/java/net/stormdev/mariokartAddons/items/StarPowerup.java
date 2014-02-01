@@ -3,9 +3,9 @@ package net.stormdev.mariokartAddons.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.races.Race;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.ItemStackFromId;
 

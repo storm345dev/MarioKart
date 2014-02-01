@@ -3,10 +3,10 @@ package net.stormdev.mariokartAddons.items;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.mariokart.Race;
-import net.stormdev.mario.mariokart.RaceExecutor;
 import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.races.Race;
+import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.sound.MarioKartSound;
 
 import org.bukkit.Bukkit;

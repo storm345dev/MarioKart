@@ -1,4 +1,4 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.tracks;
 
 import java.io.File;
 import java.io.FileInputStream;

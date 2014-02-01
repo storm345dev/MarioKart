@@ -1,4 +1,4 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.races;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +9,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.sound.MarioKartSound;
-import net.stormdev.mario.utils.CheckpointCheck;
 import net.stormdev.mario.utils.DoubleValueComparator;
-import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.PlayerQuitException;
-import net.stormdev.mario.utils.RaceType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
