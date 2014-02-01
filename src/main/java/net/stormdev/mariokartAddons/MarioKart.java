@@ -5,11 +5,11 @@ import java.util.List;
 
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
-import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mariokartAddons.items.BananaPowerup;
 import net.stormdev.mariokartAddons.items.BlueShellPowerup;
 import net.stormdev.mariokartAddons.items.BombPowerup;
@@ -277,7 +277,7 @@ public class MarioKart {
 							Player ply = evt.getPlayer();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
-									while (ItemStackFromId.equals(main.config
+									while (ItemStacks.equals(main.config
 											.getString("mariokart.blueShell"),
 											give.getTypeId(), give
 													.getDurability())) {
@@ -291,7 +291,7 @@ public class MarioKart {
 							give = this.getRandomPowerup();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
-									while (ItemStackFromId.equals(main.config
+									while (ItemStacks.equals(main.config
 											.getString("mariokart.blueShell"),
 											give.getTypeId(), give
 													.getDurability())) {

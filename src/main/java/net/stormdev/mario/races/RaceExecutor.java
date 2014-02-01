@@ -9,11 +9,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.PlayerQuitException;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DoubleValueComparator;
-import net.stormdev.mario.utils.PlayerQuitException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

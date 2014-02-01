@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 
 import org.bukkit.entity.Player;

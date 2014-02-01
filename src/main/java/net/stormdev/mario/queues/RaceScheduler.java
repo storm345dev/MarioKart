@@ -10,13 +10,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.lesslag.DynamicLagReducer;
-import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.PlayerQuitException;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.RaceTrack;
-import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.ChatColor;

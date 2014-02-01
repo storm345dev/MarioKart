@@ -8,14 +8,15 @@ import java.util.regex.Pattern;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.TrackCreator;
-import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -88,7 +89,7 @@ public class URaceListener implements Listener {
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		if (ItemStackFromId.equals(main.config.getString("mariokart.banana"),
+		if (ItemStacks.equals(main.config.getString("mariokart.banana"),
 				stack.getTypeId(), stack.getDurability())) {
 			if(!main.marioKart.isPlayerImmune(player)){
 				main.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);

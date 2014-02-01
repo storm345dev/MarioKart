@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.players;
 
 public class PlayerQuitException extends Exception {
 	private static final long serialVersionUID = -7778042634075648668L;

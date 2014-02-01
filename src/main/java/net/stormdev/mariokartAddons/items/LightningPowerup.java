@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
-import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -76,7 +76,7 @@ public class LightningPowerup extends PowerupBase {
 	
 	private static final ItemStack getBaseItem(){
 		String id = main.config.getString("mariokart.lightning");
-		ItemStack i = ItemStackFromId.get(id);
+		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
 		lore.add("+Strikes all lightning on enemies");

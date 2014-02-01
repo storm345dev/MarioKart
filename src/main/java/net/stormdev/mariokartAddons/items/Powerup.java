@@ -1,6 +1,6 @@
 package net.stormdev.mariokartAddons.items;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
 import org.bukkit.Location;

@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
-import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -86,7 +86,7 @@ public class BooPowerup extends PowerupBase {
 	
 	private static final ItemStack getBaseItem(){
 		String id = main.config.getString("mariokart.boo");
-		ItemStack i = ItemStackFromId.get(id);
+		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
 		lore.add("+Invisible for 6s");

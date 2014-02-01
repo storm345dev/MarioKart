@@ -3,10 +3,10 @@ package net.stormdev.mario.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.PlayerQuitException;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
-import net.stormdev.mario.utils.PlayerQuitException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

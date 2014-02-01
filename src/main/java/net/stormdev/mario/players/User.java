@@ -1,6 +1,6 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.players;
 
-import net.stormdev.mario.utils.PlayerQuitException;
+import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;

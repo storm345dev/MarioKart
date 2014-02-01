@@ -6,11 +6,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
-import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -118,7 +118,7 @@ public class PowPowerup extends PowerupBase {
 	
 	private static final ItemStack getBaseItem(){
 		String id = main.config.getString("mariokart.pow");
-		ItemStack i = ItemStackFromId.get(id);
+		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
 		lore.add("+Freezes other players");

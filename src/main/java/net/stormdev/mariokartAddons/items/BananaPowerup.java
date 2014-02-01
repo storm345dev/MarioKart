@@ -3,10 +3,10 @@ package net.stormdev.mariokartAddons.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
-import net.stormdev.mario.utils.ItemStackFromId;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Minecart;
@@ -52,7 +52,7 @@ public class BananaPowerup extends PowerupBase {
 	
 	private static final ItemStack getBaseItem(){
 		String id = main.config.getString("mariokart.banana");
-		ItemStack i = ItemStackFromId.get(id);
+		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
 		lore.add("+Slows players down");

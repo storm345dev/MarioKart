@@ -3,10 +3,10 @@ package net.stormdev.mariokartAddons.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
-import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mariokartAddons.MoveableInt;
 
 import org.bukkit.Location;
@@ -66,7 +66,7 @@ public class BombPowerup extends PowerupBase {
 	
 	private static final ItemStack getBaseItem(){
 		String id = main.config.getString("mariokart.bomb");
-		ItemStack i = ItemStackFromId.get(id);
+		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
 		lore.add("+Throws an ignited bomb");

@@ -7,6 +7,7 @@ import java.util.SortedMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;

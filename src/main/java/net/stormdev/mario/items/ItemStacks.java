@@ -1,8 +1,8 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.items;
 
 import org.bukkit.inventory.ItemStack;
 
-public class ItemStackFromId {
+public class ItemStacks {
 	public static ItemStack get(String raw) {
 		String[] parts = raw.split(":");
 		int id = Integer.parseInt(parts[0]);
