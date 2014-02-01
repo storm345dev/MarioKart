@@ -17,6 +17,7 @@ import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SerializableLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -172,15 +174,16 @@ public class Race {
 
 	@SuppressWarnings("deprecation")
 	public void leave(User user, boolean quit) {
-		Player player = null;
+		Player ply = null;
 		try {
-			player = user.getPlayer();
-			if(player != null){
-				player.setLevel(user.getOldLevel());
+			ply = user.getPlayer();
+			if(ply != null){
+				ply.setLevel(user.getOldLevel());
 			}
 		} catch (PlayerQuitException e1) {
 			// User quit
 		}
+		final Player player = ply;
 		if (quit) {
 			if (!forceRemoveUser(user)) {
 				main.logger.info("race.quit failed to remove user");
@@ -225,6 +228,14 @@ public class Race {
 				player.setGameMode(GameMode.SURVIVAL);
 				try {
 					player.teleport(this.track.getExit(main.plugin.getServer()));
+					Bukkit.getScheduler().runTaskLater(main.plugin, new BukkitRunnable(){
+
+						@Override
+						public void run() {
+							//Combat uCarsTrade's safeExit
+							player.teleport(track.getExit(main.plugin.getServer()));
+							return;
+						}}, 4l);
 				} catch (Exception e) {
 					player.teleport(player.getWorld().getSpawnLocation());
 				}

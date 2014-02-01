@@ -428,14 +428,6 @@ public class URaceCommandExecutor implements CommandExecutor {
 						queue.getTrackName());
 				sender.sendMessage(main.colors.getSuccess() + msg);
 				player.teleport(track.getExit(main.plugin.getServer()));
-				Bukkit.getScheduler().runTaskLater(plugin, new BukkitRunnable(){
-
-					@Override
-					public void run() {
-						//Combat uCarsTrade's safeExit
-						player.teleport(track.getExit(main.plugin.getServer()));
-						return;
-					}}, 6l);
 				player.setBedSpawnLocation(
 						track.getExit(main.plugin.getServer()), true);
 			}
