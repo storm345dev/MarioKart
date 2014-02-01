@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.tracks.RaceTrack;
 
 public class RaceQueueManager {
 

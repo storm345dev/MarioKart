@@ -8,10 +8,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.shop.Shop;
+import net.stormdev.mario.tracks.RaceTrack;
+import net.stormdev.mario.tracks.TrackCreator;
 import net.stormdev.mario.utils.RaceQueue;
-import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
-import net.stormdev.mario.utils.TrackCreator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

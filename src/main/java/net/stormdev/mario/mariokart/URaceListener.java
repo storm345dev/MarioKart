@@ -9,11 +9,11 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
 import net.stormdev.mario.sound.MarioKartSound;
+import net.stormdev.mario.tracks.TrackCreator;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.ItemStackFromId;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.RaceQueue;
-import net.stormdev.mario.utils.TrackCreator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;

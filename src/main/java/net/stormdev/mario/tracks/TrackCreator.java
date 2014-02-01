@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.tracks;
 
 import java.util.regex.Pattern;
 

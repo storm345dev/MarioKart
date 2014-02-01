@@ -1,10 +1,12 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.tracks;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Location;
 import org.bukkit.Server;

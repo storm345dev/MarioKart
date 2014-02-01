@@ -27,12 +27,12 @@ import net.stormdev.mario.shop.UnlockableManager;
 import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.sound.MusicManager;
+import net.stormdev.mario.tracks.RaceTrackManager;
+import net.stormdev.mario.tracks.TrackCreator;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;
-import net.stormdev.mario.utils.RaceTrackManager;
-import net.stormdev.mario.utils.TrackCreator;
 import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;

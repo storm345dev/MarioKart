@@ -13,8 +13,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.RaceQueue;
-import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Bukkit;

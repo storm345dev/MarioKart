@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.tracks.RaceTrack;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
