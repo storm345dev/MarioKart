@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.queues;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.tracks.RaceTrack;
+import net.stormdev.mario.utils.RaceType;
 
 public class RaceQueueManager {
 

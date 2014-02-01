@@ -21,6 +21,9 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
+import net.stormdev.mario.queues.RaceQueue;
+import net.stormdev.mario.queues.RaceQueueManager;
+import net.stormdev.mario.queues.RaceScheduler;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.shop.Unlockable;
 import net.stormdev.mario.shop.UnlockableManager;
@@ -31,8 +34,6 @@ import net.stormdev.mario.tracks.RaceTrackManager;
 import net.stormdev.mario.tracks.TrackCreator;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.RaceMethods;
-import net.stormdev.mario.utils.RaceQueue;
-import net.stormdev.mario.utils.RaceQueueManager;
 import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;

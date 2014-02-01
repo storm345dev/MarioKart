@@ -1,4 +1,4 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.queues;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.mariokart.Race;
+import net.stormdev.mario.mariokart.User;
+import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.PlayerQuitException;
-import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.SerializableLocation;
 

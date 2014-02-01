@@ -7,10 +7,10 @@ import java.util.SortedMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.tracks.TrackCreator;
-import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceType;
 
 import org.bukkit.ChatColor;
