@@ -1,6 +1,6 @@
 package net.stormdev.mariokartAddons.items;
 
-import net.stormdev.ucars.trade.main;
+import net.stormdev.mario.mariokart.main;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -23,7 +23,7 @@ public abstract class ShellPowerup implements Powerup, Shell {
 		//Shells can be between 1 and 3 in quantity
 		ItemStack s = stack.clone();
 		
-		int rand = main.random.nextInt(6); //Between 0 and 5
+		int rand = main.plugin.random.nextInt(6); //Between 0 and 5
 		rand -= 2; //Between -2 and 3
 		if(rand < 1)
 			rand = 1;
