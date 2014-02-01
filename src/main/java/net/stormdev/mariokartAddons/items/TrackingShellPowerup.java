@@ -3,7 +3,9 @@ package net.stormdev.mariokartAddons.items;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.RaceExecutor;
+import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.sound.MarioKartSound;
 
@@ -14,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -23,6 +26,12 @@ import com.useful.ucarsCommon.StatValue;
 public abstract class TrackingShellPowerup extends ShellPowerup implements TrackingShell {
 	private String target;
 	private BukkitTask task = null;
+	
+	@Override
+	public void doLeftClickAction(User user, Player player, Minecart car, 
+			Location carLoc, Race race, ItemStack inHand){
+		return; //Don't do anything
+	}
 	
 	@Override
 	public void move() {

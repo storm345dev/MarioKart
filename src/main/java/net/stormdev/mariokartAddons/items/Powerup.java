@@ -12,6 +12,8 @@ public interface Powerup {
 	public void setItemStack(ItemStack stack);
 	public void doRightClickAction(User user, Player player, Minecart car, 
 			Location carLoc, Race race, ItemStack inHand);
+	public void doLeftClickAction(User user, Player player, Minecart car, 
+			Location carLoc, Race race, ItemStack inHand);
 	public PowerupType getType();
 	public ItemStack getNewItem();
 	public boolean isEqual(ItemStack used);

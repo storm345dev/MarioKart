@@ -435,7 +435,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 						//Combat uCarsTrade's safeExit
 						player.teleport(track.getExit(main.plugin.getServer()));
 						return;
-					}}, 4l);
+					}}, 6l);
 				player.setBedSpawnLocation(
 						track.getExit(main.plugin.getServer()), true);
 			}

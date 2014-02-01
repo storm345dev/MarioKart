@@ -18,6 +18,7 @@ import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mario.utils.shellUpdateEvent;
 import net.stormdev.mariokartAddons.items.BlueShellPowerup;
+import net.stormdev.mariokartAddons.items.GreenShellPowerup;
 import net.stormdev.mariokartAddons.items.Powerup;
 import net.stormdev.mariokartAddons.items.PowerupMaker;
 import net.stormdev.mariokartAddons.items.PowerupType;
@@ -103,6 +104,12 @@ public class MarioKart {
 					&& !timed) {
 				ItemStack inHand = evt.getPlayer().getItemInHand();
 				// If green shell, throw forward
+				if(GreenShellPowerup.isItemSimilar(inHand)){
+					GreenShellPowerup shell = new GreenShellPowerup();
+					shell.setOwner(player.getName());
+					shell.doLeftClickAction(race.getUser(player), player, car, car.getLocation(), race, inHand);
+				}
+				/*
 				if (ItemStackFromId.equals(
 						main.config.getString("mariokart.greenShell"),
 						inHand.getTypeId(), inHand.getDurability())) {
@@ -211,6 +218,7 @@ public class MarioKart {
 							}, 3l, 3l);
 					tasks.put(shell.getUniqueId(), task);
 				}
+				*/
 			}
 			if (!(evt.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_AIR || evt
 					.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK)) {
@@ -992,21 +1000,7 @@ public class MarioKart {
 	}
 
 	public ItemStack getRandomBoost() {
-		int type = 1;
-		int min = 0;
-		Integer[] amts = new Integer[] { 1, 1, 3, 2, 2, 2, 2 };
-		int max = amts.length;
-		int randomNumber = plugin.random.nextInt(max - min) + min;
-		type = amts[randomNumber];
-		if (type == 1) {
-			return com.useful.ucars.ItemStackFromId.get(ucars.config
-					.getStringList("general.cars.lowBoost").get(0));
-		} else if (type == 2) {
-			return com.useful.ucars.ItemStackFromId.get(ucars.config
-					.getStringList("general.cars.medBoost").get(0));
-		}
-		return com.useful.ucars.ItemStackFromId.get(ucars.config
-				.getStringList("general.cars.highBoost").get(0));
+		return getRandomPowerup(); //No longer support uCars items
 	}
 
 	/*
@@ -1033,6 +1027,7 @@ public class MarioKart {
 		List<Class<? extends Powerup>> pows = new ArrayList<Class<? extends Powerup>>();
 		pows.add(RedShellPowerup.class);
 		pows.add(BlueShellPowerup.class);
+		pows.add(GreenShellPowerup.class);
 		Class<? extends Powerup> rand = pows.get(main.plugin.random.nextInt(pows.size()));
 		
 		Powerup power = null;
