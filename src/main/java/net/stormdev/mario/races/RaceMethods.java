@@ -12,6 +12,7 @@ import net.stormdev.mario.queues.RaceQueue;
 import org.bukkit.entity.Player;
 
 public class RaceMethods {
+	@SuppressWarnings("unused")
 	private main plugin = null;
 
 	public RaceMethods() {

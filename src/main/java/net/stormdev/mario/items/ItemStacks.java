@@ -3,6 +3,7 @@ package net.stormdev.mario.items;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemStacks {
+	@SuppressWarnings("deprecation")
 	public static ItemStack get(String raw) {
 		String[] parts = raw.split(":");
 		int id = Integer.parseInt(parts[0]);

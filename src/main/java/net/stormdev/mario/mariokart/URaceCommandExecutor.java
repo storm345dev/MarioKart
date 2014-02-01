@@ -68,6 +68,7 @@ public class URaceCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				int id = main.config.getInt("setup.create.wand");
+				@SuppressWarnings("deprecation")
 				ItemStack named = new ItemStack(id);
 				String start = main.msgs.get("setup.create.start");
 				start = start.replaceAll(Pattern.quote("%id%"), "" + id);

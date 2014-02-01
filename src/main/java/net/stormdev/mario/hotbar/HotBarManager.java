@@ -105,11 +105,11 @@ public class HotBarManager {
 		return;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void executeClick(final Player player, MarioHotBar hotBar, HotBarSlot slot){
 		HotBarItem hotBarItem = hotBar.getDisplayedItem(slot);
 		Map<String, Object> data = hotBarItem.getData();
 		HotBarUpgrade type = hotBarItem.getType();
+		@SuppressWarnings("unused")
 		String upgradeName = "Unknown";
 		Boolean useUpgrade = true;
 		Boolean execute = true;
