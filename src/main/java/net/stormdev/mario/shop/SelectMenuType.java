@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.shop;
 
 public enum SelectMenuType {
 	MENU, BUY_UPGRADES, SELL_UPGRADES

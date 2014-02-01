@@ -7,20 +7,18 @@ import java.util.SortedMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceTrack;
 import net.stormdev.mario.utils.RaceType;
-import net.stormdev.mario.utils.Shop;
 import net.stormdev.mario.utils.TrackCreator;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class URaceCommandExecutor implements CommandExecutor {
 	main plugin = null;

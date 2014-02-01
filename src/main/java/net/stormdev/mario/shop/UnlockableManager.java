@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.shop;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.utils.SQLManager;
 
 public class UnlockableManager {
 
@@ -42,7 +43,7 @@ public class UnlockableManager {
 			} catch (Exception e) {
 				sql = false;
 			}
-			if (sqlManager.MySQL == null || sqlManager.c == null) {
+			if (!sqlManager.isValid()) {
 				sql = false;
 			}
 			if (sql) { // Check that it loaded okay...

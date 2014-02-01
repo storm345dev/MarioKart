@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.shop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.mariokart.main;
-import net.stormdev.mario.utils.IconMenu.OptionClickEvent;
+import net.stormdev.mario.shop.IconMenu.OptionClickEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

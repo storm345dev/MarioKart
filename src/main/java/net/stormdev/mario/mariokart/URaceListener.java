@@ -14,7 +14,6 @@ import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.TrackCreator;
-import net.stormdev.mario.utils.shellUpdateEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -191,130 +190,6 @@ public class URaceListener implements Listener {
 			return;
 		}
 	    main.marioKart.calculate(player, event);
-		return;
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	void trackingShells(shellUpdateEvent event) {
-		// if target is null then green shell
-		final Entity shell = event.getShell();
-		Location shellLoc = shell.getLocation();
-		int sound = 0;
-		if (shell.hasMetadata("shell.sound")) {
-			sound = (Integer) ((StatValue) shell.getMetadata("shell.sound")
-					.get(0)).getValue();
-		}
-		if (sound < 1) {
-			//Shell Tracking sound
-			List<Entity> nearby = shell.getNearbyEntities(15, 5, 15);
-			for(Entity e:nearby){
-				if(e instanceof Player){
-					main.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
-				}
-			}
-			sound = 3;
-			shell.removeMetadata("shell.sound", plugin);
-			shell.setMetadata("shell.sound", new StatValue(sound, plugin));
-		} else {
-			sound--;
-			shell.removeMetadata("shell.sound", plugin);
-			shell.setMetadata("shell.sound", new StatValue(sound, plugin));
-		}
-		double speed = 1.2;
-		String targetName = event.getTarget();
-		if (targetName != null) {
-			final Player target = plugin.getServer().getPlayer(targetName);
-			Location targetLoc = target.getLocation();
-			double x = targetLoc.getX() - shellLoc.getX();
-			double z = targetLoc.getZ() - shellLoc.getZ();
-			Boolean ux = true;
-			double px = Math.abs(x);
-			double pz = Math.abs(z);
-			if (px > pz) {
-				ux = false;
-			}
-
-			if (ux) {
-				// x is smaller
-				// long mult = (long) (pz/speed);
-				x = (x / pz) * speed;
-				z = (z / pz) * speed;
-			} else {
-				// z is smaller
-				// long mult = (long) (px/speed);
-				x = (x / px) * speed;
-				z = (z / px) * speed;
-			}
-			Vector vel = new Vector(x, 0, z);
-			shell.setVelocity(vel);
-			if (pz < 1.1 && px < 1.1) {
-				String msg = main.msgs.get("mario.hit");
-				msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-				main.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
-				target.sendMessage(ChatColor.RED + msg);
-				Entity cart = target.getVehicle();
-				if(cart == null){
-					return;
-				}
-				if(!(cart instanceof Minecart)){
-					while(!(cart instanceof Minecart) && cart.getVehicle() != null){
-						cart = cart.getVehicle();
-					}
-					if(!(cart instanceof Minecart)){
-						return;
-					}
-				}
-				RaceExecutor.penalty(target, ((Minecart) cart), 4);
-				shell.setMetadata("shell.destroy", new StatValue(0, plugin));
-				return;
-			}
-			return;
-		} else {
-			speed = 1.5;
-			Vector direction = event.direction;
-			if (!event.getCooldown()) {
-				if (shellLoc.getBlock().getType() != Material.AIR
-						&& shellLoc.getBlock().getType() != Material.CARPET) {
-					// Bounce
-					direction = direction.multiply(-1);
-				}
-			}
-			shell.setVelocity(direction);
-			if (!event.getCooldown()) {
-				if (shell.getNearbyEntities(2, 2, 2).size() > 0) {
-					List<Entity> nearby = shell.getNearbyEntities(2, 2, 2);
-					for (Entity entity : nearby) {
-						if (entity instanceof Player) {
-							Player pl = (Player) entity;
-							if (ucars.listener.inACar(pl)) {
-								String msg = main.msgs.get("mario.hit");
-								msg = msg.replaceAll(Pattern.quote("%name%"),
-										"green shell");
-								main.plugin.playCustomSound(pl, MarioKartSound.SHELL_HIT);
-								pl.sendMessage(ChatColor.RED + msg);
-								Entity cart = pl.getVehicle();
-								if(cart == null){
-									return;
-								}
-								if(!(cart instanceof Minecart)){
-									while(!(cart instanceof Minecart) && cart.getVehicle() != null){
-										cart = cart.getVehicle();
-									}
-									if(!(cart instanceof Minecart)){
-										return;
-									}
-								}
-								RaceExecutor.penalty(pl, ((Minecart) cart), 4);
-								shell.setMetadata("shell.destroy",
-										new StatValue(0, plugin));
-							}
-							return;
-						}
-					}
-				}
-			}
-		}
-
 		return;
 	}
 

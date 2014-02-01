@@ -27,6 +27,13 @@ public class SQLManager {
 			main.logger.info("Error connecting to mySQL database!");
 		}
 	}
+	
+	public boolean isValid(){
+		if (MySQL == null || c == null) {
+			return false;
+		}
+		return true;
+	}
 
 	public synchronized void closeConnection() {
 		try {

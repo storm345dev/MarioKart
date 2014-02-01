@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.shop;
 
 public class Upgrade {
 

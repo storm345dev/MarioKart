@@ -1,8 +1,10 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.shop;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.stormdev.mario.utils.HotBarUpgrade;
 
 import org.bukkit.Material;
 
