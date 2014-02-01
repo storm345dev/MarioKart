@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.shop.Unlockable;
+import net.stormdev.mario.shop.Upgrade;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
