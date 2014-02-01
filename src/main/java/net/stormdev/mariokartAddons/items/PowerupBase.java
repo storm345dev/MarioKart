@@ -1,7 +1,5 @@
 package net.stormdev.mariokartAddons.items;
 
-import net.stormdev.ucars.trade.main;
-
 import org.bukkit.inventory.ItemStack;
 
 public abstract class PowerupBase implements Powerup {
