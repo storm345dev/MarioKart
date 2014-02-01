@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.hotbar.HotBarManager;
+import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.shop.Unlockable;
 import net.stormdev.mario.shop.UnlockableManager;
@@ -26,8 +28,6 @@ import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.utils.DynamicLagReducer;
-import net.stormdev.mario.utils.HotBarManager;
-import net.stormdev.mario.utils.HotBarUpgrade;
 import net.stormdev.mario.utils.RaceMethods;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.RaceQueueManager;

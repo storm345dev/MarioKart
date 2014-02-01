@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.hotbar;
 
 public enum HotBarSlot {
 	SCROLLER, UTIL

@@ -3,12 +3,12 @@ package net.stormdev.mariokartAddons;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.stormdev.mario.hotbar.HotBarSlot;
+import net.stormdev.mario.hotbar.MarioHotBar;
 import net.stormdev.mario.mariokart.Race;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.sound.MarioKartSound;
-import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
-import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.RaceType;
 import net.stormdev.mariokartAddons.items.BananaPowerup;
 import net.stormdev.mariokartAddons.items.BlueShellPowerup;

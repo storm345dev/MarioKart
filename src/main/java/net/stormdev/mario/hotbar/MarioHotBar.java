@@ -1,4 +1,4 @@
-package net.stormdev.mario.utils;
+package net.stormdev.mario.hotbar;
 
 import java.util.ArrayList;
 import java.util.HashMap;

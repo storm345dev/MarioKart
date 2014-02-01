@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.stormdev.mario.utils.HotBarUpgrade;
+import net.stormdev.mario.hotbar.HotBarUpgrade;
 
 import org.bukkit.Material;
 

@@ -6,11 +6,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.stormdev.mario.hotbar.HotBarSlot;
+import net.stormdev.mario.hotbar.MarioHotBar;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DynamicLagReducer;
-import net.stormdev.mario.utils.HotBarSlot;
 import net.stormdev.mario.utils.ItemStackFromId;
-import net.stormdev.mario.utils.MarioHotBar;
 import net.stormdev.mario.utils.MarioKartRaceFinishEvent;
 import net.stormdev.mario.utils.RaceQueue;
 import net.stormdev.mario.utils.TrackCreator;
