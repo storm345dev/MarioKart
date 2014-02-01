@@ -9,11 +9,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.mariokart.User;
 import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.DoubleValueComparator;
-import net.stormdev.mario.utils.DynamicLagReducer;
 import net.stormdev.mario.utils.PlayerQuitException;
 import net.stormdev.mario.utils.SerializableLocation;
 

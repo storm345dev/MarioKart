@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.stormdev.mario.mariokart.SQLManager;
 import net.stormdev.mario.mariokart.main;
-import net.stormdev.mario.utils.SQLManager;
 
 public class UnlockableManager {
 
