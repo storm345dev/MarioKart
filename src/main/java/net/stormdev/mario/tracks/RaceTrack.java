@@ -13,6 +13,7 @@ import org.bukkit.Server;
 
 public class RaceTrack implements Serializable {
 	private static final long serialVersionUID = 2L;
+	double classVersion = 1;
 	String trackname = "Unknown";
 	int maxplayers = 10;
 	int minplayers = 2;

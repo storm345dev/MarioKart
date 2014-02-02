@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import net.stormdev.mario.mariokart.main;
@@ -40,17 +41,129 @@ public class RaceTrackManager {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public synchronized void load() {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
 					this.saveFile));
 			Object result = ois.readObject();
 			ois.close();
-			tracks = (ArrayList<RaceTrack>) result;
+			loadAndConvert(result);
 		} catch (Exception e) {
 			// File just created
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void loadAndConvert(Object result){
+		//Result is ArrayList<RaceTrack>
+		if(!(result instanceof ArrayList)){
+			System.out.println("Failed to load Race Tracks, not a list!");
+			return;
+		}
+		ArrayList<?> tr = (ArrayList<?>) result; // '?' as type cannot be guanteed at runtime
+		if(tr.size() < 1){
+			return;
+		}
+		Object first = tr.get(0);
+		if(first instanceof RaceTrack){
+			tracks = (ArrayList<RaceTrack>) result; //Load it!
+			return; 
+		}
+		
+		tracks = new ArrayList<RaceTrack>(); //Clear tracks
+		//Need to convert it from old format
+		
+		for(Object instance:tr){ //'instance' is a track in the old format
+			try {
+				@SuppressWarnings("rawtypes")
+				Class c = instance.getClass();
+				String name = "";
+				int maxPlayers = 0;
+				int minPlayers = 2;
+				int laps = 1;
+				if(c.getField("trackname") != null){
+					Field f = c.getField("trackname");
+					f.setAccessible(true);
+					name = f.get(instance).toString();
+				}
+				if(c.getField("maxplayers") != null){
+					Field f = c.getField("maxplayers");
+					f.setAccessible(true);
+					maxPlayers = f.getInt(instance);
+				}
+				if(c.getField("minplayers") != null){
+					Field f = c.getField("minplayers");
+					f.setAccessible(true);
+					minPlayers = f.getInt(instance);
+				}
+				if(c.getField("laps") != null){
+					Field f = c.getField("laps");
+					f.setAccessible(true);
+					laps = f.getInt(instance);
+				}
+				RaceTrack track = new RaceTrack(name, maxPlayers, minPlayers, laps);
+				@SuppressWarnings("rawtypes")
+				Class latest = track.getClass();
+				//Fill track values
+				if(c.getField("lobby") != null){
+					Field f = c.getField("lobby");
+					f.setAccessible(true);
+					Field l = latest.getField("lobby");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				if(c.getField("exit") != null){
+					Field f = c.getField("exit");
+					f.setAccessible(true);
+					Field l = latest.getField("exit");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				if(c.getField("line1") != null){
+					Field f = c.getField("line1");
+					f.setAccessible(true);
+					Field l = latest.getField("line1");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				if(c.getField("line2") != null){
+					Field f = c.getField("line2");
+					f.setAccessible(true);
+					Field l = latest.getField("line2");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				if(c.getField("startGrid") != null){
+					Field f = c.getField("startGrid");
+					f.setAccessible(true);
+					Field l = latest.getField("startGrid");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				if(c.getField("checkPoints") != null){
+					Field f = c.getField("checkPoints");
+					f.setAccessible(true);
+					Field l = latest.getField("checkPoints");
+					l.setAccessible(true);
+					l.set(track, f.get(instance)); //Update the value on the new format
+				}
+				
+				tracks.add(track);
+				
+			} catch (SecurityException e) {
+				System.out.println("Failed to convert old track format! Security Manage blocked reflection!");
+			} catch (NoSuchFieldException e) {
+				System.out.println("Failed to convert old track format! Invalid/Incompatible!");
+			} catch (IllegalArgumentException e) {
+				System.out.println("Failed to convert old track format! Invalid!");
+			} catch (IllegalAccessException e) {
+				System.out.println("Failed to convert old track format! Invalid!");
+			} catch (Exception e){
+				System.out.println("Failed to convert old track format! Invalid/Incompatible!");
+			}
+		}
+		//Now all are updated, lets save the changes
+		save();
 	}
 
 	public RaceTrack getRaceTrack(String trackName) {
