@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.config.PluginConfigurator;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
@@ -349,144 +350,7 @@ public class main extends JavaPlugin {
 				lang.set("mario.hit", "You were hit by a %name%!");
 			}
 			// Setup the config
-			if (!config.contains("setup.create.wand")) {
-				config.set("setup.create.wand", 280);
-			}
-			if (!config.contains("general.logger.colour")) {
-				config.set("general.logger.colour", true);
-			}
-			if (!config.contains("general.raceLimit")) {
-				config.set("general.raceLimit", 10);
-			}
-			if (!config.contains("general.raceTickrate")) {
-				config.set("general.raceTickrate", 4l);
-			}
-			if (!config.contains("general.checkpointRadius")) {
-				config.set("general.checkpointRadius", 10.0);
-			}
-			if (!config.contains("general.raceGracePeriod")) {
-				config.set("general.raceGracePeriod", 10.0);
-			}
-			if (!config.contains("general.race.timed.log")) {
-				config.set("general.race.timed.log", true);
-			}
-			if (!config.contains("general.race.maxTimePerCheckpoint")) {
-				config.set("general.race.maxTimePerCheckpoint", 60);
-			}
-			if (!config.contains("general.race.enableTimeLimit")) {
-				config.set("general.race.enableTimeLimit", true);
-			}
-			if (!config.contains("general.race.targetPlayers")) {
-				config.set("general.race.targetPlayers", 5);
-			}
-			if (!config.contains("general.race.rewards.enable")) {
-				config.set("general.race.rewards.enable", true);
-			}
-			if (!config.contains("general.race.rewards.win")) {
-				config.set("general.race.rewards.win", 10.0);
-			}
-			if (!config.contains("general.race.rewards.second")) {
-				config.set("general.race.rewards.second", 5.0);
-			}
-			if (!config.contains("general.race.rewards.third")) {
-				config.set("general.race.rewards.third", 2.0);
-			}
-			if (!config.contains("general.race.rewards.currency")) {
-				config.set("general.race.rewards.currency", "Dollars");
-			}
-			if (!config.contains("general.race.music.enable")) {
-				config.set("general.race.music.enable", true);
-			}
-			if(!config.contains("general.upgrades.enable")){
-				config.set("general.upgrades.enable", true);
-			}
-			if (!config.contains("general.upgrades.useSQL")) {
-				config.set("general.upgrades.useSQL", false);
-			}
-			if (!config.contains("general.upgrades.sqlHostName")) {
-				config.set("general.upgrades.sqlHostName", "localhost");
-			}
-			if (!config.contains("general.upgrades.sqlPort")) {
-				config.set("general.upgrades.sqlPort", "3306");
-			}
-			if (!config.contains("general.upgrades.sqlDataBaseName")) {
-				config.set("general.upgrades.sqlDataBaseName", "myDataBase");
-			}
-			if (!config.contains("general.upgrades.sqlUsername")) {
-				config.set("general.upgrades.sqlUsername", "root");
-			}
-			if (!config.contains("general.upgrades.sqlPassword")) {
-				config.set("general.upgrades.sqlPassword", "password123");
-			}
-			if (!config.contains("general.ensureEqualCarSpeed")) {
-				config.set("general.ensureEqualCarSpeed", true);
-			}
-			if (!config.contains("race.que.minPlayers")) {
-				config.set("race.que.minPlayers", 2);
-			}
-			if (!config.contains("general.optimiseAtRuntime")) {
-				config.set("general.optimiseAtRuntime", true);
-			}
-			if (!config.contains("bitlyUrlShortner")) {
-				config.set("bitlyUrlShortner", true);
-			}
-			if (!config.contains("mariokart.resourcePack")) {
-				config.set(
-						"mariokart.resourcePack",
-						"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip");
-			}
-			if (!config.contains("mariokart.enable")) {
-				config.set("mariokart.enable", true);
-			}
-			if (!config.contains("mariokart.redShell")) {
-				config.set("mariokart.redShell", "351:1");
-			}
-			if (!config.contains("mariokart.greenShell")) {
-				config.set("mariokart.greenShell", "351:2");
-			}
-			if (!config.contains("mariokart.blueShell")) {
-				config.set("mariokart.blueShell", "351:12");
-			}
-			if (!config.contains("mariokart.banana")) {
-				config.set("mariokart.banana", "351:11");
-			}
-			if (!config.contains("mariokart.star")) {
-				config.set("mariokart.star", "399");
-			}
-			if (!config.contains("mariokart.lightning")) {
-				config.set("mariokart.lightning", "351:7");
-			}
-			if (!config.contains("mariokart.bomb")) {
-				config.set("mariokart.bomb", "46");
-			}
-			if (!config.contains("mariokart.boo")) {
-				config.set("mariokart.boo", "352");
-			}
-			if (!config.contains("mariokart.pow")) {
-				config.set("mariokart.pow", "79");
-			}
-			if (!config.contains("mariokart.random")) {
-				config.set("mariokart.random", "159:4");
-			}
-			if (!config.contains("mariokart.mushroom")) {
-				config.set("mariokart.mushroom", "40");
-			}
-			// Setup the colour scheme
-			if (!config.contains("colorScheme.success")) {
-				config.set("colorScheme.success", "&c");
-			}
-			if (!config.contains("colorScheme.error")) {
-				config.set("colorScheme.error", "&7");
-			}
-			if (!config.contains("colorScheme.info")) {
-				config.set("colorScheme.info", "&6");
-			}
-			if (!config.contains("colorScheme.title")) {
-				config.set("colorScheme.title", "&4");
-			}
-			if (!config.contains("colorScheme.tp")) {
-				config.set("colorScheme.tp", "&1");
-			}
+			PluginConfigurator.load(config); //Loads and converts configs
 		} catch (Exception e) {
 		}
 		saveConfig();
