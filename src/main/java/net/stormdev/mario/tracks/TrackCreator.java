@@ -89,7 +89,7 @@ public class TrackCreator {
 		int pos = track.countCheckPoints();
 		track.addToCheckpoints(pos, player.getLocation());
 		player.sendMessage(MarioKart.colors.getInfo() + "["
-				+ track.countCheckPoints());
+				+ track.countCheckPoints() + "]");
 		return;
 	}
 
