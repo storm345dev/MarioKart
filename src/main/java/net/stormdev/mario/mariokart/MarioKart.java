@@ -124,6 +124,7 @@ public class MarioKart extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		System.gc();
+		
 		if (listeners != null || logger != null
 				|| msgs != null || powerupManager != null || economy != null) {
 			getLogger().log(Level.WARNING,
@@ -135,10 +136,13 @@ public class MarioKart extends JavaPlugin {
 			vault = null;
 			economy = null;
 		}
+		
 		random = new Random();
 		plugin = this;
+		
 		File queueSignFile = new File(getDataFolder().getAbsolutePath()
 				+ File.separator + "Data" + File.separator + "queueSigns.signData");
+		
 		msgs = new MKLang(this);
 		if (new File(getDataFolder().getAbsolutePath() + File.separator
 				+ "config.yml").exists() == false
@@ -153,13 +157,12 @@ public class MarioKart extends JavaPlugin {
 			}
 			copy(getResource("marioKartConfigHeader.yml"), configFile);
 		}
+		
 		config = getConfig();
 		logger = new CustomLogger(getServer().getConsoleSender(), getLogger());
-		try {
-			// Setup the config
-			PluginConfigurator.load(config); //Loads and converts configs
-		} catch (Exception e) {
-		}
+		
+		// Setup the config
+		PluginConfigurator.load(config); //Loads and converts configs
 		saveConfig();
 		
 		uCarsAPI.getAPI().hookPlugin(this);
@@ -174,7 +177,6 @@ public class MarioKart extends JavaPlugin {
 		logger.info("Config loaded!");
 		this.checkpointRadiusSquared = Math.pow(
 				config.getDouble("general.checkpointRadius"), 2);
-		logger.info("Searching for ProtocolLib...");
 		
 		setupCmds(); //Setup the commands
 		setupListeners(); //Setup listeners
@@ -187,7 +189,8 @@ public class MarioKart extends JavaPlugin {
 		this.raceMethods = new RaceMethods();
 		this.raceScheduler = new RaceScheduler(
 				config.getInt("general.raceLimit"));
-		// Setup marioKart
+		
+		// Setup marioKart addon to the racing
 		powerupManager = new PowerupManager(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
@@ -264,27 +267,34 @@ public class MarioKart extends JavaPlugin {
 		if (ucars != null) {
 			ucars.unHookPlugin(this);
 		}
+		
 		HashMap<UUID, Race> races = new HashMap<UUID, Race>(
 				this.raceScheduler.getRaces());
 		for (UUID id : races.keySet()) {
 			races.get(id).end(); // End the race
 		}
 		raceQueues.clear();
+		
 		Player[] players = getServer().getOnlinePlayers().clone();
 		for (Player player : players) {
 			if (player.hasMetadata("car.stayIn")) {
 				player.removeMetadata("car.stayIn", plugin);
 			}
 		}
+		
 		this.lagReducer.cancel();
+		
 		getServer().getScheduler().cancelTasks(this);
 		System.gc();
+		
 		try {
 			Shop.getShop().destroy();
 		} catch (Exception e) {
 			// Shop is invalid anyway
 		}
+		
 		this.upgradeManager.unloadSQL();
+		
 		logger.info("MarioKart has been disabled!");
 		System.gc();
 	}
