@@ -1,4 +1,4 @@
-package code.husky.mysql;
+package lib.husky.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 
-import org.bukkit.plugin.Plugin;
+import lib.husky.Database;
 
-import code.husky.Database;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Connects to and uses a MySQL database

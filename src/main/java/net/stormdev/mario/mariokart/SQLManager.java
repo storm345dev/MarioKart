@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import code.husky.mysql.MySQL;
+import lib.husky.mysql.MySQL;
 
 public class SQLManager {
 	MySQL MySQL = null;
