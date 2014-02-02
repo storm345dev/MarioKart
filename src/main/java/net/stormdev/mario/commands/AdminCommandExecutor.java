@@ -1,9 +1,12 @@
 package net.stormdev.mario.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.mario.races.Race;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.tracks.TrackCreator;
 
@@ -97,6 +100,51 @@ public class AdminCommandExecutor implements CommandExecutor {
 				ArrayList<String> names = new ArrayList<String>();
 				for (RaceTrack track : tracks) {
 					names.add(track.getTrackName());
+				}
+				double total = names.size() / 6;
+				int totalpages = (int) Math.ceil(total);
+				int pos = (page - 1) * 6;
+				if (page > totalpages) {
+					page = totalpages;
+				}
+				if (pos > names.size()) {
+					pos = names.size() - 5;
+				}
+				if (pos < 0) {
+					pos = 0;
+				}
+				if (page < 0) {
+					page = 0;
+				}
+				String msg = MarioKart.msgs.get("general.cmd.page");
+				msg = msg.replaceAll(Pattern.quote("%page%"), "" + (page + 1));
+				msg = msg.replaceAll(Pattern.quote("%total%"), ""
+						+ (totalpages + 1));
+				sender.sendMessage(MarioKart.colors.getTitle() + msg);
+				for (int i = pos; i < (i + 6) && i < names.size(); i++) {
+					String Trackname = names.get(i);
+					char[] chars = Trackname.toCharArray();
+					if (chars.length >= 1) {
+						String s = "" + chars[0];
+						s = s.toUpperCase();
+						Trackname = s + Trackname.substring(1);
+					}
+					sender.sendMessage(MarioKart.colors.getInfo() + Trackname);
+				}
+				return true;
+			} else if (command.equalsIgnoreCase("races") || command.equalsIgnoreCase("games")) {
+				int page = 1;
+				if (args.length > 1) {
+					try {
+						page = Integer.parseInt(args[1]);
+					} catch (NumberFormatException e) {
+						page = 1;
+					}
+				}
+				HashMap<UUID, Race> games = plugin.raceScheduler.getRaces();
+				ArrayList<String> names = new ArrayList<String>();
+				for (Race game:games.values()) {
+					names.add(game.getTrackName()+" ("+game.getType().toString().toLowerCase()+")");
 				}
 				double total = names.size() / 6;
 				int totalpages = (int) Math.ceil(total);
