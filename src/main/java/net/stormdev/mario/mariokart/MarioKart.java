@@ -19,6 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.mario.commands.AdminCommandExecutor;
+import net.stormdev.mario.commands.RaceCommandExecutor;
+import net.stormdev.mario.commands.RaceTimeCommandExecutor;
 import net.stormdev.mario.config.PluginConfigurator;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
@@ -47,7 +50,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,15 +61,17 @@ import com.useful.uCarsAPI.uCarsAPI;
 import com.useful.ucars.Colors;
 import com.useful.ucars.ucars;
 
-public class main extends JavaPlugin {
+public class MarioKart extends JavaPlugin {
 	public YamlConfiguration lang = new YamlConfiguration();
-	public static main plugin;
+	public static MarioKart plugin;
 	public static FileConfiguration config = new YamlConfiguration();
 	public static Colors colors;
 	public static CustomLogger logger = null;
 	public static ucars ucars = null;
-	public static URaceCommandExecutor cmdExecutor = null;
-	public static URaceListener listener = null;
+	public AdminCommandExecutor adminCommandExecutor = null;
+	public RaceCommandExecutor raceCommandExecutor = null;
+	public RaceTimeCommandExecutor raceTimeCommandExecutor = null;
+	public URaceListener listener = null;
 	public RaceTrackManager trackManager = null;
 	public RaceScheduler raceScheduler = null;
 	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
@@ -97,15 +101,26 @@ public class main extends JavaPlugin {
 	public static Boolean vault = false;
 	public static Economy economy = null;
 
+	private void setupCmds(){
+		adminCommandExecutor = new AdminCommandExecutor(this);
+		raceCommandExecutor = new RaceCommandExecutor(this);
+		raceTimeCommandExecutor = new RaceTimeCommandExecutor(this);
+		
+		getCommand("marioRaceAdmin").setExecutor(adminCommandExecutor);
+		getCommand("race").setExecutor(raceCommandExecutor);
+		getCommand("racetimes").setExecutor(raceTimeCommandExecutor);
+		
+	}
+	
+	
 	@Override
 	public void onEnable() {
 		System.gc();
-		if (listener != null || cmdExecutor != null || logger != null
+		if (listener != null || logger != null
 				|| msgs != null || marioKart != null || economy != null) {
 			getLogger().log(Level.WARNING,
 					"Previous plugin instance found, performing clearup...");
 			listener = null;
-			cmdExecutor = null;
 			logger = null;
 			msgs = null;
 			marioKart = null;
@@ -385,22 +400,12 @@ public class main extends JavaPlugin {
 		ucars.hookPlugin(this);
 		logger.info("uCars found and hooked!");
 		logger.info("Searching for ProtocolLib...");
-		PluginDescriptionFile pldesc = plugin.getDescription();
-		Map<String, Map<String, Object>> commands = pldesc.getCommands();
-		Set<String> keys = commands.keySet();
-		main.cmdExecutor = new URaceCommandExecutor(this);
-		for (String k : keys) {
-			try {
-				getCommand(k).setExecutor(cmdExecutor);
-			} catch (Exception e) {
-				getLogger().log(Level.SEVERE,
-						"Error registering command " + k.toString());
-				e.printStackTrace();
-			}
-		}
+		
+		setupCmds(); //Setup the commands
+ 		
 		this.musicManager = new MusicManager(this);
-		main.listener = new URaceListener(this);
-		getServer().getPluginManager().registerEvents(main.listener, this);
+		this.listener = new URaceListener(this);
+		getServer().getPluginManager().registerEvents(listener, this);
 		this.trackManager = new RaceTrackManager(this, new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "tracks.uracetracks"));
@@ -430,11 +435,11 @@ public class main extends JavaPlugin {
 								"Attempted to enable rewards and shop but Vault/Economy NOT found. Please install vault to use these features!");
 				plugin.getLogger().warning("Disabling reward system...");
 				plugin.getLogger().warning("Disabling shop system...");
-				main.config.set("general.race.rewards.enable", false);
-				main.config.set("general.upgrades.enable", false);
+				MarioKart.config.set("general.race.rewards.enable", false);
+				MarioKart.config.set("general.upgrades.enable", false);
 			}
 		}
-		String rl = main.config.getString("mariokart.resourcePack");
+		String rl = MarioKart.config.getString("mariokart.resourcePack");
 
 		Boolean valid = true;
 		try {
@@ -442,7 +447,7 @@ public class main extends JavaPlugin {
 		} catch (MalformedURLException e2) {
 			valid = false;
 		}
-		if (valid && main.config.getBoolean("bitlyUrlShortner")) {
+		if (valid && MarioKart.config.getBoolean("bitlyUrlShortner")) {
 			// Shorten url
 			// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
 			Url url = Bitly
@@ -557,7 +562,7 @@ public class main extends JavaPlugin {
 		if (unlocks != null) {
 			return unlocks;
 		}
-		main.logger.info("Loading upgrades...");
+		MarioKart.logger.info("Loading upgrades...");
 		// Begin load them from a YAML file
 		Map<String, Unlockable> unlockables = new HashMap<String, Unlockable>();
 		File saveFile = new File(getDataFolder().getAbsolutePath()
@@ -622,7 +627,7 @@ public class main extends JavaPlugin {
 			try {
 				upgrades.save(saveFile);
 			} catch (IOException e) {
-				main.logger.info(main.colors.getError()
+				MarioKart.logger.info(MarioKart.colors.getError()
 						+ "[WARNING] Failed to create upgrades.yml!");
 			}
 		}
@@ -636,7 +641,7 @@ public class main extends JavaPlugin {
 					|| !sect.contains("useUpgrade") || !sect.contains("price")
 					|| !sect.contains("item")) {
 				// Invalid upgrade
-				main.logger.info(main.colors.getError()
+				MarioKart.logger.info(MarioKart.colors.getError()
 						+ "[WARNING] Invalid upgrade: " + key);
 				continue;
 			}
@@ -648,13 +653,13 @@ public class main extends JavaPlugin {
 				item = Material.valueOf(sect.getString("item"));
 			} catch (Exception e) {
 				// Invalid upgrade
-				main.logger.info(main.colors.getError()
+				MarioKart.logger.info(MarioKart.colors.getError()
 						+ "[WARNING] Invalid upgrade: " + key);
 				continue;
 			}
 			if (type == null || item == null) {
 				// Invalid upgrade
-				main.logger.info(main.colors.getError()
+				MarioKart.logger.info(MarioKart.colors.getError()
 						+ "[WARNING] Invalid upgrade: " + key);
 				continue;
 			}
@@ -683,7 +688,7 @@ public class main extends JavaPlugin {
 	@SuppressWarnings("deprecation")
 	public Boolean playCustomSound(final Player recipient, final Location location, 
 			final String soundPath, final float volume, final float pitch){
-		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+		MarioKart.plugin.getServer().getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {

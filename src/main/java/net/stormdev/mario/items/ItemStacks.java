@@ -1,6 +1,6 @@
 package net.stormdev.mario.items;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +11,7 @@ public class ItemStacks {
 		String m = parts[0];
 		Material mat = Material.getMaterial(m);
 		if(mat == null){
-			main.plugin.getLogger().info("[WARNING] Invalid config value: "+raw+" ("+m+")");
+			MarioKart.plugin.getLogger().info("[WARNING] Invalid config value: "+raw+" ("+m+")");
 			return new ItemStack(Material.STONE);
 		}
 		short data = 0;

@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.lesslag.DynamicLagReducer;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.PlayerQuitException;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
@@ -38,35 +38,35 @@ public class RaceScheduler {
 
 	public RaceScheduler(int raceLimit) {
 		this.raceLimit = raceLimit;
-		fairCars = main.config.getBoolean("general.ensureEqualCarSpeed");
+		fairCars = MarioKart.config.getBoolean("general.ensureEqualCarSpeed");
 	}
 
 	public void joinAutoQueue(Player player, RaceType type) {
 		if(lockdown){
-			player.sendMessage(main.colors.getError()+main.msgs.get("error.memoryLockdown"));
+			player.sendMessage(MarioKart.colors.getError()+MarioKart.msgs.get("error.memoryLockdown"));
 			return;
 		}
-		Map<UUID, RaceQueue> queues = main.plugin.raceQueues
+		Map<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues
 				.getOpenQueues(type); // Joinable queues for that racemode
 		RaceQueue toJoin = null;
 		Boolean added = false;
-		List<RaceTrack> tracks = main.plugin.trackManager.getRaceTracks();
+		List<RaceTrack> tracks = MarioKart.plugin.trackManager.getRaceTracks();
 		List<RaceTrack> openTracks = new ArrayList<RaceTrack>();
 		List<RaceTrack> openNoQueueTracks = new ArrayList<RaceTrack>();
 		List<RaceTrack> NoQueueTracks = new ArrayList<RaceTrack>();
 		for (RaceTrack t : tracks) {
 			if (!isTrackInUse(t, type)) {
 				openTracks.add(t);
-				if (!main.plugin.raceQueues.queuesFor(t, type)) {
+				if (!MarioKart.plugin.raceQueues.queuesFor(t, type)) {
 					openNoQueueTracks.add(t);
 				}
 			}
-			if (!main.plugin.raceQueues.queuesFor(t, type)) {
+			if (!MarioKart.plugin.raceQueues.queuesFor(t, type)) {
 				NoQueueTracks.add(t);
 			}
 		}
 		if (queues.size() > 0) {
-			int targetPlayers = main.config
+			int targetPlayers = MarioKart.config
 					.getInt("general.race.targetPlayers");
 			Map<UUID, RaceQueue> recommendedQueues = new HashMap<UUID, RaceQueue>();
 			for (UUID id : new ArrayList<UUID>(queues.keySet())) {
@@ -76,19 +76,19 @@ public class RaceScheduler {
 				}
 			}
 			if (recommendedQueues.size() > 0) {
-				UUID random = (UUID) recommendedQueues.keySet().toArray()[main.plugin.random
+				UUID random = (UUID) recommendedQueues.keySet().toArray()[MarioKart.plugin.random
 						.nextInt(recommendedQueues.size())];
 				toJoin = recommendedQueues.get(random);
 			} else {
-				if(main.plugin.random.nextBoolean() && openNoQueueTracks.size() > 0){
+				if(MarioKart.plugin.random.nextBoolean() && openNoQueueTracks.size() > 0){
 					//Chance that will join a new track in a new queue
-					RaceTrack t = openNoQueueTracks.get(main.plugin.random.nextInt(
+					RaceTrack t = openNoQueueTracks.get(MarioKart.plugin.random.nextInt(
 							openNoQueueTracks.size()));
 					toJoin = new RaceQueue(t, type, player);
 				}
 				else{
 					// Join from 'queues'
-					UUID random = (UUID) queues.keySet().toArray()[main.plugin.random
+					UUID random = (UUID) queues.keySet().toArray()[MarioKart.plugin.random
 					                       						.nextInt(queues.size())];
 					                       				toJoin = queues.get(random);
 				}
@@ -97,26 +97,26 @@ public class RaceScheduler {
 			// Create a random queue
 			RaceTrack track = null;
 			if (openNoQueueTracks.size() > 0) {
-				track = openNoQueueTracks.get(main.plugin.random
+				track = openNoQueueTracks.get(MarioKart.plugin.random
 						.nextInt(openNoQueueTracks.size()));
 			} else {
 				if (tracks.size() < 1) {
 					// No tracks exist
 					// No tracks created
-					player.sendMessage(main.colors.getError()
-							+ main.msgs.get("general.cmd.delete.exists"));
+					player.sendMessage(MarioKart.colors.getError()
+							+ MarioKart.msgs.get("general.cmd.delete.exists"));
 					return;
 				}
 				//All queues and tracks full...
-				player.sendMessage(main.colors.getError()
-						+ main.msgs.get("general.cmd.overflow"));
-				track = tracks.get(main.plugin.random.nextInt(tracks.size()));
+				player.sendMessage(MarioKart.colors.getError()
+						+ MarioKart.msgs.get("general.cmd.overflow"));
+				track = tracks.get(MarioKart.plugin.random.nextInt(tracks.size()));
 				//Joining a new queue for that track (Low priority)
 			}
 			if (track == null) {
 				//Track doesn't exist
-				player.sendMessage(main.colors.getError()
-						+ main.msgs.get("general.cmd.delete.exists"));
+				player.sendMessage(MarioKart.colors.getError()
+						+ MarioKart.msgs.get("general.cmd.delete.exists"));
 				return;
 			}
 			toJoin = new RaceQueue(track, type, player);
@@ -126,9 +126,9 @@ public class RaceScheduler {
 		if (!added) {
 			toJoin.addPlayer(player);
 		}
-		toJoin.broadcast(main.colors.getTitle() + "[MarioKart:] "
-				+ main.colors.getInfo() + player.getName()
-				+ main.msgs.get("race.que.joined") + " ["
+		toJoin.broadcast(MarioKart.colors.getTitle() + "[MarioKart:] "
+				+ MarioKart.colors.getInfo() + player.getName()
+				+ MarioKart.msgs.get("race.que.joined") + " ["
 				+ toJoin.playerCount() + "/" + toJoin.playerLimit() + "]");
 		executeLobbyJoin(player, toJoin);
 		recalculateQueues();
@@ -137,11 +137,11 @@ public class RaceScheduler {
 
 	public synchronized void joinQueue(Player player, RaceTrack track, RaceType type) {
 		if(lockdown){
-			player.sendMessage(main.colors.getError()+main.msgs.get("error.memoryLockdown"));
+			player.sendMessage(MarioKart.colors.getError()+MarioKart.msgs.get("error.memoryLockdown"));
 			return;
 		}
 		Boolean added = false;
-		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
+		Map<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues.getQueues(track.getTrackName(), type); // Get the oldest queue of that type for that track
 		RaceQueue queue = null;
 		if (queues.size() < 1) {
 			queue = new RaceQueue(track, type, player);
@@ -155,8 +155,8 @@ public class RaceScheduler {
 			}
 			if(queue == null){ //No queues of that type available, so create and schedule a new one
 				queue = new RaceQueue(track, type, player);
-				player.sendMessage(main.colors.getInfo()
-						+ main.msgs.get("general.cmd.overflow"));
+				player.sendMessage(MarioKart.colors.getInfo()
+						+ MarioKart.msgs.get("general.cmd.overflow"));
 				added = true;
 			}
 		}
@@ -164,9 +164,9 @@ public class RaceScheduler {
 			queue.addPlayer(player);
 			added = true;
 		}
-		queue.broadcast(main.colors.getTitle() + "[MarioKart:] "
-				+ main.colors.getInfo() + player.getName()
-				+ main.msgs.get("race.que.joined") + " [" + queue.playerCount()
+		queue.broadcast(MarioKart.colors.getTitle() + "[MarioKart:] "
+				+ MarioKart.colors.getInfo() + player.getName()
+				+ MarioKart.msgs.get("race.que.joined") + " [" + queue.playerCount()
 				+ "/" + queue.playerLimit() + "]");
 		executeLobbyJoin(player, queue);
 		recalculateQueues();
@@ -174,23 +174,23 @@ public class RaceScheduler {
 	}
 
 	public void executeLobbyJoin(Player player, RaceQueue queue) {
-		Location l = queue.getTrack().getLobby(main.plugin.getServer());
+		Location l = queue.getTrack().getLobby(MarioKart.plugin.getServer());
 		Chunk chunk = l.getChunk();
 		if (!chunk.isLoaded()) {
 			chunk.load(true);
 		}
 		player.teleport(l);
-		String rl = main.plugin.packUrl;
-		player.sendMessage(main.colors.getInfo()
-				+ main.msgs.get("resource.download"));
-		String msg = main.msgs.get("resource.downloadHelp");
+		String rl = MarioKart.plugin.packUrl;
+		player.sendMessage(MarioKart.colors.getInfo()
+				+ MarioKart.msgs.get("resource.download"));
+		String msg = MarioKart.msgs.get("resource.downloadHelp");
 		msg = msg.replaceAll(Pattern.quote("%url%"),
 				Matcher.quoteReplacement(ChatColor.RESET + rl));
-		player.sendMessage(main.colors.getInfo() + msg);
+		player.sendMessage(MarioKart.colors.getInfo() + msg);
 		//TODO Use setResourePack, but would remove old version support
-		if(!main.plugin.resourcedPlayers.contains(player.getName())){
-			player.setTexturePack(main.config.getString("mariokart.resourcePack"));
-			main.plugin.resourcedPlayers.add(player.getName());
+		if(!MarioKart.plugin.resourcedPlayers.contains(player.getName())){
+			player.setTexturePack(MarioKart.config.getString("mariokart.resourcePack"));
+			MarioKart.plugin.resourcedPlayers.add(player.getName());
 		}
 		return;
 	}
@@ -201,13 +201,13 @@ public class RaceScheduler {
 	}
 
 	public void recalculateQueues() {
-		main.plugin.signManager.updateSigns();
+		MarioKart.plugin.signManager.updateSigns();
 		
 		if(lockdown){
 			//No more races allowed
 			if(getRacesRunning() < 1){
 				//Need to recall recalculateQueues else all will freeze
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+				MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
 					@Override
 					public void run() {
@@ -218,10 +218,10 @@ public class RaceScheduler {
 			return;
 		}
 		if (getRacesRunning() >= raceLimit) {
-			main.logger.info("[INFO] Max races running");
+			MarioKart.logger.info("[INFO] Max races running");
 			return; // Cannot start any more races for now...
 		}
-		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
+		Map<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues.getAllQueues();
 		if(queues.size() < 1){
 			return;
 		}
@@ -240,9 +240,9 @@ public class RaceScheduler {
 				//Time trial races
 				double predicted = 110; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
-					main.logger.info("Delayed re-queueing due to lack of server resources!");
+					MarioKart.logger.info("Delayed re-queueing due to lack of server resources!");
 					if(getRacesRunning() < 1){
-						main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+						MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 						@Override
 						public void run() {
 							//Make sure queues don't lock
@@ -269,9 +269,9 @@ public class RaceScheduler {
 				}
 				if (queue.playerCount() < 1) {
 					q.clear();
-					main.plugin.raceQueues.removeQueue(queue);
+					MarioKart.plugin.raceQueues.removeQueue(queue);
 				}
-			} else if (queue.playerCount() >= main.config
+			} else if (queue.playerCount() >= MarioKart.config
 					.getInt("race.que.minPlayers")
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
 					&& getRacesRunning() < raceLimit
@@ -282,9 +282,9 @@ public class RaceScheduler {
 				int c = queue.playerCount();
 				double predicted = c*60+50; //Predicted Memory needed
 				if(DynamicLagReducer.getResourceScore(predicted) < 30){
-					main.logger.info("Delayed re-queueing due to lack of server resources!");
+					MarioKart.logger.info("Delayed re-queueing due to lack of server resources!");
 					if(getRacesRunning() < 1){
-						main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+						MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 						@Override
 						public void run() {
 							//Make sure queues don't lock
@@ -298,18 +298,18 @@ public class RaceScheduler {
 				// Queue can be initiated
 				queue.setStarting(true);
 				// Wait grace time
-				double graceS = main.config
+				double graceS = MarioKart.config
 						.getDouble("general.raceGracePeriod");
 				long grace = (long) (graceS * 20);
-				String msg = main.msgs.get("race.que.players");
+				String msg = MarioKart.msgs.get("race.que.players");
 				msg = msg.replaceAll(Pattern.quote("%time%"), "" + graceS);
-				queue.broadcast(main.colors.getInfo() + msg);
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				queue.broadcast(MarioKart.colors.getInfo() + msg);
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 
 							@Override
 							public void run() {
-								if (queue.playerCount() < main.config
+								if (queue.playerCount() < MarioKart.config
 										.getInt("race.que.minPlayers")) {
 									queue.setStarting(false);
 									return;
@@ -324,10 +324,10 @@ public class RaceScheduler {
 									}
 								}
 								q.clear();
-								if (race.getUsers().size() >= main.config
+								if (race.getUsers().size() >= MarioKart.config
 										.getInt("race.que.minPlayers")) {
 									queue.clear();
-									main.plugin.raceQueues.removeQueue(queue);
+									MarioKart.plugin.raceQueues.removeQueue(queue);
 									startRace(race.getTrackName(), race);
 								} else {
 									queue.setStarting(false);
@@ -342,7 +342,7 @@ public class RaceScheduler {
 				}
 			}
 			if (getRacesRunning() >= raceLimit) {
-				main.logger.info("[INFO] Max races running");
+				MarioKart.logger.info("[INFO] Max races running");
 				return; // No more races can be run for now
 			}
 		}
@@ -371,7 +371,7 @@ public class RaceScheduler {
 		HashMap<Integer, Location> grid = new HashMap<Integer, Location>();
 		for (int i = 0; i < sgrid.size(); i++) {
 			SerializableLocation s = sgrid.get(i);
-			grid.put(i, s.getLocation(main.plugin.getServer()).clone());
+			grid.put(i, s.getLocation(MarioKart.plugin.getServer()).clone());
 		}
 		int count = grid.size();
 		if (count > users.size()) { // If more grid slots than players, only
@@ -386,7 +386,7 @@ public class RaceScheduler {
 			int max = users.size();
 			if (max>0) {
 				Player p = null;
-				int randomNumber = main.plugin.random.nextInt(max);
+				int randomNumber = MarioKart.plugin.random.nextInt(max);
 				User user = users.get(randomNumber);
 				try {
 					p = users.get(randomNumber).getPlayer();
@@ -396,7 +396,7 @@ public class RaceScheduler {
 				users.remove(user);
 				Location loc = grid.get(i);
 				if (race.getType() == RaceType.TIME_TRIAL) {
-					loc = grid.get(main.plugin.random.nextInt(grid.size()));
+					loc = grid.get(MarioKart.plugin.random.nextInt(grid.size()));
 				}
 				if (p != null) {
 					if (p.getVehicle() != null) {
@@ -410,15 +410,15 @@ public class RaceScheduler {
 					Minecart car = (Minecart) loc.getWorld().spawnEntity(
 							loc.add(0, 0.2, 0), EntityType.MINECART);
 					car.setMetadata("car.frozen", new StatValue(null,
-							main.plugin));
+							MarioKart.plugin));
 					car.setMetadata("kart.racing", new StatValue(null,
-							main.plugin));
+							MarioKart.plugin));
 					car.setPassenger(p);
 					p.setMetadata("car.stayIn",
-							new StatValue(null, main.plugin));
+							new StatValue(null, MarioKart.plugin));
 					cars.add(car);
 					if(fairCars){
-						uCarsAPI.getAPI().setUseRaceControls(car.getUniqueId(), main.plugin);
+						uCarsAPI.getAPI().setUseRaceControls(car.getUniqueId(), MarioKart.plugin);
 					}
 				}
 			}
@@ -427,8 +427,8 @@ public class RaceScheduler {
 			User user = users.get(0);
 			try {
 				Player p = user.getPlayer();
-				p.sendMessage(main.colors.getError()
-						+ main.msgs.get("race.que.full"));
+				p.sendMessage(MarioKart.colors.getError()
+						+ MarioKart.msgs.get("race.que.full"));
 			} catch (PlayerQuitException e) {
 				// Player has left anyway
 			}
@@ -440,8 +440,8 @@ public class RaceScheduler {
 			try {
 				player = user.getPlayer();
 				user.setLocation(player.getLocation().clone());
-				player.sendMessage(main.colors.getInfo()
-						+ main.msgs.get("race.que.preparing"));
+				player.sendMessage(MarioKart.colors.getInfo()
+						+ MarioKart.msgs.get("race.que.preparing"));
 			} catch (PlayerQuitException e) {
 				// Player has left
 			}
@@ -450,16 +450,16 @@ public class RaceScheduler {
 		for (User user2 : users2) {
 			user2.setInRace(true);
 		}
-		main.plugin.getServer().getScheduler()
-				.runTaskAsynchronously(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 					@Override
 					public void run() {
 						for (User user : users2) {
 							try {
 								user.getPlayer()
 										.sendMessage(
-												main.colors.getInfo()
-														+ main.msgs
+												MarioKart.colors.getInfo()
+														+ MarioKart.msgs
 																.get("race.que.starting"));
 							} catch (PlayerQuitException e) {
 								// User has left
@@ -474,7 +474,7 @@ public class RaceScheduler {
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
-													main.plugin.playCustomSound(p, MarioKartSound.RACE_START_COUNTDOWN);
+													MarioKart.plugin.playCustomSound(p, MarioKartSound.RACE_START_COUNTDOWN);
 												}
 											} catch (Exception e) {
 												//Player has left
@@ -491,7 +491,7 @@ public class RaceScheduler {
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
-													main.plugin.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
+													MarioKart.plugin.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
 												}
 											} catch (Exception e) {
 												//Player has left
@@ -507,7 +507,7 @@ public class RaceScheduler {
 							for (User user : users2) {
 								try {
 									Player p = user.getPlayer();
-									p.sendMessage(main.colors.getInfo() + ""
+									p.sendMessage(MarioKart.colors.getInfo() + ""
 											+ i);
 								} catch (PlayerQuitException e) {
 									// Player has left
@@ -519,13 +519,13 @@ public class RaceScheduler {
 							}
 						}
 						for (Minecart car : cars) {
-							car.removeMetadata("car.frozen", main.plugin);
+							car.removeMetadata("car.frozen", MarioKart.plugin);
 						}
 						for (User user : users2) {
 							try {
 								user.getPlayer().sendMessage(
-										main.colors.getInfo()
-												+ main.msgs.get("race.que.go"));
+										MarioKart.colors.getInfo()
+												+ MarioKart.msgs.get("race.que.go"));
 							} catch (PlayerQuitException e) {
 								// Player has left
 							}
@@ -567,7 +567,7 @@ public class RaceScheduler {
 	public synchronized void lockdown(){
 		//Running out of system memory!
 		this.lockdown = true;
-		main.logger.info("[WANRING] Memory resources low, MarioKart has locked down all queues "
+		MarioKart.logger.info("[WANRING] Memory resources low, MarioKart has locked down all queues "
 				+ "and may start to terminate races if condition persists!");
 		return;
 	}
@@ -579,7 +579,7 @@ public class RaceScheduler {
 	public synchronized void unlockDown(){
 		//System regained necessary memory
 		this.lockdown = false;
-		main.logger.info("[INFO] System memory stable once more, MarioKart has unlocked all queues!");
+		MarioKart.logger.info("[INFO] System memory stable once more, MarioKart has unlocked all queues!");
 		return;
 	}
 

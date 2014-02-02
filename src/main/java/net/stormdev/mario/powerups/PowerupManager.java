@@ -6,7 +6,7 @@ import java.util.List;
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
@@ -32,13 +32,13 @@ import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 public class PowerupManager {
-	main plugin = null;
+	MarioKart plugin = null;
 	Boolean enabled = true;
 	public ItemStack respawn = null;
 
-	public PowerupManager(main plugin) {
+	public PowerupManager(MarioKart plugin) {
 		this.plugin = plugin;
-		enabled = main.config.getBoolean("mariokart.enable");
+		enabled = MarioKart.config.getBoolean("mariokart.enable");
 		this.respawn = new ItemStack(Material.EGG);
 		ItemMeta meta = this.respawn.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "Respawn");
@@ -99,16 +99,16 @@ public class PowerupManager {
 				}
 				return;
 			}
-			MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(ply
+			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(ply
 					.getName());
 			if (hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
 					&& player.getInventory().getHeldItemSlot() == 7) {
-				main.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.UTIL);
+				MarioKart.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.UTIL);
 				evt.setCancelled(true);
 				return;
 			} else if (hotBar.getDisplayedItem(HotBarSlot.SCROLLER) != null
 					&& player.getInventory().getHeldItemSlot() == 6) {
-				main.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.SCROLLER);
+				MarioKart.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.SCROLLER);
 				evt.setCancelled(true);
 				return;
 			}
@@ -248,7 +248,7 @@ public class PowerupManager {
 						 */
 						if (player.getInventory().getContents().length > 0) {
 							player.getInventory().clear();
-							main.plugin.hotBarManager.updateHotBar(player);
+							MarioKart.plugin.hotBarManager.updateHotBar(player);
 						}
 						ItemStack give = null;
 						if (ChatColor.stripColor(lines[2]).equalsIgnoreCase(
@@ -298,11 +298,11 @@ public class PowerupManager {
 												.nextInt(max - min) + min;
 										for (int i = 0; i <= z; i++) {
 											ply.getInventory().clear();
-											main.plugin.hotBarManager.updateHotBar(player);
+											MarioKart.plugin.hotBarManager.updateHotBar(player);
 											ply.getInventory().addItem(
 													getRandomPowerup());
 											ply.updateInventory();
-											main.plugin.playCustomSound(ply, MarioKartSound.ITEM_SELECT_BEEP);
+											MarioKart.plugin.playCustomSound(ply, MarioKartSound.ITEM_SELECT_BEEP);
 											try {
 												Thread.sleep(delay);
 											} catch (InterruptedException e) {
@@ -313,7 +313,7 @@ public class PowerupManager {
 											}
 										}
 										ply.getInventory().clear();
-										main.plugin.hotBarManager.updateHotBar(ply);
+										MarioKart.plugin.hotBarManager.updateHotBar(ply);
 										ply.getInventory().addItem(get);
 										ply.removeMetadata("kart.rolling",
 												plugin);
@@ -323,7 +323,7 @@ public class PowerupManager {
 								});
 						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
 						r.reloadingItemBoxes.add(signLoc);
-						main.plugin.raceScheduler.updateRace(r);
+						MarioKart.plugin.raceScheduler.updateRace(r);
 						Location eLoc = null;
 						for (Entity ent : ents) {
 							if (ent instanceof EnderCrystal) {
@@ -351,9 +351,9 @@ public class PowerupManager {
 											c.load(true);
 										}
 										r.reloadingItemBoxes.remove(signLoc);
-										main.listener.spawnItemPickupBox(loc,
+										MarioKart.plugin.listener.spawnItemPickupBox(loc,
 												true);
-										main.plugin.raceScheduler.updateRace(r);
+										MarioKart.plugin.raceScheduler.updateRace(r);
 										return;
 									}
 								}, 200l);
@@ -402,7 +402,7 @@ public class PowerupManager {
 		pows.add(MushroomPowerup.class);
 		pows.add(PowPowerup.class);
 		pows.add(StarPowerup.class);
-		Class<? extends Powerup> rand = pows.get(main.plugin.random.nextInt(pows.size()));
+		Class<? extends Powerup> rand = pows.get(MarioKart.plugin.random.nextInt(pows.size()));
 		
 		Powerup power = null;
 		try {

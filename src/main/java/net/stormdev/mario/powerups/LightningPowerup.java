@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
@@ -39,10 +39,10 @@ public class LightningPowerup extends PowerupBase {
 		}
 		power = -power;
 		for (String name:keys) {
-			Player pla = main.plugin.getServer().getPlayer(
+			Player pla = MarioKart.plugin.getServer().getPlayer(
 					name);
 			if(!name.equals(player.getName())
-					&& !main.marioKart.isPlayerImmune(pla)){
+					&& !MarioKart.marioKart.isPlayerImmune(pla)){
 				Entity c = pla.getVehicle();
 				while(c!=null && !(c instanceof Minecart) && c.getVehicle() != null){
 					c = c.getVehicle();
@@ -75,7 +75,7 @@ public class LightningPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.lightning");
+		String id = MarioKart.config.getString("mariokart.lightning");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -84,7 +84,7 @@ public class LightningPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Lightning");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Lightning");
 		i.setItemMeta(im);
 		
 		return i;

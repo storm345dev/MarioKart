@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
@@ -24,11 +24,11 @@ public class BoxPowerup extends PowerupBase {
 	public void doRightClickAction(User user, Player player, Minecart car,
 			Location carLoc, Race race, ItemStack inHand) {
 		inHand.setAmount(inHand.getAmount() - 1);
-		ItemStack give = main.marioKart.getRandomPowerup();
+		ItemStack give = MarioKart.marioKart.getRandomPowerup();
 		if (race != null) {
 			if (player.getName().equals(race.winning)) {
 				while (BlueShellPowerup.isItemSimilar(give)) {
-					give = main.marioKart.getRandomPowerup();
+					give = MarioKart.marioKart.getRandomPowerup();
 				}
 			}
 		}
@@ -42,7 +42,7 @@ public class BoxPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.random");
+		String id = MarioKart.config.getString("mariokart.random");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -51,7 +51,7 @@ public class BoxPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Random");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Random");
 		i.setItemMeta(im);
 		
 		return i;

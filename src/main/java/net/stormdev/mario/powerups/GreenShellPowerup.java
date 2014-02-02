@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
@@ -43,7 +43,7 @@ public class GreenShellPowerup extends ShellPowerup {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.greenShell");
+		String id = MarioKart.config.getString("mariokart.greenShell");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -53,7 +53,7 @@ public class GreenShellPowerup extends ShellPowerup {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Green shell");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Green shell");
 		i.setItemMeta(im);
 		
 		return i;
@@ -173,7 +173,7 @@ public class GreenShellPowerup extends ShellPowerup {
 	@Override
 	public void start() {
 		if(direction == null){
-			main.logger.info("Error: Green shell vector was null when fired!");
+			MarioKart.logger.info("Error: Green shell vector was null when fired!");
 			return;
 		}
 		Player owner = Bukkit.getServer().getPlayer(getOwner());
@@ -187,7 +187,7 @@ public class GreenShellPowerup extends ShellPowerup {
 		super.setCooldown(3); //No cooldown for tracking shells
 		super.setExpiry(50); //Expire after moving 33 times
 		
-		task = Bukkit.getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+		task = Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {
@@ -226,9 +226,9 @@ public class GreenShellPowerup extends ShellPowerup {
 			return;
 		}
 		
-		String msg = main.msgs.get("mario.hit");
+		String msg = MarioKart.msgs.get("mario.hit");
 		msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-		main.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
+		MarioKart.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
 		target.sendMessage(ChatColor.RED + msg);
 		Entity cart = target.getVehicle();
 		if(cart == null){

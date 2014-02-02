@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.sound.MarioKartSound;
@@ -30,34 +30,34 @@ public class StarPowerup extends PowerupBase {
 			Location carLoc, Race race, ItemStack inHand) {
 		inHand.setAmount(inHand.getAmount()-1);
 		car.setMetadata("kart.immune",
-				new StatValue(15000, main.plugin)); // Value =
+				new StatValue(15000, MarioKart.plugin)); // Value =
 													// length(millis)
 		player.setMetadata("kart.immune",
-				new StatValue(15000, main.plugin));
+				new StatValue(15000, MarioKart.plugin));
 		final String pname = player.getName();
-		main.plugin.getServer().getScheduler()
-				.runTaskLater(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskLater(MarioKart.plugin, new Runnable() {
 
 					@Override
 					public void run() {
-						Player pl = main.plugin.getServer().getPlayer(
+						Player pl = MarioKart.plugin.getServer().getPlayer(
 								pname);
 						if (pl != null) {
-							pl.removeMetadata("kart.immune", main.plugin);
+							pl.removeMetadata("kart.immune", MarioKart.plugin);
 							car.removeMetadata("kart.immune",
-									main.plugin);
+									MarioKart.plugin);
 						}
 					}
 				}, 300l);
-		main.plugin.getServer().getScheduler()
-				.runTaskAsynchronously(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 
 					@Override
 					public void run() {
 						int amount = 5;
 						while (amount > 0) {
 							if (ucars.listener.inACar(player)) {
-								if(!main.plugin.playCustomSound(player, MarioKartSound.STAR_RIFF)){
+								if(!MarioKart.plugin.playCustomSound(player, MarioKartSound.STAR_RIFF)){
 									player.getLocation()
 									.getWorld()
 									.playSound(
@@ -88,7 +88,7 @@ public class StarPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.star");
+		String id = MarioKart.config.getString("mariokart.star");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -98,7 +98,7 @@ public class StarPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Star");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Star");
 		i.setItemMeta(im);
 		
 		return i;

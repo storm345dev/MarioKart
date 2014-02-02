@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
@@ -27,7 +27,7 @@ public class MushroomPowerup extends PowerupBase {
 		//Shells can be between 1 and 3 in quantity
 				ItemStack s = super.stack.clone();
 				
-				int rand = main.plugin.random.nextInt(6); //Between 0 and 5
+				int rand = MarioKart.plugin.random.nextInt(6); //Between 0 and 5
 				rand -= 2; //Between -2 and 3
 				if(rand < 1)
 					rand = 1;
@@ -54,7 +54,7 @@ public class MushroomPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.mushroom");
+		String id = MarioKart.config.getString("mariokart.mushroom");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -63,7 +63,7 @@ public class MushroomPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Mushroom");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Mushroom");
 		i.setItemMeta(im);
 		
 		return i;

@@ -8,14 +8,14 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 public class RaceTrackManager {
-	main main = null;
+	MarioKart main = null;
 	File saveFile = null;
 	ArrayList<RaceTrack> tracks = new ArrayList<RaceTrack>();
 
-	public RaceTrackManager(main main, File saveFile) {
+	public RaceTrackManager(MarioKart main, File saveFile) {
 		this.main = main;
 		this.saveFile = saveFile;
 		if (this.saveFile.exists() == false) {

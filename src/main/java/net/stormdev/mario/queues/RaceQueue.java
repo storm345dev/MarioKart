@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.tracks.RaceTrack;
 
@@ -23,8 +23,8 @@ public class RaceQueue {
 	public RaceQueue(RaceTrack track, RaceType type, Player creator) {
 		this.track = track;
 		if(type == RaceType.AUTO){
-			if((main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean())
-					|| Bukkit.getOnlinePlayers().length < main.config.getInt("race.que.minPlayers")){
+			if((MarioKart.plugin.random.nextBoolean() && MarioKart.plugin.random.nextBoolean())
+					|| Bukkit.getOnlinePlayers().length < MarioKart.config.getInt("race.que.minPlayers")){
 				type = RaceType.TIME_TRIAL;
 			}
 			else{
@@ -36,11 +36,11 @@ public class RaceQueue {
 		this.playerLimit = track.getMaxPlayers();
 		this.players.add(creator);
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(getTrackName())) {
-			trackQueues = main.plugin.queues.get(getTrackName());
+		if (MarioKart.plugin.queues.containsKey(getTrackName())) {
+			trackQueues = MarioKart.plugin.queues.get(getTrackName());
 		}
 		trackQueues.put(queueId, this);
-		main.plugin.queues.put(getTrackName(), trackQueues); // Queue is now
+		MarioKart.plugin.queues.put(getTrackName(), trackQueues); // Queue is now
 																// registered
 																// with the
 																// system
@@ -53,7 +53,7 @@ public class RaceQueue {
 	public void setTrack(RaceTrack track) {
 		this.track = track;
 		this.playerLimit = track.getMaxPlayers();
-		main.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.raceQueues.updateQueue(this);
 	}
 
 	public RaceTrack getTrack() {
@@ -66,8 +66,8 @@ public class RaceQueue {
 
 	public void setStarting(Boolean starting) {
 		this.starting = starting;
-		main.plugin.raceQueues.updateQueue(this);
-		main.plugin.raceScheduler.recalculateQueues();
+		MarioKart.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.raceScheduler.recalculateQueues();
 		return;
 	}
 
@@ -81,7 +81,7 @@ public class RaceQueue {
 
 	public void setRaceMode(RaceType type) {
 		this.type = type;
-		main.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.raceQueues.updateQueue(this);
 	}
 
 	public UUID getQueueId() {
@@ -90,7 +90,7 @@ public class RaceQueue {
 
 	public void regenQueueId() {
 		this.queueId = UUID.randomUUID();
-		main.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.raceQueues.updateQueue(this);
 	}
 
 	public Boolean validatePlayers() {
@@ -112,20 +112,20 @@ public class RaceQueue {
 		if (!valid) { // If there's not enough players in the queue
 			clear();
 			LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
-			if (main.plugin.queues.containsKey(getTrackName())) {
-				trackQueues = main.plugin.queues.get(getTrackName());
+			if (MarioKart.plugin.queues.containsKey(getTrackName())) {
+				trackQueues = MarioKart.plugin.queues.get(getTrackName());
 			}
 			trackQueues.remove(queueId);
-			main.plugin.queues.put(getTrackName(), trackQueues); // Queue is now
+			MarioKart.plugin.queues.put(getTrackName(), trackQueues); // Queue is now
 																	// un-registered
 																	// with the
 																	// system
 			return false;
 		}
 		for (String s : leftPlayers) {
-			broadcast(main.colors.getTitle() + "[MarioKart:] "
-					+ main.colors.getInfo() + s
-					+ main.msgs.get("race.que.left"));
+			broadcast(MarioKart.colors.getTitle() + "[MarioKart:] "
+					+ MarioKart.colors.getInfo() + s
+					+ MarioKart.msgs.get("race.que.left"));
 		}
 		return true;
 	}
@@ -155,9 +155,9 @@ public class RaceQueue {
 		if (player != null && player.isOnline()
 				&& (playerCount() < playerLimit)) {
 			players.add(player);
-			main.plugin.raceQueues.updateQueue(this);
-			main.plugin.raceScheduler.recalculateQueues();
-			main.plugin.signManager.updateSigns(getTrack());
+			MarioKart.plugin.raceQueues.updateQueue(this);
+			MarioKart.plugin.raceScheduler.recalculateQueues();
+			MarioKart.plugin.signManager.updateSigns(getTrack());
 			return true;
 		}
 		return false;
@@ -166,18 +166,18 @@ public class RaceQueue {
 	public void removePlayer(Player player) {
 		players.remove(player);
 		validatePlayers();
-		broadcast(main.colors.getTitle() + "[MarioKart:] "
-				+ main.colors.getInfo() + player.getName()
-				+ main.msgs.get("race.que.left"));
-		main.plugin.raceQueues.updateQueue(this);
-		main.plugin.signManager.updateSigns(getTrack());
-		main.plugin.raceScheduler.recalculateQueues();
+		broadcast(MarioKart.colors.getTitle() + "[MarioKart:] "
+				+ MarioKart.colors.getInfo() + player.getName()
+				+ MarioKart.msgs.get("race.que.left"));
+		MarioKart.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.signManager.updateSigns(getTrack());
+		MarioKart.plugin.raceScheduler.recalculateQueues();
 	}
 
 	public void removePlayer(String player) {
 		for (Player p : getPlayers()) {
 			if (p.getName().equals(player)) {
-				main.plugin.signManager.updateSigns(getTrack());
+				MarioKart.plugin.signManager.updateSigns(getTrack());
 				removePlayer(p);
 				return;
 			}
@@ -197,7 +197,7 @@ public class RaceQueue {
 		this.players.clear();
 		this.type = RaceType.RACE;
 		starting = false;
-		main.plugin.raceQueues.updateQueue(this);
+		MarioKart.plugin.raceQueues.updateQueue(this);
 	}
 
 	public Boolean containsPlayer(Player player) {
@@ -207,7 +207,7 @@ public class RaceQueue {
 	public void broadcast(String message) {
 		validatePlayers();
 		for (Player p : getPlayers()) {
-			p.sendMessage(main.colors.getInfo() + message);
+			p.sendMessage(MarioKart.colors.getInfo() + message);
 		}
 		return;
 	}

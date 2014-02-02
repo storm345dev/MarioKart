@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.shop.IconMenu.OptionClickEvent;
 
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Shop {
 
 	final public static IconMenu getShop() {
-		final IconMenu menu = new IconMenu(main.colors.getTitle()
+		final IconMenu menu = new IconMenu(MarioKart.colors.getTitle()
 				+ "MarioKart Shop", 9, new IconMenu.OptionClickEventHandler() {
 
 			@Override
@@ -28,23 +28,23 @@ public class Shop {
 				event = onClick(SelectMenuType.MENU, event.getPosition(), event, 1);
 				return;
 			}
-		}, main.plugin);
+		}, MarioKart.plugin);
 		menu.setOption(0, new ItemStack(Material.EMERALD),
-				main.colors.getTitle() + "Buy Upgrades",
-				new String[] { main.colors.getInfo() + "Upgrade your Kart!" });
+				MarioKart.colors.getTitle() + "Buy Upgrades",
+				new String[] { MarioKart.colors.getInfo() + "Upgrade your Kart!" });
 		menu.setOption(1, new ItemStack(Material.EMERALD),
-				main.colors.getTitle() + "My Upgrades",
-				new String[] { main.colors.getInfo()
+				MarioKart.colors.getTitle() + "My Upgrades",
+				new String[] { MarioKart.colors.getInfo()
 						+ "View and Remove Kart upgrades!" });
-		menu.setOption(8, new ItemStack(Material.BOOK), main.colors.getTitle()
-				+ "Exit Menu", new String[] { main.colors.getInfo()
+		menu.setOption(8, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
+				+ "Exit Menu", new String[] { MarioKart.colors.getInfo()
 				+ "Exit this menu!" });
 		return menu;
 	}
 
 	public static void openShop(Player player) {
-		if(!main.config.getBoolean("general.upgrades.enable")){
-			player.sendMessage(main.colors.getError()+main.msgs.get("general.disabled"));
+		if(!MarioKart.config.getBoolean("general.upgrades.enable")){
+			player.sendMessage(MarioKart.colors.getError()+MarioKart.msgs.get("general.disabled"));
 			return;
 		}
 		getShop().open(player);
@@ -60,12 +60,12 @@ public class Shop {
 	}
 
 	public static IconMenu getUpgradesForSaleMenu(final int page) {
-		String title = main.colors.getTitle() + "Buy Upgrades Page: " + page;
+		String title = MarioKart.colors.getTitle() + "Buy Upgrades Page: " + page;
 		if (title.length() > 32) {
-			title = main.colors.getError() + "Buy Upgrades (ERROR:Too Long)";
+			title = MarioKart.colors.getError() + "Buy Upgrades (ERROR:Too Long)";
 		}
 		final Map<String, Unlockable> unlocks = new HashMap<String, Unlockable>(
-				main.plugin.getUnlocks());
+				MarioKart.plugin.getUnlocks());
 		final IconMenu menu = new IconMenu(title, 54,
 				new IconMenu.OptionClickEventHandler() {
 					@Override
@@ -75,15 +75,15 @@ public class Shop {
 						event = onClick(SelectMenuType.BUY_UPGRADES, event.getPosition(), event, page);
 					    return;
 					}
-				}, main.plugin);
-		menu.setOption(0, new ItemStack(Material.BOOK), main.colors.getTitle()
-				+ "Back to menu", main.colors.getInfo()
+				}, MarioKart.plugin);
+		menu.setOption(0, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
+				+ "Back to menu", MarioKart.colors.getInfo()
 				+ "Return back to the selection menu");
 		menu.setOption(52, new ItemStack(Material.PAPER),
-				main.colors.getTitle() + "Previous Page", main.colors.getInfo()
+				MarioKart.colors.getTitle() + "Previous Page", MarioKart.colors.getInfo()
 						+ "Go to previous page");
 		menu.setOption(53, new ItemStack(Material.PAPER),
-				main.colors.getTitle() + "Next Page", main.colors.getInfo()
+				MarioKart.colors.getTitle() + "Next Page", MarioKart.colors.getInfo()
 						+ "Go to next page");
 		// Set option slots for all upgrades for sale
 		// 1-51 slots available on the page
@@ -96,15 +96,15 @@ public class Shop {
 				Unlockable unlock = unlocks.get(keys[i]);
 				ItemStack display = new ItemStack(unlock.displayItem);
 				ArrayList<String> lore = new ArrayList<String>();
-				lore.add(main.colors.getInfo() + "Effect: "
+				lore.add(MarioKart.colors.getInfo() + "Effect: "
 						+ unlock.type.name().toLowerCase());
-				lore.add(main.colors.getInfo()
+				lore.add(MarioKart.colors.getInfo()
 						+ "Price: "
 						+ unlock.price
 						+ " "
-						+ main.config
+						+ MarioKart.config
 								.getString("general.race.rewards.currency"));
-				menu.setOption(pos, display, main.colors.getTitle()
+				menu.setOption(pos, display, MarioKart.colors.getTitle()
 						+ unlock.upgradeName, lore);
 				pos++;
 			}
@@ -113,11 +113,11 @@ public class Shop {
 	}
 
 	public static IconMenu getUpgradesIOwn(String player, final int page) {
-		String title = main.colors.getTitle() + "My Upgrades Page: " + page;
+		String title = MarioKart.colors.getTitle() + "My Upgrades Page: " + page;
 		if (title.length() > 32) {
-			title = main.colors.getError() + "My Upgrades (ERROR:Too Long)";
+			title = MarioKart.colors.getError() + "My Upgrades (ERROR:Too Long)";
 		}
-		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
+		List<Upgrade> unlocks = MarioKart.plugin.upgradeManager.getUpgrades(player);
 		final IconMenu menu = new IconMenu(title, 54,
 				new IconMenu.OptionClickEventHandler() {
 					@Override
@@ -127,15 +127,15 @@ public class Shop {
 						event = onClick(SelectMenuType.SELL_UPGRADES, event.getPosition(), event, page);
 						return;
 					}
-				}, main.plugin);
-		menu.setOption(0, new ItemStack(Material.BOOK), main.colors.getTitle()
-				+ "Back to menu", main.colors.getInfo()
+				}, MarioKart.plugin);
+		menu.setOption(0, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
+				+ "Back to menu", MarioKart.colors.getInfo()
 				+ "Return back to the selection menu");
 		menu.setOption(52, new ItemStack(Material.PAPER),
-				main.colors.getTitle() + "Previous Page", main.colors.getInfo()
+				MarioKart.colors.getTitle() + "Previous Page", MarioKart.colors.getInfo()
 						+ "Go to previous page");
 		menu.setOption(53, new ItemStack(Material.PAPER),
-				main.colors.getTitle() + "Next Page", main.colors.getInfo()
+				MarioKart.colors.getTitle() + "Next Page", MarioKart.colors.getInfo()
 						+ "Go to next page");
 		// Set option slots for all upgrades for sale
 		// 1-51 slots available on the page
@@ -149,10 +149,10 @@ public class Shop {
 				ItemStack display = new ItemStack(unlock.displayItem);
 				display.setAmount(upgrade.getQuantity());
 				ArrayList<String> lore = new ArrayList<String>();
-				lore.add(main.colors.getInfo() + "Effect: "
+				lore.add(MarioKart.colors.getInfo() + "Effect: "
 						+ unlock.type.name().toLowerCase());
 				lore.add(ChatColor.RED + "Click to delete");
-				menu.setOption(pos, display, main.colors.getTitle()
+				menu.setOption(pos, display, MarioKart.colors.getTitle()
 						+ unlock.upgradeName, lore);
 				pos++;
 			}
@@ -166,8 +166,8 @@ public class Shop {
 		if (type == SelectMenuType.MENU) {
 			if (slot == 0) {
 				// They clicked on 'Buy Upgrades'
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, 1);
@@ -178,8 +178,8 @@ public class Shop {
 				return event;
 			} else if (slot == 1) {
 				// They clicked on 'Sell Upgrades'
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, 1);
@@ -194,8 +194,8 @@ public class Shop {
 			}
 		} else if (type == SelectMenuType.BUY_UPGRADES) {
 			if (slot == 0) {
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openShop(player);
@@ -212,8 +212,8 @@ public class Shop {
 					return event;
 				}
 				final int p = page - 1;
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, p);
@@ -225,8 +225,8 @@ public class Shop {
 				return event;
 			} else if (slot == 53) {
 				final int p = page + 1;
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openUpgradeShop(player, p);
@@ -241,12 +241,12 @@ public class Shop {
 				int i = ((page - 1) * 51) + slot - 1;
 				String shortId = "";
 				Unlockable unlock = null;
-				String currency = main.config
+				String currency = MarioKart.config
 						.getString("general.race.rewards.currency");
 				try {
-					shortId = (String) main.plugin.getUnlocks().keySet()
+					shortId = (String) MarioKart.plugin.getUnlocks().keySet()
 							.toArray()[i];
-					unlock = main.plugin.getUnlocks().get(shortId);
+					unlock = MarioKart.plugin.getUnlocks().get(shortId);
 				} catch (Exception e) {
 					// Clicked in an invalid place
 					return event;
@@ -256,38 +256,38 @@ public class Shop {
 					return event;
 				}
 				double price = unlock.price;
-				if (main.economy == null) {
-					if (!main.plugin.setupEconomy() || main.economy == null) {
-						player.sendMessage(main.colors.getError()
-								+ main.msgs.get("general.shop.error"));
+				if (MarioKart.economy == null) {
+					if (!MarioKart.plugin.setupEconomy() || MarioKart.economy == null) {
+						player.sendMessage(MarioKart.colors.getError()
+								+ MarioKart.msgs.get("general.shop.error"));
 						return event;
 					}
 
 				}
-				double balance = main.economy.getBalance(player.getName());
+				double balance = MarioKart.economy.getBalance(player.getName());
 				if (balance < price) {
-					String msg = main.msgs.get("general.shop.notEnoughMoney");
+					String msg = MarioKart.msgs.get("general.shop.notEnoughMoney");
 					msg = msg.replaceAll(Pattern.quote("%currency%"),
 							Matcher.quoteReplacement(currency));
 					msg = msg.replaceAll(Pattern.quote("%balance%"),
 							Matcher.quoteReplacement(balance + ""));
-					player.sendMessage(main.colors.getError() + msg);
+					player.sendMessage(MarioKart.colors.getError() + msg);
 					return event;
 				}
 				// Confident in success of transaction
-				Boolean success = main.plugin.upgradeManager.addUpgrade(
+				Boolean success = MarioKart.plugin.upgradeManager.addUpgrade(
 						player.getName(), new Upgrade(unlock, 1)); // Give them
 																	// the
 																	// upgrade
 				if (!success) {
-					player.sendMessage(main.colors.getError()
-							+ main.msgs.get("general.shop.maxUpgrades"));
+					player.sendMessage(MarioKart.colors.getError()
+							+ MarioKart.msgs.get("general.shop.maxUpgrades"));
 					return event;
 				}
-				EconomyResponse response = main.economy.withdrawPlayer(
+				EconomyResponse response = MarioKart.economy.withdrawPlayer(
 						player.getName(), price);
 				balance = response.balance;
-				String msg = main.msgs.get("general.shop.success");
+				String msg = MarioKart.msgs.get("general.shop.success");
 				msg = msg.replaceAll(Pattern.quote("%currency%"),
 						Matcher.quoteReplacement(currency));
 				msg = msg.replaceAll(Pattern.quote("%balance%"),
@@ -296,9 +296,9 @@ public class Shop {
 						Matcher.quoteReplacement(unlock.upgradeName));
 				msg = msg.replaceAll(Pattern.quote("%price%"),
 						Matcher.quoteReplacement("" + price));
-				player.sendMessage(main.colors.getInfo() + msg);
+				player.sendMessage(MarioKart.colors.getInfo() + msg);
 				event.setWillDestroy(true);
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new BukkitRunnable(){
+				MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
 
 					@Override
 					public void run() {
@@ -309,8 +309,8 @@ public class Shop {
 			}
 		} else if (type == SelectMenuType.SELL_UPGRADES) {
 			if (slot == 0) {
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openShop(player);
@@ -327,8 +327,8 @@ public class Shop {
 					return event;
 				}
 				final int p = page - 1;
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);
@@ -340,8 +340,8 @@ public class Shop {
 				return event;
 			} else if (slot == 53) {
 				final int p = page + 1;
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);
@@ -356,7 +356,7 @@ public class Shop {
 				int i = ((page - 1) * 51) + slot - 1;
 				Upgrade upgrade = null;
 				try {
-					List<Upgrade> ups = main.plugin.upgradeManager
+					List<Upgrade> ups = MarioKart.plugin.upgradeManager
 							.getUpgrades(player.getName());
 					upgrade = ups.get(i);
 				} catch (Exception e) {
@@ -366,21 +366,21 @@ public class Shop {
 				if (upgrade == null) {
 					return event; // Clicked on invalid slot
 				}
-				main.plugin.upgradeManager
+				MarioKart.plugin.upgradeManager
 						.useUpgrade(player.getName(), upgrade);
-				String msg = main.msgs.get("general.shop.sellSuccess");
+				String msg = MarioKart.msgs.get("general.shop.sellSuccess");
 				msg = msg.replaceAll(Pattern.quote("%amount%"),
 						"" + upgrade.getQuantity());
 				msg = msg
 						.replaceAll(Pattern.quote("%name%"),
 								Matcher.quoteReplacement(upgrade
 										.getUnlockedAble().upgradeName));
-				player.sendMessage(main.colors.getInfo() + msg);
+				player.sendMessage(MarioKart.colors.getInfo() + msg);
 				event.setWillClose(true);
 				event.setWillDestroy(true);
 				final int p = page;
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 							@Override
 							public void run() {
 								Shop.openMyUpgrades(player, p);

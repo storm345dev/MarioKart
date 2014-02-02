@@ -3,7 +3,7 @@ package net.stormdev.mario.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.PlayerQuitException;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
@@ -13,12 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class MusicManager {
-	private main plugin;
+	private MarioKart plugin;
 	private boolean musicEnabled;
 	
-	public MusicManager(main plugin){
+	public MusicManager(MarioKart plugin){
 		this.plugin = plugin;
-		this.musicEnabled = main.config.getBoolean("general.race.music.enable");
+		this.musicEnabled = MarioKart.config.getBoolean("general.race.music.enable");
 	}
 	
 	public void playMusic(final Race race){
@@ -38,7 +38,7 @@ public class MusicManager {
 						continue;
 					}
 					if(p != null && p.isOnline()){
-						main.plugin.playCustomSound(p, song);
+						MarioKart.plugin.playCustomSound(p, song);
 					}
 				}
 				return;
@@ -57,7 +57,7 @@ public class MusicManager {
 			//No songs match, so play the shortest
 			return MarioKartSound.MUSIC_MARIOCIRCUIT;
 		}
-		int pos =  main.plugin.random.nextInt(songs.size());
+		int pos =  MarioKart.plugin.random.nextInt(songs.size());
 		return songs.get(pos);
 	}
 	

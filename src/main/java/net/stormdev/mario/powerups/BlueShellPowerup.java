@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
@@ -31,7 +31,7 @@ public class BlueShellPowerup extends TrackingShellPowerup {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.blueShell");
+		String id = MarioKart.config.getString("mariokart.blueShell");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -40,7 +40,7 @@ public class BlueShellPowerup extends TrackingShellPowerup {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Blue shell");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Blue shell");
 		i.setItemMeta(im);
 		
 		return i;

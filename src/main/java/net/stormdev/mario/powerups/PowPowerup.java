@@ -7,7 +7,7 @@ import java.util.SortedMap;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
@@ -40,18 +40,18 @@ public class PowPowerup extends PowerupBase {
 			}
 		}
 		final int ppos = pppos;
-		main.plugin.getServer().getScheduler()
-				.runTaskAsynchronously(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 					@Override
 					public void run() {
 						int count = 3;
 						while (count > 0) {
 							for (int i = 0; i < pls.length && i <= ppos; i++) {
-								Player pl = main.plugin.getServer()
+								Player pl = MarioKart.plugin.getServer()
 										.getPlayer((String) pls[i]);
-								pl.sendMessage(main.colors.getTitle()
+								pl.sendMessage(MarioKart.colors.getTitle()
 										+ "[MarioKart:] "
-										+ main.colors.getInfo() + count);
+										+ MarioKart.colors.getInfo() + count);
 							}
 							try {
 								Thread.sleep(1000);
@@ -60,13 +60,13 @@ public class PowPowerup extends PowerupBase {
 							}
 							count--;
 						}
-						main.plugin.getServer().getScheduler()
-								.runTask(main.plugin, new Runnable() {
+						MarioKart.plugin.getServer().getScheduler()
+								.runTask(MarioKart.plugin, new Runnable() {
 									@Override
 									public void run() {
 										for (int i = 0; i < pls.length
 												&& i < ppos; i++) {
-											Player pl = main.plugin
+											Player pl = MarioKart.plugin
 													.getServer()
 													.getPlayer(
 															(String) pls[i]);
@@ -81,8 +81,8 @@ public class PowPowerup extends PowerupBase {
 											if (!cart
 													.hasMetadata(
 															"car.braking")
-													&& !main.marioKart.isCarImmune(cart)) {
-												String msg = main.msgs
+													&& !MarioKart.marioKart.isCarImmune(cart)) {
+												String msg = MarioKart.msgs
 														.get("mario.hit");
 												msg = msg
 														.replaceAll(
@@ -117,7 +117,7 @@ public class PowPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.pow");
+		String id = MarioKart.config.getString("mariokart.pow");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -126,7 +126,7 @@ public class PowPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Pow Block");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Pow Block");
 		i.setItemMeta(im);
 		
 		return i;

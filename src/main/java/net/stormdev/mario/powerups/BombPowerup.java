@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
@@ -33,11 +33,11 @@ public class BombPowerup extends PowerupBase {
 		final TNTPrimed tnt = (TNTPrimed) car.getLocation().getWorld()
 				.spawnEntity(car.getLocation(), EntityType.PRIMED_TNT);
 		tnt.setFuseTicks(80);
-		tnt.setMetadata("explosion.none", new StatValue(null, main.plugin));
+		tnt.setMetadata("explosion.none", new StatValue(null, MarioKart.plugin));
 		vel.setY(0.2); // Distance to throw it
 		tnt.setVelocity(vel);
-		main.plugin.getServer().getScheduler()
-				.runTaskAsynchronously(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 					@Override
 					public void run() {
 						int count = 12;
@@ -45,7 +45,7 @@ public class BombPowerup extends PowerupBase {
 							count--;
 							tnt.setVelocity(vel);
 							tnt.setMetadata("explosion.none",
-									new StatValue(null, main.plugin));
+									new StatValue(null, MarioKart.plugin));
 							try {
 								Thread.sleep(50);
 							} catch (InterruptedException e) {
@@ -64,7 +64,7 @@ public class BombPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.bomb");
+		String id = MarioKart.config.getString("mariokart.bomb");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -73,7 +73,7 @@ public class BombPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Bomb");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Bomb");
 		i.setItemMeta(im);
 		
 		return i;

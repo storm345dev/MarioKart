@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.SerializableLocation;
@@ -52,7 +52,7 @@ public class SignManager {
 	
 	public void updateSigns(){
 		@SuppressWarnings("unchecked")
-		List<RaceTrack> tracks = (List<RaceTrack>) main.plugin.trackManager.getRaceTracks().clone();
+		List<RaceTrack> tracks = (List<RaceTrack>) MarioKart.plugin.trackManager.getRaceTracks().clone();
 		for(RaceTrack t:tracks){
 			updateSigns(t);
 		}
@@ -61,21 +61,21 @@ public class SignManager {
 	
 	public void clearSigns(){
 		@SuppressWarnings("unchecked")
-		List<RaceTrack> tracks = (List<RaceTrack>) main.plugin.trackManager.getRaceTracks().clone();
+		List<RaceTrack> tracks = (List<RaceTrack>) MarioKart.plugin.trackManager.getRaceTracks().clone();
 		for(RaceTrack t:tracks){
-			clearSigns(t, main.plugin.getServer());
+			clearSigns(t, MarioKart.plugin.getServer());
 		}
 		return;
 	}
 	
 	public void updateSigns(String trackName){
-		RaceTrack track = main.plugin.trackManager.getRaceTrack(trackName);
+		RaceTrack track = MarioKart.plugin.trackManager.getRaceTrack(trackName);
 		updateSigns(track);
 		return;
 	}
 	
 	public synchronized void updateSigns(RaceTrack track){
-		Server server = main.plugin.getServer();
+		Server server = MarioKart.plugin.getServer();
 		String name = track.getTrackName();
 		ArrayList<SerializableLocation> slocs = getLocs(name);
 		if(slocs.size() < 1){
@@ -83,7 +83,7 @@ public class SignManager {
 		}
 		
 		Boolean update = false;
-	    LinkedHashMap<UUID, RaceQueue> queues = main.plugin.raceQueues.getQueues(name);
+	    LinkedHashMap<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues.getQueues(name);
 	    
 	    String line0 = name; //eg. [MyTrack:]
 	    if(line0.length() > 15){
@@ -102,10 +102,10 @@ public class SignManager {
 	    	RaceQueue queue = queues.get(id);
 	    	if(queue != null){
 	    		try {
-					String line = main.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]("
+					String line = MarioKart.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]("
 							+queue.getRaceMode().name().toLowerCase()+")";
 					if(line.length() > 15){
-						line = main.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]";
+						line = MarioKart.colors.getTitle()+"["+queue.currentPlayerCount()+"/"+queue.playerLimit()+"]";
 					}
 					otherLines.add(line);
 				} catch (Exception e) {
@@ -193,8 +193,8 @@ public class SignManager {
 	
 	public String getCorrectName(String name){
 		if(!queueSigns.containsKey(name)){
-			for(String dest:main.plugin.trackManager.getRaceTrackNames()){
-				if(ChatColor.stripColor(main.colorise(dest)).equalsIgnoreCase(name)){
+			for(String dest:MarioKart.plugin.trackManager.getRaceTrackNames()){
+				if(ChatColor.stripColor(MarioKart.colorise(dest)).equalsIgnoreCase(name)){
 					name = dest;
 				}
 			}
@@ -242,7 +242,7 @@ public class SignManager {
 	}
 	
 	public void asyncSave(){
-		main.plugin.getServer().getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+		MarioKart.plugin.getServer().getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
 
 			public void run() {
 				save();

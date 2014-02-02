@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.tracks.RaceTrack;
 
@@ -87,16 +87,16 @@ public class RaceQueueManager {
 
 	public synchronized LinkedHashMap<UUID, RaceQueue> getQueues(String trackName) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(trackName)) {
-			trackQueues = main.plugin.queues.get(trackName);
+		if (MarioKart.plugin.queues.containsKey(trackName)) {
+			trackQueues = MarioKart.plugin.queues.get(trackName);
 		}
 		return trackQueues;
 	}
 	
 	public synchronized Map<UUID, RaceQueue> getQueues(String trackName, RaceType type) {
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(trackName)) {
-			trackQueues.putAll(main.plugin.queues.get(trackName));
+		if (MarioKart.plugin.queues.containsKey(trackName)) {
+			trackQueues.putAll(MarioKart.plugin.queues.get(trackName));
 		}
 		for(UUID id:trackQueues.keySet()){
 			RaceQueue q = trackQueues.get(id);
@@ -109,8 +109,8 @@ public class RaceQueueManager {
 
 	public synchronized void removeQueue(String trackName, UUID queueId) {
 		Map<UUID, RaceQueue> trackQueues = new HashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(trackName)) {
-			trackQueues = main.plugin.queues.get(trackName);
+		if (MarioKart.plugin.queues.containsKey(trackName)) {
+			trackQueues = MarioKart.plugin.queues.get(trackName);
 		}
 		if (trackQueues.size() < 1) {
 			return;
@@ -128,15 +128,15 @@ public class RaceQueueManager {
 	public synchronized void removeQueue(RaceQueue queue) {
 		queue.clear();
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(queue.getTrackName())) {
-			trackQueues = main.plugin.queues.get(queue.getTrackName());
+		if (MarioKart.plugin.queues.containsKey(queue.getTrackName())) {
+			trackQueues = MarioKart.plugin.queues.get(queue.getTrackName());
 		}
 		trackQueues.remove(queue.getQueueId());
-		main.plugin.queues.put(queue.getTrackName(), trackQueues);
+		MarioKart.plugin.queues.put(queue.getTrackName(), trackQueues);
 	}
 
 	public synchronized LinkedHashMap<UUID, RaceQueue> getAllQueues() {
-		List<String> tracks = new ArrayList<String>(main.plugin.queues.keySet());
+		List<String> tracks = new ArrayList<String>(MarioKart.plugin.queues.keySet());
 		LinkedHashMap<UUID, RaceQueue> queues = new LinkedHashMap<UUID, RaceQueue>();
 		for (String tName : tracks) {
 			queues.putAll(getQueues(tName));
@@ -146,12 +146,12 @@ public class RaceQueueManager {
 
 	public synchronized void updateQueue(RaceQueue queue) {
 		LinkedHashMap<UUID, RaceQueue> trackQueues = new LinkedHashMap<UUID, RaceQueue>();
-		if (main.plugin.queues.containsKey(queue.getTrackName())) {
-			trackQueues = main.plugin.queues.get(queue.getTrackName());
+		if (MarioKart.plugin.queues.containsKey(queue.getTrackName())) {
+			trackQueues = MarioKart.plugin.queues.get(queue.getTrackName());
 		}
 		if (trackQueues.containsKey(queue.getQueueId())) {
 			trackQueues.put(queue.getQueueId(), queue);
-			main.plugin.queues.put(queue.getTrackName(), trackQueues);
+			MarioKart.plugin.queues.put(queue.getTrackName(), trackQueues);
 		}
 		return;
 	}
@@ -162,8 +162,8 @@ public class RaceQueueManager {
 			RaceQueue q = (queues.get(id));
 			q.clear();
 		}
-		for (String trackId:main.plugin.queues.keySet()){ //ConcurrentHashMap allows this
-			main.plugin.queues.remove(trackId);
+		for (String trackId:MarioKart.plugin.queues.keySet()){ //ConcurrentHashMap allows this
+			MarioKart.plugin.queues.remove(trackId);
 		}
 	}
 

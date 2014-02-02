@@ -9,11 +9,11 @@ public class Colors {
 
 	public Colors(String success, String error, String info, String title,
 			String tp) {
-		this.success = main.colorise(success);
-		this.error = main.colorise(error);
-		this.info = main.colorise(info);
-		this.title = main.colorise(title);
-		this.tp = main.colorise(tp);
+		this.success = MarioKart.colorise(success);
+		this.error = MarioKart.colorise(error);
+		this.info = MarioKart.colorise(info);
+		this.title = MarioKart.colorise(title);
+		this.tp = MarioKart.colorise(tp);
 	}
 
 	public String getSuccess() {

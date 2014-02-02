@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import net.stormdev.mario.items.ItemStacks;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 
@@ -45,12 +45,12 @@ public class BooPowerup extends PowerupBase {
 		}
 		int pos = pppos - 1;
 		if (!(pos < 0)) {
-			final Player pl = main.plugin.getServer().getPlayer(
+			final Player pl = MarioKart.plugin.getServer().getPlayer(
 					(String) pls[pos]);
-			if(!main.marioKart.isPlayerImmune(pl)){
-				pl.setMetadata("kart.rolling", new StatValue(true, main.plugin));
+			if(!MarioKart.marioKart.isPlayerImmune(pl)){
+				pl.setMetadata("kart.rolling", new StatValue(true, MarioKart.plugin));
 				pl.getInventory().clear();
-				main.plugin.hotBarManager.updateHotBar(pl);
+				MarioKart.plugin.hotBarManager.updateHotBar(pl);
 				pl.getInventory().addItem(
 						getNewItem());
 				PotionEffect nausea = new PotionEffect(
@@ -59,17 +59,17 @@ public class BooPowerup extends PowerupBase {
 				pl.getWorld().playSound(pl.getLocation(),
 						Sound.AMBIENCE_CAVE, 1, 1);
 				pl.updateInventory();
-				String msg = main.msgs.get("mario.hit");
+				String msg = MarioKart.msgs.get("mario.hit");
 				msg = msg.replaceAll("%name%", "ghost");
-				pl.sendMessage(main.colors.getInfo() + msg);
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				pl.sendMessage(MarioKart.colors.getInfo() + msg);
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 
 							@Override
 							public void run() {
-								pl.removeMetadata("kart.rolling", main.plugin);
+								pl.removeMetadata("kart.rolling", MarioKart.plugin);
 								pl.getInventory().clear();
-								main.plugin.hotBarManager.updateHotBar(pl);
+								MarioKart.plugin.hotBarManager.updateHotBar(pl);
 								pl.updateInventory();
 							}
 						}, 240l);
@@ -85,7 +85,7 @@ public class BooPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.boo");
+		String id = MarioKart.config.getString("mariokart.boo");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
@@ -95,7 +95,7 @@ public class BooPowerup extends PowerupBase {
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Boo");
+		im.setDisplayName(MarioKart.colors.getInfo()+"Boo");
 		i.setItemMeta(im);
 		
 		return i;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 
@@ -13,14 +13,14 @@ import org.bukkit.entity.Player;
 
 public class RaceMethods {
 	@SuppressWarnings("unused")
-	private main plugin = null;
+	private MarioKart plugin = null;
 
 	public RaceMethods() {
-		this.plugin = main.plugin;
+		this.plugin = MarioKart.plugin;
 	}
 
 	public synchronized Race inAGame(Player player, Boolean update) {
-		Map<UUID, Race> races = main.plugin.raceScheduler.getRaces();
+		Map<UUID, Race> races = MarioKart.plugin.raceScheduler.getRaces();
 		for (UUID id : new ArrayList<UUID>(races.keySet())) {
 			Race r = races.get(id);
 			if (update) {
@@ -38,7 +38,7 @@ public class RaceMethods {
 	}
 
 	public synchronized RaceQueue inGameQue(Player player) {
-		Map<UUID, RaceQueue> queues = main.plugin.raceQueues.getAllQueues();
+		Map<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues.getAllQueues();
 		for (UUID id : queues.keySet()) {
 			try {
 				RaceQueue queue = queues.get(id);

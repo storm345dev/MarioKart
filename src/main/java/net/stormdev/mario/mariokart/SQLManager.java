@@ -16,14 +16,14 @@ public class SQLManager {
 
 	public SQLManager(String hostName, String port, String dbName,
 			String username, String password) {
-		main.logger.info("Connecting to mySQL database...");
+		MarioKart.logger.info("Connecting to mySQL database...");
 		try {
-			MySQL = new MySQL(main.plugin, hostName, port, dbName, username,
+			MySQL = new MySQL(MarioKart.plugin, hostName, port, dbName, username,
 					password);
 			c = MySQL.openConnection();
 			c.setAutoCommit(true);
 		} catch (SQLException e) {
-			main.logger.info("Error connecting to mySQL database!");
+			MarioKart.logger.info("Error connecting to mySQL database!");
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class SQLManager {
 		try {
 			c.close();
 		} catch (SQLException e) {
-			main.logger.info("Error occured when closing sql connection!");
+			MarioKart.logger.info("Error occured when closing sql connection!");
 		}
 		if(MySQL != null){
 			MySQL.closeConnection();
@@ -152,8 +152,8 @@ public class SQLManager {
 			statement.executeUpdate(query);
 			statement.close();
 		} catch (SQLException e) {
-			main.logger.info(main.colors.getError() + "Query: " + query);
-			main.logger.info(main.colors.getError() + "Error: "
+			MarioKart.logger.info(MarioKart.colors.getError() + "Query: " + query);
+			MarioKart.logger.info(MarioKart.colors.getError() + "Error: "
 					+ e.getMessage());
 		}
 	}

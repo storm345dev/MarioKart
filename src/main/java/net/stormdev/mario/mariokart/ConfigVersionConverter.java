@@ -9,17 +9,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigVersionConverter {
 	public static FileConfiguration convert(FileConfiguration config, double target){
-		main.plugin.getLogger().info("Converting config to new format...");
+		MarioKart.plugin.getLogger().info("Converting config to new format...");
 		double td = target*10; //Target is in format n.n
 		int t = (int)td;
-		main.plugin.getLogger().info("Config target: "+target);
+		MarioKart.plugin.getLogger().info("Config target: "+target);
 		switch(t){
 		case 11:{ //1.1 
 			fromV1ToV2(config); 
 			config.set("misc.configVersion", 1.1); //Save that it has been converted
 			break;
 			}
-		default: main.plugin.getLogger().info("No destination config version found for: "+target);
+		default: MarioKart.plugin.getLogger().info("No destination config version found for: "+target);
 		}
 		return config;
 	}
@@ -36,7 +36,7 @@ public class ConfigVersionConverter {
 		convertItemFormat(config, "mariokart.pow");
 		convertItemFormat(config, "mariokart.random");
 		convertItemFormat(config, "mariokart.mushroom");
-		main.plugin.getLogger().info("Config successfully converted!");
+		MarioKart.plugin.getLogger().info("Config successfully converted!");
 		return config;
 	}
 	public static FileConfiguration convertItemFormat(FileConfiguration config, String configKey){
@@ -77,7 +77,7 @@ public class ConfigVersionConverter {
 			} catch (Exception e) {
 				//Incorrect format also
 			}
-			main.plugin.getLogger().info("Invalid config value: "+raw+", skipping...");
+			MarioKart.plugin.getLogger().info("Invalid config value: "+raw+", skipping...");
 		}
 	    return newIds;
 	}
@@ -105,7 +105,7 @@ public class ConfigVersionConverter {
 			} catch (Exception e) {
 				//Incorrect format also
 			}
-			main.plugin.getLogger().info("Invalid config speedmod: "+raw+", skipping...");
+			MarioKart.plugin.getLogger().info("Invalid config speedmod: "+raw+", skipping...");
 		}
 	    return newIds;
 	}

@@ -9,7 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.PlayerQuitException;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.sound.MarioKartSound;
@@ -39,15 +39,15 @@ public class RaceExecutor {
 			// Users already cleared
 		}
 		if (!game.isEmpty()) {
-			main.logger.info("Game not correctly cleared!");
+			MarioKart.logger.info("Game not correctly cleared!");
 		}
-		main.plugin.raceScheduler.recalculateQueues();
+		MarioKart.plugin.raceScheduler.recalculateQueues();
 		return;
 	}
 
 	public static void finishRace(final Race game, final User user, final Boolean gameEnded){
 		//Call finishRaceSync, syncrhonously
-		main.plugin.getServer().getScheduler().runTaskLaterAsynchronously(main.plugin, new BukkitRunnable(){
+		MarioKart.plugin.getServer().getScheduler().runTaskLaterAsynchronously(MarioKart.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {
@@ -74,14 +74,14 @@ public class RaceExecutor {
 			}
 			if (player == null) {
 				// Player has been removed from race prematurely
-				player = main.plugin.getServer()
+				player = MarioKart.plugin.getServer()
 						.getPlayer(user.getPlayerName());
 				if (player == null || !player.isOnline()) {
 					return; // Player is no longer around...
 				}
 			}
 			if (player != null) {
-				player.removeMetadata("car.stayIn", main.plugin);
+				player.removeMetadata("car.stayIn", MarioKart.plugin);
 				player.setCustomName(ChatColor.stripColor(player
 						.getCustomName()));
 				player.setCustomNameVisible(false);
@@ -98,10 +98,10 @@ public class RaceExecutor {
 					}
 				}
 				
-				final Location loc = game.getTrack().getExit(main.plugin.getServer());
+				final Location loc = game.getTrack().getExit(MarioKart.plugin.getServer());
 				final Player pl = player;
 				
-				main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable(){
+				MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
 					@Override
 					public void run() {
@@ -178,7 +178,7 @@ public class RaceExecutor {
 				Set<String> keys = sorted.keySet();
 				Object[] pls = keys.toArray();
 				for (int i = 0; i < pls.length; i++) {
-					Player p = main.plugin.getServer().getPlayer(
+					Player p = MarioKart.plugin.getServer().getPlayer(
 							(String) pls[i]); // Evidence the dodgy PR was not
 												// tested as it was still
 												// reading string with Player in
@@ -188,14 +188,14 @@ public class RaceExecutor {
 							String msg = "";
 							if (!timed) {
 								//Normal race, or cup
-								msg = main.msgs.get("race.end.position");
+								msg = MarioKart.msgs.get("race.end.position");
 								if ((i + 1) <= 4
 										&& (i + 1) != game.getUsers().size()) {
 									//Winning sound
-									main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+									MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 								} else {
 									//Lose sound
-									main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
+									MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 								}
 								i += game.getUsersFinished().size();
 								String pos = "" + (i + 1);
@@ -211,22 +211,22 @@ public class RaceExecutor {
 								msg = msg.replaceAll("%position%", "" + pos);
 								MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
 										player, (i + 1), pos);
-								main.plugin.getServer().getPluginManager()
+								MarioKart.plugin.getServer().getPluginManager()
 										.callEvent(evt);
 							} else {
 								//Time trial
 								double tim = (game.endTimeMS - game.startTimeMS) / 10;
 								double ti = (int) tim;
 								double t = ti / 100;
-								msg = main.msgs.get("race.end.time");
+								msg = MarioKart.msgs.get("race.end.time");
 								msg = msg.replaceAll(Pattern.quote("%time%"), t
 										+ "");
-								main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
-								main.plugin.raceTimes.addRaceTime(game
+								MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+								MarioKart.plugin.raceTimes.addRaceTime(game
 										.getTrack().getTrackName(), player
 										.getName(), t);
 							}
-							p.sendMessage(main.colors.getSuccess() + msg);
+							p.sendMessage(MarioKart.colors.getSuccess() + msg);
 						}
 					}
 				}
@@ -236,13 +236,13 @@ public class RaceExecutor {
 					int position = game.getFinishPosition(player.getName());
 					String msg = "";
 					if (!timed) {
-						msg = main.msgs.get("race.end.position");
+						msg = MarioKart.msgs.get("race.end.position");
 						if (position <= 4 && position != game.getUsers().size()) {
 							//Win sound
-							main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+							MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
 						} else {
 							//Lose sound
-							main.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
+							MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
 						}
 						String pos = "" + position;
 						if (pos.endsWith("1")) {
@@ -260,24 +260,24 @@ public class RaceExecutor {
 						}
 						MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
 								player, position, pos);
-						main.plugin.getServer().getPluginManager()
+						MarioKart.plugin.getServer().getPluginManager()
 								.callEvent(evt);
 					} else {
 						// Time trial
 						double tim = (game.endTimeMS - game.startTimeMS) / 10;
 						double ti = (int) tim;
 						double t = ti / 100;
-						msg = main.msgs.get("race.end.time");
+						msg = MarioKart.msgs.get("race.end.time");
 						msg = msg.replaceAll(Pattern.quote("%time%"), t + "");
-						main.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
-						main.plugin.raceTimes.addRaceTime(game.getTrack()
+						MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+						MarioKart.plugin.raceTimes.addRaceTime(game.getTrack()
 								.getTrackName(), player.getName(), t);
 					}
-					player.sendMessage(main.colors.getSuccess() + msg);
+					player.sendMessage(MarioKart.colors.getSuccess() + msg);
 				}
 			}
 			game.leave(user, false);
-			main.plugin.raceScheduler.updateRace(game);
+			MarioKart.plugin.raceScheduler.updateRace(game);
 			if (game.getUsersIn().size() < 1 && !game.ended && !gameEnded) {
 				game.ended = true;
 				game.end();
@@ -296,52 +296,52 @@ public class RaceExecutor {
 				Player player = user.getPlayer();
 				player.setGameMode(GameMode.SURVIVAL);
 				player.getInventory().clear();
-				main.plugin.hotBarManager.updateHotBar(player);
+				MarioKart.plugin.hotBarManager.updateHotBar(player);
 				player.updateInventory();
 			} catch (PlayerQuitException e) {
 				// Player has left
 				game.leave(user, true);
 			}
 		}
-		main.plugin.raceScheduler.updateRace(game);
+		MarioKart.plugin.raceScheduler.updateRace(game);
 		users = game.getUsers();
 		for (User user : users) {
 			user.setLapsLeft(game.totalLaps);
 			user.setCheckpoint(0);
-			String msg = main.msgs.get("race.mid.lap");
+			String msg = MarioKart.msgs.get("race.mid.lap");
 			msg = msg.replaceAll(Pattern.quote("%lap%"), "" + 1);
 			msg = msg.replaceAll(Pattern.quote("%total%"), "" + game.totalLaps);
 			try {
-				user.getPlayer().sendMessage(main.colors.getInfo() + msg);
+				user.getPlayer().sendMessage(MarioKart.colors.getInfo() + msg);
 			} catch (PlayerQuitException e) {
 				// Player has left
 			}
 		}
 		game.setUsers(users);
-		main.plugin.raceScheduler.recalculateQueues();
+		MarioKart.plugin.raceScheduler.recalculateQueues();
 		return;
 	}
 	public static void onRaceUpdate(final Race game){
 		if (!game.getRunning()) {
 			try {
-				main.plugin.raceScheduler.stopRace(game);
+				MarioKart.plugin.raceScheduler.stopRace(game);
 			} catch (Exception e) {
 			}
-			main.plugin.raceScheduler.recalculateQueues();
+			MarioKart.plugin.raceScheduler.recalculateQueues();
 			return;
 		}
 		if (!game.ending
 				&& !game.ending
-				&& main.config.getBoolean("general.race.enableTimeLimit")
+				&& MarioKart.config.getBoolean("general.race.enableTimeLimit")
 				&& ((System.currentTimeMillis() - game.startTimeMS) * 0.001) > game.timeLimitS) {
-			game.broadcast(main.msgs.get("race.end.timeLimit"));
+			game.broadcast(MarioKart.msgs.get("race.end.timeLimit"));
 			game.ending = true;
 			game.end();
 			return;
 		}
 		for (User user : game.getUsersIn()) {
 			String pname = user.getPlayerName();
-			Player player = main.plugin.getServer().getPlayer(pname);
+			Player player = MarioKart.plugin.getServer().getPlayer(pname);
 			if (player == null && !user.isRespawning()) {
 				game.leave(user, true);
 			} else {
@@ -359,7 +359,7 @@ public class RaceExecutor {
 						toCheck = new Integer[] { (old + 1) };
 					}
 					CheckpointCheck check = game.playerAtCheckpoint(toCheck,
-							player, main.plugin.getServer());
+							player, MarioKart.plugin.getServer());
 
 					if (check.at) { // At a checkpoint
 						int ch = check.checkpoint;
@@ -382,7 +382,7 @@ public class RaceExecutor {
 					int lapsLeft = user.getLapsLeft();
 
 					if (lapsLeft < 1 || checkNewLap) {
-						if (game.atLine(main.plugin.getServer(), playerLoc)) {
+						if (game.atLine(MarioKart.plugin.getServer(), playerLoc)) {
 							if (checkNewLap) {
 								int left = lapsLeft - 1;
 								if (left < 0) {
@@ -392,7 +392,7 @@ public class RaceExecutor {
 								user.setLapsLeft(left);
 								lapsLeft = left;
 								if (left != 0) {
-									String msg = main.msgs.get("race.mid.lap");
+									String msg = MarioKart.msgs.get("race.mid.lap");
 									int lap = game.totalLaps - lapsLeft + 1;
 									msg = msg.replaceAll(Pattern.quote("%lap%"), ""
 											+ lap);
@@ -400,9 +400,9 @@ public class RaceExecutor {
 											"" + game.totalLaps);
 									if (lap == game.totalLaps) {
 										//Last lap
-										main.plugin.playCustomSound(player, MarioKartSound.LAST_LAP);
+										MarioKart.plugin.playCustomSound(player, MarioKartSound.LAST_LAP);
 									}
-									player.sendMessage(main.colors.getInfo() + msg);
+									player.sendMessage(MarioKart.colors.getInfo() + msg);
 								}
 							}
 							if (lapsLeft < 1) {
@@ -416,14 +416,14 @@ public class RaceExecutor {
 										Player p;
 										try {
 											p = u.getPlayer();
-											String msg = main.msgs
+											String msg = MarioKart.msgs
 													.get("race.end.soon");
 											msg = msg.replaceAll("%name%",
 													p.getName());
-											p.sendMessage(main.colors.getSuccess()
+											p.sendMessage(MarioKart.colors.getSuccess()
 													+ game.getWinner()
-													+ main.msgs.get("race.end.won"));
-											p.sendMessage(main.colors.getInfo()
+													+ MarioKart.msgs.get("race.end.won"));
+											p.sendMessage(MarioKart.colors.getInfo()
 													+ msg);
 										} catch (PlayerQuitException e) {
 											// Player has left
@@ -439,7 +439,7 @@ public class RaceExecutor {
 				}
 			}
 		}
-		main.plugin.raceScheduler.updateRace(game);
+		MarioKart.plugin.raceScheduler.updateRace(game);
 		return;
 	}
 	
@@ -454,15 +454,15 @@ public class RaceExecutor {
 		if (power < 1) {
 			power = 1;
 		}
-		car.setMetadata("car.frozen", new StatValue(time, main.plugin));
+		car.setMetadata("car.frozen", new StatValue(time, MarioKart.plugin));
 		car.setVelocity(new Vector(0, power, 0));
 		final Player pl = player;
-		main.plugin.getServer().getScheduler().runTaskLater(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable() {
 
 			@Override
 			public void run() {
-				main.plugin.playCustomSound(pl, MarioKartSound.PENALTY_END);
-				car.removeMetadata("car.frozen", main.plugin);
+				MarioKart.plugin.playCustomSound(pl, MarioKartSound.PENALTY_END);
+				car.removeMetadata("car.frozen", MarioKart.plugin);
 			}
 		}, (time * 20));
 		return;

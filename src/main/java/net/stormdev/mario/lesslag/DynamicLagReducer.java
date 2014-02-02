@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.Race;
 
 public class DynamicLagReducer implements Runnable {
@@ -20,7 +20,7 @@ public class DynamicLagReducer implements Runnable {
 	}
 
 	public static double getAvailableMemory(){
-		if(!main.dynamicLagReduce){
+		if(!MarioKart.dynamicLagReduce){
 			return 1000;
 		}
 		return Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975; //In MB
@@ -31,40 +31,40 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static double getMemoryUse(){
-		if(!main.dynamicLagReduce){
+		if(!MarioKart.dynamicLagReduce){
 			return 10;
 		}
 		return getMaxMemory()-getAvailableMemory();
 	}
 	
 	public static boolean overloadPrevention(){
-		if(!main.dynamicLagReduce){
+		if(!MarioKart.dynamicLagReduce){
 			return false;
 		}
 		long freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
 		if(freeMemory < 150){
-			main.logger.info("[INFO] Current system available memory: "+freeMemory);
+			MarioKart.logger.info("[INFO] Current system available memory: "+freeMemory);
 			System.gc();
 			freeMemory = (long) (Runtime.getRuntime().freeMemory() * 0.00097560975 * 0.00097560975); //In MB
 			if(freeMemory < 150){ //If, after gc, the memory is still running out
-				if(!main.plugin.raceScheduler.isLockedDown()){
-					main.logger.info("[INFO] Current system available memory (Post cleanup) : "+freeMemory);
-					main.plugin.raceScheduler.lockdown(); //Lock all queues
+				if(!MarioKart.plugin.raceScheduler.isLockedDown()){
+					MarioKart.logger.info("[INFO] Current system available memory (Post cleanup) : "+freeMemory);
+					MarioKart.plugin.raceScheduler.lockdown(); //Lock all queues
 				}
 				else{
 					//Re-occuring issue
-					if(main.plugin.random.nextBoolean() && main.plugin.random.nextBoolean()
-							&& main.plugin.random.nextBoolean()){ //Small chance races will get cancelled
-						if(main.plugin.raceScheduler.getRacesRunning() > 0){
+					if(MarioKart.plugin.random.nextBoolean() && MarioKart.plugin.random.nextBoolean()
+							&& MarioKart.plugin.random.nextBoolean()){ //Small chance races will get cancelled
+						if(MarioKart.plugin.raceScheduler.getRacesRunning() > 0){
 							//Terminate a race
 							try {
-								HashMap<UUID, Race> races = new HashMap<UUID, Race>(main.plugin.raceScheduler.getRaces());
+								HashMap<UUID, Race> races = new HashMap<UUID, Race>(MarioKart.plugin.raceScheduler.getRaces());
 								Object[] ids = races.keySet().toArray();
-								UUID id = (UUID) ids[main.plugin.random.nextInt(ids.length)];
+								UUID id = (UUID) ids[MarioKart.plugin.random.nextInt(ids.length)];
 								Race r = races.get(id);
-								r.broadcast(main.colors.getError()+"Terminating race due to depleted system resources, sorry.");
-								main.plugin.raceScheduler.stopRace(r);
-								main.logger.info("[WARNING] Low memory resulted in termination of race: "
+								r.broadcast(MarioKart.colors.getError()+"Terminating race due to depleted system resources, sorry.");
+								MarioKart.plugin.raceScheduler.stopRace(r);
+								MarioKart.logger.info("[WARNING] Low memory resulted in termination of race: "
 										+ id);
 							} catch (Exception e) {
 								//Error ending race
@@ -76,17 +76,17 @@ public class DynamicLagReducer implements Runnable {
 			}
 		}
 		else{
-			if(main.plugin.raceScheduler.isLockedDown() &&
+			if(MarioKart.plugin.raceScheduler.isLockedDown() &&
 					freeMemory > 200){
-				main.logger.info("[INFO] Current system available memory (Reopening queues): "+freeMemory);
-				main.plugin.raceScheduler.unlockDown();
+				MarioKart.logger.info("[INFO] Current system available memory (Reopening queues): "+freeMemory);
+				MarioKart.plugin.raceScheduler.unlockDown();
 			}
 		}
 		return false;
 	}
 	
 	public static int getResourceScore(){
-		if(!main.dynamicLagReduce){
+		if(!MarioKart.dynamicLagReduce){
 			return 1000;
 		}
 		double tps = getTPS(100);
@@ -106,7 +106,7 @@ public class DynamicLagReducer implements Runnable {
 	}
 	
 	public static int getResourceScore(double requestedMemory){
-		if(!main.dynamicLagReduce){
+		if(!MarioKart.dynamicLagReduce){
 			return 100;
 		}
 		double tps = getTPS(100);
@@ -168,8 +168,8 @@ public class DynamicLagReducer implements Runnable {
 		TICKS = new long[600];
 		LAST_TICK = 0L;
 		running = false;
-		main.plugin.lagReducer.cancel();
-		main.plugin.lagReducer = Bukkit.getScheduler().runTaskTimer(main.plugin,
+		MarioKart.plugin.lagReducer.cancel();
+		MarioKart.plugin.lagReducer = Bukkit.getScheduler().runTaskTimer(MarioKart.plugin,
 				new DynamicLagReducer(), 100L, 1L);
 		return;
 	}

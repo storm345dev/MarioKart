@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -66,7 +66,7 @@ public class IconMenu implements Listener {
 			}
 		}
 		player.openInventory(inventory);
-		player.setMetadata(metaData, new StatValue(null, main.plugin));
+		player.setMetadata(metaData, new StatValue(null, MarioKart.plugin));
 	}
 
 	public void destroy() {
@@ -96,7 +96,7 @@ public class IconMenu implements Listener {
 						@Override
 						public void run() {
 							p.closeInventory();
-							p.removeMetadata(metaData, main.plugin);
+							p.removeMetadata(metaData, MarioKart.plugin);
 						}
 					}, 1);
 				}

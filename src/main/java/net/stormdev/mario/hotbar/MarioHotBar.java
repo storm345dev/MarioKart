@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -141,10 +141,10 @@ public class MarioHotBar {
 		String str = getPlayer();
 		this.player = null; // Plug memory leak
 		this.hotBar.clear();
-		main.plugin.hotBarManager.removeHotBar(str);
+		MarioKart.plugin.hotBarManager.removeHotBar(str);
 	}
 
 	public void update() {
-		main.plugin.hotBarManager.setHotBar(getPlayer(), this);
+		MarioKart.plugin.hotBarManager.setHotBar(getPlayer(), this);
 	}
 }

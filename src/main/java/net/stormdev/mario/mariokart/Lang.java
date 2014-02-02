@@ -1,15 +1,15 @@
 package net.stormdev.mario.mariokart;
 
 public class Lang {
-	main plugin = null;
+	MarioKart plugin = null;
 
-	public Lang(main main) {
+	public Lang(MarioKart main) {
 		this.plugin = main;
 	}
 
 	public String get(String key) {
 		String val = getRaw(key);
-		val = main.colorise(val);
+		val = MarioKart.colorise(val);
 		return val;
 	}
 

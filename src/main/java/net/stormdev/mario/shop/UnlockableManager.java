@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.SQLManager;
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 public class UnlockableManager {
 
@@ -30,16 +30,16 @@ public class UnlockableManager {
 		this.saveFile = saveFile;
 		this.sql = sql;
 		this.unlocks = unlocks;
-		this.enabled = main.config.getBoolean("general.upgrades.enable");
+		this.enabled = MarioKart.config.getBoolean("general.upgrades.enable");
 		if (sql) {
 			try {
 				sqlManager = new SQLManager(
-						main.config.getString("general.upgrades.sqlHostName"),
-						main.config.getString("general.upgrades.sqlPort"),
-						main.config
+						MarioKart.config.getString("general.upgrades.sqlHostName"),
+						MarioKart.config.getString("general.upgrades.sqlPort"),
+						MarioKart.config
 								.getString("general.upgrades.sqlDataBaseName"),
-						main.config.getString("general.upgrades.sqlUsername"),
-						main.config.getString("general.upgrades.sqlPassword"));
+						MarioKart.config.getString("general.upgrades.sqlUsername"),
+						MarioKart.config.getString("general.upgrades.sqlPassword"));
 			} catch (Exception e) {
 				sql = false;
 			}
@@ -293,8 +293,8 @@ public class UnlockableManager {
 	}
 
 	public void save(final String playerName) {
-		main.plugin.getServer().getScheduler()
-				.runTaskAsynchronously(main.plugin, new Runnable() {
+		MarioKart.plugin.getServer().getScheduler()
+				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 
 					@Override
 					public void run() {

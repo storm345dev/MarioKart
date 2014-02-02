@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.shop.Unlockable;
 import net.stormdev.mario.shop.Upgrade;
 
@@ -71,7 +71,7 @@ public class HotBarManager {
 		contents.put(HotBarSlot.UTIL, defaultItems);
 		if(upgrades){
 		// Look-up purchased upgrades in a menu and add them too
-		List<Upgrade> unlocks = main.plugin.upgradeManager.getUpgrades(player);
+		List<Upgrade> unlocks = MarioKart.plugin.upgradeManager.getUpgrades(player);
 		for (Upgrade upgrade : unlocks) {
 			Unlockable u = upgrade.getUnlockedAble();
 			HotBarItem item = new HotBarItem(new ItemStack(u.displayItem),
@@ -86,7 +86,7 @@ public class HotBarManager {
 	
 	@SuppressWarnings("deprecation")
 	public void updateHotBar(Player player) {
-		MarioHotBar hotBar = main.plugin.hotBarManager.getHotBar(player
+		MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player
 				.getName());
 		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
 		HotBarItem scroller = hotBar.getDisplayedItem(HotBarSlot.SCROLLER);
@@ -100,7 +100,7 @@ public class HotBarManager {
 		} else {
 			player.getInventory().setItem(6, new ItemStack(Material.AIR));
 		}
-		player.getInventory().setItem(8, main.marioKart.respawn);
+		player.getInventory().setItem(8, MarioKart.marioKart.respawn);
 		player.updateInventory();
 		return;
 	}
@@ -118,7 +118,7 @@ public class HotBarManager {
 		}
 		if (type == HotBarUpgrade.LEAVE) {
 			// Make the player leave the race
-			main.cmdExecutor.urace(player, new String[] { "leave" }, player);
+			MarioKart.plugin.raceCommandExecutor.urace(player, new String[] { "leave" }, player);
 			return;
 		} else if (type == HotBarUpgrade.SPEED_BOOST) {
 			long lengthMS = 5000;
@@ -167,17 +167,17 @@ public class HotBarManager {
 					return;
 				}
 				final Entity veh = player.getVehicle();
-				veh.setMetadata("kart.immune", new StatValue(lengthMS, main.plugin));
-				player.setMetadata("kart.immune", new StatValue(lengthMS, main.plugin));
-				main.plugin.getServer().getScheduler()
-						.runTaskLater(main.plugin, new Runnable() {
+				veh.setMetadata("kart.immune", new StatValue(lengthMS, MarioKart.plugin));
+				player.setMetadata("kart.immune", new StatValue(lengthMS, MarioKart.plugin));
+				MarioKart.plugin.getServer().getScheduler()
+						.runTaskLater(MarioKart.plugin, new Runnable() {
 
 							@Override
 							public void run() {
 								try {
-									player.removeMetadata("kart.immune", main.plugin);
+									player.removeMetadata("kart.immune", MarioKart.plugin);
 									veh.removeMetadata("kart.immune",
-											main.plugin);
+											MarioKart.plugin);
 									player.getWorld().playSound(
 											player.getLocation(), Sound.CLICK,
 											0.5f, 3f);
@@ -192,11 +192,11 @@ public class HotBarManager {
 			}
 		}
 		if (useUpgrade && execute) {
-			if (main.plugin.upgradeManager.useUpgrade(
+			if (MarioKart.plugin.upgradeManager.useUpgrade(
 					player.getName(),
-					new Upgrade(main.plugin.upgradeManager
+					new Upgrade(MarioKart.plugin.upgradeManager
 							.getUnlockable(hotBarItem.shortId), 1))) {
-				player.sendMessage(main.msgs.get("race.upgrades.use"));
+				player.sendMessage(MarioKart.msgs.get("race.upgrades.use"));
 				updateHotBar(player);
 				return;
 			}

@@ -1,6 +1,6 @@
 package net.stormdev.mario.players;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -70,7 +70,7 @@ public class User {
 
 	public Player getPlayer() throws PlayerQuitException {
 		if(player == null){
-			player = main.plugin.getServer().getPlayer(getPlayerName());
+			player = MarioKart.plugin.getServer().getPlayer(getPlayerName());
 		}
 		try {
 			if(isRespawning() && player == null){

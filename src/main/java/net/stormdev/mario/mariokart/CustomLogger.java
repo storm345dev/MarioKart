@@ -13,7 +13,7 @@ public class CustomLogger {
 
 	public CustomLogger(ConsoleCommandSender console, Logger logger) {
 		try {
-			coloured = main.config.getBoolean("general.logger.colour");
+			coloured = MarioKart.config.getBoolean("general.logger.colour");
 		} catch (Exception e) {
 			coloured = false;
 		}
@@ -26,7 +26,7 @@ public class CustomLogger {
 	}
 
 	public String getMsg(String raw) {
-		String colour = main.colorise(raw);
+		String colour = MarioKart.colorise(raw);
 		if (!coloured) {
 			return ChatColor.stripColor(colour);
 		}
@@ -47,17 +47,17 @@ public class CustomLogger {
 	}
 
 	public void error(Exception e) {
-		print(main.colors.getError() + e.getLocalizedMessage());
+		print(MarioKart.colors.getError() + e.getLocalizedMessage());
 		e.printStackTrace();
 	}
 
 	public void error(String msg, Exception e) {
-		print(main.colors.getError() + msg);
+		print(MarioKart.colors.getError() + msg);
 		e.printStackTrace();
 	}
 
 	public void info(String message) {
-		print(main.colors.getInfo() + message);
+		print(MarioKart.colors.getInfo() + message);
 	}
 
 	public void print(String message) {

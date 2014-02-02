@@ -3,7 +3,7 @@ package net.stormdev.mario.powerups;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.stormdev.mario.mariokart.main;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
@@ -46,16 +46,16 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 			List<Entity> nearby = shell.getNearbyEntities(15, 5, 15);
 			for(Entity e:nearby){
 				if(e instanceof Player){
-					main.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
+					MarioKart.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
 				}
 			}
 			sound = 3;
-			shell.removeMetadata("shell.sound", main.plugin);
-			shell.setMetadata("shell.sound", new StatValue(sound, main.plugin));
+			shell.removeMetadata("shell.sound", MarioKart.plugin);
+			shell.setMetadata("shell.sound", new StatValue(sound, MarioKart.plugin));
 		} else {
 			sound--;
-			shell.removeMetadata("shell.sound", main.plugin);
-			shell.setMetadata("shell.sound", new StatValue(sound, main.plugin));
+			shell.removeMetadata("shell.sound", MarioKart.plugin);
+			shell.setMetadata("shell.sound", new StatValue(sound, MarioKart.plugin));
 		}
 		
 		Vector v = calculateVelocity();
@@ -65,9 +65,9 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 
 	@Override
 	public void collide(Player target) {
-		String msg = main.msgs.get("mario.hit");
+		String msg = MarioKart.msgs.get("mario.hit");
 		msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-		main.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
+		MarioKart.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
 		target.sendMessage(ChatColor.RED + msg);
 		Entity cart = target.getVehicle();
 		if(cart == null){
@@ -100,7 +100,7 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 	public Vector calculateVelocity() {
 		Location shellLoc = getFiredItem().getLocation();
 		double speed = 1.2;
-		final Player target = main.plugin.getServer().getPlayer(getTarget());
+		final Player target = MarioKart.plugin.getServer().getPlayer(getTarget());
 		Location targetLoc = target.getLocation();
 		double x = targetLoc.getX() - shellLoc.getX();
 		double z = targetLoc.getZ() - shellLoc.getZ();
@@ -138,7 +138,7 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 		super.setCooldown(0); //No cooldown for tracking shells
 		super.setExpiry(33); //Expire after moving 33 times
 		
-		task = Bukkit.getScheduler().runTaskAsynchronously(main.plugin, new BukkitRunnable(){
+		task = Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {
