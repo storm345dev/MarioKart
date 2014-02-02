@@ -569,7 +569,7 @@ public class Race {
 		this.running = false;
 		ended = true;
 		for (Location l : ((List<Location>) this.reloadingItemBoxes.clone())) {
-			MarioKart.plugin.listener.spawnItemPickupBox(l.add(0, 2.4, 0), false);
+			MarioKart.powerupManager.spawnItemPickupBox(l.add(0, 2.4, 0), false);
 			this.reloadingItemBoxes.remove(l);
 		}
 		if (task != null) {

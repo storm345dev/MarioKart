@@ -19,6 +19,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -350,7 +351,7 @@ public class PowerupManager {
 											c.load(true);
 										}
 										r.reloadingItemBoxes.remove(signLoc);
-										MarioKart.plugin.listener.spawnItemPickupBox(loc,
+										spawnItemPickupBox(loc,
 												true);
 										MarioKart.plugin.raceScheduler.updateRace(r);
 										return;
@@ -423,6 +424,50 @@ public class PowerupManager {
 	
 	public Boolean isCarImmune(Entity carBase){
 		return carBase.hasMetadata("kart.immune");
+	}
+	
+	public void spawnItemPickupBox(Location previous, Boolean force) {
+		Location newL = previous;
+		newL.getChunk(); // Load chunk
+		Location signLoc = null;
+		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign)
+				|| force) {
+			signLoc = newL.add(0, -2.4, 0);
+		} else {
+			if (force) {
+				double ll = newL.getY();
+				Boolean foundSign = false;
+				Boolean cancel = false;
+				while (!foundSign && !cancel) {
+					if (ll < newL.getY() - 4) {
+						cancel = true;
+					}
+					Location i = new Location(newL.getWorld(), newL.getX(), ll,
+							newL.getZ());
+					if (i.getBlock().getState() instanceof Sign) {
+						foundSign = true;
+						signLoc = i;
+					}
+				}
+				if (!foundSign) {
+					return; // Let is be destroyed
+				}
+			} else {
+				return; // Let them destroy it
+			}
+		}
+		Location above = signLoc.add(0, 3.8, 0);
+		EnderCrystal newC = (EnderCrystal) above.getWorld().spawnEntity(above,
+				EntityType.ENDER_CRYSTAL);
+		above.getBlock().setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.WEST)
+				.setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.NORTH)
+				.setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.NORTH_WEST)
+				.setType(Material.COAL_BLOCK);
+		newC.setFireTicks(0);
+		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 	}
 
 }
