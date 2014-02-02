@@ -1,46 +1,29 @@
 package net.stormdev.mario.mariokart;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
-import net.stormdev.mario.commands.AdminCommandExecutor;
-import net.stormdev.mario.commands.RaceCommandExecutor;
-import net.stormdev.mario.commands.RaceTimeCommandExecutor;
-import net.stormdev.mario.config.PluginConfigurator;
+import net.stormdev.mario.commands.*;
+import net.stormdev.mario.events.*;
+import net.stormdev.mario.config.*;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.powerups.PowerupManager;
-import net.stormdev.mario.queues.RaceQueue;
-import net.stormdev.mario.queues.RaceQueueManager;
-import net.stormdev.mario.queues.RaceScheduler;
+import net.stormdev.mario.queues.*;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceMethods;
-import net.stormdev.mario.shop.Shop;
-import net.stormdev.mario.shop.Unlockable;
-import net.stormdev.mario.shop.UnlockableManager;
+import net.stormdev.mario.shop.*;
 import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.tracks.RaceTimes;
 import net.stormdev.mario.tracks.RaceTrackManager;
-import net.stormdev.mario.tracks.TrackCreator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -49,6 +32,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -71,10 +55,9 @@ public class MarioKart extends JavaPlugin {
 	public AdminCommandExecutor adminCommandExecutor = null;
 	public RaceCommandExecutor raceCommandExecutor = null;
 	public RaceTimeCommandExecutor raceTimeCommandExecutor = null;
-	public URaceListener listener = null;
+	public List<Listener> listeners = null;
 	public RaceTrackManager trackManager = null;
 	public RaceScheduler raceScheduler = null;
-	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
 	public ConcurrentHashMap<String, LinkedHashMap<UUID, RaceQueue>> queues = new ConcurrentHashMap<String, LinkedHashMap<UUID, RaceQueue>>();
 	public RaceQueueManager raceQueues = null;
 	public static Lang msgs = null;
@@ -112,15 +95,26 @@ public class MarioKart extends JavaPlugin {
 		
 	}
 	
+	private void setupListeners(){
+		listeners = new ArrayList<Listener>();
+		
+		listeners.add(new HotbarEventsListener(this));
+		listeners.add(new QueueEventsListener(this));
+		listeners.add(new RaceEventsListener(this));
+		listeners.add(new ServerEventsListener(this));
+		listeners.add(new SignEventsListener(this));
+		listeners.add(new TrackEventsListener(this));
+	}
+	
 	
 	@Override
 	public void onEnable() {
 		System.gc();
-		if (listener != null || logger != null
+		if (listeners != null || logger != null
 				|| msgs != null || powerupManager != null || economy != null) {
 			getLogger().log(Level.WARNING,
 					"Previous plugin instance found, performing clearup...");
-			listener = null;
+			listeners = null;
 			logger = null;
 			msgs = null;
 			powerupManager = null;
@@ -402,10 +396,9 @@ public class MarioKart extends JavaPlugin {
 		logger.info("Searching for ProtocolLib...");
 		
 		setupCmds(); //Setup the commands
+		setupListeners(); //Setup listeners
  		
 		this.musicManager = new MusicManager(this);
-		this.listener = new URaceListener(this);
-		getServer().getPluginManager().registerEvents(listener, this);
 		this.trackManager = new RaceTrackManager(this, new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "tracks.uracetracks"));

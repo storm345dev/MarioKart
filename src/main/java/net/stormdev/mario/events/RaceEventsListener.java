@@ -1,4 +1,4 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.events;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,25 +6,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.stormdev.mario.hotbar.HotBarSlot;
-import net.stormdev.mario.hotbar.MarioHotBar;
-import net.stormdev.mario.lesslag.DynamicLagReducer;
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.powerups.BananaPowerup;
-import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.sound.MarioKartSound;
-import net.stormdev.mario.tracks.TrackCreator;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -35,23 +27,15 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
@@ -60,7 +44,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.useful.uCarsAPI.uCarsAPI;
@@ -68,15 +51,16 @@ import com.useful.ucars.ucarUpdateEvent;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
-public class URaceListener implements Listener {
-	MarioKart plugin = null;
+public class RaceEventsListener implements Listener {
+	private MarioKart plugin;
 	private boolean fairCars = true;
-
-	public URaceListener(MarioKart plugin) {
+	
+	public RaceEventsListener(MarioKart plugin){
 		this.plugin = plugin;
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		fairCars = MarioKart.config.getBoolean("general.ensureEqualCarSpeed");
 	}
-
+	
 	@EventHandler
 	void bananas(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
@@ -99,7 +83,7 @@ public class URaceListener implements Listener {
 		}
 		return;
 	}
-
+	
 	@EventHandler
 	void playerDeath(PlayerDeathEvent event) {
 		Race r = plugin.raceMethods.inAGame(event.getEntity(), false);
@@ -112,7 +96,7 @@ public class URaceListener implements Listener {
 		event.getDrops().clear();
 		return;
 	}
-
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	void vehDestroy(VehicleDamageEvent event) { // Stops player's cars being
 		// broken in a race.
@@ -136,15 +120,9 @@ public class URaceListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	void playerJoin(PlayerJoinEvent event){
-		System.gc();
-		return;
-	}
 	
 	@EventHandler
-	void invClick(InventoryClickEvent event) {
+	void invClick(InventoryClickEvent event) { //Stop people moving stuff in their inventory during a race
 		HumanEntity player = event.getWhoClicked();
 		if (!(player instanceof Player)) {
 			return;
@@ -158,30 +136,9 @@ public class URaceListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
-
-	@EventHandler
-	public void onWandClickEvent(PlayerInteractEvent event) {
-		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR)
-				&& !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			return;
-		}
-		Player player = event.getPlayer();
-		if (!MarioKart.trackCreators.containsKey(player.getName())) {
-			return;
-		}
-		TrackCreator creator = MarioKart.trackCreators.get(player.getName());
-		Boolean wand = false;
-		@SuppressWarnings("deprecation")
-		int handid = player.getItemInHand().getTypeId();
-		if (handid == MarioKart.config.getInt("setup.create.wand")) {
-			wand = true;
-		}
-		creator.set(wand);
-		return;
-	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR)
-	void powerups(final ucarUpdateEvent event) {
+	void powerups(final ucarUpdateEvent event) { //Tell powerup manager when a car moves (Item Boxes)
 		final Player player = event.getPlayer();
 		try {
 			if (plugin.raceMethods.inAGame(player, false) == null) {
@@ -193,45 +150,9 @@ public class URaceListener implements Listener {
 	    MarioKart.powerupManager.calculate(player, event);
 		return;
 	}
-
+	
 	@EventHandler
-	void gameQuitting(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		MarioKart.plugin.resourcedPlayers.remove(player.getName());
-		Race game = plugin.raceMethods.inAGame(player, false);
-		if (game == null) {
-			RaceQueue queue = plugin.raceMethods.inGameQue(player);
-			if (queue == null) {
-				return;
-			}
-			queue.removePlayer(player);
-			return;
-		} else {
-			game.leave(game.getUser(player.getName()), true);
-			return;
-		}
-	}
-
-	@EventHandler
-	void gameQuitting(PlayerKickEvent event) {
-		Player player = event.getPlayer();
-		MarioKart.plugin.resourcedPlayers.remove(player.getName());
-		Race game = plugin.raceMethods.inAGame(player, false);
-		if (game == null) {
-			RaceQueue queue = plugin.raceMethods.inGameQue(player);
-			if (queue == null) {
-				return;
-			}
-			queue.removePlayer(player);
-			return;
-		} else {
-			game.leave(game.getUser(player.getName()), true);
-			return;
-		}
-	}
-
-	@EventHandler
-	void stayInCar(VehicleExitEvent event) {
+	void stayInCar(VehicleExitEvent event) { //Keep players inside their cars during a race
 		Entity v = event.getVehicle();
 		while(v != null && !(v instanceof Minecart)
 				&& v.getVehicle() != null){
@@ -259,9 +180,9 @@ public class URaceListener implements Listener {
 		}
 		event.setCancelled(true);
 	}
-
+	
 	@EventHandler
-	void damage(EntityDamageEvent event) {
+	void damage(EntityDamageEvent event) { //Block damage of cars during a race
 		if (!(event.getEntityType() == EntityType.MINECART)) {
 			return;
 		}
@@ -284,9 +205,9 @@ public class URaceListener implements Listener {
 		event.setDamage(0);
 		event.setCancelled(true);
 	}
-
+	
 	@EventHandler
-	void exploder(EntityExplodeEvent event) {
+	void exploder(EntityExplodeEvent event) { //Stop bombs blowing up terrain
 		if (!MarioKart.config.getBoolean("mariokart.enable")) {
 			return;
 		}
@@ -333,197 +254,9 @@ public class URaceListener implements Listener {
 
 		}
 	}
-
-	@EventHandler
-	void signClicker(final PlayerInteractEvent event) {
-		MarioKart.powerupManager.calculate(event.getPlayer(), event);
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-			return;
-		}
-		if (!(event.getClickedBlock().getState() instanceof Sign)) {
-			return;
-		}
-		final Sign sign = (Sign) event.getClickedBlock().getState();
-		String[] lines = sign.getLines();
-		MarioKart.plugin.getServer().getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
-
-			@Override
-			public void run() {
-				if(plugin.signManager.isQueueSign(sign)){
-					String trackName = ChatColor.stripColor(sign.getLine(0));
-					MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] {
-						"join", trackName, "auto" },
-						event.getPlayer());
-				}
-				return;
-			}});
-		if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase("[MarioKart]")) {
-			return;
-		}
-		String cmd = ChatColor.stripColor(lines[1]);
-		if (cmd.equalsIgnoreCase("list")) {
-			int page = 1;
-			try {
-				page = Integer.parseInt(ChatColor.stripColor(lines[2]));
-			} catch (NumberFormatException e) {
-			}
-			MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] { "list",
-					"" + page }, event.getPlayer());
-		} else if (cmd.equalsIgnoreCase("leave")
-				|| cmd.equalsIgnoreCase("quit") || cmd.equalsIgnoreCase("exit")) {
-			MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] { "leave" },
-					event.getPlayer());
-		} else if (cmd.equalsIgnoreCase("join")) {
-			String mode = ChatColor.stripColor(lines[3]);
-			if (mode.length() > 0) {
-				MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] {
-						"join", ChatColor.stripColor(lines[2]).toLowerCase(),
-						mode }, event.getPlayer());
-			} else {
-				MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] {
-						"join", ChatColor.stripColor(lines[2]).toLowerCase() },
-						event.getPlayer());
-			}
-		} else if (cmd.equalsIgnoreCase("shop")) {
-			MarioKart.plugin.raceCommandExecutor.urace(event.getPlayer(), new String[] { "shop" },
-					event.getPlayer());
-		}
-		return;
-	}
-
-	@EventHandler
-	void signWriter(SignChangeEvent event) {
-		String[] lines = event.getLines();
-		if (ChatColor.stripColor(lines[0]).equalsIgnoreCase("[MarioKart]")) {
-			lines[0] = MarioKart.colors.getTitle() + "[MarioKart]";
-			Boolean text = true;
-			String cmd = ChatColor.stripColor(lines[1]);
-			if (cmd.equalsIgnoreCase("list")) {
-				lines[1] = MarioKart.colors.getInfo() + "List";
-				if (!(lines[2].length() < 1)) {
-					text = false;
-				}
-				lines[2] = MarioKart.colors.getSuccess()
-						+ ChatColor.stripColor(lines[2]);
-			} else if (cmd.equalsIgnoreCase("join")) {
-				lines[1] = MarioKart.colors.getInfo() + "Join";
-				lines[2] = MarioKart.colors.getSuccess()
-						+ ChatColor.stripColor(lines[2]);
-				if (lines[2].equalsIgnoreCase("auto")) {
-					lines[2] = MarioKart.colors.getTp() + "Auto";
-				}
-				lines[3] = MarioKart.colors.getInfo() + lines[3];
-				text = false;
-			} else if (cmd.equalsIgnoreCase("shop")) {
-				lines[1] = MarioKart.colors.getInfo() + "Shop";
-
-			} else if (cmd.equalsIgnoreCase("leave")
-					|| cmd.equalsIgnoreCase("exit")
-					|| cmd.equalsIgnoreCase("quit")) {
-				char[] raw = cmd.toCharArray();
-				if (raw.length > 1) {
-					String start = "" + raw[0];
-					start = start.toUpperCase();
-					String body = "";
-					for (int i = 1; i < raw.length; i++) {
-						body = body + raw[i];
-					}
-					body = body.toLowerCase();
-					cmd = start + body;
-				}
-				lines[1] = MarioKart.colors.getInfo() + cmd;
-			} else if (cmd.equalsIgnoreCase("items")) {
-				Location above = event.getBlock().getLocation().add(0, 1.4, 0);
-				EnderCrystal crystal = (EnderCrystal) above.getWorld()
-						.spawnEntity(above, EntityType.ENDER_CRYSTAL);
-				above.getBlock().setType(Material.COAL_BLOCK);
-				above.getBlock().getRelative(BlockFace.WEST)
-						.setType(Material.COAL_BLOCK);
-				above.getBlock().getRelative(BlockFace.NORTH)
-						.setType(Material.COAL_BLOCK);
-				above.getBlock().getRelative(BlockFace.NORTH_WEST)
-						.setType(Material.COAL_BLOCK);
-				crystal.setFireTicks(0);
-				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
-				text = false;
-			} else if(cmd.equalsIgnoreCase("queues")){ 
-				String track = ChatColor.stripColor(lines[2]);
-				if(track.length() < 1){
-					return; //No track
-				}
-				track = plugin.signManager.getCorrectName(track);
-				if(!plugin.trackManager.raceTrackExists(track)){
-					event.getPlayer().sendMessage(MarioKart.colors.getSuccess()+MarioKart.msgs.get("setup.fail.queueSign"));
-					return;
-				}
-				//Register sign
-				plugin.signManager.addQueueSign(track, event.getBlock().getLocation());
-				//Tell the player it was registered successfully
-				event.getPlayer().sendMessage(MarioKart.colors.getSuccess()+MarioKart.msgs.get("setup.create.queueSign"));
-				final String t = track;
-				MarioKart.plugin.getServer().getScheduler().runTaskLater(plugin, new BukkitRunnable(){
-
-					@Override
-					public void run() {
-						plugin.signManager.updateSigns(t);
-						return;
-					}}, 2l);
-				
-				text = false;
-			} else {
-				text = false;
-			}
-			if (text) {
-				lines[2] = ChatColor.ITALIC + "Right click";
-				lines[3] = ChatColor.ITALIC + "to use";
-			}
-		}
-	}
-
-	@EventHandler
-	void crystalExplode(EntityExplodeEvent event) {
-		if (!(event.getEntity() instanceof EnderCrystal)) {
-			return;
-		}
-		Entity crystal = event.getEntity();
-		// if(crystal.hasMetadata("race.pickup")){
-		event.setCancelled(true);
-		event.setYield(0);
-		Location newL = crystal.getLocation();
-		Location signLoc = null;
-		if ((newL.add(0, -2.4, 0).getBlock().getState() instanceof Sign)) {
-			signLoc = newL.add(0, -2.4, 0);
-		} else {
-			return; // Let them destroy it
-		}
-		Location above = signLoc.add(0, 3.8, 0);
-		EnderCrystal newC = (EnderCrystal) above.getWorld().spawnEntity(above,
-				EntityType.ENDER_CRYSTAL);
-		above.getBlock().setType(Material.COAL_BLOCK);
-		above.getBlock().getRelative(BlockFace.WEST)
-				.setType(Material.COAL_BLOCK);
-		above.getBlock().getRelative(BlockFace.NORTH)
-				.setType(Material.COAL_BLOCK);
-		above.getBlock().getRelative(BlockFace.NORTH_WEST)
-				.setType(Material.COAL_BLOCK);
-		newC.setFireTicks(0);
-		newC.setMetadata("race.pickup", new StatValue(true, plugin));
-		// }
-
-		return;
-	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
-	void stopCrystalFire(BlockIgniteEvent event) {
-		if (event.getCause() != IgniteCause.ENDER_CRYSTAL) {
-			return;
-		}
-		event.setCancelled(true);
-		return;
-	}
-
 	@EventHandler(priority = EventPriority.MONITOR)
-	void playerFireProtection(EntityDamageEvent event) {
+	void playerProtection(EntityDamageEvent event) { //Protection during races against fire and entity attacks
 		try {
 			if (event.getCause() != DamageCause.FIRE
 					&& event.getCause() != DamageCause.FIRE_TICK
@@ -561,9 +294,9 @@ public class URaceListener implements Listener {
 			return;
 		}
 	}
-
+	
 	@EventHandler
-	void carDeath(VehicleDamageEvent event) {
+	void carDamage(VehicleDamageEvent event) { //Stop vehicles getting damaged in races
 		if (!(event.getVehicle() instanceof Minecart)) {
 			return;
 		}
@@ -585,9 +318,9 @@ public class URaceListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
-
+	
 	@EventHandler
-	void playerDeathEvent(PlayerDeathEvent event) {
+	void playerPreDeathEvent(PlayerDeathEvent event) { //Remove cars before respawn in races
 		Player player = event.getEntity();
 		Race r = plugin.raceMethods.inAGame(player, false);
 		if (r == null) {
@@ -614,9 +347,9 @@ public class URaceListener implements Listener {
 		}
 		return;
 	}
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	void playerRespawnEvent(PlayerRespawnEvent event) {
+	void playerRespawnEvent(PlayerRespawnEvent event) { //Handle respawns during races
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
@@ -640,37 +373,9 @@ public class URaceListener implements Listener {
 		return;
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
-	void interact(PlayerInteractEvent e){
-		DynamicLagReducer.overloadPrevention();
-		return;
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	void respawn(PlayerRespawnEvent e){
-		DynamicLagReducer.overloadPrevention();
-		return;
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	void join(PlayerJoinEvent e){
-		DynamicLagReducer.overloadPrevention();
-		return;
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	void queueRespawns(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-		RaceQueue r = MarioKart.plugin.raceMethods.inGameQue(player);
-		if (r == null) {
-			return;
-		}
-		event.setRespawnLocation(r.getTrack().getLobby(MarioKart.plugin.getServer()));
-	}
-
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
-	void postRespawn(PlayerRespawnEvent event) {
+	void postRespawn(PlayerRespawnEvent event) { //Handle post respawns in races
 		final Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
@@ -705,9 +410,9 @@ public class URaceListener implements Listener {
 		MarioKart.plugin.raceScheduler.updateRace(race);
 		return;
 	}
-
+	
 	@EventHandler
-	void blockBreak(BlockBreakEvent event) {
+	void blockBreak(BlockBreakEvent event) { //Stop griefing during races
 		Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
@@ -717,7 +422,7 @@ public class URaceListener implements Listener {
 	}
 
 	@EventHandler
-	void blockPlace(BlockPlaceEvent event) {
+	void blockPlace(BlockPlaceEvent event) { //Stop griefing during races
 		Player player = event.getPlayer();
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
@@ -725,9 +430,9 @@ public class URaceListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR)
-	void speedo(VehicleUpdateEvent event) {
+	void speedo(VehicleUpdateEvent event) { //Draw the speedo onto hotbars during races
 		Entity veh = event.getVehicle();
 		if (!(veh instanceof Minecart)) {
 			return;
@@ -765,9 +470,9 @@ public class URaceListener implements Listener {
 		player.setExp(xpBar);
 		return;
 	}
-
+	
 	@EventHandler
-	void raceFinish(MarioKartRaceFinishEvent event) {
+	void raceFinish(MarioKartRaceFinishEvent event) { //Handle rewards after players finish a race
 		Player player = event.getPlayer();
 		MarioKart.plugin.hotBarManager.clearHotBar(player.getName());
 		if (!MarioKart.config.getBoolean("general.race.rewards.enable")) {
@@ -818,9 +523,9 @@ public class URaceListener implements Listener {
 		player.sendMessage(MarioKart.colors.getInfo() + msg);
 		return;
 	}
-
+	
 	@EventHandler(priority = EventPriority.LOWEST)
-	void pvp(EntityDamageEvent event) {
+	void pvp(EntityDamageEvent event) { //Stop PVP in races
 		if (event.getEntity() instanceof Player
 				&& MarioKart.plugin.raceMethods.inAGame(
 						((Player) event.getEntity()), false) != null
@@ -832,58 +537,12 @@ public class URaceListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	void pvp(EntityDamageByEntityEvent event) {
+	void pvp(EntityDamageByEntityEvent event) { //Stop PVP in races
 		if (event.getEntity() instanceof Player
 				&& MarioKart.plugin.raceMethods.inAGame(
 						((Player) event.getEntity()), false) != null) {
 			event.setDamage(0);
 			event.setCancelled(true);
-		}
-		return;
-	}
-
-	@EventHandler
-	public void hotBarScrolling(VehicleUpdateEvent event) {
-		Vehicle car = event.getVehicle();
-		Entity e = car.getPassenger();
-		if(event instanceof ucarUpdateEvent){
-			e = ((ucarUpdateEvent) event).getPlayer();
-		}
-		else{
-			while(e!=null && !(e instanceof Player) && e.getPassenger() != null){
-				e = e.getPassenger();
-			}
-			if(!(e instanceof Player)){
-				return;
-			}
-		}
-		final Player player = (Player) e;
-		if (MarioKart.plugin.raceMethods.inAGame(player, false) == null) {
-			return;
-		}
-		if (car.hasMetadata("car.braking")
-				&& !player.hasMetadata("mariokart.slotChanging")
-				&& (player.getInventory().getHeldItemSlot() == 6 || player
-						.getInventory().getHeldItemSlot() == 7)) {
-			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player
-					.getName());
-			if (player.getInventory().getHeldItemSlot() == 6) {
-				hotBar.scroll(HotBarSlot.SCROLLER);
-			} else {
-				hotBar.scroll(HotBarSlot.UTIL);
-			}
-			player.setMetadata("mariokart.slotChanging", new StatValue(true,
-					MarioKart.plugin));
-			MarioKart.plugin.getServer().getScheduler()
-					.runTaskLater(MarioKart.plugin, new Runnable() {
-
-						@Override
-						public void run() {
-							player.removeMetadata("mariokart.slotChanging",
-									MarioKart.plugin);
-						}
-					}, 15);
-			plugin.hotBarManager.updateHotBar(player);
 		}
 		return;
 	}

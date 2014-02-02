@@ -1,5 +1,6 @@
 package net.stormdev.mario.tracks;
 
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
@@ -7,6 +8,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 import org.bukkit.entity.Player;
 
 public class TrackCreator {
+	public static HashMap<String, TrackCreator> trackCreators = new HashMap<String, TrackCreator>();
 	Player player = null;
 	RaceTrack track = null;
 	int stage = 0;
@@ -17,7 +19,7 @@ public class TrackCreator {
 		this.player = player;
 		this.track = track;
 		stage = 0;
-		MarioKart.trackCreators.put(player.getName(), this);
+		trackCreators.put(player.getName(), this);
 		start();
 	}
 
@@ -49,7 +51,7 @@ public class TrackCreator {
 		} else if (wand && stage == 5) {
 			setLine2();
 		}
-		MarioKart.trackCreators.put(player.getName(), this);
+		trackCreators.put(player.getName(), this);
 		return;
 	}
 
@@ -129,7 +131,7 @@ public class TrackCreator {
 		String msg = MarioKart.msgs.get("setup.create.done");
 		msg = msg.replaceAll(Pattern.quote("%name%"), track.getTrackName());
 		player.sendMessage(MarioKart.colors.getSuccess() + msg);
-		MarioKart.trackCreators.remove(player.getName());
+		trackCreators.remove(player.getName());
 		return;
 	}
 }
