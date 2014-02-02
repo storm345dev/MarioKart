@@ -277,10 +277,7 @@ public class MarioKart {
 							Player ply = evt.getPlayer();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
-									while (ItemStacks.equals(main.config
-											.getString("mariokart.blueShell"),
-											give.getTypeId(), give
-													.getDurability())) {
+									while (BlueShellPowerup.isItemSimilar(give)) {
 										give = this.getRandomPowerup();
 									}
 								}
@@ -291,10 +288,7 @@ public class MarioKart {
 							give = this.getRandomPowerup();
 							if (race != null) {
 								if (ply.getName().equals(race.winning)) {
-									while (ItemStacks.equals(main.config
-											.getString("mariokart.blueShell"),
-											give.getTypeId(), give
-													.getDurability())) {
+									while (BlueShellPowerup.isItemSimilar(give)) {
 										give = this.getRandomPowerup();
 									}
 								}

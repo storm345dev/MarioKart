@@ -1,8 +1,8 @@
 package net.stormdev.mario.config;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import net.stormdev.mario.mariokart.ConfigVersionConverter;
 
-import com.useful.ucars.ConfigVersionConverter;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginConfigurator {
 	private static double current = 1.1;
@@ -11,6 +11,7 @@ public class PluginConfigurator {
 		fill(config);
 	}
 	private static void fill(FileConfiguration config){
+		System.out.println("Reading config...");
 		// Setup the config
 		if (!config.contains("setup.create.wand")) {
 			config.set("setup.create.wand", 280);
@@ -25,6 +26,7 @@ public class PluginConfigurator {
 				version = config.getDouble("misc.configVersion");
 			}
 			if(version < current){
+				System.out.println("Converting config...");
 				config = ConfigVersionConverter.convert(config, current);
 			}
 		}

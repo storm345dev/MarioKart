@@ -56,6 +56,7 @@ public class RaceTrackManager {
 	@SuppressWarnings("unchecked")
 	private void loadAndConvert(Object result){
 		//Result is ArrayList<RaceTrack>
+		System.out.println("Loading tracks...");
 		if(!(result instanceof ArrayList)){
 			System.out.println("Failed to load Race Tracks, not a list!");
 			return;
@@ -72,6 +73,7 @@ public class RaceTrackManager {
 		
 		tracks = new ArrayList<RaceTrack>(); //Clear tracks
 		//Need to convert it from old format
+		System.out.println("Converting tracks...");
 		
 		for(Object instance:tr){ //'instance' is a track in the old format
 			try {

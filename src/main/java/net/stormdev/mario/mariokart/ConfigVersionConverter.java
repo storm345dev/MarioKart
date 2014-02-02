@@ -7,19 +7,19 @@ import java.util.regex.Pattern;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.useful.ucarsCommon.IdMaterialConverter;
-
 public class ConfigVersionConverter {
 	public static FileConfiguration convert(FileConfiguration config, double target){
 		main.plugin.getLogger().info("Converting config to new format...");
 		double td = target*10; //Target is in format n.n
 		int t = (int)td;
+		main.plugin.getLogger().info("Config target: "+target);
 		switch(t){
 		case 11:{ //1.1 
 			fromV1ToV2(config); 
-			config.set("misc.configVersion", 2.0); //Save that it has been converted
+			config.set("misc.configVersion", 1.1); //Save that it has been converted
 			break;
 			}
+		default: main.plugin.getLogger().info("No destination config version found for: "+target);
 		}
 		return config;
 	}
@@ -40,10 +40,12 @@ public class ConfigVersionConverter {
 		return config;
 	}
 	public static FileConfiguration convertItemFormat(FileConfiguration config, String configKey){
-		String[] rawIds = config.getString(configKey).split(",");
+		String raw = config.getString(configKey);
+		String[] rawIds = raw.split(",");
 		List<String> newIds = convertItemsToNewFormat(rawIds);
 		config.set(configKey, null); //Remove from config
 		config.set(configKey, newIds); //Save as a stringList
+		System.out.println("Converted: "+raw);
 		return config;
 	}
 	public static FileConfiguration convertSpeedModsFormat(FileConfiguration config, String configKey){

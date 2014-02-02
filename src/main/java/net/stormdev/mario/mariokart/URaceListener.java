@@ -17,6 +17,7 @@ import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.TrackCreator;
+import net.stormdev.mariokartAddons.items.BananaPowerup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -77,7 +78,6 @@ public class URaceListener implements Listener {
 		fairCars = main.config.getBoolean("general.ensureEqualCarSpeed");
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	void bananas(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
@@ -89,8 +89,7 @@ public class URaceListener implements Listener {
 		if (plugin.raceMethods.inAGame(player, false) == null) {
 			return;
 		}
-		if (ItemStacks.equals(main.config.getString("mariokart.banana"),
-				stack.getTypeId(), stack.getDurability())) {
+		if (BananaPowerup.isItemSimilar(stack)) {
 			if(!main.marioKart.isPlayerImmune(player)){
 				main.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
 				item.remove();
