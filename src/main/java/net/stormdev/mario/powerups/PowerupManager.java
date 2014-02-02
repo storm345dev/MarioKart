@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
-import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;

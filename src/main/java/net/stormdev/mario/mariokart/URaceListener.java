@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.hotbar.HotBarSlot;
 import net.stormdev.mario.hotbar.MarioHotBar;
-import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.powerups.BananaPowerup;
@@ -90,7 +89,7 @@ public class URaceListener implements Listener {
 			return;
 		}
 		if (BananaPowerup.isItemSimilar(stack)) {
-			if(!MarioKart.marioKart.isPlayerImmune(player)){
+			if(!MarioKart.powerupManager.isPlayerImmune(player)){
 				MarioKart.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
 				item.remove();
 				RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
@@ -191,7 +190,7 @@ public class URaceListener implements Listener {
 		} catch (Exception e) {
 			return;
 		}
-	    MarioKart.marioKart.calculate(player, event);
+	    MarioKart.powerupManager.calculate(player, event);
 		return;
 	}
 
@@ -337,7 +336,7 @@ public class URaceListener implements Listener {
 
 	@EventHandler
 	void signClicker(final PlayerInteractEvent event) {
-		MarioKart.marioKart.calculate(event.getPlayer(), event);
+		MarioKart.powerupManager.calculate(event.getPlayer(), event);
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}

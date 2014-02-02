@@ -81,7 +81,7 @@ public class PowPowerup extends PowerupBase {
 											if (!cart
 													.hasMetadata(
 															"car.braking")
-													&& !MarioKart.marioKart.isCarImmune(cart)) {
+													&& !MarioKart.powerupManager.isCarImmune(cart)) {
 												String msg = MarioKart.msgs
 														.get("mario.hit");
 												msg = msg

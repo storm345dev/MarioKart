@@ -42,7 +42,7 @@ public class LightningPowerup extends PowerupBase {
 			Player pla = MarioKart.plugin.getServer().getPlayer(
 					name);
 			if(!name.equals(player.getName())
-					&& !MarioKart.marioKart.isPlayerImmune(pla)){
+					&& !MarioKart.powerupManager.isPlayerImmune(pla)){
 				Entity c = pla.getVehicle();
 				while(c!=null && !(c instanceof Minecart) && c.getVehicle() != null){
 					c = c.getVehicle();

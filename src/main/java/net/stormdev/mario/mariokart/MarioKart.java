@@ -80,7 +80,7 @@ public class MarioKart extends JavaPlugin {
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;
 	public Random random = null;
-	public static PowerupManager marioKart = null;
+	public static PowerupManager powerupManager = null;
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
@@ -117,13 +117,13 @@ public class MarioKart extends JavaPlugin {
 	public void onEnable() {
 		System.gc();
 		if (listener != null || logger != null
-				|| msgs != null || marioKart != null || economy != null) {
+				|| msgs != null || powerupManager != null || economy != null) {
 			getLogger().log(Level.WARNING,
 					"Previous plugin instance found, performing clearup...");
 			listener = null;
 			logger = null;
 			msgs = null;
-			marioKart = null;
+			powerupManager = null;
 			vault = null;
 			economy = null;
 		}
@@ -414,7 +414,7 @@ public class MarioKart extends JavaPlugin {
 		this.raceScheduler = new RaceScheduler(
 				config.getInt("general.raceLimit"));
 		// Setup marioKart
-		marioKart = new PowerupManager(this);
+		powerupManager = new PowerupManager(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "raceTimes.uracetimes"),

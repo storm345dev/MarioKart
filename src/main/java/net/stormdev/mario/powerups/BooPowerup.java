@@ -47,7 +47,7 @@ public class BooPowerup extends PowerupBase {
 		if (!(pos < 0)) {
 			final Player pl = MarioKart.plugin.getServer().getPlayer(
 					(String) pls[pos]);
-			if(!MarioKart.marioKart.isPlayerImmune(pl)){
+			if(!MarioKart.powerupManager.isPlayerImmune(pl)){
 				pl.setMetadata("kart.rolling", new StatValue(true, MarioKart.plugin));
 				pl.getInventory().clear();
 				MarioKart.plugin.hotBarManager.updateHotBar(pl);

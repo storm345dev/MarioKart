@@ -100,7 +100,7 @@ public class HotBarManager {
 		} else {
 			player.getInventory().setItem(6, new ItemStack(Material.AIR));
 		}
-		player.getInventory().setItem(8, MarioKart.marioKart.respawn);
+		player.getInventory().setItem(8, MarioKart.powerupManager.respawn);
 		player.updateInventory();
 		return;
 	}

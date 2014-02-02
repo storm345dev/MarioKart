@@ -24,11 +24,11 @@ public class BoxPowerup extends PowerupBase {
 	public void doRightClickAction(User user, Player player, Minecart car,
 			Location carLoc, Race race, ItemStack inHand) {
 		inHand.setAmount(inHand.getAmount() - 1);
-		ItemStack give = MarioKart.marioKart.getRandomPowerup();
+		ItemStack give = MarioKart.powerupManager.getRandomPowerup();
 		if (race != null) {
 			if (player.getName().equals(race.winning)) {
 				while (BlueShellPowerup.isItemSimilar(give)) {
-					give = MarioKart.marioKart.getRandomPowerup();
+					give = MarioKart.powerupManager.getRandomPowerup();
 				}
 			}
 		}
