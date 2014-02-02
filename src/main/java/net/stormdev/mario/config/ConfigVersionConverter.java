@@ -47,15 +47,8 @@ public class ConfigVersionConverter {
 		String[] rawIds = raw.split(",");
 		List<String> newIds = convertItemsToNewFormat(rawIds);
 		config.set(configKey, null); //Remove from config
-		config.set(configKey, newIds); //Save as a stringList
+		config.set(configKey, newIds.get(0)); //Save as a stringList
 		System.out.println("Converted: "+raw);
-		return config;
-	}
-	public static FileConfiguration convertSpeedModsFormat(FileConfiguration config, String configKey){
-		String[] rawIds = config.getString(configKey).split(",");
-		List<String> newIds = convertSpeedModsToNewFormat(rawIds);
-		config.set(configKey, null); //Remove from config
-		config.set(configKey, newIds); //Save as a stringList
 		return config;
 	}
 	public static List<String> convertItemsToNewFormat(String[] rawIds){

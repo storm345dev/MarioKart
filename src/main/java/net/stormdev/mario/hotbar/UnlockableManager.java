@@ -1,4 +1,4 @@
-package net.stormdev.mario.shop;
+package net.stormdev.mario.hotbar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,14 +18,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.mariokart.SQLManager;
 import net.stormdev.mario.mariokart.MarioKart;
 
 public class UnlockableManager {
 
 	private Map<String, String> data = new HashMap<String, String>();
-	private Map<String, Unlockable> unlocks = new HashMap<String, Unlockable>(); // ShortId:Unlockable
+	private Map<String, Unlockable> unlocks = null; // ShortId:Unlockable
 	private File saveFile = null;
 	private boolean sql = false;
 	private SQLManager sqlManager = null;
@@ -58,6 +57,7 @@ public class UnlockableManager {
 			}
 		}
 		// SQL setup...
+		unlocks = getUnlocks();
 		load(); // Load the data
 	}
 	
@@ -79,6 +79,9 @@ public class UnlockableManager {
 			if (upgradeData.length > 1) {
 				String shortId = upgradeData[0];
 				String amount = upgradeData[1];
+				if(!this.unlocks.containsKey(shortId)){
+					continue;
+				}
 				int a = 1;
 				try {
 					a = Integer.parseInt(amount);

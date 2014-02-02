@@ -505,6 +505,7 @@ public class Race {
 			this.startTimeMS = System.currentTimeMillis();
 			RaceExecutor.onRaceStart(this);
 		} catch (Exception e) {
+			e.printStackTrace();
 			MarioKart.logger.log("Error starting race!", Level.SEVERE);
 			end();
 		}

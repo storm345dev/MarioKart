@@ -1,4 +1,5 @@
-package net.stormdev.mario.shop;
+package net.stormdev.mario.hotbar;
+
 
 public class Upgrade {
 

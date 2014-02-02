@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.stormdev.mario.hotbar.Unlockable;
+import net.stormdev.mario.hotbar.Upgrade;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.shop.IconMenu.OptionClickEvent;
 

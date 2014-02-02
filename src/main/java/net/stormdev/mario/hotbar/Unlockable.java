@@ -1,15 +1,13 @@
-package net.stormdev.mario.shop;
+package net.stormdev.mario.hotbar;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.stormdev.mario.hotbar.HotBarUpgrade;
-
 import org.bukkit.Material;
 
 public class Unlockable implements Serializable {
-	private static final long serialVersionUID = 6429581539584848110L;
+	private static final long serialVersionUID = 2L;
 
 	public HotBarUpgrade type = HotBarUpgrade.SPEED_BOOST;
 	public Map<String, Object> data = new HashMap<String, Object>();
