@@ -11,13 +11,13 @@ import net.stormdev.mario.hotbar.MarioHotBar;
 import net.stormdev.mario.items.ItemStacks;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.players.User;
+import net.stormdev.mario.powerups.BananaPowerup;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.TrackCreator;
-import net.stormdev.mariokartAddons.items.BananaPowerup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;

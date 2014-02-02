@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons.items;
+package net.stormdev.mario.powerups;
 
 import java.util.ArrayList;
 import java.util.List;

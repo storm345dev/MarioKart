@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons;
+package net.stormdev.mario.powerups;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +10,6 @@ import net.stormdev.mario.mariokart.main;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
-import net.stormdev.mariokartAddons.items.BananaPowerup;
-import net.stormdev.mariokartAddons.items.BlueShellPowerup;
-import net.stormdev.mariokartAddons.items.BombPowerup;
-import net.stormdev.mariokartAddons.items.BooPowerup;
-import net.stormdev.mariokartAddons.items.BoxPowerup;
-import net.stormdev.mariokartAddons.items.GreenShellPowerup;
-import net.stormdev.mariokartAddons.items.LightningPowerup;
-import net.stormdev.mariokartAddons.items.MushroomPowerup;
-import net.stormdev.mariokartAddons.items.PowPowerup;
-import net.stormdev.mariokartAddons.items.Powerup;
-import net.stormdev.mariokartAddons.items.RedShellPowerup;
-import net.stormdev.mariokartAddons.items.StarPowerup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -43,12 +31,12 @@ import com.useful.ucars.ucarUpdateEvent;
 import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
-public class MarioKart {
+public class PowerupManager {
 	main plugin = null;
 	Boolean enabled = true;
 	public ItemStack respawn = null;
 
-	public MarioKart(main plugin) {
+	public PowerupManager(main plugin) {
 		this.plugin = plugin;
 		enabled = main.config.getBoolean("mariokart.enable");
 		this.respawn = new ItemStack(Material.EGG);

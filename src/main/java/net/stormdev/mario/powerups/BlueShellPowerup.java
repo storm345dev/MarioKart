@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons.items;
+package net.stormdev.mario.powerups;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class RedShellPowerup extends TrackingShellPowerup {
+public class BlueShellPowerup extends TrackingShellPowerup {
 	
-	public RedShellPowerup(){
+	public BlueShellPowerup(){
 		super.setItemStack(getBaseItem());
 	}
 	
@@ -27,20 +27,20 @@ public class RedShellPowerup extends TrackingShellPowerup {
 	}
 	
 	public static PowerupType getPowerupType(){
-		return PowerupType.RED_SHELL;
+		return PowerupType.BLUE_SHELL;
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.redShell");
+		String id = main.config.getString("mariokart.blueShell");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
-		lore.add("+Slows down the victim");
+		lore.add("+Targets and slows the leader");
 		lore.add("*Right click to deploy");
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Red shell");
+		im.setDisplayName(main.colors.getInfo()+"Blue shell");
 		i.setItemMeta(im);
 		
 		return i;
@@ -52,21 +52,11 @@ public class RedShellPowerup extends TrackingShellPowerup {
 		SortedMap<String, Double> sorted = race.getRaceOrder();
 		Set<String> keys = sorted.keySet();
 		Object[] pls = keys.toArray();
-		int ppos = 0;
-		for (int i = 0; i < pls.length; i++) {
-			if (pls[i].equals(player.getName())) {
-				ppos = i;
-			}
-		}
-		int tpos = ppos - 1;
-		if (tpos < 0) {
-			tpos = ppos + 1;
-			if (tpos < 0 || tpos >= pls.length) {
-				return;
-			}
+		if(pls.length < 1){
+			return;
 		}
 		
-		setTarget((String) pls[tpos]);
+		setTarget((String) pls[0]);
 		inHand.setAmount(inHand.getAmount() - 1);
 		spawn(carLoc, player);
 		start(); //Start tracking target player
@@ -74,7 +64,7 @@ public class RedShellPowerup extends TrackingShellPowerup {
 
 	@Override
 	public PowerupType getType() {
-		return PowerupType.RED_SHELL;
+		return PowerupType.BLUE_SHELL;
 	}
 	
 }

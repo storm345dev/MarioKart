@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons.items;
+package net.stormdev.mario.powerups;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;

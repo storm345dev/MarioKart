@@ -23,6 +23,7 @@ import net.stormdev.mario.config.PluginConfigurator;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
+import net.stormdev.mario.powerups.PowerupManager;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.queues.RaceQueueManager;
 import net.stormdev.mario.queues.RaceScheduler;
@@ -37,7 +38,6 @@ import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.tracks.RaceTimes;
 import net.stormdev.mario.tracks.RaceTrackManager;
 import net.stormdev.mario.tracks.TrackCreator;
-import net.stormdev.mariokartAddons.MarioKart;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -76,7 +76,7 @@ public class main extends JavaPlugin {
 	public static Lang msgs = null;
 	public RaceMethods raceMethods = null;
 	public Random random = null;
-	public static MarioKart marioKart = null;
+	public static PowerupManager marioKart = null;
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
 	public HotBarManager hotBarManager = null;
@@ -409,7 +409,7 @@ public class main extends JavaPlugin {
 		this.raceScheduler = new RaceScheduler(
 				config.getInt("general.raceLimit"));
 		// Setup marioKart
-		marioKart = new MarioKart(this);
+		marioKart = new PowerupManager(this);
 		this.raceTimes = new RaceTimes(new File(getDataFolder()
 				+ File.separator + "Data" + File.separator
 				+ "raceTimes.uracetimes"),

@@ -1,4 +1,4 @@
-package net.stormdev.mariokartAddons.items;
+package net.stormdev.mario.powerups;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BananaPowerup extends PowerupBase {
+import com.useful.ucars.ucars;
+
+public class MushroomPowerup extends PowerupBase {
 	
-	public BananaPowerup(){
+	public MushroomPowerup(){
 		super.setItemStack(getBaseItem());
 	}
 	
@@ -38,10 +40,11 @@ public class BananaPowerup extends PowerupBase {
 	@Override
 	public void doRightClickAction(User user, Player player, Minecart car,
 			Location carLoc, Race race, ItemStack inHand) {
-		Location loc = player.getLocation().add(
-				player.getEyeLocation().getDirection().multiply(-1));
-		loc.getWorld().dropItem(loc, getNewItem());
-		inHand.setAmount(inHand.getAmount()-1);
+		inHand.setAmount(inHand.getAmount() - 1);
+		ucars.listener.carBoost(player.getName(), 19, 9000,
+				ucars.config.getDouble("general.cars.defSpeed")); // Apply
+																	// speed
+																	// boost
 	}
 
 	@Override
@@ -51,16 +54,16 @@ public class BananaPowerup extends PowerupBase {
 	}
 	
 	private static final ItemStack getBaseItem(){
-		String id = main.config.getString("mariokart.banana");
+		String id = main.config.getString("mariokart.mushroom");
 		ItemStack i = ItemStacks.get(id);
 		
 		List<String> lore = new ArrayList<String>();
-		lore.add("+Slows players down");
-		lore.add("*Right click to deploy");
+		lore.add("+Applies a short speed boost");
+		lore.add("*Right click to use");
 		
 		ItemMeta im = i.getItemMeta();
 		im.setLore(lore);
-		im.setDisplayName(main.colors.getInfo()+"Banana");
+		im.setDisplayName(main.colors.getInfo()+"Mushroom");
 		i.setItemMeta(im);
 		
 		return i;
@@ -72,11 +75,11 @@ public class BananaPowerup extends PowerupBase {
 
 	@Override
 	public PowerupType getType() {
-		return PowerupType.BANANA;
+		return PowerupType.MUSHROOM;
 	}
 	
 	public static PowerupType getPowerupType() {
-		return PowerupType.BANANA;
+		return PowerupType.MUSHROOM;
 	}
 
 }
