@@ -202,6 +202,14 @@ public class AdminCommandExecutor implements CommandExecutor {
 				race.end();
 				sender.sendMessage(MarioKart.colors.getSuccess()+MarioKart.msgs.get("general.cmd.endSuccess"));
 				return true;
+			} else if(command.equalsIgnoreCase("endall")){
+				HashMap<UUID, Race> games = plugin.raceScheduler.getRaces();
+				for(Race race:games.values()){
+					race.broadcast(MarioKart.colors.getTitle()+MarioKart.msgs.get("general.cmd.forceEnd"));
+					race.end();
+				}
+				sender.sendMessage(MarioKart.colors.getSuccess()+MarioKart.msgs.get("general.cmd.endSuccess"));
+				return true;
 			} else if (command.equalsIgnoreCase("setLaps")) {
 				if (args.length < 3) {
 					return false;
