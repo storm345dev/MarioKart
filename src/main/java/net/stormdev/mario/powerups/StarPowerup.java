@@ -74,7 +74,7 @@ public class StarPowerup extends PowerupBase {
 						return;
 					}
 				});
-		ucars.listener.carBoost(player.getName(), 35, 15000,
+		ucars.listener.carBoost(player.getName(), 32, 10000,
 				ucars.config.getDouble("general.cars.defSpeed")); // Apply
 																	// speed
 																	// boost
