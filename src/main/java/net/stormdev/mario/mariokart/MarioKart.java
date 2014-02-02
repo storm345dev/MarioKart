@@ -161,7 +161,10 @@ public class MarioKart extends JavaPlugin {
 		} catch (Exception e) {
 		}
 		saveConfig();
+		
 		uCarsAPI.getAPI().hookPlugin(this);
+		ucars = com.useful.ucars.ucars.plugin; //Hook it
+		
 		// Load the colour scheme
 		colors = new Colors(config.getString("colorScheme.success"),
 				config.getString("colorScheme.error"),
@@ -171,21 +174,6 @@ public class MarioKart extends JavaPlugin {
 		logger.info("Config loaded!");
 		this.checkpointRadiusSquared = Math.pow(
 				config.getDouble("general.checkpointRadius"), 2);
-		logger.info("Searching for uCars...");
-		Plugin[] plugins = getServer().getPluginManager().getPlugins();
-		Boolean installed = false;
-		for (Plugin p : plugins) {
-			if (p.getName().equals("uCars")) {
-				installed = true;
-				ucars = (com.useful.ucars.ucars) p;
-			}
-		}
-		if (!installed) {
-			logger.info("Unable to find uCars!");
-			getServer().getPluginManager().disablePlugin(this);
-		}
-		ucars.hookPlugin(this);
-		logger.info("uCars found and hooked!");
 		logger.info("Searching for ProtocolLib...");
 		
 		setupCmds(); //Setup the commands
