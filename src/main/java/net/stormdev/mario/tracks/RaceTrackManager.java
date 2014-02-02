@@ -49,6 +49,12 @@ public class RaceTrackManager {
 			ois.close();
 			loadAndConvert(result);
 		} catch (Exception e) {
+			System.out.println("Attention! No race tracks were loaded! If you created race tracks previously,"
+					+ " they are in the old format; please re-create them. Sorry for the inconvenience.");
+			try {
+				Thread.sleep(1000); //Wait for them to read it
+			} catch (InterruptedException e1) {}
+			save(); //Save a blank list to override the old file to stop message showing again
 			// File just created
 		}
 	}
