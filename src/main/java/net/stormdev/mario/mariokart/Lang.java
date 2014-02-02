@@ -1,5 +1,7 @@
 package net.stormdev.mario.mariokart;
 
+import net.stormdev.mario.utils.Colors;
+
 public class Lang {
 	MarioKart plugin = null;
 
@@ -9,7 +11,7 @@ public class Lang {
 
 	public String get(String key) {
 		String val = getRaw(key);
-		val = MarioKart.colorise(val);
+		val = Colors.colorise(val);
 		return val;
 	}
 

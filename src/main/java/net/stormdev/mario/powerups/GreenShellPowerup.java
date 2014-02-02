@@ -228,7 +228,7 @@ public class GreenShellPowerup extends ShellPowerup {
 		
 		String msg = MarioKart.msgs.get("mario.hit");
 		msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-		MarioKart.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
+		MarioKart.plugin.musicManager.playCustomSound(target, MarioKartSound.SHELL_HIT);
 		target.sendMessage(ChatColor.RED + msg);
 		Entity cart = target.getVehicle();
 		if(cart == null){

@@ -1,7 +1,5 @@
 package net.stormdev.mario.config;
 
-import net.stormdev.mario.mariokart.ConfigVersionConverter;
-
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginConfigurator {

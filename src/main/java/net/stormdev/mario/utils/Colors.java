@@ -1,4 +1,6 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.utils;
+
+import org.bukkit.ChatColor;
 
 public class Colors {
 	private String success = "";
@@ -9,11 +11,11 @@ public class Colors {
 
 	public Colors(String success, String error, String info, String title,
 			String tp) {
-		this.success = MarioKart.colorise(success);
-		this.error = MarioKart.colorise(error);
-		this.info = MarioKart.colorise(info);
-		this.title = MarioKart.colorise(title);
-		this.tp = MarioKart.colorise(tp);
+		this.success = colorise(success);
+		this.error = colorise(error);
+		this.info = colorise(info);
+		this.title = colorise(title);
+		this.tp = colorise(tp);
 	}
 
 	public String getSuccess() {
@@ -34,5 +36,9 @@ public class Colors {
 
 	public String getTp() {
 		return this.tp;
+	}
+	
+	public static String colorise(String prefix) {
+		return ChatColor.translateAlternateColorCodes('&', prefix);
 	}
 }

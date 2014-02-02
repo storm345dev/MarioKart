@@ -3,6 +3,8 @@ package net.stormdev.mario.mariokart;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.stormdev.mario.utils.Colors;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 
@@ -26,7 +28,7 @@ public class CustomLogger {
 	}
 
 	public String getMsg(String raw) {
-		String colour = MarioKart.colorise(raw);
+		String colour = Colors.colorise(raw);
 		if (!coloured) {
 			return ChatColor.stripColor(colour);
 		}

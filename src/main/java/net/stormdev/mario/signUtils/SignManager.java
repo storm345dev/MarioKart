@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.tracks.RaceTrack;
+import net.stormdev.mario.utils.Colors;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Bukkit;
@@ -194,7 +195,7 @@ public class SignManager {
 	public String getCorrectName(String name){
 		if(!queueSigns.containsKey(name)){
 			for(String dest:MarioKart.plugin.trackManager.getRaceTrackNames()){
-				if(ChatColor.stripColor(MarioKart.colorise(dest)).equalsIgnoreCase(name)){
+				if(ChatColor.stripColor(Colors.colorise(dest)).equalsIgnoreCase(name)){
 					name = dest;
 				}
 			}

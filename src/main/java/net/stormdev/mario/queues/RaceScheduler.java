@@ -474,7 +474,7 @@ public class RaceScheduler {
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
-													MarioKart.plugin.playCustomSound(p, MarioKartSound.RACE_START_COUNTDOWN);
+													MarioKart.plugin.musicManager.playCustomSound(p, MarioKartSound.RACE_START_COUNTDOWN);
 												}
 											} catch (Exception e) {
 												//Player has left
@@ -491,7 +491,7 @@ public class RaceScheduler {
 											try {
 												Player p = u.getPlayer();
 												if(p!=null){
-													MarioKart.plugin.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
+													MarioKart.plugin.musicManager.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
 												}
 											} catch (Exception e) {
 												//Player has left

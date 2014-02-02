@@ -1,8 +1,11 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.config;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.mario.utils.IdMaterialConverter;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

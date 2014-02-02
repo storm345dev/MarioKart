@@ -1,32 +1,52 @@
 package net.stormdev.mario.mariokart;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
-import net.stormdev.mario.commands.*;
-import net.stormdev.mario.events.*;
-import net.stormdev.mario.config.*;
+import net.stormdev.mario.commands.AdminCommandExecutor;
+import net.stormdev.mario.commands.RaceCommandExecutor;
+import net.stormdev.mario.commands.RaceTimeCommandExecutor;
+import net.stormdev.mario.config.PluginConfigurator;
+import net.stormdev.mario.events.HotbarEventsListener;
+import net.stormdev.mario.events.QueueEventsListener;
+import net.stormdev.mario.events.RaceEventsListener;
+import net.stormdev.mario.events.ServerEventsListener;
+import net.stormdev.mario.events.SignEventsListener;
+import net.stormdev.mario.events.TrackEventsListener;
 import net.stormdev.mario.hotbar.HotBarManager;
 import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.powerups.PowerupManager;
-import net.stormdev.mario.queues.*;
+import net.stormdev.mario.queues.RaceQueue;
+import net.stormdev.mario.queues.RaceQueueManager;
+import net.stormdev.mario.queues.RaceScheduler;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceMethods;
-import net.stormdev.mario.shop.*;
+import net.stormdev.mario.shop.Shop;
+import net.stormdev.mario.shop.Unlockable;
+import net.stormdev.mario.shop.UnlockableManager;
 import net.stormdev.mario.signUtils.SignManager;
-import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.tracks.RaceTimes;
 import net.stormdev.mario.tracks.RaceTrackManager;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,7 +56,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.rosaloves.bitlyj.Bitly;
@@ -524,10 +543,6 @@ public class MarioKart extends JavaPlugin {
 		}
 	}
 
-	public static String colorise(String prefix) {
-		return ChatColor.translateAlternateColorCodes('&', prefix);
-	}
-
 	public boolean vaultInstalled(){
 		Plugin[] plugins = getServer().getPluginManager().getPlugins();
 		for (Plugin p : plugins) {
@@ -676,61 +691,5 @@ public class MarioKart extends JavaPlugin {
 		}
 		unlocks = unlockables;
 		return unlockables;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public Boolean playCustomSound(final Player recipient, final Location location, 
-			final String soundPath, final float volume, final float pitch){
-		MarioKart.plugin.getServer().getScheduler().runTaskAsynchronously(MarioKart.plugin, new BukkitRunnable(){
-
-			@Override
-			public void run() {
-				//Running async keeps TPS higher
-				recipient.playSound(location, soundPath, volume, pitch); //Deprecated but still best way
-			}});
-		return true;
-		/* Not needed
-		if(main.prototcolManager == null){
-			//No protocolLib
-			return false;
-		}
-		getServer().getScheduler().runTaskAsynchronously(this, new BukkitRunnable(){
-			@Override
-			public void run() {
-				//Play the sound
-				try {
-					if(pitch > 255){
-						pitch = 255;
-					}
-					PacketContainer customSound = main.prototcolManager.createPacket(PacketType.Play.Server.NAMED_SOUND_EFFECT);
-					customSound.getSpecificModifier(String.class).
-					    write(0, soundPath);
-					customSound.getSpecificModifier(int.class).
-					    write(0, location.getBlockX()).
-					    write(1, location.getBlockY()).
-					    write(2, location.getBlockZ());
-					    write(3, (int) pitch);
-					customSound.getSpecificModifier(float.class).
-					    write(0, volume);
-					main.prototcolManager.sendServerPacket(recipient, customSound);
-				} catch (Exception e) {
-					main.logger.info(main.colors.getError()+"Error playing custom sound: "+soundPath+"!");
-					e.printStackTrace();
-					return;
-				}
-				return;
-			}});
-		return true;
-		*/
-	}
-	
-	public Boolean playCustomSound(Player recipient, Location location,
-			MarioKartSound sound, float volume, float pitch){
-		return playCustomSound(recipient, location, sound.getPath(), volume, pitch);
-	}
-	
-	public Boolean playCustomSound(Player recipient, MarioKartSound sound){
-		return playCustomSound(recipient, recipient.getLocation(),
-				sound, Float.MAX_VALUE, 1f);
 	}
 }

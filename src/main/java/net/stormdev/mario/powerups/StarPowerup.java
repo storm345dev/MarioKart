@@ -57,7 +57,7 @@ public class StarPowerup extends PowerupBase {
 						int amount = 5;
 						while (amount > 0) {
 							if (ucars.listener.inACar(player)) {
-								if(!MarioKart.plugin.playCustomSound(player, MarioKartSound.STAR_RIFF)){
+								if(!MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.STAR_RIFF)){
 									player.getLocation()
 									.getWorld()
 									.playSound(

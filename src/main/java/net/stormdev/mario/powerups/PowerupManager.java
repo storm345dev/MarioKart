@@ -302,7 +302,7 @@ public class PowerupManager {
 											ply.getInventory().addItem(
 													getRandomPowerup());
 											ply.updateInventory();
-											MarioKart.plugin.playCustomSound(ply, MarioKartSound.ITEM_SELECT_BEEP);
+											MarioKart.plugin.musicManager.playCustomSound(ply, MarioKartSound.ITEM_SELECT_BEEP);
 											try {
 												Thread.sleep(delay);
 											} catch (InterruptedException e) {

@@ -192,10 +192,10 @@ public class RaceExecutor {
 								if ((i + 1) <= 4
 										&& (i + 1) != game.getUsers().size()) {
 									//Winning sound
-									MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+									MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
 								} else {
 									//Lose sound
-									MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
+									MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_LOSE);
 								}
 								i += game.getUsersFinished().size();
 								String pos = "" + (i + 1);
@@ -221,7 +221,7 @@ public class RaceExecutor {
 								msg = MarioKart.msgs.get("race.end.time");
 								msg = msg.replaceAll(Pattern.quote("%time%"), t
 										+ "");
-								MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+								MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
 								MarioKart.plugin.raceTimes.addRaceTime(game
 										.getTrack().getTrackName(), player
 										.getName(), t);
@@ -239,10 +239,10 @@ public class RaceExecutor {
 						msg = MarioKart.msgs.get("race.end.position");
 						if (position <= 4 && position != game.getUsers().size()) {
 							//Win sound
-							MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+							MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
 						} else {
 							//Lose sound
-							MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_LOSE);
+							MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_LOSE);
 						}
 						String pos = "" + position;
 						if (pos.endsWith("1")) {
@@ -269,7 +269,7 @@ public class RaceExecutor {
 						double t = ti / 100;
 						msg = MarioKart.msgs.get("race.end.time");
 						msg = msg.replaceAll(Pattern.quote("%time%"), t + "");
-						MarioKart.plugin.playCustomSound(player, MarioKartSound.RACE_WIN);
+						MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
 						MarioKart.plugin.raceTimes.addRaceTime(game.getTrack()
 								.getTrackName(), player.getName(), t);
 					}
@@ -400,7 +400,7 @@ public class RaceExecutor {
 											"" + game.totalLaps);
 									if (lap == game.totalLaps) {
 										//Last lap
-										MarioKart.plugin.playCustomSound(player, MarioKartSound.LAST_LAP);
+										MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.LAST_LAP);
 									}
 									player.sendMessage(MarioKart.colors.getInfo() + msg);
 								}
@@ -461,7 +461,7 @@ public class RaceExecutor {
 
 			@Override
 			public void run() {
-				MarioKart.plugin.playCustomSound(pl, MarioKartSound.PENALTY_END);
+				MarioKart.plugin.musicManager.playCustomSound(pl, MarioKartSound.PENALTY_END);
 				car.removeMetadata("car.frozen", MarioKart.plugin);
 			}
 		}, (time * 20));

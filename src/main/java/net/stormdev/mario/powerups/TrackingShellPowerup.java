@@ -46,7 +46,7 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 			List<Entity> nearby = shell.getNearbyEntities(15, 5, 15);
 			for(Entity e:nearby){
 				if(e instanceof Player){
-					MarioKart.plugin.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
+					MarioKart.plugin.musicManager.playCustomSound((Player) e, MarioKartSound.TRACKING_BLEEP);
 				}
 			}
 			sound = 3;
@@ -67,7 +67,7 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 	public void collide(Player target) {
 		String msg = MarioKart.msgs.get("mario.hit");
 		msg = msg.replaceAll(Pattern.quote("%name%"), "tracking shell");
-		MarioKart.plugin.playCustomSound(target, MarioKartSound.SHELL_HIT);
+		MarioKart.plugin.musicManager.playCustomSound(target, MarioKartSound.SHELL_HIT);
 		target.sendMessage(ChatColor.RED + msg);
 		Entity cart = target.getVehicle();
 		if(cart == null){

@@ -74,7 +74,7 @@ public class RaceEventsListener implements Listener {
 		}
 		if (BananaPowerup.isItemSimilar(stack)) {
 			if(!MarioKart.powerupManager.isPlayerImmune(player)){
-				MarioKart.plugin.playCustomSound(player, MarioKartSound.BANANA_HIT);
+				MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.BANANA_HIT);
 				item.remove();
 				RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
 			}

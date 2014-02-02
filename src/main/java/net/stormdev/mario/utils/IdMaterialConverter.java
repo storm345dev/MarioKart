@@ -1,4 +1,4 @@
-package net.stormdev.mario.mariokart;
+package net.stormdev.mario.utils;
  
 import org.bukkit.Material;
 
