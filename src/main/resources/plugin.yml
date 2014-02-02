@@ -1,5 +1,5 @@
 name: MarioKart
-main: net.stormdev.mario.mariokart.main
+main: net.stormdev.mario.mariokart.MarioKart
 version: 4
 softdepend: [Vault]
 depend: [uCars]
