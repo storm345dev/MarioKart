@@ -277,7 +277,7 @@ public class RaceExecutor {
 				}
 			}
 			game.leave(user, false);
-			MarioKart.plugin.raceScheduler.updateRace(game);
+			//TODO Is it needed? MarioKart.plugin.raceScheduler.updateRace(game);
 			if (game.getUsersIn().size() < 1 && !game.ended && !gameEnded) {
 				game.ended = true;
 				game.end();
@@ -439,7 +439,7 @@ public class RaceExecutor {
 				}
 			}
 		}
-		MarioKart.plugin.raceScheduler.updateRace(game);
+		//TODO Is it needed? MarioKart.plugin.raceScheduler.updateRace(game);
 		return;
 	}
 	
