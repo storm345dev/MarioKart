@@ -177,6 +177,31 @@ public class AdminCommandExecutor implements CommandExecutor {
 					sender.sendMessage(MarioKart.colors.getInfo() + Trackname);
 				}
 				return true;
+			} else if(command.equalsIgnoreCase("end")){
+				if(args.length < 2){
+					return false;
+				}
+				String trackName = args[1];
+				if (!plugin.trackManager.raceTrackExists(trackName)) {
+					sender.sendMessage(MarioKart.colors.getError()
+							+ MarioKart.msgs.get("general.cmd.delete.exists"));
+					return true;
+				}
+				HashMap<UUID, Race> games = plugin.raceScheduler.getRaces();
+				Race race = null;
+				for(Race r:games.values()){
+					if(r.getTrackName().equalsIgnoreCase(trackName)){
+						race = r;
+					}
+				}
+				if(race == null){
+					sender.sendMessage(MarioKart.colors.getError() + MarioKart.msgs.get("general.cmd.noRaces"));
+					return true;
+				}
+				race.broadcast(MarioKart.colors.getTitle()+MarioKart.msgs.get("general.cmd.forceEnd"));
+				race.end();
+				sender.sendMessage(MarioKart.colors.getSuccess()+MarioKart.msgs.get("general.cmd.endSuccess"));
+				return true;
 			} else if (command.equalsIgnoreCase("setLaps")) {
 				if (args.length < 3) {
 					return false;

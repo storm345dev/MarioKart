@@ -7,7 +7,7 @@ commands:
    marioRaceAdmin:
         aliases: [mra, marioadmin]
         description: This is the setup of racetracks and admin commands
-        usage: /<command> [Create <TrackName> <Laps>] [Delete <TrackName>] [List (Page)] [Races (Page)] [setLaps <TrackName> <Laps>]
+        usage: /<command> [Create <TrackName> <Laps>] [Delete <TrackName>] [List (Page)] [Races (Page)] [End <RaceTrack>] [setLaps <TrackName> <Laps>]
         permission: mariokart.raceadmin
         permission-message: You don't have access to this command
         default: op

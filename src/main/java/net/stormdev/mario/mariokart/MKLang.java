@@ -67,6 +67,18 @@ public class MKLang {
 			lang.set("general.cmd.full",
 					"There are no race tracks available!");
 		}
+		if (!lang.contains("general.cmd.noRaces")) {
+			lang.set("general.cmd.noRaces",
+					"There are no races for that track current running!");
+		}
+		if (!lang.contains("general.cmd.forceEnd")) {
+			lang.set("general.cmd.forceEnd",
+					"Game terminated by an admin!");
+		}
+		if (!lang.contains("general.cmd.endSuccess")) {
+			lang.set("general.cmd.endSuccess",
+					"Terminated race!");
+		}
 		if (!lang.contains("general.cmd.overflow")) {
 			lang.set("general.cmd.overflow",
 					"Queues/Tracks are full, joining new low-priority queue!");

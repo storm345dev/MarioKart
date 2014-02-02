@@ -222,9 +222,11 @@ public class RaceExecutor {
 								msg = msg.replaceAll(Pattern.quote("%time%"), t
 										+ "");
 								MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
-								MarioKart.plugin.raceTimes.addRaceTime(game
-										.getTrack().getTrackName(), player
-										.getName(), t);
+								if(!gameEnded){
+									MarioKart.plugin.raceTimes.addRaceTime(game
+											.getTrack().getTrackName(), player
+											.getName(), t);
+								}
 							}
 							p.sendMessage(MarioKart.colors.getSuccess() + msg);
 						}
@@ -277,7 +279,6 @@ public class RaceExecutor {
 				}
 			}
 			game.leave(user, false);
-			//TODO Is it needed? MarioKart.plugin.raceScheduler.updateRace(game);
 			if (game.getUsersIn().size() < 1 && !game.ended && !gameEnded) {
 				game.ended = true;
 				game.end();
@@ -439,7 +440,6 @@ public class RaceExecutor {
 				}
 			}
 		}
-		//TODO Is it needed? MarioKart.plugin.raceScheduler.updateRace(game);
 		return;
 	}
 	
