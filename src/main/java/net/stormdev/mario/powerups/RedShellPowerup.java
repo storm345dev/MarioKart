@@ -49,6 +49,9 @@ public class RedShellPowerup extends TrackingShellPowerup {
 	@Override
 	public void doRightClickAction(User user, Player player, Minecart car,
 			Location carLoc, Race race, ItemStack inHand) {
+		if(user.isFinished()){
+			return;
+		}
 		SortedMap<String, Double> sorted = race.getRaceOrder();
 		Set<String> keys = sorted.keySet();
 		Object[] pls = keys.toArray();
