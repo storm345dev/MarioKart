@@ -11,8 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import net.stormdev.mario.hotbar.HotBarUpgrade;
 import net.stormdev.mario.mariokart.SQLManager;
 import net.stormdev.mario.mariokart.MarioKart;
 
@@ -25,11 +31,10 @@ public class UnlockableManager {
 	private SQLManager sqlManager = null;
 	private boolean enabled = true;
 
-	public UnlockableManager(File saveFile, Boolean sql,
-			Map<String, Unlockable> unlocks) {
+	public UnlockableManager(File saveFile, Boolean sql) {
 		this.saveFile = saveFile;
 		this.sql = sql;
-		this.unlocks = unlocks;
+		this.unlocks = getUnlocks();
 		this.enabled = MarioKart.config.getBoolean("general.upgrades.enable");
 		if (sql) {
 			try {
@@ -350,6 +355,133 @@ public class UnlockableManager {
 			save(k);
 		}
 		return;
+	}
+	
+	public Map<String, Unlockable> getUnlocks() {
+		if (unlocks != null) {
+			return unlocks;
+		}
+		MarioKart.logger.info("Loading upgrades...");
+		// Begin load them from a YAML file
+		Map<String, Unlockable> unlockables = new HashMap<String, Unlockable>();
+		File saveFile = new File(MarioKart.plugin.getDataFolder().getAbsolutePath()
+				+ File.separator + "upgrades.yml");
+		YamlConfiguration upgrades = new YamlConfiguration();
+		saveFile.getParentFile().mkdirs();
+		Boolean setDefaults = false;
+		try {
+			upgrades.load(saveFile);
+		} catch (Exception e) {
+			setDefaults = true;
+		}
+		if (!saveFile.exists() || saveFile.length() < 1 || setDefaults) {
+			try {
+				saveFile.createNewFile();
+			} catch (IOException e) {
+				return unlockables;
+			}
+			// Set defaults
+			upgrades.set("upgrades.speedBurstI.name", "Speed Burst I (5s)");
+			upgrades.set("upgrades.speedBurstI.id", "aa");
+			upgrades.set("upgrades.speedBurstI.type", HotBarUpgrade.SPEED_BOOST
+					.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstI.item", Material.APPLE.name()
+					.toUpperCase());
+			upgrades.set("upgrades.speedBurstI.length", 5000l);
+			upgrades.set("upgrades.speedBurstI.power", 10d);
+			upgrades.set("upgrades.speedBurstI.useItem", true);
+			upgrades.set("upgrades.speedBurstI.useUpgrade", true);
+			upgrades.set("upgrades.speedBurstI.price", 3d);
+			upgrades.set("upgrades.speedBurstII.name", "Speed Burst II (10s)");
+			upgrades.set("upgrades.speedBurstII.id", "ab");
+			upgrades.set("upgrades.speedBurstII.type",
+					HotBarUpgrade.SPEED_BOOST.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstII.item", Material.CARROT_ITEM
+					.name().toUpperCase());
+			upgrades.set("upgrades.speedBurstII.length", 10000l);
+			upgrades.set("upgrades.speedBurstII.power", 13d);
+			upgrades.set("upgrades.speedBurstII.useItem", true);
+			upgrades.set("upgrades.speedBurstII.useUpgrade", true);
+			upgrades.set("upgrades.speedBurstII.price", 6d);
+			upgrades.set("upgrades.immunityI.name", "Immunity I (5s)");
+			upgrades.set("upgrades.immunityI.id", "ac");
+			upgrades.set("upgrades.immunityI.type", HotBarUpgrade.IMMUNITY
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityI.item", Material.IRON_HELMET.name()
+					.toUpperCase());
+			upgrades.set("upgrades.immunityI.length", 5000l);
+			upgrades.set("upgrades.immunityI.useItem", true);
+			upgrades.set("upgrades.immunityI.useUpgrade", true);
+			upgrades.set("upgrades.immunityI.price", 6d);
+			upgrades.set("upgrades.immunityII.name", "Immunity II (10s)");
+			upgrades.set("upgrades.immunityII.id", "ad");
+			upgrades.set("upgrades.immunityII.type", HotBarUpgrade.IMMUNITY
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityII.item", Material.GOLD_HELMET
+					.name().toUpperCase());
+			upgrades.set("upgrades.immunityII.length", 10000l);
+			upgrades.set("upgrades.immunityII.useItem", true);
+			upgrades.set("upgrades.immunityII.useUpgrade", true);
+			upgrades.set("upgrades.immunityII.price", 12d);
+			try {
+				upgrades.save(saveFile);
+			} catch (IOException e) {
+				MarioKart.logger.info(MarioKart.colors.getError()
+						+ "[WARNING] Failed to create upgrades.yml!");
+			}
+		}
+		// Load them
+		ConfigurationSection ups = upgrades.getConfigurationSection("upgrades");
+		Set<String> upgradeKeys = ups.getKeys(false);
+		for (String key : upgradeKeys) {
+			ConfigurationSection sect = ups.getConfigurationSection(key);
+			if (!sect.contains("name") || !sect.contains("type")
+					|| !sect.contains("id") || !sect.contains("useItem")
+					|| !sect.contains("useUpgrade") || !sect.contains("price")
+					|| !sect.contains("item")) {
+				// Invalid upgrade
+				MarioKart.logger.info(MarioKart.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
+				continue;
+			}
+			String name = sect.getString("name");
+			HotBarUpgrade type = null;
+			Material item = null;
+			try {
+				type = HotBarUpgrade.valueOf(sect.getString("type"));
+				item = Material.valueOf(sect.getString("item"));
+			} catch (Exception e) {
+				// Invalid upgrade
+				MarioKart.logger.info(MarioKart.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
+				continue;
+			}
+			if (type == null || item == null) {
+				// Invalid upgrade
+				MarioKart.logger.info(MarioKart.colors.getError()
+						+ "[WARNING] Invalid upgrade: " + key);
+				continue;
+			}
+			String shortId = sect.getString("id");
+			Boolean useItem = sect.getBoolean("useItem");
+			Boolean useUpgrade = sect.getBoolean("useUpgrade");
+			double price = sect.getDouble("price");
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("upgrade.name", name);
+			data.put("upgrade.useItem", useItem);
+			data.put("upgrade.useUpgrade", useUpgrade);
+			if (sect.contains("power")) {
+				data.put("upgrade.power", sect.getDouble("power"));
+			}
+			if (sect.contains("length")) {
+				data.put("upgrade.length", sect.getLong("length"));
+			}
+			Unlockable unlock = new Unlockable(type, data, price, name,
+					shortId, item);
+			unlockables.put(shortId, unlock);
+		}
+		unlocks = unlockables;
+		return unlockables;
 	}
 
 }

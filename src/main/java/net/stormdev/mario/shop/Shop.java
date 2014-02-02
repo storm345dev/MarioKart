@@ -65,7 +65,7 @@ public class Shop {
 			title = MarioKart.colors.getError() + "Buy Upgrades (ERROR:Too Long)";
 		}
 		final Map<String, Unlockable> unlocks = new HashMap<String, Unlockable>(
-				MarioKart.plugin.getUnlocks());
+				MarioKart.plugin.upgradeManager.getUnlocks());
 		final IconMenu menu = new IconMenu(title, 54,
 				new IconMenu.OptionClickEventHandler() {
 					@Override
@@ -244,9 +244,9 @@ public class Shop {
 				String currency = MarioKart.config
 						.getString("general.race.rewards.currency");
 				try {
-					shortId = (String) MarioKart.plugin.getUnlocks().keySet()
+					shortId = (String) MarioKart.plugin.upgradeManager.getUnlocks().keySet()
 							.toArray()[i];
-					unlock = MarioKart.plugin.getUnlocks().get(shortId);
+					unlock = MarioKart.plugin.upgradeManager.getUnlocks().get(shortId);
 				} catch (Exception e) {
 					// Clicked in an invalid place
 					return event;
