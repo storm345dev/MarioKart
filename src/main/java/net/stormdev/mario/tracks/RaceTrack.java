@@ -2,8 +2,8 @@ package net.stormdev.mario.tracks;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import net.stormdev.mario.utils.SerializableLocation;
@@ -23,7 +23,7 @@ public class RaceTrack implements Serializable {
 	SerializableLocation line1 = null;
 	SerializableLocation line2 = null;
 	ArrayList<SerializableLocation> startGrid = new ArrayList<SerializableLocation>();
-	ConcurrentMap<Integer, SerializableLocation> checkPoints = new ConcurrentHashMap<Integer, SerializableLocation>();
+	private Map<Integer, SerializableLocation> checkPoints = new HashMap<Integer, SerializableLocation>();
 
 	public RaceTrack(String trackname, int maxplayers, int minplayers, int laps) {
 		this.trackname = trackname;
@@ -125,29 +125,36 @@ public class RaceTrack implements Serializable {
 		this.startGrid.remove(loc);
 		calculateMaxMinPlayers();
 	}
-
-	final public Map<Integer, SerializableLocation> getCheckpoints() {
-		return checkPoints;
+	
+	public synchronized int countCheckPoints(){
+		return checkPoints.size();
+	}
+	
+	public SerializableLocation getCheckpoint(int i){
+		return checkPoints.get(i);
+	}
+	
+	public synchronized Map<Integer, Location> loadCheckpoints(Server server){
+		Map<Integer, Location> locs = new HashMap<Integer, Location>();
+		for(Integer i:checkPoints.keySet()){
+			locs.put(i, checkPoints.get(i).getLocation(server));
+		}
+		
+		return locs;
 	}
 
-	public void setCheckpoints(ConcurrentMap<Integer, SerializableLocation> checkpoints) {
-		this.checkPoints = checkpoints;
-		calculateMaxMinPlayers();
-		return;
-	}
-
-	public void addToCheckpoints(int num, SerializableLocation loc) {
+	public synchronized void addToCheckpoints(int num, SerializableLocation loc) {
 		this.checkPoints.put(num, loc);
 		calculateMaxMinPlayers();
 	}
 
-	public void addToCheckpoints(int num, Location loc) {
+	public synchronized void addToCheckpoints(int num, Location loc) {
 		SerializableLocation sloc = new SerializableLocation(loc);
 		this.checkPoints.put(num, sloc);
 		calculateMaxMinPlayers();
 	}
 
-	public void RemoveFromCheckpoints(SerializableLocation loc) {
+	public synchronized void RemoveFromCheckpoints(SerializableLocation loc) {
 		this.checkPoints.remove(loc);
 		calculateMaxMinPlayers();
 	}

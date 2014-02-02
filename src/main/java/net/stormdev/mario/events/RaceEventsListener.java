@@ -363,7 +363,7 @@ public class RaceEventsListener implements Listener {
 			race.updateUser(user);
 		} catch (Exception e) {
 		}
-		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
+		Location loc = race.getTrack().getCheckpoint(checkpoint)
 				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
 		if (!chunk.isLoaded()) {
@@ -384,7 +384,7 @@ public class RaceEventsListener implements Listener {
 		User u = race.updateUser(player);
 		int checkpoint = u.getCheckpoint();
 		race.updateUser(u);
-		Location loc = race.getTrack().getCheckpoints().get(checkpoint)
+		Location loc = race.getTrack().getCheckpoint(checkpoint)
 				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
 		Chunk chunk = loc.getChunk();
 		if (!chunk.isLoaded()) {

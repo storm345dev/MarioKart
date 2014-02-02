@@ -86,15 +86,15 @@ public class TrackCreator {
 	}
 
 	public void addCheckpoint() {
-		int pos = track.getCheckpoints().size();
+		int pos = track.countCheckPoints();
 		track.addToCheckpoints(pos, player.getLocation());
 		player.sendMessage(MarioKart.colors.getInfo() + "["
-				+ track.getCheckpoints().size() + "]");
+				+ track.countCheckPoints());
 		return;
 	}
 
 	public void finishCheckpoints() {
-		int amount = track.getCheckpoints().size();
+		int amount = track.countCheckPoints();
 		if (amount < 3) {
 			String msg = MarioKart.msgs.get("setup.create.notEnoughCheckpoints");
 			msg = msg.replaceAll(Pattern.quote("%num%"), amount + "");

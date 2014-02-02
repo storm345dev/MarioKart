@@ -11,11 +11,9 @@ import java.util.logging.Level;
 
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.mariokart.MarioKart;
-import net.stormdev.mario.players.PlayerQuitException;
-import net.stormdev.mario.players.User;
+import net.stormdev.mario.players.*;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.DoubleValueComparator;
-import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,11 +23,8 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scheduler.*;
+import org.bukkit.scoreboard.*;
 
 import com.useful.ucarsCommon.StatValue;
 
@@ -60,6 +55,7 @@ public class Race {
 	public RaceType type = RaceType.RACE;
 	public Objective scoresBoard = null;
 	private int strikes = 0;
+	final private Map<Integer, Location> checkLocs;
 
 	public Race(RaceTrack track, String trackName, RaceType type) {
 		this.type = type;
@@ -67,7 +63,7 @@ public class Race {
 		this.track = track;
 		this.trackName = trackName;
 		this.totalLaps = this.track.getLaps();
-		this.maxCheckpoints = this.track.getCheckpoints().size() - 1;
+		this.maxCheckpoints = this.track.countCheckPoints() - 1;
 		this.tickrate = MarioKart.config.getLong("general.raceTickrate");
 		this.scorerate = (long) ((this.tickrate * 2) + (this.tickrate / 0.5));
 		this.board = MarioKart.plugin.getServer().getScoreboardManager()
@@ -84,7 +80,8 @@ public class Race {
 		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
 		this.timeLimitS = ((MarioKart.config
 				.getInt("general.race.maxTimePerCheckpoint")
-				* track.getCheckpoints().size()) * track.getLaps()) + 60;
+				* track.countCheckPoints()) * track.getLaps()) + 60;
+		checkLocs = track.loadCheckpoints(Bukkit.getServer());
 	}
 
 	public RaceType getType() {
@@ -708,29 +705,27 @@ public class Race {
 			Server server) {
 		int checkpoint = 0;
 		Boolean at = false;
-		final Map<Integer, SerializableLocation> schecks = this.track
-				.getCheckpoints();
 		Location pl = p.getLocation();
 		for (Integer key : checks) {
-			if (schecks.containsKey(key)) {
-				try {
-					SerializableLocation sloc = schecks.get(key);
-					Location check = sloc.getLocation(server);
-					double dist = check.distanceSquared(pl); // Squared because
-																// of
-					// better
-					// performance
-					p.removeMetadata("checkpoint.distance", MarioKart.plugin);
-					p.setMetadata("checkpoint.distance", new StatValue(dist,
-							MarioKart.plugin));
-					if (dist < MarioKart.plugin.checkpointRadiusSquared) {
-						at = true;
-						checkpoint = key;
-						return new CheckpointCheck(at, checkpoint);
-					}
-				} catch (Exception e) {
-					// Un-measureable distance (Diff. world or sommat)
+			try {
+				Location check = checkLocs.get(key);
+				if(check == null){
+					continue;
 				}
+				double dist = check.distanceSquared(pl); // Squared because
+															// of
+				// better
+				// performance
+				p.removeMetadata("checkpoint.distance", MarioKart.plugin);
+				p.setMetadata("checkpoint.distance", new StatValue(dist,
+						MarioKart.plugin));
+				if (dist < MarioKart.plugin.checkpointRadiusSquared) {
+					at = true;
+					checkpoint = key;
+					return new CheckpointCheck(at, checkpoint);
+				}
+			} catch (Exception e) {
+				// Un-measureable distance (Diff. world or sommat)
 			}
 		}
 		return new CheckpointCheck(at, checkpoint);
