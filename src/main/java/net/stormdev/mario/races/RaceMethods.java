@@ -1,12 +1,9 @@
 package net.stormdev.mario.races;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.MarioKart;
-import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 
 import org.bukkit.entity.Player;
@@ -20,21 +17,7 @@ public class RaceMethods {
 	}
 
 	public synchronized Race inAGame(Player player, Boolean update) {
-		Map<UUID, Race> races = MarioKart.plugin.raceScheduler.getRaces();
-		for (UUID id : new ArrayList<UUID>(races.keySet())) {
-			Race r = races.get(id);
-			if (update) {
-				r.updateUser(player);
-			}
-			List<User> users = r.getUsersIn(); // Exclude those that have
-												// finished the race
-			for (User u : users) {
-				if (u.getPlayerName().equals(player.getName())) {
-					return r;
-				}
-			}
-		}
-		return null;
+		return MarioKart.plugin.raceScheduler.inAGame(player, update);
 	}
 
 	public synchronized RaceQueue inGameQue(Player player) {

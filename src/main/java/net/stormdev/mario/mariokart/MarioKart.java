@@ -268,11 +268,7 @@ public class MarioKart extends JavaPlugin {
 			ucars.unHookPlugin(this);
 		}
 		
-		HashMap<UUID, Race> races = new HashMap<UUID, Race>(
-				this.raceScheduler.getRaces());
-		for (UUID id : races.keySet()) {
-			races.get(id).end(); // End the race
-		}
+		this.raceScheduler.endAll();
 		raceQueues.clear();
 		
 		Player[] players = getServer().getOnlinePlayers().clone();

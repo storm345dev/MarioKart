@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +30,7 @@ import com.useful.uCarsAPI.uCarsAPI;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceScheduler {
-	private ConcurrentHashMap<UUID, Race> races = new ConcurrentHashMap<UUID, Race>();
+	private HashMap<UUID, Race> races = new HashMap<UUID, Race>();
 	private int raceLimit = 5;
 	private boolean lockdown = false;
 	private boolean fairCars = true;
@@ -135,7 +134,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public synchronized void joinQueue(Player player, RaceTrack track, RaceType type) {
+	public void joinQueue(Player player, RaceTrack track, RaceType type) {
 		if(lockdown){
 			player.sendMessage(MarioKart.colors.getError()+MarioKart.msgs.get("error.memoryLockdown"));
 			return;
@@ -348,8 +347,12 @@ public class RaceScheduler {
 		}
 	}
 
-	public void startRace(String trackName, final Race race) {
+	private synchronized void putRace(Race race){
 		this.races.put(race.getGameId(), race);
+	}
+	
+	public void startRace(String trackName, final Race race) {
+		putRace(race);
 		final List<User> users = race.getUsers();
 		for (User user : users) {
 			Player player = null;
@@ -538,7 +541,7 @@ public class RaceScheduler {
 		return;
 	}
 
-	public void stopRace(Race race) {
+	public synchronized void stopRace(Race race) {
 		race.end();
 		race.clear();
 		this.races.put(race.getGameId(), race);
@@ -552,12 +555,13 @@ public class RaceScheduler {
 		return;
 	}
 
+	@Deprecated
 	public synchronized void updateRace(Race race) {
 		if(race == null || race.getGameId() == null){
 			return;
 		}
 		if(this.races == null){
-			this.races = new ConcurrentHashMap<UUID, Race>();
+			this.races = new HashMap<UUID, Race>();
 		}
 		if (this.races.containsKey(race.getGameId())) {
 			this.races.put(race.getGameId(), race);
@@ -583,18 +587,17 @@ public class RaceScheduler {
 		return;
 	}
 
-	public ConcurrentHashMap<UUID, Race> getRaces() {
-		return races;
+	public HashMap<UUID, Race> getRaces() {
+		return new HashMap<UUID, Race>(races);
 	}
 
-	public int getRacesRunning() {
+	public synchronized int getRacesRunning() {
 		return races.size();
 	}
 
-	public Boolean isTrackInUse(RaceTrack track, RaceType type) {
-		HashMap<UUID, Race> rs = new HashMap<UUID, Race>(races);
-		for (UUID id : rs.keySet()) {
-			Race r = rs.get(id);
+	public synchronized Boolean isTrackInUse(RaceTrack track, RaceType type) {
+		for (UUID id : races.keySet()) {
+			Race r = races.get(id);
 			if (r.getTrackName().equals(track.getTrackName())) {
 				if (type == RaceType.TIME_TRIAL
 						&& r.getType() == RaceType.TIME_TRIAL) {
@@ -606,4 +609,27 @@ public class RaceScheduler {
 		return false;
 	}
 
+	public synchronized Race inAGame(Player player, Boolean update) {
+		Map<UUID, Race> races = MarioKart.plugin.raceScheduler.getRaces();
+		for (UUID id : new ArrayList<UUID>(races.keySet())) {
+			Race r = races.get(id);
+			if (update) {
+				r.updateUser(player);
+			}
+			List<User> users = r.getUsersIn(); // Exclude those that have
+												// finished the race
+			for (User u : users) {
+				if (u.getPlayerName().equals(player.getName())) {
+					return r;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public synchronized void endAll(){
+		for (UUID id : races.keySet()) {
+			races.get(id).end(); // End the race
+		}
+	}
 }
