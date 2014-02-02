@@ -610,7 +610,7 @@ public class Race {
 				leave(user, true);
 			}
 			try {
-				RaceExecutor.finishRace(this, user, true);
+				RaceExecutor.finishRaceSync(this, user, true);
 			} catch (Exception e) {
 				//Race has been voided
 			}

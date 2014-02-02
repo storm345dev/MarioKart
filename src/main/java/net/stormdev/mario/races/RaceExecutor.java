@@ -56,7 +56,7 @@ public class RaceExecutor {
 			}}, 2l);
 	}
 	
-	private static void finishRaceSync(Race game, final User user, Boolean gameEnded) {
+	public static void finishRaceSync(Race game, final User user, Boolean gameEnded) {
 		try {
 			Boolean timed = game.getType() == RaceType.TIME_TRIAL;
 			List<User> usersIn = game.getUsersIn();
