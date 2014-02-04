@@ -30,7 +30,7 @@ import com.useful.ucarsCommon.StatValue;
 
 public class Race {
 	public List<String> finished = new ArrayList<String>();
-	public List<User> users = new ArrayList<User>();
+	private List<User> users = new ArrayList<User>();
 	private UUID gameId = null;
 	private RaceTrack track = null;
 	private String trackName = "";
@@ -117,7 +117,7 @@ public class Race {
 		return null;
 	}
 
-	public List<User> getUsers() {
+	public synchronized List<User> getUsers() {
 		return new ArrayList<User>(users);
 	}
 
@@ -126,9 +126,9 @@ public class Race {
 		return;
 	}
 
-	public List<User> getUsersIn() {
+	public synchronized List<User> getUsersIn() {
 		List<User> inUsers = new ArrayList<User>();
-		for (User user : getUsers()) {
+		for (User user : users) {
 			if (user.isInRace()) {
 				inUsers.add(user);
 			}
@@ -160,7 +160,7 @@ public class Race {
 		return;
 	}
 
-	public Boolean join(Player player) {
+	public synchronized Boolean join(Player player) {
 		if (users.size() < this.track.getMaxPlayers()) {
 			User user = new User(player, player.getLevel(), player.getExp());
 			users.add(user);
@@ -674,7 +674,7 @@ public class Race {
             return finished.indexOf(playerName)+1;
     }
 
-	public User updateUser(Player player) {
+	public synchronized User updateUser(Player player) {
 		String playerName = player.getName();
 		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(playerName)) {
@@ -689,7 +689,7 @@ public class Race {
 		return null;
 	}
 	
-	public User updateUser(User user) {
+	public synchronized User updateUser(User user) {
 		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(user.getPlayerName())) {
 				if (!forceRemoveUser(u)) {
@@ -845,7 +845,7 @@ public class Race {
 		return false;
 	}
 
-	public Boolean forceRemoveUser(User user) {
+	public synchronized Boolean forceRemoveUser(User user) {
 		if (!removeUser(user)) {
 			if (!removeUser(user.getPlayerName())) {
 				user.clear();
@@ -863,5 +863,9 @@ public class Race {
 			}
 		}
 		return false;
+	}
+	
+	public synchronized void clearUsers(){
+		users.clear();
 	}
 }

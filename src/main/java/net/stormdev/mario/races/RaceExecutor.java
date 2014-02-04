@@ -34,7 +34,7 @@ public class RaceExecutor {
 		}
 		game.running = false;
 		try {
-			game.users.clear();
+			game.clearUsers();
 		} catch (Exception e2) {
 			// Users already cleared
 		}
