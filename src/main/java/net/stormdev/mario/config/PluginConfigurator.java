@@ -109,10 +109,14 @@ public class PluginConfigurator {
 		if (!config.contains("bitlyUrlShortner")) {
 			config.set("bitlyUrlShortner", true);
 		}
-		if (!config.contains("mariokart.resourcePack")) {
+		if (!config.contains("mariokart.resourcePack") || 
+				config.getString("mariokart.resourcePack").equalsIgnoreCase( //Stop dropbox link due to bandwidth over-use
+						"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip")
+				) {
+			//https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip
 			config.set(
 					"mariokart.resourcePack",
-					"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip");
+					"http://storm345.hj.cx/Uploads/Bukkit/MarioKart/MarioKart-latest.zip");
 		}
 		if (!config.contains("mariokart.enable")) {
 			config.set("mariokart.enable", true);
