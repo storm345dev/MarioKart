@@ -184,11 +184,12 @@ public class RaceScheduler {
 				+ MarioKart.msgs.get("resource.download"));
 		String msg = MarioKart.msgs.get("resource.downloadHelp");
 		msg = msg.replaceAll(Pattern.quote("%url%"),
-				Matcher.quoteReplacement(ChatColor.RESET + rl));
+				Matcher.quoteReplacement(ChatColor.RESET + ""));
 		player.sendMessage(MarioKart.colors.getInfo() + msg);
+		player.sendMessage(rl); //new line
 		//TODO Use setResourePack, but would remove old version support
 		if(!MarioKart.plugin.resourcedPlayers.contains(player.getName())){
-			player.setTexturePack(MarioKart.config.getString("mariokart.resourcePack"));
+			player.setTexturePack(MarioKart.plugin.fullPackUrl);
 			MarioKart.plugin.resourcedPlayers.add(player.getName());
 		}
 		return;

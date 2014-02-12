@@ -2,7 +2,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.stormdev</groupId>
     <artifactId>MarioKart</artifactId>
-    <version>4</version>
     <name>MarioKart</name>
     <url>https://github.com/storm345dev/MarioKart</url>
     <issueManagement>
@@ -126,4 +125,5 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <description>The MarioKart bukkit plugin found at http://dev.bukkit.org/bukkit-plugins/MarioKart</description>
+    <version>5.2</version>
 </project>

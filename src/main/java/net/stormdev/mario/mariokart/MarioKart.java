@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
+import net.stormdev.RPManager.RPManager;
 import net.stormdev.mario.commands.AdminCommandExecutor;
 import net.stormdev.mario.commands.RaceCommandExecutor;
 import net.stormdev.mario.commands.RaceTimeCommandExecutor;
@@ -78,6 +79,7 @@ public class MarioKart extends JavaPlugin {
 	public static PowerupManager powerupManager = null;
 	public RaceTimes raceTimes = null;
 	public String packUrl = "";
+	public String fullPackUrl = "";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
@@ -215,7 +217,9 @@ public class MarioKart extends JavaPlugin {
 			}
 		}
 		String rl = MarioKart.config.getString("mariokart.resourcePack");
-
+		rl = RPManager.getRPUrl(rl);
+		this.fullPackUrl = rl;
+		
 		Boolean valid = true;
 		try {
 			new URL(rl);
@@ -229,9 +233,13 @@ public class MarioKart extends JavaPlugin {
 					.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
 							Bitly.shorten(rl));
 			this.packUrl = url.getShortUrl();
+			if(this.packUrl.length() < 1){
+				this.packUrl = rl;
+			}
 		} else {
 			this.packUrl = rl;
 		}
+		MarioKart.logger.info("Using resource pack: "+packUrl);
 		this.upgradeManager = new UnlockableManager(new File(getDataFolder()
 				.getAbsolutePath()
 				+ File.separator

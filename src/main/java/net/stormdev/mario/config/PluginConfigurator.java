@@ -112,11 +112,15 @@ public class PluginConfigurator {
 		if (!config.contains("mariokart.resourcePack") || 
 				config.getString("mariokart.resourcePack").equalsIgnoreCase( //Stop dropbox link due to bandwidth over-use
 						"https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip")
+				||
+				config.getString("mariokart.resourcePack").equalsIgnoreCase( //Stop dropbox link due to bandwidth over-use
+						"http://storm345.hj.cx/Uploads/Bukkit/MarioKart/MarioKart-latest.zip")
 				) {
 			//https://dl.dropboxusercontent.com/u/147363358/MarioKart/Resource/MarioKart-latest.zip
+			//http://storm345.hj.cx/Uploads/Bukkit/MarioKart/MarioKart-latest.zip
 			config.set(
 					"mariokart.resourcePack",
-					"http://storm345.hj.cx/Uploads/Bukkit/MarioKart/MarioKart-latest.zip");
+					"DEFAULT_CURSEFORGE_PACK");
 		}
 		if (!config.contains("mariokart.enable")) {
 			config.set("mariokart.enable", true);
