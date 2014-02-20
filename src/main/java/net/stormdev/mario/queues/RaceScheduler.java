@@ -189,7 +189,9 @@ public class RaceScheduler {
 		player.sendMessage(MarioKart.colors.getInfo() + msg);
 		player.sendMessage(rl); //new line
 		//TODO Use setResourePack, but would remove old version support
-		if(!MarioKart.plugin.resourcedPlayers.contains(player.getName())){
+		if(!MarioKart.plugin.resourcedPlayers.contains(player.getName()) 
+				&& MarioKart.plugin.fullPackUrl != null
+				&& MarioKart.plugin.fullPackUrl.length() > 0){
 			player.setTexturePack(MarioKart.plugin.fullPackUrl);
 			MarioKart.plugin.resourcedPlayers.add(player.getName());
 		}

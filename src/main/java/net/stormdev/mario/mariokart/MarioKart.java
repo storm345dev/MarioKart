@@ -220,26 +220,32 @@ public class MarioKart extends JavaPlugin {
 		rl = RPManager.getRPUrl(rl);
 		this.fullPackUrl = rl;
 		
-		Boolean valid = true;
-		try {
-			new URL(rl);
-		} catch (MalformedURLException e2) {
-			valid = false;
-		}
-		if (valid && MarioKart.config.getBoolean("bitlyUrlShortner")) {
-			// Shorten url
-			// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
-			Url url = Bitly
-					.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
-							Bitly.shorten(rl));
-			this.packUrl = url.getShortUrl();
-			if(this.packUrl.length() < 1){
+		if(rl.length() > 0){ //Using a resource pack
+			Boolean valid = true;
+			try {
+				new URL(rl);
+			} catch (MalformedURLException e2) {
+				valid = false;
+			}
+			if (valid && MarioKart.config.getBoolean("bitlyUrlShortner")) {
+				// Shorten url
+				// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+				Url url = Bitly
+						.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
+								Bitly.shorten(rl));
+				this.packUrl = url.getShortUrl();
+				if(this.packUrl.length() < 1){
+					this.packUrl = rl;
+				}
+			} else {
 				this.packUrl = rl;
 			}
-		} else {
-			this.packUrl = rl;
+			MarioKart.logger.info("Using resource pack: "+packUrl);
 		}
-		MarioKart.logger.info("Using resource pack: "+packUrl);
+		else{ //Not using an RP
+			MarioKart.logger.info("Not using a resource pack!");
+		}
+		
 		this.upgradeManager = new UnlockableManager(new File(getDataFolder()
 				.getAbsolutePath()
 				+ File.separator

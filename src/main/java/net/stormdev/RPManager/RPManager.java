@@ -33,6 +33,9 @@ public class RPManager {
 				return url;
 			}
 		}
+		else if(configInput.equalsIgnoreCase("NONE") || configInput.length() < 1){
+			return "";
+		}
 		return configInput;
 	}
 	
