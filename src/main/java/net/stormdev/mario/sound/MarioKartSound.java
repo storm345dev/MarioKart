@@ -1,7 +1,5 @@
 package net.stormdev.mario.sound;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class MarioKartSound {
 	public static final MarioKartSound BANANA_HIT = new MarioKartSound("mariokart.sfx.banana");
