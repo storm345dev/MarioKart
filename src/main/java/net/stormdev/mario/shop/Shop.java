@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.hotbar.Unlockable;
 import net.stormdev.mario.hotbar.Upgrade;
+import net.stormdev.mario.mariokart.MKLang;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.shop.IconMenu.OptionClickEvent;
 
@@ -23,7 +24,7 @@ public class Shop {
 
 	final public static IconMenu getShop() {
 		final IconMenu menu = new IconMenu(MarioKart.colors.getTitle()
-				+ "MarioKart Shop", 9, new IconMenu.OptionClickEventHandler() {
+				+ MarioKart.msgs.get("mario.shop.title"), 9, new IconMenu.OptionClickEventHandler() {
 
 			@Override
 			public void onOptionClick(OptionClickEvent event) {
@@ -32,15 +33,15 @@ public class Shop {
 			}
 		}, MarioKart.plugin);
 		menu.setOption(0, new ItemStack(Material.EMERALD),
-				MarioKart.colors.getTitle() + "Buy Upgrades",
-				new String[] { MarioKart.colors.getInfo() + "Upgrade your Kart!" });
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.buyUpgrades.title"),
+				new String[] { MarioKart.colors.getInfo() + MKLang.getStr("mario.shop.buyUpgrades.info") });
 		menu.setOption(1, new ItemStack(Material.EMERALD),
-				MarioKart.colors.getTitle() + "My Upgrades",
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.myUpgrades.title"),
 				new String[] { MarioKart.colors.getInfo()
-						+ "View and Remove Kart upgrades!" });
+						+ MKLang.getStr("mario.shop.myUpgrades.info") });
 		menu.setOption(8, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
-				+ "Exit Menu", new String[] { MarioKart.colors.getInfo()
-				+ "Exit this menu!" });
+				+ MKLang.getStr("mario.shop.exit.title"), new String[] { MarioKart.colors.getInfo()
+				+ MKLang.getStr("mario.shop.exit.info") });
 		return menu;
 	}
 
@@ -62,9 +63,9 @@ public class Shop {
 	}
 
 	public static IconMenu getUpgradesForSaleMenu(final int page) {
-		String title = MarioKart.colors.getTitle() + "Buy Upgrades Page: " + page;
+		String title = MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.buyUpgrades.title") + " Page: " + page;
 		if (title.length() > 32) {
-			title = MarioKart.colors.getError() + "Buy Upgrades (ERROR:Too Long)";
+			title = MarioKart.colors.getError() + MKLang.getStr("mario.shop.buyUpgrades.title") + " (ERROR:Too Long)";
 		}
 		final Map<String, Unlockable> unlocks = new HashMap<String, Unlockable>(
 				MarioKart.plugin.upgradeManager.getUnlocks());
@@ -79,14 +80,14 @@ public class Shop {
 					}
 				}, MarioKart.plugin);
 		menu.setOption(0, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
-				+ "Back to menu", MarioKart.colors.getInfo()
-				+ "Return back to the selection menu");
+				+ MKLang.getStr("mario.shop.back.title"), MarioKart.colors.getInfo()
+				+ MKLang.getStr("mario.shop.back.info"));
 		menu.setOption(52, new ItemStack(Material.PAPER),
-				MarioKart.colors.getTitle() + "Previous Page", MarioKart.colors.getInfo()
-						+ "Go to previous page");
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.back.previous.title"), MarioKart.colors.getInfo()
+						+ MKLang.getStr("mario.shop.back.previous.info"));
 		menu.setOption(53, new ItemStack(Material.PAPER),
-				MarioKart.colors.getTitle() + "Next Page", MarioKart.colors.getInfo()
-						+ "Go to next page");
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.back.next.title"), MarioKart.colors.getInfo()
+						+ MKLang.getStr("mario.shop.next.info"));
 		// Set option slots for all upgrades for sale
 		// 1-51 slots available on the page
 		int pos = 1;
@@ -100,12 +101,13 @@ public class Shop {
 				ArrayList<String> lore = new ArrayList<String>();
 				lore.add(MarioKart.colors.getInfo() + "Effect: "
 						+ unlock.type.name().toLowerCase());
-				lore.add(MarioKart.colors.getInfo()
-						+ "Price: "
-						+ unlock.price
-						+ " "
-						+ MarioKart.config
-								.getString("general.race.rewards.currency"));
+				
+				String priceInfo = MarioKart.colors.getInfo() + MKLang.getStr("mario.shop.price");
+				priceInfo = priceInfo.replaceAll(Pattern.quote("%amount%"), Matcher.quoteReplacement(unlock.price+""));
+				priceInfo = priceInfo.replaceAll(Pattern.quote("%currency%"), Matcher.quoteReplacement(MarioKart.config
+								.getString("general.race.rewards.currency")));
+				
+				lore.add(priceInfo);
 				menu.setOption(pos, display, MarioKart.colors.getTitle()
 						+ unlock.upgradeName, lore);
 				pos++;
@@ -115,9 +117,9 @@ public class Shop {
 	}
 
 	public static IconMenu getUpgradesIOwn(String player, final int page) {
-		String title = MarioKart.colors.getTitle() + "My Upgrades Page: " + page;
+		String title = MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.myUpgrades.title") + " " + MKLang.getStr("mario.shop.page") + " " + page;
 		if (title.length() > 32) {
-			title = MarioKart.colors.getError() + "My Upgrades (ERROR:Too Long)";
+			title = MarioKart.colors.getError() + MKLang.getStr("mario.shop.myUpgrades.title") + " (ERROR:Too Long)";
 		}
 		List<Upgrade> unlocks = MarioKart.plugin.upgradeManager.getUpgrades(player);
 		final IconMenu menu = new IconMenu(title, 54,
@@ -131,14 +133,14 @@ public class Shop {
 					}
 				}, MarioKart.plugin);
 		menu.setOption(0, new ItemStack(Material.BOOK), MarioKart.colors.getTitle()
-				+ "Back to menu", MarioKart.colors.getInfo()
-				+ "Return back to the selection menu");
+				+ MKLang.getStr("mario.shop.back.title"), MarioKart.colors.getInfo()
+				+ MKLang.getStr("mario.shop.back.info"));
 		menu.setOption(52, new ItemStack(Material.PAPER),
-				MarioKart.colors.getTitle() + "Previous Page", MarioKart.colors.getInfo()
-						+ "Go to previous page");
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.back.previous.title"), MarioKart.colors.getInfo()
+						+ MKLang.getStr("mario.shop.back.previous.info"));
 		menu.setOption(53, new ItemStack(Material.PAPER),
-				MarioKart.colors.getTitle() + "Next Page", MarioKart.colors.getInfo()
-						+ "Go to next page");
+				MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.back.next.title"), MarioKart.colors.getInfo()
+						+ MKLang.getStr("mario.shop.next.info"));
 		// Set option slots for all upgrades for sale
 		// 1-51 slots available on the page
 		int pos = 1;
@@ -153,7 +155,7 @@ public class Shop {
 				ArrayList<String> lore = new ArrayList<String>();
 				lore.add(MarioKart.colors.getInfo() + "Effect: "
 						+ unlock.type.name().toLowerCase());
-				lore.add(ChatColor.RED + "Click to delete");
+				lore.add(ChatColor.RED + MKLang.getStr("mario.shop.delete"));
 				menu.setOption(pos, display, MarioKart.colors.getTitle()
 						+ unlock.upgradeName, lore);
 				pos++;

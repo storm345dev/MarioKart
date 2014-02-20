@@ -10,7 +10,7 @@ import net.stormdev.mario.utils.Colors;
 
 public class MKLang {
 	MarioKart plugin = null;
-	private YamlConfiguration lang = new YamlConfiguration();
+	private static YamlConfiguration lang = new YamlConfiguration();
 
 	public MKLang(MarioKart main) {
 		this.plugin = main;
@@ -21,6 +21,19 @@ public class MKLang {
 		String val = getRaw(key);
 		val = Colors.colorise(val);
 		return val;
+	}
+	
+	public static String getStr(String key) {
+		String val = getRawStr(key);
+		val = Colors.colorise(val);
+		return val;
+	}
+	
+	public static String getRawStr(String key) {
+		if (!lang.contains(key)) {
+			return key;
+		}
+		return lang.getString(key);
 	}
 
 	public String getRaw(String key) {
@@ -267,6 +280,55 @@ public class MKLang {
 		if (!lang.contains("mario.hit")) {
 			lang.set("mario.hit", "You were hit by a %name%!");
 		}
+		if(!lang.contains("mario.shop.title")){
+			lang.set("mario.shop.title", "MarioKart Shop");
+		}
+		if(!lang.contains("mario.shop.exit.title")){
+			lang.set("mario.shop.exit.title", "Exit Menu");
+		}
+		if(!lang.contains("mario.shop.exit.info")){
+			lang.set("mario.shop.exit.info", "Exit this Menu!");
+		}
+		if(!lang.contains("mario.shop.buyUpgrades.title")){
+			lang.set("mario.shop.buyUpgrades.title", "Buy Upgrades");
+		}
+		if(!lang.contains("mario.shop.buyUpgrades.info")){
+			lang.set("mario.shop.buyUpgrades.info", "Upgrade your Kart!");
+		}
+		if(!lang.contains("mario.shop.myUpgrades.title")){
+			lang.set("mario.shop.myUpgrades.title", "My Upgrades");
+		}
+		if(!lang.contains("mario.shop.myUpgrades.info")){
+			lang.set("mario.shop.myUpgrades.info", "View and Remove Kart upgrades!");
+		}
+		if(!lang.contains("mario.shop.page")){
+			lang.set("mario.shop.page", "Page:");
+		}
+		if(!lang.contains("mario.shop.back.title")){
+			lang.set("mario.shop.back.title", "Back to menu");
+		}
+		if(!lang.contains("mario.shop.back.info")){
+			lang.set("mario.shop.back.info", "Return back to the selection menu");
+		}
+		if(!lang.contains("mario.shop.previous.title")){
+			lang.set("mario.shop.back.previous.title", "Previous Page");
+		}
+		if(!lang.contains("mario.shop.previous.info")){
+			lang.set("mario.shop.back.previous.info", "Go to the previous page");
+		}
+		if(!lang.contains("mario.shop.next.title")){
+			lang.set("mario.shop.back.next.title", "Next Page");
+		}
+		if(!lang.contains("mario.shop.next.info")){
+			lang.set("mario.shop.next.info", "Go to the next page");
+		}
+		if(!lang.contains("mario.shop.price")){
+			lang.set("mario.shop.price", "Price: %amount% %currency%");
+		}
+		if(!lang.contains("mario.shop.delete")){
+			lang.set("mario.shop.delete", "Click to delete");
+		}
+		
 		try {
 			lang.save(langFile);
 		} catch (IOException e1) {
