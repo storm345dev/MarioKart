@@ -1,6 +1,9 @@
 package net.stormdev.mario.rewards;
 
-public class RewardConfiguration {
+import java.io.Serializable;
+
+public class RewardConfiguration implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private double first, second, third;
 	
 	public RewardConfiguration(double first, double second, double third){
