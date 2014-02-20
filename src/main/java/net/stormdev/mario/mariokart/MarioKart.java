@@ -225,6 +225,29 @@ public class MarioKart extends JavaPlugin {
 				config.getDouble("general.race.rewards.second"),
 				config.getDouble("general.race.rewards.third"));
 		
+		this.upgradeManager = new UnlockableManager(new File(getDataFolder()
+				.getAbsolutePath()
+				+ File.separator
+				+ "Data"
+				+ File.separator
+				+ "upgradesData.mkdata"),
+				config.getBoolean("general.upgrades.useSQL"));
+		this.hotBarManager = new HotBarManager(config.getBoolean("general.upgrades.enable"));
+		this.lagReducer = getServer().getScheduler().runTaskTimer(this,
+				new DynamicLagReducer(), 100L, 1L);
+		
+		this.signManager = new SignManager(queueSignFile);
+		dynamicLagReduce = config.getBoolean("general.optimiseAtRuntime");
+		
+		if(!dynamicLagReduce){
+			logger.info(ChatColor.RED+"[WARNING] The plugin's self optimisation has been disabled,"
+					+ " this is risky as if one config value isn't set optimally - MarioKart has a chance"
+					+ " of crashing your server! I recommend you turn it back on!");
+			try {
+				Thread.sleep(1000); //Show it to then for 1s
+			} catch (InterruptedException e) {}
+		}
+		
 		String rl = MarioKart.config.getString("mariokart.resourcePack");
 		rl = RPManager.getRPUrl(rl);
 		this.fullPackUrl = rl;
@@ -253,29 +276,6 @@ public class MarioKart extends JavaPlugin {
 		}
 		else{ //Not using an RP
 			MarioKart.logger.info("Not using a resource pack!");
-		}
-		
-		this.upgradeManager = new UnlockableManager(new File(getDataFolder()
-				.getAbsolutePath()
-				+ File.separator
-				+ "Data"
-				+ File.separator
-				+ "upgradesData.mkdata"),
-				config.getBoolean("general.upgrades.useSQL"));
-		this.hotBarManager = new HotBarManager(config.getBoolean("general.upgrades.enable"));
-		this.lagReducer = getServer().getScheduler().runTaskTimer(this,
-				new DynamicLagReducer(), 100L, 1L);
-		
-		this.signManager = new SignManager(queueSignFile);
-		dynamicLagReduce = config.getBoolean("general.optimiseAtRuntime");
-		
-		if(!dynamicLagReduce){
-			logger.info(ChatColor.RED+"[WARNING] The plugin's self optimisation has been disabled,"
-					+ " this is risky as if one config value isn't set optimally - MarioKart has a chance"
-					+ " of crashing your server! I recommend you turn it back on!");
-			try {
-				Thread.sleep(1000); //Show it to then for 1s
-			} catch (InterruptedException e) {}
 		}
 		
 		System.gc();
