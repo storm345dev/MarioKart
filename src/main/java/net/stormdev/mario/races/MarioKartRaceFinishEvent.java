@@ -1,5 +1,7 @@
 package net.stormdev.mario.races;
 
+import net.stormdev.mario.rewards.RewardConfiguration;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -14,12 +16,14 @@ public class MarioKartRaceFinishEvent extends Event implements Cancellable {
 	Player player = null;
 	int position = 1;
 	String pos = "";
+	private RewardConfiguration rewards;
 
 	public MarioKartRaceFinishEvent(Player player, int position,
-			String positionFriendly) {
+			String positionFriendly, RewardConfiguration rewards) {
 		this.player = player;
 		this.position = position;
 		this.pos = positionFriendly;
+		this.rewards = rewards;
 	}
 
 	@Override
@@ -30,6 +34,10 @@ public class MarioKartRaceFinishEvent extends Event implements Cancellable {
 	@Override
 	public void setCancelled(boolean arg0) {
 		this.cancelled = arg0;
+	}
+	
+	public RewardConfiguration getRewardConfig(){
+		return rewards;
 	}
 
 	public Integer getFinishPosition() {

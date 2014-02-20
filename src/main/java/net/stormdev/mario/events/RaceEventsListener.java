@@ -12,6 +12,7 @@ import net.stormdev.mario.powerups.BananaPowerup;
 import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
+import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.sound.MarioKartSound;
 
 import org.bukkit.Bukkit;
@@ -31,9 +32,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -479,18 +480,20 @@ public class RaceEventsListener implements Listener {
 			return;
 		}
 		int pos = event.getFinishPosition();
+		RewardConfiguration rewards = event.getRewardConfig();
+		
 		double reward = 0;
 		switch (pos) {
 		case 1: {
-			reward = MarioKart.config.getDouble("general.race.rewards.win");
+			reward = rewards.getFirstPlaceAmount();
 			break;
 		}
 		case 2: {
-			reward = MarioKart.config.getDouble("general.race.rewards.second");
+			reward = rewards.getSecondPlaceAmount();
 			break;
 		}
 		case 3: {
-			reward = MarioKart.config.getDouble("general.race.rewards.third");
+			reward = rewards.getThirdPlaceAmount();
 			break;
 		}
 		default:

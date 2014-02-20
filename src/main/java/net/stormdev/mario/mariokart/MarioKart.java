@@ -37,6 +37,7 @@ import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.queues.RaceQueueManager;
 import net.stormdev.mario.queues.RaceScheduler;
 import net.stormdev.mario.races.RaceMethods;
+import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.sound.MusicManager;
@@ -83,6 +84,8 @@ public class MarioKart extends JavaPlugin {
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
+	
+	public RewardConfiguration globalRewards = null;
 	
 	public MusicManager musicManager = null;
 	
@@ -216,6 +219,12 @@ public class MarioKart extends JavaPlugin {
 				MarioKart.config.set("general.upgrades.enable", false);
 			}
 		}
+		
+		this.globalRewards = new RewardConfiguration(
+				config.getDouble("general.race.rewards.win"),
+				config.getDouble("general.race.rewards.second"),
+				config.getDouble("general.race.rewards.third"));
+		
 		String rl = MarioKart.config.getString("mariokart.resourcePack");
 		rl = RPManager.getRPUrl(rl);
 		this.fullPackUrl = rl;

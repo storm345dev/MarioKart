@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Location;
@@ -24,12 +25,24 @@ public class RaceTrack implements Serializable {
 	SerializableLocation line2 = null;
 	ArrayList<SerializableLocation> startGrid = new ArrayList<SerializableLocation>();
 	private Map<Integer, SerializableLocation> checkPoints = new HashMap<Integer, SerializableLocation>();
+	private RewardConfiguration rewards = null;
 
 	public RaceTrack(String trackname, int maxplayers, int minplayers, int laps) {
 		this.trackname = trackname;
 		this.maxplayers = maxplayers;
 		this.minplayers = minplayers;
 		this.laps = laps;
+	}
+	
+	public RewardConfiguration getRewardConfig(){
+		if(rewards == null){
+			return MarioKart.plugin.globalRewards;
+		}
+		return rewards;
+	}
+	
+	public void setRewardConfig(RewardConfiguration config){
+		this.rewards = config;
 	}
 	
 	public int getMinPlayers(){

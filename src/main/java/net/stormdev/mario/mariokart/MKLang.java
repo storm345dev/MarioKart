@@ -98,6 +98,10 @@ public class MKLang {
 			lang.set("general.cmd.setMinPlayers.success",
 					"Successfully set the minimum players for track %name%!");
 		}
+		if (!lang.contains("general.cmd.setRewards.success")) {
+			lang.set("general.cmd.setRewards.success",
+					"Successfully set the rewards for track %name%!");
+		}
 		if (!lang.contains("general.cmd.delete.success")) {
 			lang.set("general.cmd.delete.success",
 					"Successfully deleted track %name%!");

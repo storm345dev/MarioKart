@@ -210,7 +210,7 @@ public class RaceExecutor {
 								}
 								msg = msg.replaceAll("%position%", "" + pos);
 								MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
-										player, (i + 1), pos);
+										player, (i + 1), pos, game.getTrack().getRewardConfig());
 								MarioKart.plugin.getServer().getPluginManager()
 										.callEvent(evt);
 							} else {
@@ -261,7 +261,7 @@ public class RaceExecutor {
 						} catch (Exception e) {
 						}
 						MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
-								player, position, pos);
+								player, position, pos, game.getTrack().getRewardConfig());
 						MarioKart.plugin.getServer().getPluginManager()
 								.callEvent(evt);
 					} else {

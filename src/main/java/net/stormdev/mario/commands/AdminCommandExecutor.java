@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.Race;
+import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.tracks.TrackCreator;
 
@@ -266,6 +267,37 @@ public class AdminCommandExecutor implements CommandExecutor {
 				plugin.trackManager.getRaceTrack(trackname).setMinPlayers(min);
 				plugin.trackManager.save();
 				String msg = MarioKart.msgs.get("general.cmd.setMinPlayers.success");
+				msg = msg.replaceAll(Pattern.quote("%name%"),
+						plugin.trackManager.getRaceTrack(trackname)
+								.getTrackName());
+				sender.sendMessage(MarioKart.colors.getSuccess() + msg);
+				return true;
+			}
+			else if (command.equalsIgnoreCase("setRewards")) {
+				if (args.length < 5) {
+					return false;
+				}
+				String trackname = args[1];
+				if (!plugin.trackManager.raceTrackExists(trackname)) {
+					sender.sendMessage(MarioKart.colors.getError()
+							+ MarioKart.msgs.get("general.cmd.delete.exists"));
+					return true;
+				}
+				
+				double first,second,third;
+				try {
+					first = Double.parseDouble(args[2]);
+					second = Double.parseDouble(args[3]);
+					third = Double.parseDouble(args[4]);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+				
+				RewardConfiguration rConfig = new RewardConfiguration(first, second, third);
+						
+				plugin.trackManager.getRaceTrack(trackname).setRewardConfig(rConfig);
+				plugin.trackManager.save();
+				String msg = MarioKart.msgs.get("general.cmd.setRewards.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"),
 						plugin.trackManager.getRaceTrack(trackname)
 								.getTrackName());
