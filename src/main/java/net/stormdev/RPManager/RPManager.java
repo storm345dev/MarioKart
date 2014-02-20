@@ -11,7 +11,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 
 public class RPManager {
 	
-	private static final String fallbackURL = "http://www.curseforge.com/media/files/773/236/MarioKart-latest.zip"; //Current one at time of writing
+	private static final String fallbackURL = "http://www.curseforge.com/media/files/774/770/MarioKart-latest.zip"; //Current one at time of writing
 	
 	/*
 	 * Get's the latest RP url from CurseForge... (I wish they extended their API to include RPs...)
