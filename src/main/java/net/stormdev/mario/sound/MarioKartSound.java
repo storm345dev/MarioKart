@@ -16,16 +16,16 @@ public class MarioKartSound {
 	public static final MarioKartSound SHELL_HIT = new MarioKartSound("mariokart.sfx.shellHit");
 	public static final MarioKartSound STAR_RIFF = new MarioKartSound("mariokart.sfx.star");
 	public static final MarioKartSound TRACKING_BLEEP = new MarioKartSound("mariokart.sfx.trackingBleep");
-	public static final MarioKartSound MUSIC_MARIOCIRCUIT = new MarioKartSound("mariokart.music.marioCircuit", 65.4);
-	public static final MarioKartSound MUSIC_MARIOCIRCUITORCHESTRA = new MarioKartSound("mariokart.music.marioCircuitOrchestra", 210);
-	public static final MarioKartSound MUSIC_RACEWAY = new MarioKartSound("mariokart.music.raceWay", 145.8);
+	//public static final MarioKartSound MUSIC_MARIOCIRCUIT = new MarioKartSound("mariokart.music.marioCircuit", 65.4);
+	//public static final MarioKartSound MUSIC_MARIOCIRCUITORCHESTRA = new MarioKartSound("mariokart.music.marioCircuitOrchestra", 210);
+	//public static final MarioKartSound MUSIC_RACEWAY = new MarioKartSound("mariokart.music.raceWay", 145.8);
 	
 	private String path = "";
 	private double length = 0; //In s
 	private MarioKartSound(String path){
 		this.path = path;
 	}
-	private MarioKartSound(String path, double length){
+	protected MarioKartSound(String path, double length){
 		this.path = path;
 		this.length = length;
 	}
@@ -40,6 +40,7 @@ public class MarioKartSound {
 		return path;
 	}
 	
+	/*
 	public static final List<MarioKartSound> getMusic(){
 		List<MarioKartSound> list = new ArrayList<MarioKartSound>();
 		list.add(MUSIC_MARIOCIRCUIT);
@@ -47,4 +48,5 @@ public class MarioKartSound {
 		list.add(MUSIC_RACEWAY);
 		return list;
 	}
+	*/
 }
