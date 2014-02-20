@@ -94,6 +94,10 @@ public class MKLang {
 			lang.set("general.cmd.setlaps.success",
 					"Successfully set laps for track %name%!");
 		}
+		if (!lang.contains("general.cmd.setMinPlayers.success")) {
+			lang.set("general.cmd.setMinPlayers.success",
+					"Successfully set the minimum players for track %name%!");
+		}
 		if (!lang.contains("general.cmd.delete.success")) {
 			lang.set("general.cmd.delete.success",
 					"Successfully deleted track %name%!");

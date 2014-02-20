@@ -198,7 +198,7 @@ public class RaceCommandExecutor implements CommandExecutor {
 				if (playerCount > (queue.playerLimit() - 2)) {
 					color = ChatColor.YELLOW;
 				}
-				if (playerCount < MarioKart.config.getInt("race.que.minPlayers")) {
+				if (playerCount < queue.getTrack().getMinPlayers()) {
 					color = ChatColor.YELLOW;
 				}
 				char[] chars = trackName.toCharArray();

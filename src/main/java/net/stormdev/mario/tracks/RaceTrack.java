@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Location;
@@ -15,7 +16,7 @@ public class RaceTrack implements Serializable {
 	double classVersion = 1;
 	String trackname = "Unknown";
 	int maxplayers = 10;
-	int minplayers = 2;
+	int minplayers = -1;
 	public int laps = 3;
 	SerializableLocation lobby = null;
 	SerializableLocation exit = null;
@@ -29,6 +30,14 @@ public class RaceTrack implements Serializable {
 		this.maxplayers = maxplayers;
 		this.minplayers = minplayers;
 		this.laps = laps;
+	}
+	
+	public int getMinPlayers(){
+		if(minplayers > 0){
+			return minplayers; //Use track specific setting
+		}
+		return MarioKart.config
+				.getInt("race.que.minPlayers"); //Return default;
 	}
 
 	public int getLaps() {
@@ -92,10 +101,6 @@ public class RaceTrack implements Serializable {
 
 	public int getMaxPlayers() {
 		return this.maxplayers;
-	}
-
-	public int getMinPlayers() {
-		return this.minplayers;
 	}
 
 	final public ArrayList<SerializableLocation> getStartGrid() {

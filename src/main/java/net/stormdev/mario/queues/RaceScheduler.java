@@ -280,8 +280,7 @@ public class RaceScheduler {
 						}
 						return;
 					}});
-			} else if (queue.playerCount() >= MarioKart.config
-					.getInt("race.que.minPlayers")
+			} else if (queue.playerCount() >= queue.getTrack().getMinPlayers()
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())
 					&& getRacesRunning() < raceLimit
 					&& !queuedTracks.contains(queue.getTrack()) // Check it's
@@ -318,8 +317,7 @@ public class RaceScheduler {
 
 							@Override
 							public void run() {
-								if (queue.playerCount() < MarioKart.config
-										.getInt("race.que.minPlayers")) {
+								if (queue.playerCount() < queue.getTrack().getMinPlayers()) {
 									queue.setStarting(false);
 									return;
 								}
@@ -333,8 +331,7 @@ public class RaceScheduler {
 									}
 								}
 								q.clear();
-								if (race.getUsers().size() >= MarioKart.config
-										.getInt("race.que.minPlayers")) {
+								if (race.getUsers().size() >= queue.getTrack().getMinPlayers()) {
 									queue.clear();
 									MarioKart.plugin.raceQueues.removeQueue(queue);
 									startRace(race.getTrackName(), race);

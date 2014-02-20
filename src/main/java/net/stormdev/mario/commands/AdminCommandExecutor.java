@@ -68,6 +68,17 @@ public class AdminCommandExecutor implements CommandExecutor {
 						.getType().name().toLowerCase());
 				sender.sendMessage(MarioKart.colors.getInfo() + start);
 				RaceTrack track = new RaceTrack(trackname, 2, 2, laps);
+				
+				if(args.length > 3){ //If they specified minPlayers
+					int minPlayers = 2;
+					try {
+						minPlayers = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						return false;
+					}
+					track.setMinPlayers(minPlayers);
+				}
+				
 				new TrackCreator(player, track); // Create the track
 				return true;
 			} else if (command.equalsIgnoreCase("delete")) {
@@ -230,6 +241,31 @@ public class AdminCommandExecutor implements CommandExecutor {
 				plugin.trackManager.getRaceTrack(trackname).laps = laps;
 				plugin.trackManager.save();
 				String msg = MarioKart.msgs.get("general.cmd.setlaps.success");
+				msg = msg.replaceAll(Pattern.quote("%name%"),
+						plugin.trackManager.getRaceTrack(trackname)
+								.getTrackName());
+				sender.sendMessage(MarioKart.colors.getSuccess() + msg);
+				return true;
+			} else if (command.equalsIgnoreCase("setMinPlayers")) {
+				if (args.length < 3) {
+					return false;
+				}
+				String trackname = args[1];
+				if (!plugin.trackManager.raceTrackExists(trackname)) {
+					sender.sendMessage(MarioKart.colors.getError()
+							+ MarioKart.msgs.get("general.cmd.delete.exists"));
+					return true;
+				}
+				String minStr = args[2];
+				int min = 2;
+				try {
+					min = Integer.parseInt(minStr);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+				plugin.trackManager.getRaceTrack(trackname).setMinPlayers(min);
+				plugin.trackManager.save();
+				String msg = MarioKart.msgs.get("general.cmd.setMinPlayers.success");
 				msg = msg.replaceAll(Pattern.quote("%name%"),
 						plugin.trackManager.getRaceTrack(trackname)
 								.getTrackName());

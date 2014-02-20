@@ -55,7 +55,9 @@ public class SignManager {
 		@SuppressWarnings("unchecked")
 		List<RaceTrack> tracks = (List<RaceTrack>) MarioKart.plugin.trackManager.getRaceTracks().clone();
 		for(RaceTrack t:tracks){
-			updateSigns(t);
+			if(t != null){
+				updateSigns(t);
+			}
 		}
 		return;
 	}
@@ -76,6 +78,9 @@ public class SignManager {
 	}
 	
 	public synchronized void updateSigns(RaceTrack track){
+		if(track == null){
+			return;
+		}
 		Server server = MarioKart.plugin.getServer();
 		String name = track.getTrackName();
 		ArrayList<SerializableLocation> slocs = getLocs(name);
