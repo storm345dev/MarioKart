@@ -35,6 +35,9 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 	
 	@Override
 	public void move() {
+		if(!isFired()){
+			return;
+		}
 		Item shell = super.getFiredItem();
 		int sound = 0;
 		if (shell.hasMetadata("shell.sound")) {

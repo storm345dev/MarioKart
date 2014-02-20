@@ -154,6 +154,9 @@ public class GreenShellPowerup extends ShellPowerup {
 
 	@Override
 	public void move() {
+		if(!isFired()){
+			return;
+		}
 		Item item = getFiredItem();
 		
 		item.setTicksLived(1);

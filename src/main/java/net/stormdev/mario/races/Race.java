@@ -57,7 +57,7 @@ public class Race {
 	private int strikes = 0;
 	final private Map<Integer, Location> checkLocs;
 
-	public Race(RaceTrack track, String trackName, RaceType type) {
+	public Race(RaceTrack track, String trackName, final RaceType type) {
 		this.type = type;
 		this.gameId = UUID.randomUUID();
 		this.track = track;
@@ -66,18 +66,31 @@ public class Race {
 		this.maxCheckpoints = this.track.countCheckPoints() - 1;
 		this.tickrate = MarioKart.config.getLong("general.raceTickrate");
 		this.scorerate = (long) ((this.tickrate * 2) + (this.tickrate / 0.5));
-		this.board = MarioKart.plugin.getServer().getScoreboardManager()
-				.getNewScoreboard();
-		this.scores = board.registerNewObjective("", "dummy");
-		scores.setDisplaySlot(DisplaySlot.BELOW_NAME);
-		if (type != RaceType.TIME_TRIAL) {
-			this.scoresBoard = board.registerNewObjective(ChatColor.GOLD
-					+ "Race Positions", "dummy");
-		} else { // Time Trial
-			this.scoresBoard = board.registerNewObjective(ChatColor.GOLD
-					+ "Race Time(s)", "dummy");
+		Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				board = MarioKart.plugin.getServer().getScoreboardManager()
+						.getNewScoreboard();
+				scores = board.registerNewObjective("", "dummy");
+				scores.setDisplaySlot(DisplaySlot.BELOW_NAME);
+				if (type != RaceType.TIME_TRIAL) {
+					scoresBoard = board.registerNewObjective(ChatColor.GOLD
+							+ "Race Positions", "dummy");
+				} else { // Time Trial
+					scoresBoard = board.registerNewObjective(ChatColor.GOLD
+							+ "Race Time(s)", "dummy");
+				}
+				scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
+				return;
+			}});
+		
+		int t = 100;
+		while(scores == null && t>0){
+			//Wait for above code to execute, or just presume OK if wait is too long
+			t--;
 		}
-		scoresBoard.setDisplaySlot(DisplaySlot.SIDEBAR);
+		
 		this.timeLimitS = ((MarioKart.config
 				.getInt("general.race.maxTimePerCheckpoint")
 				* track.countCheckPoints()) * track.getLaps()) + 60;

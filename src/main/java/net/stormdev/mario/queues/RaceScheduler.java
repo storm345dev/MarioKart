@@ -18,6 +18,7 @@ import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.SerializableLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -254,23 +255,29 @@ public class RaceScheduler {
 				}
 				//Memory should be available
 				queue.setStarting(true);
-				List<Player> q = new ArrayList<Player>(queue.getPlayers());
-				for (Player p : q) {
-					if (p != null && p.isOnline()
-							&& getRacesRunning() < raceLimit) {
-						Race race = new Race(queue.getTrack(),
-								queue.getTrackName(), RaceType.TIME_TRIAL);
-						race.join(p);
-						if (race.getUsers().size() > 0) {
-							startRace(race.getTrackName(), race);
+				final List<Player> q = new ArrayList<Player>(queue.getPlayers());
+				Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						for (Player p : q) {
+							if (p != null && p.isOnline()
+									&& getRacesRunning() < raceLimit) {
+								Race race = new Race(queue.getTrack(),
+										queue.getTrackName(), RaceType.TIME_TRIAL);
+								race.join(p);
+								if (race.getUsers().size() > 0) {
+									startRace(race.getTrackName(), race);
+								}
+								queue.removePlayer(p);
+							}
 						}
-						queue.removePlayer(p);
-					}
-				}
-				if (queue.playerCount() < 1) {
-					q.clear();
-					MarioKart.plugin.raceQueues.removeQueue(queue);
-				}
+						if (queue.playerCount() < 1) {
+							q.clear();
+							MarioKart.plugin.raceQueues.removeQueue(queue);
+						}
+						return;
+					}});
 			} else if (queue.playerCount() >= MarioKart.config
 					.getInt("race.que.minPlayers")
 					&& !isTrackInUse(queue.getTrack(), queue.getRaceMode())

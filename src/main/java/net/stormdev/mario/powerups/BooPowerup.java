@@ -30,7 +30,11 @@ public class BooPowerup extends PowerupBase {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void doRightClickAction(User user, Player player, Minecart car,
-			Location carLoc, Race race, ItemStack inHand) {
+			Location carLoc, final Race race, ItemStack inHand) {
+		if(!user.isInRace()){
+			return;
+		}
+		
 		inHand.setAmount(inHand.getAmount() - 1);
 		PotionEffect effect = new PotionEffect(
 				PotionEffectType.INVISIBILITY, 120, 10);
@@ -67,10 +71,17 @@ public class BooPowerup extends PowerupBase {
 
 							@Override
 							public void run() {
-								pl.removeMetadata("kart.rolling", MarioKart.plugin);
-								pl.getInventory().clear();
-								MarioKart.plugin.hotBarManager.updateHotBar(pl);
-								pl.updateInventory();
+								User u = race.getUser(pl.getName());
+								if(u != null && u.isInRace()){
+									pl.removeMetadata("kart.rolling", MarioKart.plugin);
+									pl.getInventory().clear();
+									MarioKart.plugin.hotBarManager.updateHotBar(pl);
+									pl.updateInventory();
+								}
+								else{ //They've already finished the race
+									pl.removeMetadata("kart.rolling", MarioKart.plugin);
+									pl.updateInventory();
+								}
 							}
 						}, 240l);
 			}
