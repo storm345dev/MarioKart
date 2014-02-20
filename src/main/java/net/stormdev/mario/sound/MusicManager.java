@@ -35,13 +35,13 @@ public class MusicManager {
 			
 			config.set("music.configVersion", 1.0d);
 			
-			config.set("music.tracks.defaultSong1.length", 69.0); // 1 min, 9s
+			config.set("music.tracks.defaultSong1.length", 68.0); // 1 min, 8s
 			config.set("music.tracks.defaultSong1.path", "mariokart.music.music1");
 			
-			config.set("music.tracks.defaultSong2.length", 163.0); //2 min, 43s
+			config.set("music.tracks.defaultSong2.length", 125.0); //2 min, 5s
 			config.set("music.tracks.defaultSong2.path", "mariokart.music.music2");
 			
-			config.set("music.tracks.defaultSong3.length", 230.0); //3 min, 50s
+			config.set("music.tracks.defaultSong3.length", 132.0); //2 min, 12s
 			config.set("music.tracks.defaultSong3.path", "mariokart.music.music3");
 			MarioKart.plugin.saveConfig();
 		}
