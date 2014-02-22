@@ -125,5 +125,5 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <description>The MarioKart bukkit plugin found at http://dev.bukkit.org/bukkit-plugins/MarioKart</description>
-    <version>6</version>
+    <version>6.1</version>
 </project>

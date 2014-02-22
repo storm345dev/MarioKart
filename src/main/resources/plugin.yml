@@ -1,6 +1,6 @@
 name: MarioKart
 main: net.stormdev.mario.mariokart.MarioKart
-version: 6
+version: 6.1
 softdepend: [Vault]
 depend: [uCars]
 commands:
