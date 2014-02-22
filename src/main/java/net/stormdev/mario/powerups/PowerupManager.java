@@ -351,8 +351,7 @@ public class PowerupManager {
 											c.load(true);
 										}
 										r.reloadingItemBoxes.remove(signLoc);
-										spawnItemPickupBox(loc,
-												true);
+										spawnItemPickupBox(loc);
 										MarioKart.plugin.raceScheduler.updateRace(r);
 										return;
 									}
@@ -426,6 +425,47 @@ public class PowerupManager {
 		return carBase.hasMetadata("kart.immune");
 	}
 	
+	public boolean spawnItemPickupBox(Location location){
+		location.getChunk().load(true); //Make sure it's loaded
+		Location signLoc = location.clone();
+		boolean foundSign = false;
+		
+		for(int i=5; i>0 && !foundSign; i--){
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			signLoc = signLoc.getBlock().getRelative(BlockFace.DOWN).getLocation();
+		}
+		
+		if(!foundSign){
+			return false; //No sign, so remove it
+		}
+		
+		Location above = signLoc.add(0, 1.8, 0);
+		EnderCrystal newC = (EnderCrystal) above.getWorld().spawnEntity(above,
+				EntityType.ENDER_CRYSTAL);
+		
+		List<Entity> previous = newC.getNearbyEntities(0.5, 3, 0.5);
+		for(Entity e:previous){ //Remove old item boxes
+			if(e.getType().equals(EntityType.ENDER_CRYSTAL) && !e.equals(newC)){
+				e.remove();
+			}
+		}
+		
+		above.getBlock().setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.WEST)
+				.setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.NORTH)
+				.setType(Material.COAL_BLOCK);
+		above.getBlock().getRelative(BlockFace.NORTH_WEST)
+				.setType(Material.COAL_BLOCK);
+		newC.setFireTicks(0);
+		newC.setMetadata("race.pickup", new StatValue(true, plugin));
+		return true;
+	}
+	
+	/*
 	public void spawnItemPickupBox(Location previous, Boolean force) {
 		Location newL = previous;
 		newL.getChunk(); // Load chunk
@@ -469,5 +509,6 @@ public class PowerupManager {
 		newC.setFireTicks(0);
 		newC.setMetadata("race.pickup", new StatValue(true, plugin));
 	}
+	*/
 
 }

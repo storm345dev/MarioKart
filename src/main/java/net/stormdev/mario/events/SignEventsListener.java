@@ -126,6 +126,7 @@ public class SignEventsListener implements Listener {
 				}
 				lines[1] = MarioKart.colors.getInfo() + cmd;
 			} else if (cmd.equalsIgnoreCase("items")) {
+				/*
 				Location above = event.getBlock().getLocation().add(0, 1.4, 0);
 				EnderCrystal crystal = (EnderCrystal) above.getWorld()
 						.spawnEntity(above, EntityType.ENDER_CRYSTAL);
@@ -139,6 +140,8 @@ public class SignEventsListener implements Listener {
 				crystal.setFireTicks(0);
 				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
 				text = false;
+				*/
+				MarioKart.powerupManager.spawnItemPickupBox(event.getBlock().getLocation());
 			} else if(cmd.equalsIgnoreCase("queues")){ 
 				String track = ChatColor.stripColor(lines[2]);
 				if(track.length() < 1){
