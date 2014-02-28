@@ -648,7 +648,7 @@ public class Race {
 		return;
 	}
 
-	public void finish(User user) {
+	public synchronized void finish(User user) {
 		if (!ending) {
 			ending = true;
 			startEndCount();
