@@ -49,9 +49,11 @@ public class PowPowerup extends PowerupBase {
 							for (int i = 0; i < pls.length && i <= ppos; i++) {
 								Player pl = MarioKart.plugin.getServer()
 										.getPlayer((String) pls[i]);
-								pl.sendMessage(MarioKart.colors.getTitle()
-										+ "[MarioKart:] "
-										+ MarioKart.colors.getInfo() + count);
+								if(pl != null && pl.isOnline()){
+									pl.sendMessage(MarioKart.colors.getTitle()
+											+ "[MarioKart:] "
+											+ MarioKart.colors.getInfo() + count);
+								}
 							}
 							try {
 								Thread.sleep(1000);
@@ -70,6 +72,9 @@ public class PowPowerup extends PowerupBase {
 													.getServer()
 													.getPlayer(
 															(String) pls[i]);
+											if(pl == null || !pl.isOnline()){
+												continue;
+											}
 											Entity e = pl.getVehicle();
 											while(e!=null && !(e instanceof Minecart) && e.getVehicle() != null){
 												e = e.getVehicle();
