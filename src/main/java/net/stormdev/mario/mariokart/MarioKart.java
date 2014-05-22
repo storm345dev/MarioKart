@@ -44,6 +44,7 @@ import net.stormdev.mario.sound.MusicManager;
 import net.stormdev.mario.tracks.RaceTimes;
 import net.stormdev.mario.tracks.RaceTrackManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -79,8 +80,8 @@ public class MarioKart extends JavaPlugin {
 	public Random random = null;
 	public static PowerupManager powerupManager = null;
 	public RaceTimes raceTimes = null;
-	public String packUrl = "";
-	public String fullPackUrl = "";
+	public String packUrl = "http://www.curseforge.com/media/files/774/770/MarioKart-latest.zip";
+	public String fullPackUrl = "http://www.curseforge.com/media/files/774/770/MarioKart-latest.zip";
 	public HotBarManager hotBarManager = null;
 	public double checkpointRadiusSquared = 10.0;
 	public List<String> resourcedPlayers = new ArrayList<String>();
@@ -248,35 +249,41 @@ public class MarioKart extends JavaPlugin {
 			} catch (InterruptedException e) {}
 		}
 		
-		String rl = MarioKart.config.getString("mariokart.resourcePack");
-		rl = RPManager.getRPUrl(rl);
-		this.fullPackUrl = rl;
-		
-		if(rl.length() > 0){ //Using a resource pack
-			Boolean valid = true;
-			try {
-				new URL(rl);
-			} catch (MalformedURLException e2) {
-				valid = false;
-			}
-			if (valid && MarioKart.config.getBoolean("bitlyUrlShortner")) {
-				// Shorten url
-				// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
-				Url url = Bitly
-						.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
-								Bitly.shorten(rl));
-				this.packUrl = url.getShortUrl();
-				if(this.packUrl.length() < 1){
-					this.packUrl = rl;
+		Bukkit.getScheduler().runTaskLaterAsynchronously(this, new Runnable(){
+
+			@Override
+			public void run() {
+				String rl = MarioKart.config.getString("mariokart.resourcePack");
+				rl = RPManager.getRPUrl(rl);
+				fullPackUrl = rl;
+				
+				if(rl.length() > 0){ //Using a resource pack
+					Boolean valid = true;
+					try {
+						new URL(rl);
+					} catch (MalformedURLException e2) {
+						valid = false;
+					}
+					if (valid && MarioKart.config.getBoolean("bitlyUrlShortner")) {
+						// Shorten url
+						// Generic access token: 3676e306c866a24e3586a109b9ddf36f3d177556
+						Url url = Bitly
+								.as("storm345", "R_b0fae26d68750227470cd06b23be70b7").call(
+										Bitly.shorten(rl));
+						packUrl = url.getShortUrl();
+						if(packUrl.length() < 1){
+							packUrl = rl;
+						}
+					} else {
+						packUrl = rl;
+					}
+					MarioKart.logger.info("Using resource pack: "+packUrl);
 				}
-			} else {
-				this.packUrl = rl;
-			}
-			MarioKart.logger.info("Using resource pack: "+packUrl);
-		}
-		else{ //Not using an RP
-			MarioKart.logger.info("Not using a resource pack!");
-		}
+				else{ //Not using an RP
+					MarioKart.logger.info("Not using a resource pack!");
+				}
+				return;
+			}}, 20l);
 		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
