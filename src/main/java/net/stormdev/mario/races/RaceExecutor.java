@@ -47,7 +47,7 @@ public class RaceExecutor {
 
 	public static void finishRace(final Race game, final User user, final Boolean gameEnded){
 		//Call finishRaceSync, syncrhonously
-		MarioKart.plugin.getServer().getScheduler().runTaskLaterAsynchronously(MarioKart.plugin, new BukkitRunnable(){
+		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
 
 			@Override
 			public void run() {
