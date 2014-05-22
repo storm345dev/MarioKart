@@ -310,13 +310,13 @@ public class MKLang {
 		if(!lang.contains("mario.shop.back.info")){
 			lang.set("mario.shop.back.info", "Return back to the selection menu");
 		}
-		if(!lang.contains("mario.shop.previous.title")){
+		if(!lang.contains("mario.shop.back.previous.title")){
 			lang.set("mario.shop.back.previous.title", "Previous Page");
 		}
-		if(!lang.contains("mario.shop.previous.info")){
+		if(!lang.contains("mario.shop.back.previous.info")){
 			lang.set("mario.shop.back.previous.info", "Go to the previous page");
 		}
-		if(!lang.contains("mario.shop.next.title")){
+		if(!lang.contains("mario.shop.back.next.title")){
 			lang.set("mario.shop.back.next.title", "Next Page");
 		}
 		if(!lang.contains("mario.shop.next.info")){
