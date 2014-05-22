@@ -2,17 +2,10 @@ package net.stormdev.RPManager;
 
 import java.io.IOException;
 
-import lib.org.jsoup.Connection;
-import lib.org.jsoup.Jsoup;
-import lib.org.jsoup.nodes.Document;
-import lib.org.jsoup.nodes.Element;
-import lib.org.jsoup.select.Elements;
-import net.stormdev.mario.mariokart.MarioKart;
-
 public class RPManager {
 	
-	private static final String fallbackURL = "http://www.curseforge.com/media/files/774/770/MarioKart-latest.zip"; //Current one at time of writing
-	
+	private static final String RPURL = "http://minecraft.curseforge.com/texture-packs/74301-mario-kart-resource-pack/files/latest"; //Always downloads latest
+	//http://minecraft.curseforge.com/texture-packs/74301-mario-kart-resource-pack/files/774770/download
 	/*
 	 * Get's the latest RP url from CurseForge... (I wish they extended their API to include RPs...)
 	 * 
@@ -39,6 +32,11 @@ public class RPManager {
 		return configInput;
 	}
 	
+	private static String getURLFromCurseForgePage() throws IOException {
+		return RPURL;
+	}
+	
+	/*
 	private static String getURLFromCurseForgePage() throws IOException{
 		Connection con = Jsoup.connect("http://minecraft.curseforge.com/texture-packs/mario-kart-resource-pack/");
 		con.followRedirects(true); //In case curse move the URL
@@ -93,4 +91,5 @@ public class RPManager {
 		
 		return downloadURL;
 	}
+	*/
 }
