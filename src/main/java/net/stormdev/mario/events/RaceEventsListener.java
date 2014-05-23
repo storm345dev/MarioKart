@@ -216,11 +216,11 @@ public class RaceEventsListener implements Listener {
 			return;
 		}
 		if (event.getEntity().hasMetadata("explosion.none")) {
-			Location loc = event.getEntity().getLocation();
+			Location loc = event.getEntity().getLocation().clone();
 			event.setCancelled(true);
-			event.getEntity().remove();
 			double radius = 6;
 			loc.getWorld().createExplosion(loc, 0);
+                        event.getEntity().remove();
 			Double x = (double) radius;
 			Double y = (double) radius;
 			Double z = (double) radius;
