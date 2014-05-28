@@ -7,11 +7,6 @@ import java.net.URLConnection;
 
 import net.stormdev.mario.mariokart.MarioKart;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 public class RPManager {
 	
 	private static final String fallbackURL = "http://www.curseforge.com/media/files/774/770/MarioKart-latest.zip"; //Current one at time of writing
@@ -49,63 +44,8 @@ public class RPManager {
 	private static String getURLFromCurseForgePage() throws IOException{
 		MarioKart.logger.info("Attempting to resolve resource pack URL... (This may take a while)");
 		
-		String URL = "http://minecraft.curseforge.com/texture-packs/mario-kart-resource-pack";
-		
-		Connection con = Jsoup.connect(URL);
-		con.followRedirects(true); //In case curse move the URL
-		con.userAgent("Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-		//con.header("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-		
-		Document doc;
-		try {
-			doc = con.get();
-		} catch (Exception e1) {
-			MarioKart.logger.info("Unable to determine URL of MarioKart RP! Using built in default version...");
-			return fallbackURL;
-		}
-		
-		System.out.println("Determining URL...");
-		
-		Element downloadSpan = null;
-		for(Element e:doc.getAllElements()){
-			if(e.className().equalsIgnoreCase("cf-recentfiles-credits-wrapper")){
-				downloadSpan = e;
-			}
-		}
-		
-		if(downloadSpan == null){
-			MarioKart.logger.info("Unable to determine URL of MarioKart RP! Using built in default version...");
-			return fallbackURL;
-		}
-		Element downloadButton = null;
-		for(Element e:downloadSpan.getAllElements()){
-			if(e.tagName().equalsIgnoreCase("a")){
-				//It's a link
-				downloadButton = e;
-			}
-		}
-		if(downloadButton == null){
-			MarioKart.logger.info("Unable to determine URL of MarioKart RP! Using built in default version...");
-			return fallbackURL;
-		}
-		//String pageURL = downloadButton.absUrl("href"); //Absolute link to download page...
-		/*
-		con = Jsoup.connect(pageURL);
-		con.followRedirects(true);
-		
-		doc = con.get();
-		Elements contentBox = doc.getElementsByClass("content-box-inner");
-		Element link = contentBox.select("a").first();
-		if(link == null){
-			MarioKart.logger.info("Unable to determine URL of MarioKart RP! Using built in default version...");
-			return fallbackURL;
-		}
-		*/
-		
-		String downloadCon = downloadButton.absUrl("href"); //Absolute link to curse server! :)
-		
 		//Follow the server's redirect until we reach the .zip file
-		URLConnection c = new URL( downloadCon ).openConnection();
+		URLConnection c = new URL("http://minecraft.curseforge.com/texture-packs/74301-mario-kart-resource-pack/files/latest").openConnection();
 		c.connect();
 		InputStream is = c.getInputStream();
 		String rURL = c.getURL().toExternalForm();
