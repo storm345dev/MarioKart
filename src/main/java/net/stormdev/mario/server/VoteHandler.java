@@ -182,7 +182,6 @@ public class VoteHandler {
 				return;
 			}
 		}
-		
 		FullServerManager.get().trackSelected(tName);
 	}
 	

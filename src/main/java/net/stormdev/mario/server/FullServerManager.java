@@ -25,6 +25,7 @@ public class FullServerManager {
 	private RaceType mode;
 	private RaceTrack track;
 	private volatile Race race;
+	private boolean starting = false;
 	
 	public static FullServerManager get(){
 		return instance;
@@ -44,7 +45,13 @@ public class FullServerManager {
 		switch(stage){
 		case PLAYING:
 			break;
-		case RESTARTING:
+		case RESTARTING: {
+			voter = null;
+			track = null;
+			race = null;
+			starting = false;
+			mode = RaceType.RACE;
+		}
 			break;
 		case STARTING:
 			break;
@@ -78,6 +85,10 @@ public class FullServerManager {
 	}
 	
 	public void trackSelected(final String trackName){
+		if(starting){
+			return;
+		}
+		starting = true;
 		changeServerStage(ServerStage.STARTING);
 		voter = null; //Stop voting stuff working
 		

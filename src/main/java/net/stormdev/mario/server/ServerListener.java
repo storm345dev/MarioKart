@@ -84,8 +84,15 @@ public class ServerListener implements Listener {
 		if(!MarioKart.plugin.resourcedPlayers.contains(player.getName()) //Send them the RP for if they have got server RPs enabled
 				&& MarioKart.plugin.fullPackUrl != null
 				&& MarioKart.plugin.fullPackUrl.length() > 0){
-			player.setTexturePack(MarioKart.plugin.fullPackUrl);
-			MarioKart.plugin.resourcedPlayers.add(player.getName());
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					player.sendMessage(ChatColor.GRAY+"(Sending RP)");
+					player.setTexturePack(MarioKart.plugin.fullPackUrl);
+					MarioKart.plugin.resourcedPlayers.add(player.getName());
+					return;
+				}}, 20l);
 		}
 		
 		final Location spawnLoc = fsm.lobbyLoc;
