@@ -361,6 +361,7 @@ public class MarioKart extends JavaPlugin {
 	
 	public static void overrideEcon(EconProvider newProvider){
 		economy = newProvider;
+		vault = true;
 	}
 	
 	public boolean setupEconomy() {

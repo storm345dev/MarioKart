@@ -12,6 +12,7 @@ import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.rewards.RewardConfiguration;
+import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.sound.MarioKartSound;
 
 import org.bukkit.Bukkit;
@@ -527,6 +528,15 @@ public class RaceEventsListener implements Listener {
 				msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
 						.quoteReplacement("" + event.getPlayerFriendlyPosition()));
 				player.sendMessage(MarioKart.colors.getInfo() + msg);
+				if(MarioKart.fullServer){
+					Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
+
+						@Override
+						public void run() {
+							FullServerManager.get().sendToLobby(player);
+							return;
+						}}, 5*20l);
+				}
 				return;
 			}});
 		return;

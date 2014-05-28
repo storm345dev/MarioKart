@@ -15,6 +15,7 @@ import net.stormdev.mario.players.User;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DoubleValueComparator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -42,6 +43,8 @@ public class RaceExecutor {
 			MarioKart.logger.info("Game not correctly cleared!");
 		}
 		MarioKart.plugin.raceScheduler.recalculateQueues();
+		MarioKartRaceEndEvent evt = new MarioKartRaceEndEvent(game);
+		Bukkit.getPluginManager().callEvent(evt);
 		return;
 	}
 

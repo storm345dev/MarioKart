@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.mario.races.MarioKartRaceEndEvent;
+import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -115,5 +117,34 @@ public class ServerListener implements Listener {
 					return;
 				}}, 2l);
 		}
+		else if(fsm.getStage().equals(ServerStage.STARTING)){
+			player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+			player.sendMessage(ChatColor.GOLD+"Game starting in under 10 seconds...");
+			player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+		}
+	}
+	
+	@EventHandler
+	public void raceEnding(MarioKartRaceEndEvent event){
+		//Reset game
+		fsm.changeServerStage(ServerStage.RESTARTING);
+		//wait...
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				Player[] online = Bukkit.getOnlinePlayers();
+				for(Player p:online){
+					fsm.sendToLobby(p);
+				}
+				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						fsm.changeServerStage(ServerStage.WAITING);
+						return;
+					}}, 10*20l);
+				return;
+			}}, 10*20l);
 	}
 }

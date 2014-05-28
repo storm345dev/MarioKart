@@ -11,7 +11,9 @@ import java.util.logging.Level;
 
 import net.stormdev.mario.lesslag.DynamicLagReducer;
 import net.stormdev.mario.mariokart.MarioKart;
-import net.stormdev.mario.players.*;
+import net.stormdev.mario.players.PlayerQuitException;
+import net.stormdev.mario.players.User;
+import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.DoubleValueComparator;
 
@@ -23,8 +25,11 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.scheduler.*;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.useful.ucarsCommon.StatValue;
 
@@ -528,7 +533,7 @@ public class Race {
 	public synchronized SortedMap<String, Double> getRaceOrder() {
 		Race game = this;
 		HashMap<String, Double> checkpointDists = new HashMap<String, Double>();
-		for (User user : users) {
+		for (User user : new ArrayList<User>(users)) {
 			try {
 				Player player = user.getPlayer();
 				if(player != null){
@@ -644,6 +649,7 @@ public class Race {
 			e.printStackTrace();
 			//Race Voided
 		}
+		
 		System.gc();
 		return;
 	}
@@ -844,15 +850,30 @@ public class Race {
 		}
 		users.remove(user);
 		user.clear();
+		if(MarioKart.fullServer){
+			final Player player;
+			try {
+				player = user.getPlayer();
+			} catch (PlayerQuitException e) {
+				return true; //GOOD
+			}
+			if(player != null && player.isOnline()){
+				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						FullServerManager.get().sendToLobby(player);
+						return;
+					}}, 5*20l);
+			}
+		}
 		return true;
 	}
 
 	public synchronized Boolean removeUser(String user) {
 		for (User u : new ArrayList<User>(users)) {
 			if (u.getPlayerName().equals(user)) {
-				u.clear();
-				users.remove(u);
-				return true;
+				return removeUser(u);
 			}
 		}
 		return false;

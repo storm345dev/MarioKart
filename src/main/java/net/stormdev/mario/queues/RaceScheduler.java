@@ -208,7 +208,9 @@ public class RaceScheduler {
 
 	public void recalculateQueues() {
 		MarioKart.plugin.signManager.updateSigns();
-		
+		if(MarioKart.fullServer){
+			return;
+		}
 		if(lockdown){
 			//No more races allowed
 			if(getRacesRunning() < 1){

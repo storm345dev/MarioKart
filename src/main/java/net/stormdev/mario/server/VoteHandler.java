@@ -27,7 +27,8 @@ public class VoteHandler {
 	private final String VOTE_META;
 	private final String VOTE_META_KEY = "mariokart.vote";
 	private final String VOTE_MESSAGE = ChatColor.GOLD+"Use \"/vote <TrackName>\" to cast your vote!";
-	private static final int VOTE_TIME = 300;
+	//TODO private static final int VOTE_TIME = 300;
+	private static final int VOTE_TIME = 100;
 	private Map<String, Integer> votes = new HashMap<String, Integer>();
 	private Scoreboard board;
 	private Objective obj;
@@ -154,6 +155,9 @@ public class VoteHandler {
 	}
 	
 	public void closeVotes(){
+		if(closed){
+			return;
+		}
 		closed = true;
 		Player[] online = Bukkit.getOnlinePlayers();
 		for(Player p:online){
