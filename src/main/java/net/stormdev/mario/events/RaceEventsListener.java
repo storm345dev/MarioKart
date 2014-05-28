@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.powerups.BananaPowerup;
@@ -473,8 +472,8 @@ public class RaceEventsListener implements Listener {
 	}
 	
 	@EventHandler
-	void raceFinish(MarioKartRaceFinishEvent event) { //Handle rewards after players finish a race
-		Player player = event.getPlayer();
+	void raceFinish(final MarioKartRaceFinishEvent event) { //Handle rewards after players finish a race
+		final Player player = event.getPlayer();
 		MarioKart.plugin.hotBarManager.clearHotBar(player.getName());
 		if (!MarioKart.config.getBoolean("general.race.rewards.enable")) {
 			return;
@@ -482,7 +481,7 @@ public class RaceEventsListener implements Listener {
 		int pos = event.getFinishPosition();
 		RewardConfiguration rewards = event.getRewardConfig();
 		
-		double reward = 0;
+		final double reward;
 		switch (pos) {
 		case 1: {
 			reward = rewards.getFirstPlaceAmount();
@@ -509,21 +508,27 @@ public class RaceEventsListener implements Listener {
 				return;
 			}
 		}
-		EconomyResponse r = MarioKart.economy
-				.depositPlayer(player.getName(), reward);
-		double b = r.balance;
-		String currency = MarioKart.config
-				.getString("general.race.rewards.currency");
-		String msg = MarioKart.msgs.get("race.end.rewards");
-		msg = msg.replaceAll(Pattern.quote("%amount%"),
-				Matcher.quoteReplacement("" + reward));
-		msg = msg.replaceAll(Pattern.quote("%balance%"),
-				Matcher.quoteReplacement("" + b));
-		msg = msg.replaceAll(Pattern.quote("%currency%"),
-				Matcher.quoteReplacement("" + currency));
-		msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
-				.quoteReplacement("" + event.getPlayerFriendlyPosition()));
-		player.sendMessage(MarioKart.colors.getInfo() + msg);
+		MarioKart.economy
+				.give(player, reward);
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				double b = MarioKart.economy.getBalance(player);
+				String currency = MarioKart.config
+						.getString("general.race.rewards.currency");
+				String msg = MarioKart.msgs.get("race.end.rewards");
+				msg = msg.replaceAll(Pattern.quote("%amount%"),
+						Matcher.quoteReplacement("" + reward));
+				msg = msg.replaceAll(Pattern.quote("%balance%"),
+						Matcher.quoteReplacement("" + b));
+				msg = msg.replaceAll(Pattern.quote("%currency%"),
+						Matcher.quoteReplacement("" + currency));
+				msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
+						.quoteReplacement("" + event.getPlayerFriendlyPosition()));
+				player.sendMessage(MarioKart.colors.getInfo() + msg);
+				return;
+			}});
 		return;
 	}
 	

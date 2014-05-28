@@ -38,6 +38,8 @@ import net.stormdev.mario.queues.RaceQueueManager;
 import net.stormdev.mario.queues.RaceScheduler;
 import net.stormdev.mario.races.RaceMethods;
 import net.stormdev.mario.rewards.RewardConfiguration;
+import net.stormdev.mario.server.EconProvider;
+import net.stormdev.mario.server.VaultEco;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.signUtils.SignManager;
 import net.stormdev.mario.sound.MusicManager;
@@ -100,7 +102,7 @@ public class MarioKart extends JavaPlugin {
 	public BukkitTask lagReducer = null;
 
 	public static Boolean vault = false;
-	public static Economy economy = null;
+	public static EconProvider economy = null;
 
 	private void setupCmds(){
 		adminCommandExecutor = new AdminCommandExecutor(this);
@@ -110,7 +112,6 @@ public class MarioKart extends JavaPlugin {
 		getCommand("marioRaceAdmin").setExecutor(adminCommandExecutor);
 		getCommand("race").setExecutor(raceCommandExecutor);
 		getCommand("racetimes").setExecutor(raceTimeCommandExecutor);
-		
 	}
 	
 	private void setupListeners(){
@@ -349,6 +350,10 @@ public class MarioKart extends JavaPlugin {
 		return false;
 	}
 	
+	public static void overrideEcon(EconProvider newProvider){
+		economy = newProvider;
+	}
+	
 	public boolean setupEconomy() {
 		if(!vault){
 			return false;
@@ -357,7 +362,7 @@ public class MarioKart extends JavaPlugin {
 				.getServicesManager().getRegistration(
 						net.milkbowl.vault.economy.Economy.class);
 		if (economyProvider != null) {
-			economy = economyProvider.getProvider();
+			economy = new VaultEco(economyProvider.getProvider());
 		}
 		return (economy != null);
 	}

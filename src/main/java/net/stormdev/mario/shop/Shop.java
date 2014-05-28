@@ -14,6 +14,7 @@ import net.stormdev.mario.mariokart.MKLang;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.shop.IconMenu.OptionClickEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -244,8 +245,8 @@ public class Shop {
 				// Get and buy unlockable
 				int i = ((page - 1) * 51) + slot - 1;
 				String shortId = "";
-				Unlockable unlock = null;
-				String currency = MarioKart.config
+				final Unlockable unlock;
+				final String currency = MarioKart.config
 						.getString("general.race.rewards.currency");
 				try {
 					shortId = (String) MarioKart.plugin.upgradeManager.getUnlocks().keySet()
@@ -259,7 +260,7 @@ public class Shop {
 					// Invalid unlock
 					return event;
 				}
-				double price = unlock.price;
+				final double price = unlock.price;
 				if (MarioKart.economy == null) {
 					if (!MarioKart.plugin.setupEconomy() || MarioKart.economy == null) {
 						player.sendMessage(MarioKart.colors.getError()
@@ -268,47 +269,53 @@ public class Shop {
 					}
 
 				}
-				double balance = MarioKart.economy.getBalance(player.getName());
-				if (balance < price) {
-					String msg = MarioKart.msgs.get("general.shop.notEnoughMoney");
-					msg = msg.replaceAll(Pattern.quote("%currency%"),
-							Matcher.quoteReplacement(currency));
-					msg = msg.replaceAll(Pattern.quote("%balance%"),
-							Matcher.quoteReplacement(balance + ""));
-					player.sendMessage(MarioKart.colors.getError() + msg);
-					return event;
-				}
-				// Confident in success of transaction
-				Boolean success = MarioKart.plugin.upgradeManager.addUpgrade(
-						player.getName(), new Upgrade(unlock, 1)); // Give them
-																	// the
-																	// upgrade
-				if (!success) {
-					player.sendMessage(MarioKart.colors.getError()
-							+ MarioKart.msgs.get("general.shop.maxUpgrades"));
-					return event;
-				}
-				EconomyResponse response = MarioKart.economy.withdrawPlayer(
-						player.getName(), price);
-				balance = response.balance;
-				String msg = MarioKart.msgs.get("general.shop.success");
-				msg = msg.replaceAll(Pattern.quote("%currency%"),
-						Matcher.quoteReplacement(currency));
-				msg = msg.replaceAll(Pattern.quote("%balance%"),
-						Matcher.quoteReplacement(balance + ""));
-				msg = msg.replaceAll(Pattern.quote("%name%"),
-						Matcher.quoteReplacement(unlock.upgradeName));
-				msg = msg.replaceAll(Pattern.quote("%price%"),
-						Matcher.quoteReplacement("" + price));
-				player.sendMessage(MarioKart.colors.getInfo() + msg);
-				event.setWillDestroy(true);
-				MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
+				Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
 
 					@Override
 					public void run() {
-						getUpgradesForSaleMenu(page).open(player);
+						double balance = MarioKart.economy.getBalance(player);
+						if (balance < price) {
+							String msg = MarioKart.msgs.get("general.shop.notEnoughMoney");
+							msg = msg.replaceAll(Pattern.quote("%currency%"),
+									Matcher.quoteReplacement(currency));
+							msg = msg.replaceAll(Pattern.quote("%balance%"),
+									Matcher.quoteReplacement(balance + ""));
+							player.sendMessage(MarioKart.colors.getError() + msg);
+							return;
+						}
+						// Confident in success of transaction
+						Boolean success = MarioKart.plugin.upgradeManager.addUpgrade(
+								player.getName(), new Upgrade(unlock, 1)); // Give them
+																			// the
+																			// upgrade
+						if (!success) {
+							player.sendMessage(MarioKart.colors.getError()
+									+ MarioKart.msgs.get("general.shop.maxUpgrades"));
+							return;
+						}
+						MarioKart.economy.spend(
+								player, price);
+						balance = MarioKart.economy.getBalance(player);
+						String msg = MarioKart.msgs.get("general.shop.success");
+						msg = msg.replaceAll(Pattern.quote("%currency%"),
+								Matcher.quoteReplacement(currency));
+						msg = msg.replaceAll(Pattern.quote("%balance%"),
+								Matcher.quoteReplacement(balance + ""));
+						msg = msg.replaceAll(Pattern.quote("%name%"),
+								Matcher.quoteReplacement(unlock.upgradeName));
+						msg = msg.replaceAll(Pattern.quote("%price%"),
+								Matcher.quoteReplacement("" + price));
+						player.sendMessage(MarioKart.colors.getInfo() + msg);
+						MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
+
+							@Override
+							public void run() {
+								getUpgradesForSaleMenu(page).open(player);
+								return;
+							}}, 2l);
 						return;
-					}}, 2l);
+					}});
+				event.setWillDestroy(true);
 				return event;
 			}
 		} else if (type == SelectMenuType.SELL_UPGRADES) {
