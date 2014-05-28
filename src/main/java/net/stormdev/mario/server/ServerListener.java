@@ -88,7 +88,6 @@ public class ServerListener implements Listener {
 
 				@Override
 				public void run() {
-					player.sendMessage(ChatColor.GRAY+"(Sending RP)");
 					player.setTexturePack(MarioKart.plugin.fullPackUrl);
 					MarioKart.plugin.resourcedPlayers.add(player.getName());
 					return;
