@@ -21,6 +21,7 @@ import net.stormdev.RPManager.RPManager;
 import net.stormdev.mario.commands.AdminCommandExecutor;
 import net.stormdev.mario.commands.RaceCommandExecutor;
 import net.stormdev.mario.commands.RaceTimeCommandExecutor;
+import net.stormdev.mario.commands.VoteCommandExecutor;
 import net.stormdev.mario.config.PluginConfigurator;
 import net.stormdev.mario.events.HotbarEventsListener;
 import net.stormdev.mario.events.QueueEventsListener;
@@ -114,6 +115,7 @@ public class MarioKart extends JavaPlugin {
 		getCommand("marioRaceAdmin").setExecutor(adminCommandExecutor);
 		getCommand("race").setExecutor(raceCommandExecutor);
 		getCommand("racetimes").setExecutor(raceTimeCommandExecutor);
+		getCommand("vote").setExecutor(new VoteCommandExecutor());
 	}
 	
 	private void setupListeners(){

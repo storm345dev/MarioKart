@@ -3,7 +3,7 @@ package net.stormdev.mario.server;
 import org.bukkit.ChatColor;
 
 public enum ServerStage {
-WAITING(ChatColor.GREEN+"Waiting", true), PLAYING(ChatColor.YELLOW+"In progress", false), RESTARTING(ChatColor.RED+"Restarting", false);
+WAITING(ChatColor.GREEN+"Waiting", true), STARTING(ChatColor.YELLOW+"Starting...", true), PLAYING(ChatColor.YELLOW+"In progress", false), RESTARTING(ChatColor.RED+"Restarting", false);
 
 private String motd;
 private boolean letJoin;

@@ -11,6 +11,7 @@ public class FullServerManager {
 	public static String BUNGEE_LOBBY_ID = "lobby";
 	private static FullServerManager instance = null;
 	private volatile ServerStage stage = ServerStage.WAITING;
+	public VoteHandler voter = null;
 	public Location lobbyLoc;
 	
 	public static FullServerManager get(){
@@ -27,7 +28,21 @@ public class FullServerManager {
 	
 	public void changeServerStage(ServerStage now){
 		stage = now;
-		//TODO Handle changing MOTD, etc
+		
+		switch(stage){
+		case PLAYING:
+			break;
+		case RESTARTING:
+			break;
+		case STARTING:
+			break;
+		case WAITING: {
+			voter = new VoteHandler();
+		}
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public FullServerManager(){
@@ -37,6 +52,7 @@ public class FullServerManager {
 		MarioKart.logger.info("Using "+BUNGEE_LOBBY_ID+" as the game lobby!");
 		Bukkit.getPluginManager().registerEvents(new ServerListener(), MarioKart.plugin);
 		lobbyLoc = LocationStrings.getLocation(MarioKart.config.getString("general.server.gamelobby"));
+		changeServerStage(ServerStage.WAITING);
 	}
 	
 	public void sendToLobby(Player player){

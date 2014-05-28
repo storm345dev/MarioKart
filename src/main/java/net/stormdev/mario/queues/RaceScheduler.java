@@ -37,6 +37,9 @@ public class RaceScheduler {
 	private boolean fairCars = true;
 
 	public RaceScheduler(int raceLimit) {
+		if(MarioKart.fullServer){
+			raceLimit = 1;
+		}
 		this.raceLimit = raceLimit;
 		fairCars = MarioKart.config.getBoolean("general.ensureEqualCarSpeed");
 	}

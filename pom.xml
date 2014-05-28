@@ -90,6 +90,10 @@
 	       <id>stormdev-repo</id>
 	       <url>http://repository-storm345dev.forge.cloudbees.com/release</url>
         </repository>
+		<repository>
+			<id>confuser-repo</id>
+			<url>http://ci.frostcast.net/plugin/repository/everything</url>
+		</repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -114,6 +118,11 @@
             <artifactId>uCars</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+			<groupId>me.confuser</groupId>
+			<artifactId>BarAPI</artifactId>
+			<version>3.1</version>
+		</dependency>
 
     </dependencies>
     <distributionManagement>

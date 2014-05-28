@@ -36,6 +36,9 @@ public class ServerListener implements Listener {
 			player.getVehicle().eject();
 			player.getVehicle().remove();
 		}
+		if(fsm.voter != null){
+			fsm.voter.removePlayerFromBoard(player);
+		}
 	}
 	
 	
@@ -83,6 +86,20 @@ public class ServerListener implements Listener {
 		}
 		else {
 			player.teleport(spawnLoc);
+		}
+		
+		if(fsm.getStage().equals(ServerStage.WAITING)){
+			fsm.voter.addPlayerToBoard(player);
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+					player.sendMessage(fsm.voter.getHelpString());
+					player.sendMessage(fsm.voter.getAvailTracksString());
+					player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+					return;
+				}}, 2l);
 		}
 	}
 }
