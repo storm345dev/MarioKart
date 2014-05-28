@@ -4,6 +4,7 @@
     <artifactId>MarioKart</artifactId>
     <name>MarioKart</name>
     <url>https://github.com/storm345dev/MarioKart</url>
+    <minimizeJar>true</minimizeJar>
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/storm345dev/MarioKart/issues</url>
