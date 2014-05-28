@@ -39,6 +39,7 @@ import net.stormdev.mario.queues.RaceScheduler;
 import net.stormdev.mario.races.RaceMethods;
 import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.server.EconProvider;
+import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.server.VaultEco;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.signUtils.SignManager;
@@ -69,6 +70,7 @@ public class MarioKart extends JavaPlugin {
 	public static Colors colors;
 	public static CustomLogger logger = null;
 	public static ucars ucars = null;
+	public static boolean fullServer = false;
 	public AdminCommandExecutor adminCommandExecutor = null;
 	public RaceCommandExecutor raceCommandExecutor = null;
 	public RaceTimeCommandExecutor raceTimeCommandExecutor = null;
@@ -285,6 +287,11 @@ public class MarioKart extends JavaPlugin {
 				}
 				return;
 			}}, 20l);
+		
+		fullServer = config.getBoolean("general.server.control");
+		if(fullServer){
+			new FullServerManager();
+		}
 		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()

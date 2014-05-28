@@ -31,6 +31,12 @@ public class PluginConfigurator {
 		if(!config.contains("misc.configVersion")){
 			config.set("misc.configVersion", current);
 		}
+		if(!config.contains("general.server.control")){
+			config.set("general.server.control", false);
+		}
+		if(!config.contains("general.server.bungeelobby")){
+			config.set("general.server.bungeelobby", "lobby");
+		}
 		if (!config.contains("general.logger.colour")) {
 			config.set("general.logger.colour", true);
 		}
