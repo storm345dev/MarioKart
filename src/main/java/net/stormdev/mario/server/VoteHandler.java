@@ -1,8 +1,10 @@
 package net.stormdev.mario.server;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.MarioKart;
@@ -74,6 +76,13 @@ public class VoteHandler {
 				}
 				return;
 			}}, 20l, 20l);
+	}
+	
+	private TreeMap<String, Integer> getSorted(){
+		ValueComparator comp = new ValueComparator(votes);
+		TreeMap<String, Integer> sorted = new TreeMap<String, Integer>(comp);
+		sorted.putAll(votes);
+		return sorted;
 	}
 	
 	public void bossBar(final Player player){
@@ -148,13 +157,29 @@ public class VoteHandler {
 		closed = true;
 		Player[] online = Bukkit.getOnlinePlayers();
 		for(Player p:online){
-			p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+			removePlayerFromBoard(p);
 		}
 		
 		obj.unregister();
 		
-		Bukkit.broadcastMessage("DEBUG: END");
-		//TODO Count up, etc
+		TreeMap<String, Integer> results = getSorted();
+		String tName;
+		if(results.size() > 0){
+			tName = results.keySet().toArray(new String[]{})[0]; //First
+		}
+		else {
+			try {
+				tName = MarioKart.plugin.trackManager.getRaceTrackNames().get(
+						MarioKart.plugin.random.nextInt(
+								MarioKart.plugin.trackManager.getRaceTrackNames().size()));
+			} catch (Exception e) {
+				//No tracks setup
+				Bukkit.broadcastMessage("No tracks setup! Please setup some tracks and restart the server!");
+				return;
+			}
+		}
+		
+		FullServerManager.get().trackSelected(tName);
 	}
 	
 	public void removePlayerFromBoard(Player player){
@@ -179,11 +204,11 @@ public class VoteHandler {
 		boolean f = true;
 		for(String t:tracks){
 			if(f){
-				avail.append(ChatColor.GOLD+t);
+				avail.append(ChatColor.WHITE+t);
 				f = false;
 				continue;
 			}
-			avail.append(ChatColor.GOLD).append(", ").append(t);
+			avail.append(ChatColor.GOLD).append(", ").append(ChatColor.WHITE).append(t);
 		}
 		return avail.toString();
 	}
@@ -245,5 +270,22 @@ public class VoteHandler {
 			player.removeMetadata(VOTE_META_KEY, MarioKart.plugin);
 		}
 		return has;
+	}
+	
+	class ValueComparator implements Comparator<String> {
+
+	    Map<String, Integer> base;
+	    public ValueComparator(Map<String, Integer> base) {
+	        this.base = base;
+	    }
+
+	    // Note: this comparator imposes orderings that are inconsistent with equals.    
+	    public int compare(String a, String b) {
+	        if (base.get(a) <= base.get(b)) {
+	            return -1;
+	        } else {
+	            return 1;
+	        } // returning 0 would merge keys
+	    }
 	}
 }

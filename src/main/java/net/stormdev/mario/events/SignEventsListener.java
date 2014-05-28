@@ -4,20 +4,13 @@ import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.useful.ucarsCommon.StatValue;
 
 public class SignEventsListener implements Listener {
 	private MarioKart plugin;
@@ -30,6 +23,9 @@ public class SignEventsListener implements Listener {
 	@EventHandler
 	void signClicker(final PlayerInteractEvent event) { //Handle people clicking on signs
 		MarioKart.powerupManager.calculate(event.getPlayer(), event);
+		if(MarioKart.fullServer){
+			return;
+		}
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}

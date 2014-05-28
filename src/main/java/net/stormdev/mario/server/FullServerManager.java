@@ -4,6 +4,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.utils.LocationStrings;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -57,5 +58,12 @@ public class FullServerManager {
 	
 	public void sendToLobby(Player player){
 		PlayerServerSender.sendToServer(player, BUNGEE_LOBBY_ID);
+	}
+	
+	public void trackSelected(String trackName){
+		//TODO
+		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+		//TODO Announce track
+		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 	}
 }
