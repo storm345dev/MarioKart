@@ -12,8 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public class ServerListener implements Listener {
@@ -22,6 +24,18 @@ public class ServerListener implements Listener {
 		this.fsm = FullServerManager.get();
 	}
 	
+	@EventHandler
+	void entityDamage(EntityDamageByEntityEvent event){ //Not part of MK
+		event.setDamage(0);
+		event.setCancelled(true);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void respawn(PlayerRespawnEvent event){
+		if(fsm.getStage().equals(ServerStage.WAITING) || fsm.getStage().equals(ServerStage.STARTING)){
+			event.setRespawnLocation(fsm.lobbyLoc);
+		}
+	}
 	
 	@EventHandler
 	void onPing(ServerListPingEvent event){

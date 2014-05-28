@@ -12,6 +12,7 @@ import net.stormdev.mario.utils.ObjectWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -79,7 +80,7 @@ public class VoteHandler {
 		BossBar.setMessage(player, VOTE_MESSAGE);
 		
 		final ObjectWrapper<BukkitTask> o = new ObjectWrapper<BukkitTask>();
-		o.setValue(Bukkit.getScheduler().runTaskTimer(MarioKart.plugin, new Runnable(){
+		o.setValue(Bukkit.getScheduler().runTaskTimerAsynchronously(MarioKart.plugin, new Runnable(){
 
 			@Override
 			public void run() {
@@ -88,8 +89,18 @@ public class VoteHandler {
 					o.getValue().cancel();
 					return;
 				}
-				float percent = (((float)(getVoteTimeRemaining())/(float)(getTotalTime()))*100);
-				BossBar.setMessage(player, VOTE_MESSAGE, percent);
+				final float percent = (((float)(getVoteTimeRemaining())/(float)(getTotalTime()))*100);
+				final int rem = getVoteTimeRemaining();
+				Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						BossBar.setMessage(player, VOTE_MESSAGE, percent);
+						player.setLevel(rem);
+					}});
+				if(rem < 20){
+					player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, Integer.MAX_VALUE);
+				}
 				return;
 			}}, 20l, 20l));
 	}
@@ -97,10 +108,7 @@ public class VoteHandler {
 	public int getTotalTime(){
 		int fullS = VOTE_TIME;
 		int online = Bukkit.getOnlinePlayers().length;
-		if(online < 1){
-			return fullS;
-		}
-		else if(online < 2){
+		if(online < 2){
 			fullS = VOTE_TIME;
 		}
 		else if(online <= 2){
@@ -123,6 +131,10 @@ public class VoteHandler {
 	
 	public int getVoteTimeRemaining(){
 		int fullS = getTotalTime();
+		if(Bukkit.getOnlinePlayers().length < 1){
+			startTime = System.currentTimeMillis();
+			return fullS;
+		}
 		
 		long diff = System.currentTimeMillis() - startTime;
 		int rem = (int) ((fullS*1000)-diff)/1000;
