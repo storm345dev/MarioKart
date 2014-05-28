@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.MarioKartRaceEndEvent;
-import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -63,7 +62,14 @@ public class ServerListener implements Listener {
 		event.setJoinMessage(null);
 		final Player player = event.getPlayer();
 		if(!fsm.getStage().getAllowJoin()){
-			player.kickPlayer("Unable to join server at this time!");
+			player.sendMessage(ChatColor.RED+"Unable to join server at this time!");
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					fsm.sendToLobby(player);
+					return;
+				}}, 5*20l);
 			return;
 		}
 		
