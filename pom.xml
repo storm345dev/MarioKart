@@ -4,7 +4,6 @@
     <artifactId>MarioKart</artifactId>
     <name>MarioKart</name>
     <url>https://github.com/storm345dev/MarioKart</url>
-    <minimizeJar>true</minimizeJar>
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/storm345dev/MarioKart/issues</url>
@@ -28,6 +27,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
+                	<minimizeJar>true</minimizeJar>
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
