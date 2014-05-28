@@ -5,11 +5,15 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public class ServerListener implements Listener {
@@ -21,14 +25,32 @@ public class ServerListener implements Listener {
 	
 	@EventHandler
 	void onPing(ServerListPingEvent event){
-		event.setMotd(fsm.getMOTD());
+		event.setMotd("Stage: "+fsm.getMOTD());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void disconnect(PlayerQuitEvent event){
+		event.setQuitMessage(null);
+		Player player = event.getPlayer();
+		if(player.getVehicle() != null){
+			player.getVehicle().eject();
+			player.getVehicle().remove();
+		}
 	}
 	
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	void playerJoin(PlayerJoinEvent event){
+		event.setJoinMessage(null);
 		final Player player = event.getPlayer();
+		if(!fsm.getStage().getAllowJoin()){
+			player.kickPlayer("Unable to join server at this time!");
+			return;
+		}
 		
+		player.sendMessage(ChatColor.BOLD+""+ChatColor.GOLD+"------------------------------");
+		player.sendMessage(ChatColor.DARK_RED+"Welcome to MarioKart, "+ChatColor.WHITE+player.getName()+ChatColor.DARK_RED+"!");
+		player.sendMessage(ChatColor.BOLD+""+ChatColor.GOLD+"------------------------------");
 		
 		//Enable resource pack for them:
 		String rl = MarioKart.plugin.packUrl;                           //Send them the download url, etc for if they haven't get server RPs enabled
@@ -45,6 +67,22 @@ public class ServerListener implements Listener {
 				&& MarioKart.plugin.fullPackUrl.length() > 0){
 			player.setTexturePack(MarioKart.plugin.fullPackUrl);
 			MarioKart.plugin.resourcedPlayers.add(player.getName());
+		}
+		
+		final Location spawnLoc = fsm.lobbyLoc;
+		if(player.getVehicle() != null){
+			player.getVehicle().eject();
+			player.getVehicle().remove();
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					player.teleport(spawnLoc);
+					return;
+				}}, 2l);
+		}
+		else {
+			player.teleport(spawnLoc);
 		}
 	}
 }

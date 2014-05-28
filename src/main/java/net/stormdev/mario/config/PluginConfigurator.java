@@ -1,5 +1,8 @@
 package net.stormdev.mario.config;
 
+import net.stormdev.mario.utils.LocationStrings;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginConfigurator {
@@ -36,6 +39,9 @@ public class PluginConfigurator {
 		}
 		if(!config.contains("general.server.bungeelobby")){
 			config.set("general.server.bungeelobby", "lobby");
+		}
+		if(!config.contains("general.server.gamelobby")){
+			config.set("general.server.gamelobby", LocationStrings.getLocationString(Bukkit.getWorlds().get(0).getSpawnLocation()));
 		}
 		if (!config.contains("general.logger.colour")) {
 			config.set("general.logger.colour", true);
