@@ -51,7 +51,11 @@ public class VoteHandler {
 			p.sendMessage(getHelpString());
 			p.sendMessage(getAvailTracksString());
 			p.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
-			bossBar(p);
+			try {
+				bossBar(p);
+			} catch (Exception e) {
+				//OH WELL
+			}
 		}
 		
 		line1 = Bukkit.getOfflinePlayer(ChatColor.GRAY+"Nobody has");
