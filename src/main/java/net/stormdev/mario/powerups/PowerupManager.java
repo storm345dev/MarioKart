@@ -322,7 +322,7 @@ public class PowerupManager {
 										return;
 									}
 								});
-						List<Entity> ents = ply.getNearbyEntities(1, 2, 1);
+						List<Entity> ents = ply.getNearbyEntities(0.5, 3, 0.5);
 						r.reloadingItemBoxes.add(signLoc);
 						MarioKart.plugin.raceScheduler.updateRace(r);
 						Location eLoc = null;
@@ -497,7 +497,7 @@ public class PowerupManager {
 		}
 		
 		if(!foundSign){
-			Bukkit.broadcastMessage("Unregistered item box!");
+			Bukkit.broadcastMessage("Unregistered item box! If this was not intended, please report it as a bug!");
 			return false; //No sign, so remove it
 		}
 		
