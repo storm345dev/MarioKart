@@ -117,6 +117,9 @@ public class ServerListener implements Listener {
 		}
 		
 		if(fsm.getStage().equals(ServerStage.WAITING)){
+			if(fsm.voter == null){
+				fsm.changeServerStage(ServerStage.WAITING);
+			}
 			fsm.voter.addPlayerToBoard(player);
 			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
