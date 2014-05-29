@@ -85,6 +85,9 @@ public class FullServerManager {
 	}
 	
 	public void sendToLobby(Player player){
+		player.setHealth(player.getMaxHealth());
+		player.setFoodLevel(20);
+		player.getInventory().clear();
 		PlayerServerSender.sendToServer(player, BUNGEE_LOBBY_ID);
 	}
 	

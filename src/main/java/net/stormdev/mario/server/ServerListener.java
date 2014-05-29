@@ -9,11 +9,13 @@ import net.stormdev.mario.races.MarioKartRaceEndEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -169,5 +171,15 @@ public class ServerListener implements Listener {
 					}}, 10*20l);
 				return;
 			}}, 10*20l);
+	}
+	
+	@EventHandler
+	void foodChange(FoodLevelChangeEvent event){
+		Entity e = event.getEntity();
+		if(!(e instanceof Player)){
+			return;
+		}
+		Player player = (Player)e;
+		player.setFoodLevel(20);
 	}
 }
