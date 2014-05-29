@@ -90,6 +90,9 @@ public class RaceCommandExecutor implements CommandExecutor {
 			}
 			return true;
 		} else if (command.equalsIgnoreCase("join")) {
+			if(MarioKart.fullServer){
+				return true;
+			}
 			if (player == null) {
 				sender.sendMessage(MarioKart.colors.getError()
 						+ MarioKart.msgs.get("general.cmd.playersOnly"));
