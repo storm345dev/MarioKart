@@ -11,10 +11,14 @@ import net.stormdev.mario.rewards.RewardConfiguration;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.tracks.TrackCreator;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
 public class AdminCommandExecutor implements CommandExecutor {
@@ -302,6 +306,23 @@ public class AdminCommandExecutor implements CommandExecutor {
 						plugin.trackManager.getRaceTrack(trackname)
 								.getTrackName());
 				sender.sendMessage(MarioKart.colors.getSuccess() + msg);
+				return true;
+			}
+			else if(command.equalsIgnoreCase("shopvillager")){
+				if(player == null){
+					sender.sendMessage(ChatColor.RED+"Players only!");
+					return true;
+				}
+				
+				Location loc = player.getLocation();
+				Villager vil = (Villager) loc.getWorld().spawnEntity(loc, EntityType.VILLAGER);
+				vil.setAdult();
+				vil.setRemoveWhenFarAway(false);
+				vil.setAgeLock(true);
+				vil.setCanPickupItems(false);
+				vil.setCustomName(ChatColor.WHITE+"Race Shop");
+				vil.setCustomNameVisible(true);
+				vil.setNoDamageTicks(Integer.MAX_VALUE);
 				return true;
 			}
 			return false;
