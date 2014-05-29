@@ -2,6 +2,7 @@ package net.stormdev.mario.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,8 @@ import net.stormdev.mario.sound.MarioKartSound;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -56,10 +59,78 @@ public class RaceEventsListener implements Listener {
 	private MarioKart plugin;
 	private boolean fairCars = true;
 	
+	private boolean lavaDamage;
+	private boolean waterDamage;
+	private List<String> wdTracks;
+	private List<String> ldTracks;
+	
 	public RaceEventsListener(MarioKart plugin){
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		fairCars = MarioKart.config.getBoolean("general.ensureEqualCarSpeed");
+		waterDamage = MarioKart.config.getBoolean("general.race.waterDamage.enable");
+		lavaDamage = MarioKart.config.getBoolean("general.race.lavaDamage.enable");
+		wdTracks = MarioKart.config.getStringList("general.race.waterDamage.tracks");
+		ldTracks = MarioKart.config.getStringList("general.race.lavaDamage.tracks");
+	}
+	
+	@EventHandler
+	void inLiquid(VehicleUpdateEvent event){
+		if(!lavaDamage && !waterDamage){
+			Bukkit.broadcastMessage("No lava/water damage");
+			return;
+		}
+		final Location loc = event.getVehicle().getLocation();
+		final Block block = loc.getBlock();
+		Entity passenger = event.getVehicle().getPassenger();
+		if(passenger == null || !(passenger instanceof Player)){
+			return;
+		}
+		final Player player = (Player) passenger;
+		if(lavaDamage && (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))){
+			Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					Race r = plugin.raceMethods.inAGame(player, false);
+					if(r == null){
+						return;
+					}
+					String tName = r.getTrackName();
+					if(ldTracks.contains(tName)){
+						//Damage them
+						Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Void>(){
+
+							@Override
+							public Void call() throws Exception {
+								player.damage(5);
+								return null;
+							}});
+					}
+				}});
+		}
+		if(waterDamage && (block.getType().equals(Material.WATER) || block.getType().equals(Material.STATIONARY_WATER))){
+			Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					Race r = plugin.raceMethods.inAGame(player, false);
+					if(r == null){
+						return;
+					}
+					String tName = r.getTrackName();
+					if(wdTracks.contains(tName)){
+						//Damage them
+						Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Void>(){
+
+							@Override
+							public Void call() throws Exception {
+								player.damage(5);
+								return null;
+							}});
+					}
+				}});
+		}
 	}
 	
 	@EventHandler

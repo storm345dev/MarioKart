@@ -88,6 +88,18 @@ public class PluginConfigurator {
 		if (!config.contains("general.race.music.enable")) {
 			config.set("general.race.music.enable", true);
 		}
+		if(!config.contains("general.race.waterDamage.enable")){
+			config.set("general.race.waterDamage.enable", true);
+		}
+		if (!config.contains("general.race.waterDamage.tracks")) {
+			config.set("general.race.waterDamage.tracks", new String[]{"TrackName", "TrackName"});
+		}
+		if(!config.contains("general.race.lavaDamage.enable")){
+			config.set("general.race.lavaDamage.enable", true);
+		}
+		if (!config.contains("general.race.lavaDamage.tracks")) {
+			config.set("general.race.lavaDamage.tracks", new String[]{"TrackName", "TrackName"});
+		}
 		if(!config.contains("general.upgrades.enable")){
 			config.set("general.upgrades.enable", true);
 		}

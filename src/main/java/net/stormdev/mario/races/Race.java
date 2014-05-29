@@ -582,6 +582,9 @@ public class Race {
 
 	@SuppressWarnings("unchecked")
 	public void end() {
+		if(ended){
+			return;
+		}
 		this.running = false;
 		ended = true;
 		for (Location l : ((List<Location>) this.reloadingItemBoxes.clone())) {
