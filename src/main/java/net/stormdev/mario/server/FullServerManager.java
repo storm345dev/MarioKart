@@ -53,10 +53,14 @@ public class FullServerManager {
 			mode = RaceType.RACE;
 		}
 			break;
-		case STARTING:
+		case STARTING: {
+			voter = null;
+		}
 			break;
 		case WAITING: {
-			voter = new VoteHandler();
+			if(voter == null){
+				voter = new VoteHandler();
+			}
 		}
 			break;
 		default:

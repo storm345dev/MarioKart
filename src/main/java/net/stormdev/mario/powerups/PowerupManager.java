@@ -10,6 +10,7 @@ import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -435,18 +436,78 @@ public class PowerupManager {
 				foundSign = true;
 				continue;
 			}
-			signLoc = signLoc.getBlock().getRelative(BlockFace.DOWN).getLocation();
+			
+			Location l = signLoc.clone();
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.NORTH).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.EAST).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.SOUTH).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.SOUTH).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.WEST).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.WEST).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.NORTH).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.NORTH).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = signLoc.getBlock().getRelative(BlockFace.EAST).getLocation();
+			if(signLoc.getBlock().getState() instanceof Sign){
+				foundSign = true;
+				continue;
+			}
+			
+			signLoc = l.getBlock().getRelative(BlockFace.DOWN).getLocation();
 		}
 		
 		if(!foundSign){
+			Bukkit.broadcastMessage("Unregistered item box!");
 			return false; //No sign, so remove it
 		}
+		
+		signLoc.getChunk().load();
 		
 		Location above = signLoc.add(0, 1.8, 0);
 		EnderCrystal newC = (EnderCrystal) above.getWorld().spawnEntity(above,
 				EntityType.ENDER_CRYSTAL);
 		
-		List<Entity> previous = newC.getNearbyEntities(0.5, 3, 0.5);
+		List<Entity> previous = newC.getNearbyEntities(0.3, 3, 0.3);
 		for(Entity e:previous){ //Remove old item boxes
 			if(e.getType().equals(EntityType.ENDER_CRYSTAL) && !e.equals(newC)){
 				e.remove();

@@ -585,8 +585,13 @@ public class Race {
 		this.running = false;
 		ended = true;
 		for (Location l : ((List<Location>) this.reloadingItemBoxes.clone())) {
-			MarioKart.powerupManager.spawnItemPickupBox(l);
-			this.reloadingItemBoxes.remove(l);
+			if(MarioKart.powerupManager.spawnItemPickupBox(l)){
+				this.reloadingItemBoxes.remove(l);
+			}
+			else {//Have a second go
+				MarioKart.powerupManager.spawnItemPickupBox(l);
+				this.reloadingItemBoxes.remove(l);
+			}
 		}
 		if (task != null) {
 			task.cancel();

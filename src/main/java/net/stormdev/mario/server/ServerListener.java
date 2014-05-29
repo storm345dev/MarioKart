@@ -61,6 +61,11 @@ public class ServerListener implements Listener {
 	void playerJoin(PlayerJoinEvent event){
 		event.setJoinMessage(null);
 		final Player player = event.getPlayer();
+		player.setHealth(player.getMaxHealth());
+		player.setFoodLevel(20);
+		player.getInventory().clear();
+		
+		boolean showVoteMsg = true;
 		if(!fsm.getStage().getAllowJoin()){
 			player.sendMessage(ChatColor.RED+"Unable to join server at this time!");
 			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
@@ -118,19 +123,22 @@ public class ServerListener implements Listener {
 		
 		if(fsm.getStage().equals(ServerStage.WAITING)){
 			if(fsm.voter == null){
+				showVoteMsg = false;
 				fsm.changeServerStage(ServerStage.WAITING);
 			}
 			fsm.voter.addPlayerToBoard(player);
-			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+			if(showVoteMsg){
+				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
-				@Override
-				public void run() {
-					player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
-					player.sendMessage(fsm.voter.getHelpString());
-					player.sendMessage(fsm.voter.getAvailTracksString());
-					player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
-					return;
-				}}, 2l);
+					@Override
+					public void run() {
+						player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+						player.sendMessage(fsm.voter.getHelpString());
+						player.sendMessage(fsm.voter.getAvailTracksString());
+						player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
+						return;
+					}}, 2l);
+			}
 		}
 		else if(fsm.getStage().equals(ServerStage.STARTING)){
 			player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");

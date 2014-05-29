@@ -207,7 +207,11 @@ public class RaceScheduler {
 	}
 
 	public void recalculateQueues() {
-		MarioKart.plugin.signManager.updateSigns();
+		try {
+			MarioKart.plugin.signManager.updateSigns();
+		} catch (Exception e) {
+			//LOL idk
+		}
 		if(MarioKart.fullServer){
 			return;
 		}
