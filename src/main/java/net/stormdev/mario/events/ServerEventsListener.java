@@ -46,7 +46,7 @@ public class ServerEventsListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
-		event.getPlayer().performCommand("/race shop");
+		event.getPlayer().performCommand("race shop");
 	}
 	
 	@EventHandler

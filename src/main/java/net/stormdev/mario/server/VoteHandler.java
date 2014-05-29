@@ -27,8 +27,7 @@ public class VoteHandler {
 	private final String VOTE_META;
 	private final String VOTE_META_KEY = "mariokart.vote";
 	private final String VOTE_MESSAGE = ChatColor.GOLD+"Use \"/vote <TrackName>\" to cast your vote!";
-	//TODO private static final int VOTE_TIME = 300;
-	private static final int VOTE_TIME = 10;
+	private static final int VOTE_TIME = 300;
 	private Map<String, Integer> votes = new HashMap<String, Integer>();
 	private Scoreboard board;
 	private Objective obj;
