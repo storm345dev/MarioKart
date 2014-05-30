@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.MarioKartRaceEndEvent;
+import net.stormdev.mario.utils.MetaValue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +20,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -26,9 +28,49 @@ import org.bukkit.inventory.ItemStack;
 
 public class ServerListener implements Listener {
 	private FullServerManager fsm;
+	private final String MOVE_META = "mariokart.moved";
+	
 	public ServerListener(){
 		this.fsm = FullServerManager.get();
+		Bukkit.getScheduler().runTaskTimer(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				Player[] online = Bukkit.getOnlinePlayers();
+				for(Player player:online){
+					if(!player.hasMetadata(MOVE_META)){
+						player.setMetadata(MOVE_META, new MetaValue(System.currentTimeMillis(), MarioKart.plugin));
+						continue;
+					}
+					Object o = player.getMetadata(MOVE_META).get(0).value();
+					String s = o.toString();
+					long moved;
+					try {
+						moved = Long.parseLong(s);
+					} catch (NumberFormatException e) {
+						continue;
+					}
+					long diff = System.currentTimeMillis()-moved;
+					if(diff > 50000 && diff < 60000){ //They havent moved for 
+						//They are afk!
+						player.sendMessage(ChatColor.RED+"WARNING: If you do not move in the next 10 seconds, you'll be afk kicked!");
+						continue;
+					}
+					else if(diff >= 60000){
+						player.kickPlayer("AFK");
+					}
+				}
+				return;
+			}}, 25*20l, 25*20l);
 	}
+	
+	@EventHandler
+	void onMove(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		player.removeMetadata(MOVE_META, MarioKart.plugin);
+		player.setMetadata(MOVE_META, new MetaValue(System.currentTimeMillis(), MarioKart.plugin));
+	}
+	
 	
 	@EventHandler
 	void invClick(InventoryClickEvent event){
@@ -88,6 +130,7 @@ public class ServerListener implements Listener {
 	void disconnect(PlayerQuitEvent event){
 		event.setQuitMessage(null);
 		Player player = event.getPlayer();
+		player.removeMetadata(MOVE_META, MarioKart.plugin);
 		if(player.getVehicle() != null){
 			player.getVehicle().eject();
 			player.getVehicle().remove();
