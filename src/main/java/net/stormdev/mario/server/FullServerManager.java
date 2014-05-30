@@ -91,7 +91,7 @@ public class FullServerManager {
 
 			@Override
 			public void run() {
-				if(MarioKart.plugin.raceScheduler.getRacesRunning() < 1){
+				if(stage.equals(ServerStage.PLAYING) && MarioKart.plugin.raceScheduler.getRacesRunning() < 1){
 					changeServerStage(ServerStage.RESTARTING);
 					Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
