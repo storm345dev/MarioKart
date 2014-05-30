@@ -13,7 +13,10 @@ import net.stormdev.mario.utils.LocationStrings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class FullServerManager {
 	public static String BUNGEE_LOBBY_ID = "lobby";
@@ -27,6 +30,17 @@ public class FullServerManager {
 	private volatile Race race;
 	private SpectatorMode spectators = null;
 	private boolean starting = false;
+	
+	public static final ItemStack item;
+	
+	static {
+		item = new ItemStack(Material.BOOK);
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(ChatColor.DARK_RED+"Exit to lobby");
+		im.setLore(Arrays.asList(new String[]{ChatColor.GRAY+"Right click to use"}));
+		
+		item.setItemMeta(im);
+	}
 	
 	public static FullServerManager get(){
 		return instance;
@@ -59,6 +73,10 @@ public class FullServerManager {
 			break;
 		case STARTING: {
 			voter = null;
+			Player[] online = Bukkit.getOnlinePlayers();
+			for(Player player:online){
+				player.getInventory().clear();
+			}
 		}
 			break;
 		case WAITING: {
@@ -68,6 +86,8 @@ public class FullServerManager {
 			spectators.endSpectating();
 			Player[] online = Bukkit.getOnlinePlayers();
 			for(Player player:online){
+				player.getInventory().clear();
+				player.getInventory().addItem(item.clone());
 				player.teleport(lobbyLoc);
 				if(spectators.isSpectating(player)){
 					spectators.stopSpectating(player);

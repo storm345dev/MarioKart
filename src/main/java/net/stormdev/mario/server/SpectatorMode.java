@@ -79,6 +79,9 @@ public class SpectatorMode implements Listener {
 
 			@Override
 			public void run() {
+				if(!isSpectating(player)){
+					return;
+				}
 				player.getInventory().clear();
 				Inventory inv = player.getInventory();
 				inv.setItem(0, item.clone());

@@ -16,15 +16,55 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ServerListener implements Listener {
 	private FullServerManager fsm;
 	public ServerListener(){
 		this.fsm = FullServerManager.get();
+	}
+	
+	@EventHandler
+	void invClick(InventoryClickEvent event){
+		Entity e = event.getWhoClicked();
+		if(!(e instanceof Player)){
+			return;
+		}
+		
+		Player player = (Player) e;
+		if(!fsm.getStage().equals(ServerStage.WAITING)){
+			return;
+		}
+		ItemStack clicked = event.getCurrentItem();
+		if(!clicked.isSimilar(FullServerManager.item)
+				|| !(clicked.getItemMeta().getDisplayName().equals(FullServerManager.item.getItemMeta().getDisplayName()))){
+			return;
+		}
+		
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	void useLobbyTP(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		ItemStack inHand = player.getItemInHand();
+		if(!fsm.getStage().equals(ServerStage.WAITING)){
+			return;
+			
+		}
+		if(!inHand.isSimilar(FullServerManager.item)
+				|| !(inHand.getItemMeta().getDisplayName().equals(FullServerManager.item.getItemMeta().getDisplayName()))){
+			return;
+		}
+		player.teleport(fsm.lobbyLoc); //For when they next login
+		player.sendMessage(ChatColor.GRAY+"Teleporting...");
+		fsm.sendToLobby(player);
 	}
 	
 	@EventHandler
@@ -124,6 +164,7 @@ public class ServerListener implements Listener {
 		}
 		
 		if(fsm.getStage().equals(ServerStage.WAITING)){
+			player.getInventory().addItem(FullServerManager.item.clone());
 			if(fsm.voter == null){
 				showVoteMsg = false;
 				fsm.changeServerStage(ServerStage.WAITING);

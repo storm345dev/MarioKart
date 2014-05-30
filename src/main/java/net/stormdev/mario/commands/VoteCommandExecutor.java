@@ -24,7 +24,9 @@ public class VoteCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		if(args.length < 1){
-			return false;
+			sender.sendMessage(ChatColor.GRAY+"Usage: /vote <TrackName>");
+			sender.sendMessage(FullServerManager.get().voter.getAvailTracksString());
+			return true;
 		}
 		if(!FullServerManager.get().getStage().equals(ServerStage.WAITING)){
 			sender.sendMessage(ChatColor.RED+"You may not vote at this time!");
