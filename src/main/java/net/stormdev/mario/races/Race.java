@@ -118,7 +118,7 @@ public class Race {
 					return user;
 				}
 			} catch (Exception e) {
-				if (!forceRemoveUser(user)) {
+				if (!forceRemoveUser(user, true)) {
 					MarioKart.logger.info("getUser() failed to remove user");
 				}
 			}
@@ -158,14 +158,14 @@ public class Race {
 		return new ArrayList<String>(finished);
 	}
 
-	public void playerOut(User user) {
+	public void playerOut(User user, boolean quit) {
 		user.setInRace(false);
 		MarioKart.plugin.hotBarManager.clearHotBar(user.getPlayerName());
 		Player player = null;
 		try {
 			player = user.getPlayer();
 		} catch (PlayerQuitException e) {
-			if (!forceRemoveUser(user)
+			if (!forceRemoveUser(user, quit)
 					&& playerUserRegistered(user.getPlayerName())) {
 				MarioKart.logger.info("race.playerOut failed to remove user");
 			}
@@ -200,7 +200,7 @@ public class Race {
 		}
 		final Player player = ply;
 		if (quit) {
-			if (!forceRemoveUser(user)) {
+			if (!forceRemoveUser(user, quit)) {
 				MarioKart.logger.info("race.quit failed to remove user");
 			}
 			if (type != RaceType.TIME_TRIAL) {
@@ -212,7 +212,7 @@ public class Race {
 									MarioKart.colors.getInfo() + msg);
 						} catch (PlayerQuitException e) {
 							// Player is no longer in the game
-							if (!forceRemoveUser(u)) {
+							if (!forceRemoveUser(u, quit)) {
 								MarioKart.logger
 										.info("race.leave failed to remove user");
 							}
@@ -224,7 +224,7 @@ public class Race {
 				}
 			}
 		}
-		playerOut(user);
+		playerOut(user, quit);
 		if (player != null) {
 			player.removeMetadata("car.stayIn", MarioKart.plugin);
 		}
@@ -266,7 +266,7 @@ public class Race {
 							ChatColor.GOLD + player.getName()
 									+ " quit the race!");
 				} catch (PlayerQuitException e) {
-					if (!forceRemoveUser(us)) {
+					if (!forceRemoveUser(us, quit)) {
 						MarioKart.logger.info("race.quit failed to remove user");
 					}
 				} catch (Exception e){
@@ -487,7 +487,7 @@ public class Race {
 									e.printStackTrace();
 								} catch (PlayerQuitException e) {
 									// Player has left
-									if (!forceRemoveUser(u)) {
+									if (!forceRemoveUser(u, true)) {
 										MarioKart.logger
 												.info("race.scores failed to remove invalid user");
 									}
@@ -668,7 +668,7 @@ public class Race {
 			startEndCount();
 		}
 		finished.add(user.getPlayerName());
-		if (!forceRemoveUser(user)) {
+		if (!forceRemoveUser(user, false)) {
 			MarioKart.logger.info("race.finish failed to remove user");
 		}
 		user.setFinished(true);
@@ -705,7 +705,7 @@ public class Race {
 		String playerName = player.getName();
 		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(playerName)) {
-				if (!forceRemoveUser(u)) {
+				if (!forceRemoveUserSilent(u)) {
 					MarioKart.logger.info("updateUser() failed to remove user");
 				}
 				u.setPlayer(player);
@@ -719,7 +719,7 @@ public class Race {
 	public synchronized User updateUser(User user) {
 		for (User u : getUsers()) {
 			if (u.getPlayerName().equals(user.getPlayerName())) {
-				if (!forceRemoveUser(u)) {
+				if (!forceRemoveUser(u, false)) {
 					MarioKart.logger.info("updateUser() failed to remove user");
 				}
 				users.add(user);
@@ -852,7 +852,7 @@ public class Race {
 		return;
 	}
 
-	public synchronized Boolean removeUser(User user) {
+	public synchronized Boolean removeUser(User user, boolean quit) {
 		if (!users.contains(user)) {
 			return false;
 		}
@@ -866,30 +866,53 @@ public class Race {
 				return true; //GOOD
 			}
 			if(player != null && player.isOnline()){
-				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
-
-					@Override
-					public void run() {
-						FullServerManager.get().sendToLobby(player);
-						return;
-					}}, 5*20l);
+				FullServerManager.get().onEnd(player, quit);
 			}
 		}
 		return true;
 	}
+	
+	public synchronized Boolean removeUserSilent(User user) {
+		if (!users.contains(user)) {
+			return false;
+		}
+		users.remove(user);
+		user.clear();
+		return true;
+	}
 
-	public synchronized Boolean removeUser(String user) {
+	public synchronized Boolean removeUser(String user, boolean quit) {
 		for (User u : new ArrayList<User>(users)) {
 			if (u.getPlayerName().equals(user)) {
-				return removeUser(u);
+				return removeUser(u, quit);
+			}
+		}
+		return false;
+	}
+	
+	public synchronized Boolean removeUserSilent(String user) {
+		for (User u : new ArrayList<User>(users)) {
+			if (u.getPlayerName().equals(user)) {
+				return removeUserSilent(u);
 			}
 		}
 		return false;
 	}
 
-	public synchronized Boolean forceRemoveUser(User user) {
-		if (!removeUser(user)) {
-			if (!removeUser(user.getPlayerName())) {
+	public synchronized Boolean forceRemoveUser(User user, boolean quit) {
+		if (!removeUser(user, quit)) {
+			if (!removeUser(user.getPlayerName(), quit)) {
+				user.clear();
+				return false;
+			}
+		}
+		user.clear();
+		return true;
+	}
+	
+	public synchronized Boolean forceRemoveUserSilent(User user) {
+		if (!removeUserSilent(user)) {
+			if (!removeUserSilent(user.getPlayerName())) {
 				user.clear();
 				return false;
 			}

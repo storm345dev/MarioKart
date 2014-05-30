@@ -452,7 +452,7 @@ public class RaceEventsListener implements Listener {
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
 		}
-		Race race = plugin.raceMethods.inAGame(player, false);
+		final Race race = plugin.raceMethods.inAGame(player, false);
 		User u = race.updateUser(player);
 		int checkpoint = u.getCheckpoint();
 		//race.updateUser(u);
@@ -479,7 +479,14 @@ public class RaceEventsListener implements Listener {
 		plugin.hotBarManager.updateHotBar(player);
 		player.updateInventory();
 		player.setScoreboard(race.board);
-		MarioKart.plugin.raceScheduler.updateRace(race);
+		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				MarioKart.plugin.raceScheduler.updateRace(race);
+				return;
+			}});
+		
 		return;
 	}
 	

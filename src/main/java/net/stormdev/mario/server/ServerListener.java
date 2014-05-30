@@ -135,8 +135,10 @@ public class ServerListener implements Listener {
 					@Override
 					public void run() {
 						player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
-						player.sendMessage(fsm.voter.getHelpString());
-						player.sendMessage(fsm.voter.getAvailTracksString());
+						if(fsm.voter != null){
+							player.sendMessage(fsm.voter.getHelpString());
+							player.sendMessage(fsm.voter.getAvailTracksString());
+						}
 						player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 						return;
 					}}, 2l);

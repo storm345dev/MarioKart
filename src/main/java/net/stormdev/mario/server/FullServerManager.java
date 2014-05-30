@@ -1,10 +1,10 @@
 package net.stormdev.mario.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.stormdev.mario.mariokart.MarioKart;
-import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.tracks.RaceTrack;
@@ -25,6 +25,7 @@ public class FullServerManager {
 	private RaceType mode;
 	private RaceTrack track;
 	private volatile Race race;
+	private SpectatorMode spectators = null;
 	private boolean starting = false;
 	
 	public static FullServerManager get(){
@@ -43,7 +44,9 @@ public class FullServerManager {
 		stage = now;
 		
 		switch(stage){
-		case PLAYING:
+		case PLAYING: {
+			voter = null;
+		}
 			break;
 		case RESTARTING: {
 			voter = null;
@@ -51,6 +54,7 @@ public class FullServerManager {
 			race = null;
 			starting = false;
 			mode = RaceType.RACE;
+			spectators.endSpectating();
 		}
 			break;
 		case STARTING: {
@@ -61,6 +65,7 @@ public class FullServerManager {
 			if(voter == null){
 				voter = new VoteHandler();
 			}
+			spectators.endSpectating();
 		}
 			break;
 		default:
@@ -81,6 +86,33 @@ public class FullServerManager {
 		MarioKart.logger.info("Using "+BUNGEE_LOBBY_ID+" as the game lobby!");
 		Bukkit.getPluginManager().registerEvents(new ServerListener(), MarioKart.plugin);
 		lobbyLoc = LocationStrings.getLocation(MarioKart.config.getString("general.server.gamelobby"));
+		spectators = new SpectatorMode();
+		Bukkit.getScheduler().runTaskTimerAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				if(MarioKart.plugin.raceScheduler.getRacesRunning() < 1){
+					changeServerStage(ServerStage.RESTARTING);
+					Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+						@Override
+						public void run() {
+							Player[] online = Bukkit.getOnlinePlayers();
+							for(Player p:online){
+								sendToLobby(p);
+							}
+							Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+								@Override
+								public void run() {
+									changeServerStage(ServerStage.WAITING);
+									return;
+								}}, 10*20l);
+							return;
+						}}, 10*20l);
+				}
+				return;
+			}}, 30*20l, 30*20l);
 		changeServerStage(ServerStage.WAITING);
 	}
 	
@@ -127,44 +159,13 @@ public class FullServerManager {
 				changeServerStage(ServerStage.PLAYING);
 				
 				Player[] players = Bukkit.getOnlinePlayers();
-				if(players.length < 1){
+				if(players.length < 1 || track == null || track.getTrackName() == null || mode == null){
 					changeServerStage(ServerStage.WAITING); //Reset the server, nobody is on anymore
 					return;
 				}
-				RaceQueue queue = new RaceQueue(track, mode, players[0]);
-				for(int i=1;i<players.length;i++){
-					Player p = players[i];
-					if(p == null || !p.isOnline()){
-						continue;
-					}
-					if(p.hasPermission("mariokart.premium")){
-						if(queue.playerCount() < queue.playerLimit()){
-							queue.addPlayer(p);
-						}
-						else {
-							p.sendMessage(ChatColor.RED+"Sorry, there are not enough slots for you to join in with this race :(");
-							sendToLobby(p);
-						}
-					}
-				}
-				for(int i=1;i<players.length;i++){
-					Player p = players[i];
-					if(p == null || !p.isOnline()){
-						continue;
-					}
-					if(!p.hasPermission("mariokart.premium") && !queue.containsPlayer(p)){
-						if(queue.playerCount() < queue.playerLimit()){
-							queue.addPlayer(p);
-						}
-						else {
-							p.sendMessage(ChatColor.RED+"Sorry, there are not enough slots for you to join in with this race :(");
-							sendToLobby(p);
-						}
-					}
-				}
 				race = new Race(track,
 						track.getTrackName(), mode);
-				List<Player> q = new ArrayList<Player>(queue.getPlayers());
+				List<Player> q = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
 				for (Player p : q) {
 					if (p != null && p.isOnline()) {
 						if(race.getUsers().size() < race.getTrack().getMaxPlayers()){
@@ -174,7 +175,6 @@ public class FullServerManager {
 							p.sendMessage(ChatColor.RED+"Sorry, there are not enough slots for you to join in with this race :(");
 							sendToLobby(p);
 						}
-						queue.removePlayer(p);
 					}
 				}
 				if (race.getUsers().size() > 0) {
@@ -182,5 +182,26 @@ public class FullServerManager {
 				}
 				return;
 			}}, 10*20l);
+	}
+	
+	public void onEnd(final Player player, final boolean quit){
+		if(quit){
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					FullServerManager.get().sendToLobby(player);
+					return;
+				}}, 5*20l);
+			return;
+		}
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				spectators.add(player);
+				return;
+			}}, 5l);
+		
 	}
 }
