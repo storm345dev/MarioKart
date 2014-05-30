@@ -69,7 +69,7 @@ public class SpectatorMode implements Listener {
 		player.setAllowFlight(false);
 	}
 	
-	private boolean isSpectating(Player player){
+	public boolean isSpectating(Player player){
 		return player.hasMetadata(META);
 	}
 	
@@ -106,6 +106,7 @@ public class SpectatorMode implements Listener {
 		}
 		player.getInventory().clear();
 		stopSpectating(player);
+		player.teleport(FullServerManager.get().lobbyLoc); //For when they next login
 		player.sendMessage(ChatColor.GRAY+"Teleporting...");
 		FullServerManager.get().sendToLobby(player);
 	}

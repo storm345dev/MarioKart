@@ -66,6 +66,13 @@ public class FullServerManager {
 				voter = new VoteHandler();
 			}
 			spectators.endSpectating();
+			Player[] online = Bukkit.getOnlinePlayers();
+			for(Player player:online){
+				player.teleport(lobbyLoc);
+				if(spectators.isSpectating(player)){
+					spectators.stopSpectating(player);
+				}
+			}
 		}
 			break;
 		default:
