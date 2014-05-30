@@ -57,11 +57,11 @@ public class ServerListener implements Listener {
 						continue;
 					}
 					else if(diff >= 60000){
-						player.kickPlayer("AFK");
+						player.kickPlayer("Kicked for AFK");
 					}
 				}
 				return;
-			}}, 25*20l, 25*20l);
+			}}, 9*20l, 9*20l);
 	}
 	
 	@EventHandler
