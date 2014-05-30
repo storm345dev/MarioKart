@@ -37,7 +37,6 @@ public class ServerListener implements Listener {
 			return;
 		}
 		
-		Player player = (Player) e;
 		if(!fsm.getStage().equals(ServerStage.WAITING)){
 			return;
 		}
@@ -141,7 +140,7 @@ public class ServerListener implements Listener {
 
 				@Override
 				public void run() {
-					player.setTexturePack(MarioKart.plugin.fullPackUrl);
+					player.setResourcePack(MarioKart.plugin.fullPackUrl);
 					MarioKart.plugin.resourcedPlayers.add(player.getName());
 					return;
 				}}, 20l);
