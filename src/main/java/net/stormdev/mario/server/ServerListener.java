@@ -53,7 +53,7 @@ public class ServerListener implements Listener {
 			player.getVehicle().eject();
 			player.getVehicle().remove();
 		}
-		if(fsm.voter != null){
+		if(fsm != null && fsm.voter != null){
 			fsm.voter.removePlayerFromBoard(player);
 		}
 	}
