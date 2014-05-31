@@ -123,7 +123,7 @@ public class ServerListener implements Listener {
 	
 	@EventHandler
 	void onPing(ServerListPingEvent event){
-		event.setMotd("Stage: "+fsm.getMOTD());
+		event.setMotd(fsm.getMOTD());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
