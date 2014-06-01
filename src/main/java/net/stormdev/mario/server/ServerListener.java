@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -264,7 +265,12 @@ public class ServerListener implements Listener {
 		if(!(e instanceof Player)){
 			return;
 		}
-		Player player = (Player)e;
-		player.setFoodLevel(20);
+		event.setFoodLevel(20);
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	void itemDrop(PlayerDropItemEvent event){
+		event.setCancelled(true);
 	}
 }
