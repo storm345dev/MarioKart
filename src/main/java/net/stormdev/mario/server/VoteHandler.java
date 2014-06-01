@@ -1,5 +1,6 @@
 package net.stormdev.mario.server;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.MetaValue;
 import net.stormdev.mario.utils.ObjectWrapper;
 
@@ -36,6 +38,7 @@ public class VoteHandler {
 	private long startTime;
 	OfflinePlayer line1;
 	OfflinePlayer line2;
+	private List<String> maps;
 	
 	public VoteHandler(){
 		startTime = System.currentTimeMillis();
@@ -44,6 +47,8 @@ public class VoteHandler {
 		obj = board.registerNewObjective("votes", "dummy");
 		obj.setDisplayName(ChatColor.BOLD+""+ChatColor.RED+"Votes:");
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+		calculateMapList();
+		
 		Player[] online = Bukkit.getOnlinePlayers();
 		for(Player p:online){
 			addPlayerToBoard(p);
@@ -80,6 +85,33 @@ public class VoteHandler {
 				}
 				return;
 			}}, 20l, 20l);
+	}
+	
+	private void calculateMapList(){
+		if(maps != null){
+			maps.clear();
+		}
+		else {
+			maps = new ArrayList<String>();
+		}
+		List<RaceTrack> all = new ArrayList<RaceTrack>(MarioKart.plugin.trackManager.getRaceTracks());
+		if(all.size() <= 5){
+			for(RaceTrack track:all){
+				maps.add(track.getTrackName());
+			}
+			return;
+		}
+		while(maps.size() < 5){
+			RaceTrack rand = all.get(MarioKart.plugin.random.nextInt(all.size()));
+			if(maps.contains(rand.getTrackName())){
+				continue;
+			}
+			maps.add(rand.getTrackName());
+		}
+	}
+	
+	public boolean isBeingVotedOn(String track){
+		return maps.contains(track);
 	}
 	
 	private TreeMap<String, Integer> getSorted(){
@@ -206,7 +238,7 @@ public class VoteHandler {
 	
 	public String getAvailTracksString(){
 		StringBuilder avail = new StringBuilder(ChatColor.BOLD+""+ChatColor.DARK_RED+"Available tracks: ");
-		List<String> tracks = MarioKart.plugin.trackManager.getRaceTrackNames();
+		List<String> tracks = maps;
 		boolean f = true;
 		for(String t:tracks){
 			if(f){
@@ -254,6 +286,10 @@ public class VoteHandler {
 			return false;
 		}
 		final String name = MarioKart.plugin.trackManager.getRaceTrack(trackName).getTrackName();
+		if(!isBeingVotedOn(name)){
+			player.sendMessage(ChatColor.RED+"That track is not being voted on, sorry.");
+			return false;
+		}
 		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
 
 			@Override
