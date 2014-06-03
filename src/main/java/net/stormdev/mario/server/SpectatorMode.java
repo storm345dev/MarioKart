@@ -40,7 +40,7 @@ public class SpectatorMode implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, MarioKart.plugin);
 	}
 	
-	public void add(Player player){
+	public void add(final Player player){
 		if(isSpectating(player)){
 			return;
 		}
@@ -52,7 +52,14 @@ public class SpectatorMode implements Listener {
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		player.setAllowFlight(true);
 		spectateInv(player);
-		player.setGameMode(GameMode.CREATIVE);
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				player.setGameMode(GameMode.CREATIVE);
+				return;
+			}}, 10l);
+		
 	}
 	
 	public void endSpectating(){
