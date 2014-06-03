@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import net.stormdev.RPManager.RPManager;
 import net.stormdev.mario.commands.AdminCommandExecutor;
+import net.stormdev.mario.commands.ForceStartCommandExecutor;
 import net.stormdev.mario.commands.RaceCommandExecutor;
 import net.stormdev.mario.commands.RaceTimeCommandExecutor;
 import net.stormdev.mario.commands.VoteCommandExecutor;
@@ -116,6 +117,7 @@ public class MarioKart extends JavaPlugin {
 		getCommand("race").setExecutor(raceCommandExecutor);
 		getCommand("racetimes").setExecutor(raceTimeCommandExecutor);
 		getCommand("vote").setExecutor(new VoteCommandExecutor());
+		getCommand("forcestart").setExecutor(new ForceStartCommandExecutor());
 	}
 	
 	private void setupListeners(){

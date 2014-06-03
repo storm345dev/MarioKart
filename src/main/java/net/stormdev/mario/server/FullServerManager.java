@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class FullServerManager {
+	public static String BUILD_PERM = "mariokart.join.build";
 	public static String BUNGEE_LOBBY_ID = "lobby";
 	private static FullServerManager instance = null;
 	private volatile ServerStage stage = ServerStage.WAITING;
@@ -96,6 +97,22 @@ public class FullServerManager {
 				player.setGameMode(GameMode.SURVIVAL);
 			}
 		}
+		break;
+		case BUILDING: {
+			Player[] online = Bukkit.getOnlinePlayers();
+			for(Player player:online){
+				if(!player.hasPermission(BUILD_PERM)){
+					player.kickPlayer("Server now closed, sorry!");
+				}
+				else {
+					player.sendMessage(ChatColor.GRAY+"Server is now in build mode...");
+				}
+			}
+			if(voter != null){
+				voter.closeVotes();
+				voter = null;
+			}
+		}
 			break;
 		default:
 			break;
@@ -153,6 +170,9 @@ public class FullServerManager {
 	}
 	
 	public void trackSelected(final String trackName){
+		if(stage == ServerStage.BUILDING){ //Ignore
+			return;
+		}
 		if(starting){
 			return;
 		}

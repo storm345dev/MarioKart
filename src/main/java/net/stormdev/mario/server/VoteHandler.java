@@ -76,12 +76,16 @@ public class VoteHandler {
 
 			@Override
 			public void run() {
-				int i = getVoteTimeRemaining();
-				obj.setDisplayName(ChatColor.BOLD+""+ChatColor.RED+"Votes: ("+i+")");
-				if(i <= 0){
-					//END VOTE
-					voteCountdown.cancel();
-					closeVotes();
+				try {
+					int i = getVoteTimeRemaining();
+					obj.setDisplayName(ChatColor.BOLD+""+ChatColor.RED+"Votes: ("+i+")");
+					if(i <= 0){
+						//END VOTE
+						voteCountdown.cancel();
+						closeVotes();
+					}
+				} catch (Exception e) {
+					return;
 				}
 				return;
 			}}, 20l, 20l);

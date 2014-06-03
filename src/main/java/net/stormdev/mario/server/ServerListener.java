@@ -38,6 +38,9 @@ public class ServerListener implements Listener {
 
 			@Override
 			public void run() {
+				if(fsm.getStage().equals(ServerStage.BUILDING)){
+					return;
+				}
 				Player[] online = Bukkit.getOnlinePlayers();
 				for(Player player:online){
 					if(!player.hasMetadata(MOVE_META)){
@@ -206,6 +209,7 @@ public class ServerListener implements Listener {
 		else {
 			player.teleport(spawnLoc);
 		}
+		player.setGameMode(GameMode.SURVIVAL);
 		
 		if(fsm.getStage().equals(ServerStage.WAITING)){
 			player.getInventory().addItem(FullServerManager.item.clone());
@@ -234,7 +238,21 @@ public class ServerListener implements Listener {
 			player.sendMessage(ChatColor.GOLD+"Game starting in under 10 seconds...");
 			player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 		}
-		player.setGameMode(GameMode.SURVIVAL);
+		else if(fsm.getStage().equals(ServerStage.BUILDING)){
+			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					if(!player.hasPermission(FullServerManager.BUILD_PERM)){
+						player.kickPlayer("Sorry, server closed!");
+						return;
+					}
+					else {
+						player.sendMessage(ChatColor.GRAY+"(Server is in build mode)");
+						player.setGameMode(GameMode.CREATIVE);
+					}
+				}}, 2l);
+		}
 	}
 	
 	@EventHandler

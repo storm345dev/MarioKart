@@ -7,7 +7,7 @@ commands:
    marioRaceAdmin:
         aliases: [mra, marioadmin]
         description: This is the setup of racetracks and admin commands
-        usage: /<command> [Create <TrackName> <Laps> (MinPlayers)] [Delete <TrackName>] [List (Page)] [Races (Page)] [End <RaceTrack>/Endall] [setLaps <TrackName> <Laps>] [setMinPlayers <TrackName> <Num>] [setRewards <TrackName> <1st> <2nd> <3rd>] [ShopVillager]
+        usage: /<command> [Create <TrackName> <Laps> (MinPlayers)] [Delete <TrackName>] [List (Page)] [Races (Page)] [End <RaceTrack>/Endall] [setLaps <TrackName> <Laps>] [setMinPlayers <TrackName> <Num>] [setRewards <TrackName> <1st> <2nd> <3rd>] [ShopVillager] [ToggleServer]
         permission: mariokart.raceadmin
         permission-message: You don't have access to this command
         default: op
@@ -26,3 +26,9 @@ commands:
    vote:
         description: Vote for a track
         usage: /<command> <TrackName>
+   forcestart:
+        description: Force start a race if in FSM
+        usage: /<command>
+        permission: mariokart.raceadmin
+        permission-message: You don't have access to this command
+        default: op

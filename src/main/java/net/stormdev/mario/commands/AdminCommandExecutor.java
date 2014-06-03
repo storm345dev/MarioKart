@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.rewards.RewardConfiguration;
+import net.stormdev.mario.server.FullServerManager;
+import net.stormdev.mario.server.ServerStage;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.tracks.TrackCreator;
 
@@ -323,6 +325,23 @@ public class AdminCommandExecutor implements CommandExecutor {
 				vil.setCustomName(ChatColor.WHITE+"Race Shop");
 				vil.setCustomNameVisible(true);
 				vil.setNoDamageTicks(Integer.MAX_VALUE);
+				return true;
+			}
+			else if(command.equalsIgnoreCase("toggleserver")){
+				if(!MarioKart.fullServer){
+					sender.sendMessage(ChatColor.RED+"Full server is not enabled!");
+					return true;
+				}
+				boolean toggle = FullServerManager.get().getStage().equals(ServerStage.BUILDING);
+				
+				if(toggle){ //Open it
+					FullServerManager.get().changeServerStage(ServerStage.WAITING);
+				}
+				else {
+					FullServerManager.get().changeServerStage(ServerStage.BUILDING);
+				}
+				
+				sender.sendMessage(ChatColor.YELLOW+"Toggled full server: "+toggle);
 				return true;
 			}
 			return false;
