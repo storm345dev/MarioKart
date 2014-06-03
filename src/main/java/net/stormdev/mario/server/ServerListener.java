@@ -9,6 +9,7 @@ import net.stormdev.mario.utils.MetaValue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -233,6 +234,7 @@ public class ServerListener implements Listener {
 			player.sendMessage(ChatColor.GOLD+"Game starting in under 10 seconds...");
 			player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 		}
+		player.setGameMode(GameMode.SURVIVAL);
 	}
 	
 	@EventHandler

@@ -7,6 +7,7 @@ import net.stormdev.mario.utils.MetaValue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -51,6 +52,7 @@ public class SpectatorMode implements Listener {
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		player.setAllowFlight(true);
 		spectateInv(player);
+		player.setGameMode(GameMode.CREATIVE);
 	}
 	
 	public void endSpectating(){
@@ -67,6 +69,7 @@ public class SpectatorMode implements Listener {
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		player.removeMetadata(META, MarioKart.plugin);
 		player.setAllowFlight(false);
+		player.setGameMode(GameMode.SURVIVAL);
 	}
 	
 	public boolean isSpectating(Player player){
