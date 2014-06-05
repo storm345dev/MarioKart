@@ -81,14 +81,13 @@ public class SignManager {
 		if(track == null){
 			return;
 		}
-		Server server = MarioKart.plugin.getServer();
+		final Server server = MarioKart.plugin.getServer();
 		String name = track.getTrackName();
-		ArrayList<SerializableLocation> slocs = getLocs(name);
+		final ArrayList<SerializableLocation> slocs = getLocs(name);
 		if(slocs.size() < 1){
 			return; //No signs
 		}
 		
-		Boolean update = false;
 	    LinkedHashMap<UUID, RaceQueue> queues = MarioKart.plugin.raceQueues.getQueues(name);
 	    
 	    String line0 = name; //eg. [MyTrack:]
@@ -98,7 +97,7 @@ public class SignManager {
 	    		line0 = name.substring(15);
 	    	}
 	    }
-	    ArrayList<String> otherLines = new ArrayList<String>();
+	    final ArrayList<String> otherLines = new ArrayList<String>();
 	    int l = 0;
 	    for(UUID id:queues.keySet()){
 	    	if(l >= 3){ //Signs lines have 0-3
@@ -120,27 +119,30 @@ public class SignManager {
 		    	l++;
 	    	}
 	    }
-		
-		for(SerializableLocation sloc:new ArrayList<SerializableLocation>(slocs)){
-			Location loc = sloc.getLocation(server);
-			BlockState s = loc.getBlock().getState();
-			if(!(s instanceof Sign)){
-				update = true;
-				slocs.remove(s);
-				continue;
-			}
-			Sign sign = (Sign)s;
-			sign.setLine(0, line0);
-			sign.setLine(1,  otherLines.size() > 0 ? otherLines.get(0):"");
-			sign.setLine(2,  otherLines.size() > 1 ? otherLines.get(1):"");
-			sign.setLine(3,  otherLines.size() > 2 ? otherLines.get(2):"");
-			sign.update(true);
+		final String l0 = line0;
+		for(final SerializableLocation sloc:new ArrayList<SerializableLocation>(slocs)){
+			Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					Location loc = sloc.getLocation(server);
+					BlockState s = loc.getBlock().getState();
+					if(!(s instanceof Sign)){
+						slocs.remove(s);
+						return;
+					}
+					Sign sign = (Sign)s;
+					sign.setLine(0, l0);
+					sign.setLine(1,  otherLines.size() > 0 ? otherLines.get(0):"");
+					sign.setLine(2,  otherLines.size() > 1 ? otherLines.get(1):"");
+					sign.setLine(3,  otherLines.size() > 2 ? otherLines.get(2):"");
+					sign.update(true);
+					return;
+				}});
 		}
 		
-		if(update){
-			queueSigns.put(name, slocs);
-			asyncSave();
-		}
+		queueSigns.put(name, slocs);
+		asyncSave();
 		
 		return;
 	}
