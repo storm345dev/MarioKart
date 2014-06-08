@@ -50,6 +50,7 @@ public class SpectatorMode implements Listener {
 		player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 		player.closeInventory();
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+		hide(player);
 		player.setAllowFlight(true);
 		spectateInv(player);
 		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
@@ -60,6 +61,26 @@ public class SpectatorMode implements Listener {
 				return;
 			}}, 10l);
 		
+	}
+	
+	private void hide(Player player){
+		try {
+			for(Player p:Bukkit.getOnlinePlayers()){
+				p.hidePlayer(player);
+			}
+		} catch (Exception e) {
+			//Oh well
+		}
+	}
+	
+	private void show(Player player){
+		try {
+			for(Player p:Bukkit.getOnlinePlayers()){
+				p.showPlayer(player);
+			}
+		} catch (Exception e) {
+			//Oh well
+		}
 	}
 	
 	public void endSpectating(){
@@ -74,6 +95,7 @@ public class SpectatorMode implements Listener {
 	public void stopSpectating(Player player){
 		player.getInventory().clear();
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		show(player);
 		player.removeMetadata(META, MarioKart.plugin);
 		player.setAllowFlight(false);
 		player.setGameMode(GameMode.SURVIVAL);

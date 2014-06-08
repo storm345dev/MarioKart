@@ -241,7 +241,7 @@ public class FullServerManager {
 				public void run() {
 					FullServerManager.get().sendToLobby(player);
 					return;
-				}}, 5*20l);
+				}}, 10l);
 			return;
 		}
 		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
