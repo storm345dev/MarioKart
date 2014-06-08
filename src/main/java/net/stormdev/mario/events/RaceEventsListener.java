@@ -99,12 +99,12 @@ public class RaceEventsListener implements Listener {
 					String tName = r.getTrackName();
 					if(ldTracks.contains(tName)){
 						//Damage them
-						Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Void>(){
+						Bukkit.getScheduler().runTask(plugin, new Runnable(){
 
 							@Override
-							public Void call() throws Exception {
-								player.damage(5);
-								return null;
+							public void run() {
+								player.damage(10);
+								return;
 							}});
 					}
 				}});
@@ -121,12 +121,12 @@ public class RaceEventsListener implements Listener {
 					String tName = r.getTrackName();
 					if(wdTracks.contains(tName)){
 						//Damage them
-						Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Void>(){
+						Bukkit.getScheduler().runTask(plugin, new Runnable(){
 
 							@Override
-							public Void call() throws Exception {
+							public void run() {
 								player.damage(5);
-								return null;
+								return;
 							}});
 					}
 				}});
