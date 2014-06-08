@@ -11,13 +11,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -67,6 +70,22 @@ public class ServerListener implements Listener {
 				}
 				return;
 			}}, 9*20l, 9*20l);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void interact(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(player.getItemInHand().getType().equals(Material.EGG)){
+			event.setCancelled(true);
+			return;
+		}
+	}
+	
+	@EventHandler
+	void projectileThrow(ProjectileLaunchEvent event){
+		if(event.getEntityType().equals(EntityType.EGG)){
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
