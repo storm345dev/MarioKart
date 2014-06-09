@@ -92,13 +92,20 @@ public class SpectatorMode implements Listener {
 		}
 	}
 	
-	public void stopSpectating(Player player){
+	public void stopSpectating(final Player player){
 		player.getInventory().clear();
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		show(player);
 		player.removeMetadata(META, MarioKart.plugin);
 		player.setAllowFlight(false);
 		player.setGameMode(GameMode.SURVIVAL);
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				player.teleport(FullServerManager.get().lobbyLoc);
+				return;
+			}}, 5l);
 	}
 	
 	public boolean isSpectating(Player player){
