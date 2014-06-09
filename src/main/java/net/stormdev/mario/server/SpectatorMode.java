@@ -59,7 +59,7 @@ public class SpectatorMode implements Listener {
 			public void run() {
 				player.setGameMode(GameMode.CREATIVE);
 				return;
-			}}, 10l);
+			}}, 12l);
 		
 	}
 	
