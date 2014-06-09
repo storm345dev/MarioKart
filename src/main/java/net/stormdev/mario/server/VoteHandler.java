@@ -206,9 +206,21 @@ public class VoteHandler {
 		obj.unregister();
 		
 		TreeMap<String, Integer> results = getSorted();
-		String tName;
+		String tName = null;
+		int i = -1;
 		if(results.size() > 0){
-			tName = results.keySet().toArray(new String[]{})[0]; //First
+			List<String> keys = new ArrayList<String>(results.keySet());
+			for(String key:keys){
+				int z = results.get(key);
+				if(z>i){
+					i = z;
+					tName = key;
+				}
+			}
+			if(tName == null){
+				Bukkit.broadcastMessage("No tracks setup! Please setup some tracks and restart the server!");
+				return;
+			}
 		}
 		else {
 			try {
