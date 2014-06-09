@@ -118,13 +118,6 @@ public class VoteHandler {
 		return maps.contains(track);
 	}
 	
-	private TreeMap<String, Integer> getSorted(){
-		ValueComparator comp = new ValueComparator(votes);
-		TreeMap<String, Integer> sorted = new TreeMap<String, Integer>(comp);
-		sorted.putAll(votes);
-		return sorted;
-	}
-	
 	public void bossBar(final Player player){
 		BossBar.setMessage(player, VOTE_MESSAGE);
 		
@@ -205,13 +198,12 @@ public class VoteHandler {
 		
 		obj.unregister();
 		
-		TreeMap<String, Integer> results = getSorted();
 		String tName = null;
 		int i = -1;
-		if(results.size() > 0){
-			List<String> keys = new ArrayList<String>(results.keySet());
+		if(votes.size() > 0){
+			List<String> keys = new ArrayList<String>(votes.keySet());
 			for(String key:keys){
-				int z = results.get(key);
+				int z = votes.get(key);
 				if(z>i){
 					i = z;
 					tName = key;
@@ -328,22 +320,5 @@ public class VoteHandler {
 			player.removeMetadata(VOTE_META_KEY, MarioKart.plugin);
 		}
 		return has;
-	}
-	
-	class ValueComparator implements Comparator<String> {
-
-	    Map<String, Integer> base;
-	    public ValueComparator(Map<String, Integer> base) {
-	        this.base = base;
-	    }
-
-	    // Note: this comparator imposes orderings that are inconsistent with equals.    
-	    public int compare(String a, String b) {
-	        if (base.get(a) <= base.get(b)) {
-	            return -1;
-	        } else {
-	            return 1;
-	        } // returning 0 would merge keys
-	    }
 	}
 }
