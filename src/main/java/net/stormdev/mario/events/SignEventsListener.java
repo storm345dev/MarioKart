@@ -121,7 +121,8 @@ public class SignEventsListener implements Listener {
 					cmd = start + body;
 				}
 				lines[1] = MarioKart.colors.getInfo() + cmd;
-			} else if (cmd.trim().equalsIgnoreCase("items")) {
+			} else if (cmd.toLowerCase().contains("items")) {
+				lines[1] = "items";
 				/*
 				Location above = event.getBlock().getLocation().add(0, 1.4, 0);
 				EnderCrystal crystal = (EnderCrystal) above.getWorld()
