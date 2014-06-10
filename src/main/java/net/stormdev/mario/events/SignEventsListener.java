@@ -135,8 +135,9 @@ public class SignEventsListener implements Listener {
 						.setType(Material.COAL_BLOCK);
 				crystal.setFireTicks(0);
 				crystal.setMetadata("race.pickup", new StatValue(true, plugin));
-				text = false;
+				
 				*/
+				text = false;
 				MarioKart.powerupManager.spawnItemPickupBox(event.getBlock().getLocation());
 			} else if(cmd.equalsIgnoreCase("queues")){ 
 				String track = ChatColor.stripColor(lines[2]);
