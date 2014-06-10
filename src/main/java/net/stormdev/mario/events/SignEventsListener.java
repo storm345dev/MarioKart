@@ -87,6 +87,7 @@ public class SignEventsListener implements Listener {
 			lines[0] = MarioKart.colors.getTitle() + "[MarioKart]";
 			Boolean text = true;
 			String cmd = ChatColor.stripColor(lines[1]);
+			event.getPlayer().sendMessage("Detected sign '"+cmd+"', if this is incorrect, please report!");
 			if (cmd.equalsIgnoreCase("list")) {
 				lines[1] = MarioKart.colors.getInfo() + "List";
 				if (!(lines[2].length() < 1)) {
