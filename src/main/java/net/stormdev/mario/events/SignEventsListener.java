@@ -121,7 +121,7 @@ public class SignEventsListener implements Listener {
 					cmd = start + body;
 				}
 				lines[1] = MarioKart.colors.getInfo() + cmd;
-			} else if (cmd.equalsIgnoreCase("items")) {
+			} else if (cmd.trim().equalsIgnoreCase("items")) {
 				/*
 				Location above = event.getBlock().getLocation().add(0, 1.4, 0);
 				EnderCrystal crystal = (EnderCrystal) above.getWorld()
@@ -138,6 +138,7 @@ public class SignEventsListener implements Listener {
 				
 				*/
 				text = false;
+				event.getPlayer().sendMessage("Creating item box...");
 				MarioKart.powerupManager.spawnItemPickupBox(event.getBlock().getLocation());
 			} else if(cmd.equalsIgnoreCase("queues")){ 
 				String track = ChatColor.stripColor(lines[2]);
