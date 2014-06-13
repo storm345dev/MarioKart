@@ -19,6 +19,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -113,6 +115,21 @@ public class ServerListener implements Listener {
 		}
 		
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	void playerDmg(EntityDamageEvent event){
+		if(!(event.getEntity() instanceof Player)){
+			return;
+		}
+		
+		Player player = (Player) event.getEntity();
+		
+		if(!event.getCause().equals(DamageCause.VOID)){
+			return;
+		}
+		
+		player.damage(10);
 	}
 	
 	@EventHandler
