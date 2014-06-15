@@ -180,7 +180,7 @@ public class FullServerManager {
 				
 				if(i < 1){ //Set the next tip...
 					String next = Tips.random();
-					final String tip = ChatColor.AQUA+"[TIP:] "+ChatColor.GREEN+next;
+					final String tip = ChatColor.DARK_RED+"[TIP:] "+ChatColor.GOLD+next;
 					Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
 
 						@Override
