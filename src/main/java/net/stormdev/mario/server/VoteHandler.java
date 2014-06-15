@@ -117,7 +117,6 @@ public class VoteHandler {
 	}
 	
 	public void bossBar(final Player player){
-		BossBar.setMessage(player, VOTE_MESSAGE);
 		
 		final ObjectWrapper<BukkitTask> o = new ObjectWrapper<BukkitTask>();
 		o.setValue(Bukkit.getScheduler().runTaskTimerAsynchronously(MarioKart.plugin, new Runnable(){
@@ -126,6 +125,10 @@ public class VoteHandler {
 			public void run() {
 				if(closed){
 					BossBar.removeBar(player);
+					o.getValue().cancel();
+					return;
+				}
+				if(!FullServerManager.get().getStage().equals(ServerStage.WAITING)){
 					o.getValue().cancel();
 					return;
 				}

@@ -187,7 +187,7 @@ public class FullServerManager {
 						public void run() {
 							Player[] online = Bukkit.getOnlinePlayers();
 							for(Player player:online){
-								BossBar.setMessage(player, tip, 15);
+								BossBar.setMessage(player, tip, 16);
 							}
 							return;
 						}});
@@ -241,10 +241,23 @@ public class FullServerManager {
 		
 		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"Please wait "+ChatColor.GOLD+"10s"+ChatColor.DARK_RED+" for the game to start!");
 		
+		
 		Player[] o = Bukkit.getOnlinePlayers();
 		for(Player player:o){
-			BossBar.setMessage(player, ChatColor.RED+"Starting...", 10);
+			BossBar.removeBar(player);
 		}
+		
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				Player[] o = Bukkit.getOnlinePlayers();
+				for(Player player:o){
+					BossBar.setMessage(player, ChatColor.RED+"Starting...", 9);
+				}
+				return;
+			}}, 20l);
+		
 		
 		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
