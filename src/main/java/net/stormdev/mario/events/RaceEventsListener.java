@@ -63,6 +63,9 @@ public class RaceEventsListener implements Listener {
 	private List<String> wdTracks;
 	private List<String> ldTracks;
 	
+	private boolean commandRewards;
+	private String rewardCommand;
+	
 	public RaceEventsListener(MarioKart plugin){
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -71,6 +74,8 @@ public class RaceEventsListener implements Listener {
 		lavaDamage = MarioKart.config.getBoolean("general.race.lavaDamage.enable");
 		wdTracks = MarioKart.config.getStringList("general.race.waterDamage.tracks");
 		ldTracks = MarioKart.config.getStringList("general.race.lavaDamage.tracks");
+		commandRewards = MarioKart.config.getBoolean("general.race.rewards.command.enable");
+		rewardCommand = MarioKart.config.getString("general.race.rewards.command.command");
 	}
 	
 	@EventHandler
@@ -592,6 +597,16 @@ public class RaceEventsListener implements Listener {
 		if (reward <= 0) {
 			return;
 		}
+		if(commandRewards){
+			String cmd = rewardCommand;
+			cmd = cmd.replaceAll(Pattern.quote("<name>"), player.getName());
+			cmd = cmd.replaceAll(Pattern.quote("<amount>"), reward+"");
+			cmd = cmd.replaceAll(Pattern.quote("<position>"), pos+"");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+			player.sendMessage(MarioKart.colors.getSuccess()+"+"+reward+MarioKart.colors.getInfo()+" "+MarioKart.config
+						.getString("general.race.rewards.currency")+" for finishing "+event.getPlayerFriendlyPosition());
+			return;
+		}
 		if (!MarioKart.vault || MarioKart.economy == null) {
 			plugin.setupEconomy(); // Economy plugin loaded after MarioKart
 			if (!MarioKart.vault || MarioKart.economy == null) { // No Economy plugin
@@ -626,7 +641,6 @@ public class RaceEventsListener implements Listener {
 				msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
 						.quoteReplacement("" + event.getPlayerFriendlyPosition()));
 				player.sendMessage(MarioKart.colors.getInfo() + msg);
-				MarioKart.logger.info("Race rewards handled!!");
 				if(MarioKart.fullServer){
 					Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
 
