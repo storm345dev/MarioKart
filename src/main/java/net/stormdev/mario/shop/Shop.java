@@ -306,6 +306,7 @@ public class Shop {
 						msg = msg.replaceAll(Pattern.quote("%price%"),
 								Matcher.quoteReplacement("" + price));
 						player.sendMessage(MarioKart.colors.getInfo() + msg);
+						/*
 						MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
 
 							@Override
@@ -314,8 +315,10 @@ public class Shop {
 								return;
 							}}, 2l);
 						return;
+						*/
 					}});
-				event.setWillDestroy(true);
+				event.setWillClose(false);
+				event.setWillDestroy(false);
 				return event;
 			}
 		} else if (type == SelectMenuType.SELL_UPGRADES) {
