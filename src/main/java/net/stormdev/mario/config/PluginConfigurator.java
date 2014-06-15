@@ -74,7 +74,7 @@ public class PluginConfigurator {
 			config.set("general.race.rewards.enable", true);
 		}
 		if (!config.contains("general.race.rewards.command.enable")) {
-			config.set("general.race.rewards.command.enable", true);
+			config.set("general.race.rewards.command.enable", false);
 		}
 		if (!config.contains("general.race.rewards.command.command")) {
 			config.set("general.race.rewards.command.command", "givetokens <name> <amount>");
