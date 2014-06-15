@@ -58,6 +58,7 @@ public class SpectatorMode implements Listener {
 			@Override
 			public void run() {
 				player.setGameMode(GameMode.CREATIVE);
+				spectateInv(player);
 				return;
 			}}, 12l);
 		

@@ -557,6 +557,16 @@ public class RaceEventsListener implements Listener {
 		final Player player = event.getPlayer();
 		MarioKart.plugin.hotBarManager.clearHotBar(player.getName());
 		if (!MarioKart.config.getBoolean("general.race.rewards.enable")) {
+			if(MarioKart.fullServer){
+				MarioKart.logger.info("Race rewards disabled? Are you sure?");
+				Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						FullServerManager.get().sendToLobby(player);
+						return;
+					}}, 5*20l);
+			}
 			return;
 		}
 		int pos = event.getFinishPosition();
@@ -586,6 +596,14 @@ public class RaceEventsListener implements Listener {
 			plugin.setupEconomy(); // Economy plugin loaded after MarioKart
 			if (!MarioKart.vault || MarioKart.economy == null) { // No Economy plugin
 														// installed
+				MarioKart.logger.info("No economy found for the race rewards!");
+				Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						FullServerManager.get().sendToLobby(player);
+						return;
+					}}, 5*20l);
 				return;
 			}
 		}
@@ -608,6 +626,7 @@ public class RaceEventsListener implements Listener {
 				msg = msg.replaceAll(Pattern.quote("%position%"), Matcher
 						.quoteReplacement("" + event.getPlayerFriendlyPosition()));
 				player.sendMessage(MarioKart.colors.getInfo() + msg);
+				MarioKart.logger.info("Race rewards handled!!");
 				if(MarioKart.fullServer){
 					Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
 
