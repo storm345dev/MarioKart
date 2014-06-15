@@ -117,7 +117,10 @@ public class UnlockableManager implements Listener {
 			return false;
 		}
 		String uuid = getUUID(player);
-		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
+		if(!this.data.containsKey(uuid)){
+			return false;
+		}
+		String[] unlocks = this.data.get(uuid).split(Pattern.quote(","));
 		String[] un = unlocks.clone();
 		Boolean used = false;
 		Boolean remove = false;
@@ -268,7 +271,7 @@ public class UnlockableManager implements Listener {
 		if(!enabled){
 			return;
 		}
-		this.data.remove(player);
+		this.data.remove(getUUID(player));
 		save(player);
 		return;
 	}
