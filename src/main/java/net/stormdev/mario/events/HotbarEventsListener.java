@@ -46,8 +46,7 @@ public class HotbarEventsListener implements Listener {
 				&& !player.hasMetadata("mariokart.slotChanging")
 				&& (player.getInventory().getHeldItemSlot() == 6 || player
 						.getInventory().getHeldItemSlot() == 7)) {
-			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player
-					.getName());
+			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player);
 			if (player.getInventory().getHeldItemSlot() == 6) {
 				hotBar.scroll(HotBarSlot.SCROLLER);
 			} else {

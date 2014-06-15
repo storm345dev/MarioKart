@@ -60,7 +60,7 @@ public class Shop {
 	}
 
 	public static void openMyUpgrades(Player player, int page) {
-		getUpgradesIOwn(player.getName(), page).open(player);
+		getUpgradesIOwn(player, page).open(player);
 	}
 
 	public static IconMenu getUpgradesForSaleMenu(final int page) {
@@ -117,7 +117,7 @@ public class Shop {
 		return menu;
 	}
 
-	public static IconMenu getUpgradesIOwn(String player, final int page) {
+	public static IconMenu getUpgradesIOwn(Player player, final int page) {
 		String title = MarioKart.colors.getTitle() + MKLang.getStr("mario.shop.myUpgrades.title") + " " + MKLang.getStr("mario.shop.page") + " " + page;
 		if (title.length() > 32) {
 			title = MarioKart.colors.getError() + MKLang.getStr("mario.shop.myUpgrades.title") + " (ERROR:Too Long)";
@@ -285,7 +285,7 @@ public class Shop {
 						}
 						// Confident in success of transaction
 						Boolean success = MarioKart.plugin.upgradeManager.addUpgrade(
-								player.getName(), new Upgrade(unlock, 1)); // Give them
+								player, new Upgrade(unlock, 1)); // Give them
 																			// the
 																			// upgrade
 						if (!success) {
@@ -368,7 +368,7 @@ public class Shop {
 				Upgrade upgrade = null;
 				try {
 					List<Upgrade> ups = MarioKart.plugin.upgradeManager
-							.getUpgrades(player.getName());
+							.getUpgrades(player);
 					upgrade = ups.get(i);
 				} catch (Exception e) {
 					// Clicked on invalid slot
@@ -378,7 +378,7 @@ public class Shop {
 					return event; // Clicked on invalid slot
 				}
 				MarioKart.plugin.upgradeManager
-						.useUpgrade(player.getName(), upgrade);
+						.useUpgrade(player, upgrade);
 				String msg = MarioKart.msgs.get("general.shop.sellSuccess");
 				msg = msg.replaceAll(Pattern.quote("%amount%"),
 						"" + upgrade.getQuantity());

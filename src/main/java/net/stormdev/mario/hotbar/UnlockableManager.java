@@ -14,14 +14,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.stormdev.SQL.MySQL;
+import net.stormdev.SQL.SQLManager;
+import net.stormdev.mario.mariokart.MarioKart;
+import net.stormdev.uuidapi.PlayerIDFinder;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import net.stormdev.mario.mariokart.SQLManager;
-import net.stormdev.mario.mariokart.MarioKart;
+import com.useful.ucarsCommon.StatValue;
 
-public class UnlockableManager {
+public class UnlockableManager implements Listener {
 
 	private Map<String, String> data = new HashMap<String, String>();
 	private Map<String, Unlockable> unlocks = null; // ShortId:Unlockable
@@ -29,6 +39,12 @@ public class UnlockableManager {
 	private boolean sql = false;
 	private SQLManager sqlManager = null;
 	private boolean enabled = true;
+	
+	private static final String UUID_META = "mariokart.uuid";
+	private static final String SQL_TABLE = "MarioKartRaceShop";
+	private static final String SQL_KEY = "playerid";
+	private static final String SQL_VAL_KEY = "unlocks";
+	
 
 	public UnlockableManager(File saveFile, Boolean sql) {
 		this.saveFile = saveFile;
@@ -37,28 +53,27 @@ public class UnlockableManager {
 		this.enabled = MarioKart.config.getBoolean("general.upgrades.enable");
 		if (sql) {
 			try {
-				sqlManager = new SQLManager(
-						MarioKart.config.getString("general.upgrades.sqlHostName"),
-						MarioKart.config.getString("general.upgrades.sqlPort"),
-						MarioKart.config
-								.getString("general.upgrades.sqlDataBaseName"),
-						MarioKart.config.getString("general.upgrades.sqlUsername"),
-						MarioKart.config.getString("general.upgrades.sqlPassword"));
+				String sqlHost = MarioKart.config.getString("general.upgrades.sqlHostName");
+				String sqlDB = MarioKart.config
+						.getString("general.upgrades.sqlDataBaseName");
+				int port = Integer.parseInt(MarioKart.config.getString("general.upgrades.sqlPort"));
+				String url = "jdbc:mysql://"
+						+ sqlHost + ":" + port + "/" + sqlDB;
+				
+				sqlManager = new SQLManager(new MySQL(MarioKart.plugin, url, MarioKart.config.getString("general.upgrades.sqlUsername"), MarioKart.config.getString("general.upgrades.sqlPassword")), MarioKart.plugin);
 			} catch (Exception e) {
 				sql = false;
 			}
-			if (!sqlManager.isValid()) {
-				sql = false;
-			}
 			if (sql) { // Check that it loaded okay...
-				sqlManager.createTable("MarioKartUnlocks", new String[] {
-						"playername", "unlocks" }, new String[] {
-						"varchar(255)", "varchar(255)" });
+				sqlManager.createTable(SQL_TABLE, new String[] {
+						SQL_KEY, SQL_VAL_KEY }, new String[] {
+						"varchar(255) NOT NULL PRIMARY KEY", "varchar(255)" });
 			}
 		}
 		// SQL setup...
 		unlocks = getUnlocks();
 		load(); // Load the data
+		Bukkit.getPluginManager().registerEvents(this, MarioKart.plugin);
 	}
 	
 	public synchronized void unloadSQL(){
@@ -68,12 +83,13 @@ public class UnlockableManager {
 		return;
 	}
 
-	public List<Upgrade> getUpgrades(String playerName) {
-		if (!data.containsKey(playerName) || !enabled) {
+	public List<Upgrade> getUpgrades(Player player) {
+		String uuid = getUUID(player);
+		if (!data.containsKey(uuid) || !enabled) {
 			return new ArrayList<Upgrade>();
 		}
 		List<Upgrade> upgrades = new ArrayList<Upgrade>();
-		String[] unlocks = this.data.get(playerName).split(Pattern.quote(","));
+		String[] unlocks = this.data.get(uuid).split(Pattern.quote(","));
 		for (String unlock : unlocks) {
 			String[] upgradeData = unlock.split(Pattern.quote(":"));
 			if (upgradeData.length > 1) {
@@ -96,10 +112,11 @@ public class UnlockableManager {
 		return upgrades;
 	}
 
-	public Boolean useUpgrade(String player, Upgrade upgrade) {
+	public Boolean useUpgrade(Player player, Upgrade upgrade) {
 		if(!enabled){
 			return false;
 		}
+		String uuid = getUUID(player);
 		String[] unlocks = this.data.get(player).split(Pattern.quote(","));
 		String[] un = unlocks.clone();
 		Boolean used = false;
@@ -151,23 +168,24 @@ public class UnlockableManager {
 				}
 			}
 			if (s.length() < 2) {
-				this.data.remove(player);
+				this.data.remove(uuid);
 			} else {
-				this.data.put(player, s);
+				this.data.put(uuid, s);
 			}
 			save(player); // Save to file/sql
 		}
 		return used;
 	}
 
-	public Boolean addUpgrade(String player, Upgrade upgrade) {
+	public Boolean addUpgrade(Player player, Upgrade upgrade) {
 		if(!enabled){
 			return false;
 		}
+		String uuid = getUUID(player);
 		String[] un = new String[] {};
 		String[] unlocks = new String[] {};
-		if (this.data.containsKey(player)) {
-			unlocks = this.data.get(player).split(Pattern.quote(","));
+		if (this.data.containsKey(uuid)) {
+			unlocks = this.data.get(uuid).split(Pattern.quote(","));
 			un = unlocks.clone();
 		}
 		Boolean added = false;
@@ -219,14 +237,14 @@ public class UnlockableManager {
 			}
 		}
 		if (s.length() < 255) {
-			this.data.put(player, s);
+			this.data.put(getUUID(player), s);
 			save(player); // Save to file/sql
 			return true;
 		}
 		return false; // They have too many upgrades
 	}
 
-	public Boolean hasUpgradeById(String player, String shortId) {
+	public Boolean hasUpgradeById(Player player, String shortId) {
 		List<Upgrade> ups = getUpgrades(player);
 		for (Upgrade u : ups) {
 			if (u.getUnlockedAble().shortId.equals(shortId)) {
@@ -236,7 +254,7 @@ public class UnlockableManager {
 		return false;
 	}
 
-	public Boolean hasUpgradeByName(String player, String upgradeName) {
+	public Boolean hasUpgradeByName(Player player, String upgradeName) {
 		List<Upgrade> ups = getUpgrades(player);
 		for (Upgrade u : ups) {
 			if (u.getUnlockedAble().upgradeName.equals(upgradeName)) {
@@ -246,7 +264,7 @@ public class UnlockableManager {
 		return false;
 	}
 
-	public void resetUpgrades(String player) {
+	public void resetUpgrades(Player player) {
 		if(!enabled){
 			return;
 		}
@@ -288,19 +306,83 @@ public class UnlockableManager {
 					// File just created
 				}
 			}
-		} else {
+		} /*else {
 			// Load from sql
 			try {
-				data.putAll(sqlManager.getStringsFromTable("MarioKartUnlocks",
-						"playername", "unlocks"));
+				data.putAll(sqlManager.getStringsFromTable(SQL_TABLE,
+						SQL_KEY, SQL_VAL_KEY));
 			} catch (SQLException e) {
 				// SQL Error
 				e.printStackTrace();
 			}
 		}
+		*/
+	}
+	
+	@EventHandler
+	void onJoin(PlayerJoinEvent event){
+		final Player player = event.getPlayer();
+		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				String mojangUUID = PlayerIDFinder.getMojangID(player).getID();
+				if(mojangUUID == null || mojangUUID.equals("null")){
+					mojangUUID = player.getUniqueId().toString();
+				}
+				player.setMetadata(UUID_META, new StatValue(mojangUUID, MarioKart.plugin));
+				load(mojangUUID);
+				return;
+			}});
+	}
+	
+	@EventHandler
+	void onQuit(PlayerQuitEvent event){
+		Player player = event.getPlayer();
+		final String uuid = getUUID(player);
+		player.removeMetadata(UUID_META, MarioKart.plugin);
+		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				unload(uuid);
+				return;
+			}});
+	}
+	
+	public void unload(String playerId){
+		data.remove(playerId);
+	}
+	
+	public void load(final String playerId){
+		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				try {
+					Object o = sqlManager.searchTable(SQL_TABLE, SQL_KEY, playerId, SQL_VAL_KEY);
+					if(o == null){
+						return;
+					}
+					String s = o.toString();
+					
+					data.put(playerId, s);
+				} catch (SQLException e) {
+					//BUGZ
+					e.printStackTrace();
+				}
+				return;
+			}});
+	}
+	
+	private String getUUID(Player player){
+		if(player.hasMetadata(UUID_META)){
+			return player.getMetadata(UUID_META).get(0).value().toString();
+		}
+		return "NotLoadedProfile";
 	}
 
-	public void save(final String playerName) {
+	public void save(final Player player) {
 		MarioKart.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 
@@ -326,19 +408,19 @@ public class UnlockableManager {
 							return;
 						}
 						// Save to SQL
-						if (data.containsKey(playerName)) {
+						String uuid = getUUID(player);
+						if (data.containsKey(uuid)) {
 							try {
-								sqlManager.setInTable("MarioKartUnlocks",
-										"playername", playerName, "unlocks",
-										data.get(playerName));
+								sqlManager.setInTable(SQL_TABLE,
+										SQL_KEY, uuid, SQL_VAL_KEY,
+										data.get(uuid));
 							} catch (SQLException e) {
 								// SQL Error
 								e.printStackTrace();
 							}
 						} else {
 							try {
-								sqlManager.deleteFromTable("MarioKartUnlocks",
-										"playername", playerName, "unlocks");
+								sqlManager.deleteFromTable(SQL_TABLE, SQL_KEY, uuid);
 							} catch (SQLException e) {
 								// Player wasn't in database
 							}
@@ -347,17 +429,9 @@ public class UnlockableManager {
 					}
 				});
 	}
-
-	public void save() {
-		if (!sql) {
-			save("");
-			return;
-		}
-		List<String> keys = new ArrayList<String>(data.keySet());
-		for (String k : keys) {
-			save(k);
-		}
-		return;
+	
+	public void saveFile(){
+		save(null);
 	}
 	
 	public Map<String, Unlockable> getUnlocks() {

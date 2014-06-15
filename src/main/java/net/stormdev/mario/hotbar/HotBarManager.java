@@ -30,18 +30,18 @@ public class HotBarManager {
 		this.hotBars.put(player, hotBar);
 	}
 
-	public MarioHotBar createHotBar(String player) {
-		MarioHotBar hotBar = new MarioHotBar(player,
+	public MarioHotBar createHotBar(Player player) {
+		MarioHotBar hotBar = new MarioHotBar(player.getName(),
 				calculateHotbarContents(player));
-		this.hotBars.put(player, hotBar);
+		this.hotBars.put(player.getName(), hotBar);
 		return hotBar;
 	}
 
-	public MarioHotBar getHotBar(String player) {
-		if (!hotBars.containsKey(player)) {
+	public MarioHotBar getHotBar(Player player) {
+		if (!hotBars.containsKey(player.getName())) {
 			return createHotBar(player);
 		}
-		return hotBars.get(player);
+		return hotBars.get(player.getName());
 	}
 
 	protected void removeHotBar(String player) {
@@ -57,7 +57,7 @@ public class HotBarManager {
 	}
 
 	public Map<HotBarSlot, List<HotBarItem>> calculateHotbarContents(
-			String player) {
+			Player player) {
 		Map<HotBarSlot, List<HotBarItem>> contents = new HashMap<HotBarSlot, List<HotBarItem>>();
 		ArrayList<HotBarItem> defaultItems = new ArrayList<HotBarItem>();
 		ArrayList<HotBarItem> unlockedItems = new ArrayList<HotBarItem>();
@@ -84,8 +84,7 @@ public class HotBarManager {
 	
 	@SuppressWarnings("deprecation")
 	public void updateHotBar(Player player) {
-		MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player
-				.getName());
+		MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(player);
 		HotBarItem util = hotBar.getDisplayedItem(HotBarSlot.UTIL);
 		HotBarItem scroller = hotBar.getDisplayedItem(HotBarSlot.SCROLLER);
 		if (util != null) {
@@ -191,7 +190,7 @@ public class HotBarManager {
 		}
 		if (useUpgrade && execute) {
 			if (MarioKart.plugin.upgradeManager.useUpgrade(
-					player.getName(),
+					player,
 					new Upgrade(MarioKart.plugin.upgradeManager
 							.getUnlockable(hotBarItem.shortId), 1))) {
 				player.sendMessage(MarioKart.msgs.get("race.upgrades.use"));

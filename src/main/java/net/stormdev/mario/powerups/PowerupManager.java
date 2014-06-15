@@ -100,8 +100,7 @@ public class PowerupManager {
 				}
 				return;
 			}
-			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(ply
-					.getName());
+			MarioHotBar hotBar = MarioKart.plugin.hotBarManager.getHotBar(ply);
 			if (hotBar.getDisplayedItem(HotBarSlot.UTIL) != null
 					&& player.getInventory().getHeldItemSlot() == 7) {
 				MarioKart.plugin.hotBarManager.executeClick(ply, hotBar, HotBarSlot.UTIL);
