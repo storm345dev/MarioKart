@@ -2,7 +2,6 @@ package net.stormdev.mario.events;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -148,7 +147,7 @@ public class RaceEventsListener implements Listener {
 			if(!MarioKart.powerupManager.isPlayerImmune(player)){
 				MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.BANANA_HIT);
 				item.remove();
-				RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 1);
+				RaceExecutor.penalty(player, ((Minecart) player.getVehicle()), 0.5f);
 			}
 			event.setCancelled(true);
 			return;
@@ -288,6 +287,9 @@ public class RaceEventsListener implements Listener {
 		}
 		if (event.getEntity().hasMetadata("explosion.none")) {
 			Location loc = event.getEntity().getLocation().clone();
+			
+			plugin.raceMethods.createExplode(loc);
+			
 			event.setCancelled(true);
 			double radius = 6;
 			loc.getWorld().createExplosion(loc, 0);

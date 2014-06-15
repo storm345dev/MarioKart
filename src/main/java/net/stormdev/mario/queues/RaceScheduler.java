@@ -16,6 +16,7 @@ import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.tracks.RaceTrack;
+import net.stormdev.mario.utils.MetaValue;
 import net.stormdev.mario.utils.SerializableLocation;
 
 import org.bukkit.Bukkit;
@@ -23,11 +24,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 
 import com.useful.uCarsAPI.uCarsAPI;
+import com.useful.ucars.SmoothMeta;
+import com.useful.ucars.ucars;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceScheduler {
@@ -511,6 +515,16 @@ public class RaceScheduler {
 												Player p = u.getPlayer();
 												if(p!=null){
 													MarioKart.plugin.musicManager.playCustomSound(p, MarioKartSound.COUNTDOWN_PLING);
+													if(p.hasMetadata("ucars.smooth")){
+														Object o = p.getMetadata("ucars.smooth").get(0).value();
+														if((o instanceof SmoothMeta)){
+															SmoothMeta sm = (SmoothMeta) o;
+															if(sm.getFactor() > 0.2){
+																//They started accelerating already
+																p.setMetadata("mk.failStart", new MetaValue(null, MarioKart.plugin));
+															}
+														}
+													}
 												}
 											} catch (Exception e) {
 												//Player has left
@@ -542,9 +556,28 @@ public class RaceScheduler {
 						}
 						for (User user : users2) {
 							try {
-								user.getPlayer().sendMessage(
+								Player pl = user.getPlayer();
+								pl.sendMessage(
 										MarioKart.colors.getInfo()
 												+ MarioKart.msgs.get("race.que.go"));
+								if(pl.hasMetadata("ucars.smooth")){
+									Object o = pl.getMetadata("ucars.smooth").get(0).value();
+									if((o instanceof SmoothMeta)){
+										SmoothMeta sm = (SmoothMeta) o;
+										if(pl.hasMetadata("mk.failStart")){
+											pl.removeMetadata("mk.failStart", MarioKart.plugin);
+											sm.resetAcel(); //Kill acceleration
+											pl.playSound(pl.getLocation(), Sound.CREEPER_DEATH, 1f, 1f);
+										}
+										else if(sm.getFactor() > 0.2) {
+											//Boosting already
+											//Give them a boost
+											ucars.listener.carBoost(pl.getName(), 5, 3000,
+													ucars.config.getDouble("general.cars.defSpeed"));
+											pl.playSound(pl.getLocation(), Sound.FIZZ, 1f, 1f);
+										}
+									}
+								}
 							} catch (PlayerQuitException e) {
 								// Player has left
 							}

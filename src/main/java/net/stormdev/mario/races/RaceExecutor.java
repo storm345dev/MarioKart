@@ -14,6 +14,7 @@ import net.stormdev.mario.players.PlayerQuitException;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DoubleValueComparator;
+import net.stormdev.mario.utils.ParticleEffects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +27,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import com.useful.ucars.SmoothMeta;
 import com.useful.ucarsCommon.StatValue;
 
 public class RaceExecutor {
@@ -446,7 +448,7 @@ public class RaceExecutor {
 		return;
 	}
 	
-	public static void penalty(Player player, final Minecart car, long time) {
+	public static void penalty(final Player player, final Minecart car, float time) {
 		if (car == null) {
 			return;
 		}
@@ -457,7 +459,21 @@ public class RaceExecutor {
 		if (power < 1) {
 			power = 1;
 		}
+		
+		try {
+			if(player.hasMetadata("ucars.smooth")){
+				Object o = player.getMetadata("ucars.smooth").get(0).value();
+				if((o instanceof SmoothMeta)){
+					SmoothMeta sm = (SmoothMeta) o;
+					sm.resetAcel(); //Kill acceleration
+				}
+			}
+		} catch (Exception e) {
+			//ucars is not up to date...
+		}
+		
 		car.setMetadata("car.frozen", new StatValue(time, MarioKart.plugin));
+		ParticleEffects.sendToLocation(ParticleEffects.REDSTONE_DUST, player.getLocation(), 0, 0, 0, 2, 5);
 		car.setVelocity(new Vector(0, power, 0));
 		final Player pl = player;
 		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable() {
@@ -466,8 +482,9 @@ public class RaceExecutor {
 			public void run() {
 				MarioKart.plugin.musicManager.playCustomSound(pl, MarioKartSound.PENALTY_END);
 				car.removeMetadata("car.frozen", MarioKart.plugin);
+				ParticleEffects.sendToLocation(ParticleEffects.GREEN_SPARKLE, car.getLocation(), 0, 0, 0, 2, 5);
 			}
-		}, (time * 20));
+		}, (long)(time * 20l));
 		return;
 	}
 

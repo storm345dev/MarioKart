@@ -11,6 +11,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
+import net.stormdev.mario.utils.ParticleEffects;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -102,6 +103,7 @@ public class PowPowerup extends PowerupBase {
 												pl.sendMessage(ChatColor.RED
 														+ msg);
 												
+												ParticleEffects.sendToLocation(ParticleEffects.CLOUD, cart.getLocation(), 0, 0, 0, 1, 5);
 												RaceExecutor.penalty(pl, 
 																cart,
 																2);

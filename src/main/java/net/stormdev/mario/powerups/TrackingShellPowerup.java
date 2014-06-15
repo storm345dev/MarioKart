@@ -84,6 +84,9 @@ public abstract class TrackingShellPowerup extends ShellPowerup implements Track
 				return;
 			}
 		}
+		
+		MarioKart.plugin.raceMethods.createExplode(cart.getLocation(), 1);
+		
 		RaceExecutor.penalty(target, ((Minecart) cart), 4);
 		setExpiry(0);
 		return;

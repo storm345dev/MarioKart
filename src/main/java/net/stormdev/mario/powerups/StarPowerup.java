@@ -8,7 +8,9 @@ import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.User;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.sound.MarioKartSound;
+import net.stormdev.mario.utils.ParticleEffects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Minecart;
@@ -49,6 +51,29 @@ public class StarPowerup extends PowerupBase {
 						}
 					}
 				}, 300l);
+		MarioKart.plugin.getServer().getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				int amount = 15;
+				
+				while(amount >= 0){
+					Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+						@Override
+						public void run() {
+							ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, player.getLocation(), 0, 0, 0, 0.5f, 30);
+							return;
+						}});
+					amount--;
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						//Oh well
+					}
+				}
+				return;
+			}});
 		MarioKart.plugin.getServer().getScheduler()
 				.runTaskAsynchronously(MarioKart.plugin, new Runnable() {
 
