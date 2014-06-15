@@ -16,6 +16,7 @@ import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.sound.MarioKartSound;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -603,8 +604,10 @@ public class RaceEventsListener implements Listener {
 			cmd = cmd.replaceAll(Pattern.quote("<amount>"), Matcher.quoteReplacement(reward+""));
 			cmd = cmd.replaceAll(Pattern.quote("<position>"), Matcher.quoteReplacement(pos+""));
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-			player.sendMessage(MarioKart.colors.getSuccess()+"+"+reward+MarioKart.colors.getInfo()+" "+MarioKart.config
+			if(MarioKart.config.getBoolean("general.race.rewards.command.say")){
+				player.sendMessage(ChatColor.GREEN+"+"+reward+MarioKart.colors.getInfo()+" "+MarioKart.config
 						.getString("general.race.rewards.currency")+" for finishing "+event.getPlayerFriendlyPosition());
+			}
 			return;
 		}
 		if (!MarioKart.vault || MarioKart.economy == null) {
