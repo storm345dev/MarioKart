@@ -20,8 +20,12 @@ public class Tips {
 		"Make sure particles are on when you play!"
 	};
 	
-	private static String tip = random();
-	private static Random rand = new Random();
+	private static String tip = "";
+	private static Random rand;
+	
+	static {
+		rand = new Random();
+	}
 	
 	public static String random(){
 		tip = tips[rand.nextInt(tips.length)];

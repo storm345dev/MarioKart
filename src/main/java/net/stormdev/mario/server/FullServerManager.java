@@ -9,6 +9,7 @@ import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
 import net.stormdev.mario.tracks.RaceTrack;
 import net.stormdev.mario.utils.LocationStrings;
+import net.stormdev.mario.utils.ObjectWrapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,6 +89,7 @@ public class FullServerManager {
 			spectators.endSpectating();
 			Player[] online = Bukkit.getOnlinePlayers();
 			for(Player player:online){
+				BossBar.removeBar(player);
 				player.getInventory().clear();
 				player.getInventory().addItem(item.clone());
 				player.teleport(lobbyLoc);
@@ -160,6 +162,44 @@ public class FullServerManager {
 				return;
 			}}, 30*20l, 30*20l);
 		changeServerStage(ServerStage.WAITING);
+		tipsHandler();
+	}
+	
+	private void tipsHandler(){
+		final ObjectWrapper<Integer> count = new ObjectWrapper<Integer>(0);
+		Bukkit.getScheduler().runTaskTimerAsynchronously(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				if(!getStage().equals(ServerStage.PLAYING)){
+					count.setValue(0);
+					return; //Don't show any tips...
+				}
+				//Tips bar
+				int i = count.getValue();
+				
+				if(i < 1){ //Set the next tip...
+					String next = Tips.random();
+					final String tip = ChatColor.AQUA+"[TIP:] "+ChatColor.GREEN+next;
+					Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+						@Override
+						public void run() {
+							Player[] online = Bukkit.getOnlinePlayers();
+							for(Player player:online){
+								BossBar.setMessage(player, tip, 15);
+							}
+							return;
+						}});
+				}
+				
+				count.setValue(count.getValue()+1);
+				if(count.getValue() > 3){
+					//15s have passed since tip set
+					count.setValue(0);
+				}
+				return;
+			}}, 5*20l, 5*20l);
 	}
 	
 	public void sendToLobby(Player player){
@@ -200,6 +240,12 @@ public class FullServerManager {
 		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 		
 		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"Please wait "+ChatColor.GOLD+"10s"+ChatColor.DARK_RED+" for the game to start!");
+		
+		Player[] o = Bukkit.getOnlinePlayers();
+		for(Player player:o){
+			BossBar.setMessage(player, ChatColor.RED+"Starting...", 10);
+		}
+		
 		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
 			@Override

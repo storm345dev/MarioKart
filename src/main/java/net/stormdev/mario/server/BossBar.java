@@ -6,11 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BossBar {
+	
 	private static boolean a(){
 		
 		boolean found = Bukkit.getPluginManager().getPlugin("BarAPI")!=null;
 		try {
 			Class.forName("me.confuser.barapi.BarAPI");
+			found = true;
 		} catch (ClassNotFoundException e) {
 			found = false;
 		}

@@ -1,11 +1,9 @@
 package net.stormdev.mario.server;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import net.stormdev.mario.mariokart.MarioKart;
@@ -137,6 +135,7 @@ public class VoteHandler {
 
 					@Override
 					public void run() {
+						BossBar.removeBar(player);
 						BossBar.setMessage(player, VOTE_MESSAGE, percent);
 						player.setLevel(rem);
 					}});
