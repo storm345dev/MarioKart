@@ -207,7 +207,7 @@ public class MarioKart extends JavaPlugin {
 				+ File.separator + "Data" + File.separator
 				+ "raceTimes.uracetimes"),
 				config.getBoolean("general.race.timed.log"));
-		if (config.getBoolean("general.race.rewards.enable")) {
+		if (config.getBoolean("general.race.rewards.enable") && !config.getBoolean("general.race.rewards.command.enable")) {
 			try {
 				vault = this.vaultInstalled();
 				if (!setupEconomy()) {
@@ -364,6 +364,7 @@ public class MarioKart extends JavaPlugin {
 	public static void overrideEcon(EconProvider newProvider){
 		economy = newProvider;
 		vault = true;
+		config.set("general.race.rewards.enable", true);
 	}
 	
 	public boolean setupEconomy() {
