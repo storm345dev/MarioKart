@@ -192,6 +192,8 @@ public class ServerListener implements Listener {
 		
 		boolean showVoteMsg = true;
 		if(!fsm.getStage().getAllowJoin()){
+			player.kickPlayer("Unable to join server at this time! ("+fsm.getStage().name()+")");
+			/*
 			player.sendMessage(ChatColor.RED+"Unable to join server at this time!");
 			Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
@@ -200,6 +202,7 @@ public class ServerListener implements Listener {
 					fsm.sendToLobby(player);
 					return;
 				}}, 5*20l);
+				*/
 			return;
 		}
 		
