@@ -473,9 +473,18 @@ public class RaceExecutor {
 		}
 		
 		car.setMetadata("car.frozen", new StatValue(time, MarioKart.plugin));
-		ParticleEffects.sendToLocation(ParticleEffects.REDSTONE_DUST, player.getLocation(), 0, 0, 0, 2, 5);
-		car.setVelocity(new Vector(0, power, 0));
+		
 		final Player pl = player;
+		Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				ParticleEffects.sendToLocation(ParticleEffects.REDSTONE_DUST, pl.getLocation(), 0, 0, 0, 2, 5);
+				return;
+			}});
+		
+		car.setVelocity(new Vector(0, power, 0));
+		
 		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable() {
 
 			@Override

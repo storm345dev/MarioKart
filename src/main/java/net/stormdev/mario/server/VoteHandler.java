@@ -138,13 +138,18 @@ public class VoteHandler {
 
 					@Override
 					public void run() {
-						BossBar.removeBar(player);
-						BossBar.setMessage(player, VOTE_MESSAGE, percent);
+						if(!BossBar.hasBar(player)){
+							BossBar.setMessage(player, VOTE_MESSAGE, percent);
+						}
+						else {
+							BossBar.setHealth(player, percent);
+						}
+						
 						player.setLevel(rem);
+						if(rem < 20){
+							player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, Integer.MAX_VALUE);
+						}
 					}});
-				if(rem < 20){
-					player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, Integer.MAX_VALUE);
-				}
 				return;
 			}}, 20l, 20l));
 	}
@@ -230,11 +235,18 @@ public class VoteHandler {
 		FullServerManager.get().trackSelected(tName);
 	}
 	
-	public void removePlayerFromBoard(Player player){
+	public void removePlayerFromBoard(final Player player){
 		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-		if(BossBar.hasBar(player)){
-			BossBar.removeBar(player);
-		}
+		
+		Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				if(BossBar.hasBar(player)){
+					BossBar.removeBar(player);
+				}
+				return;
+			}});
 	}
 	
 	public void addPlayerToBoard(Player player){

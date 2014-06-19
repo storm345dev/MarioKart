@@ -7,6 +7,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.utils.ParticleEffects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -20,26 +21,52 @@ public class RaceMethods {
 		this.plugin = MarioKart.plugin;
 	}
 	
-	public void createExplode(Location loc){
-		loc.getWorld().playSound(loc, Sound.EXPLODE, 3f, 1f);
-		loc.getWorld().createExplosion(loc, 0);
-		loc.getWorld().playEffect(loc, Effect.SMOKE, 3);
-		ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, loc, 0, 0, 0, 1, 5);
-		ParticleEffects.sendToLocation(ParticleEffects.HUGE_EXPLODE, loc, 0, 0, 0, 1, 5);
-		ParticleEffects.sendToLocation(ParticleEffects.LAVA_SPARK, loc, 0, 0, 0, 1, 10);
-		ParticleEffects.sendToLocation(ParticleEffects.FIRE, loc, 0, 0, 0, 1, 5);
-		ParticleEffects.sendToLocation(ParticleEffects.FIREWORK_SPARK, loc, 0, 0, 0, 1, 5);
+	public void createExplode(final Location loc){
+		Runnable run = new Runnable(){
+
+			@Override
+			public void run() {
+				loc.getWorld().playSound(loc, Sound.EXPLODE, 3f, 1f);
+				loc.getWorld().createExplosion(loc, 0);
+				loc.getWorld().playEffect(loc, Effect.SMOKE, 3);
+				ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, loc, 0, 0, 0, 1, 5);
+				ParticleEffects.sendToLocation(ParticleEffects.HUGE_EXPLODE, loc, 0, 0, 0, 1, 5);
+				ParticleEffects.sendToLocation(ParticleEffects.LAVA_SPARK, loc, 0, 0, 0, 1, 10);
+				ParticleEffects.sendToLocation(ParticleEffects.FIRE, loc, 0, 0, 0, 1, 5);
+				ParticleEffects.sendToLocation(ParticleEffects.FIREWORK_SPARK, loc, 0, 0, 0, 1, 5);
+				return;
+			}};
+		if(Bukkit.isPrimaryThread()){
+			run.run();
+		}
+		else {
+			Bukkit.getScheduler().runTask(MarioKart.plugin, run);
+		}
 	}
 	
-	public void createExplode(Location loc, int size){
-		loc.getWorld().playSound(loc, Sound.EXPLODE, 1f, 1f);
-		//loc.getWorld().createExplosion(loc, 0);
-		loc.getWorld().playEffect(loc, Effect.SMOKE, size);
-		ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, loc, 0, 0, 0, 1, size);
-		ParticleEffects.sendToLocation(ParticleEffects.HUGE_EXPLODE, loc, 0, 0, 0, 1, size);
-		ParticleEffects.sendToLocation(ParticleEffects.LAVA_SPARK, loc, 0, 0, 0, 1, size*2);
-		ParticleEffects.sendToLocation(ParticleEffects.FIRE, loc, 0, 0, 0, 1, size);
-		ParticleEffects.sendToLocation(ParticleEffects.FIREWORK_SPARK, loc, 0, 0, 0, 1, size);
+	public void createExplode(final Location loc, final int size){
+		Runnable run = new Runnable(){
+
+			@Override
+			public void run() {
+				loc.getWorld().playSound(loc, Sound.EXPLODE, 1f, 1f);
+				//loc.getWorld().createExplosion(loc, 0);
+				loc.getWorld().playEffect(loc, Effect.SMOKE, size);
+				ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, loc, 0, 0, 0, 1, size);
+				ParticleEffects.sendToLocation(ParticleEffects.HUGE_EXPLODE, loc, 0, 0, 0, 1, size);
+				ParticleEffects.sendToLocation(ParticleEffects.LAVA_SPARK, loc, 0, 0, 0, 1, size*2);
+				ParticleEffects.sendToLocation(ParticleEffects.FIRE, loc, 0, 0, 0, 1, size);
+				ParticleEffects.sendToLocation(ParticleEffects.FIREWORK_SPARK, loc, 0, 0, 0, 1, size);
+				return;
+			}};
+		
+		
+		if(Bukkit.isPrimaryThread()){
+			run.run();
+		}
+		else {
+			Bukkit.getScheduler().runTask(MarioKart.plugin, run);
+		}
 	}
 
 	public synchronized Race inAGame(Player player, Boolean update) {
