@@ -294,7 +294,14 @@ public class MarioKart extends JavaPlugin {
 		
 		fullServer = config.getBoolean("general.server.control");
 		if(fullServer){
-			new FullServerManager();
+			Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					new FullServerManager();
+					return;
+				}});
+			
 		}
 		
 		System.gc();
