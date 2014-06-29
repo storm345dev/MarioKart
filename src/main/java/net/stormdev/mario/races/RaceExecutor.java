@@ -196,9 +196,9 @@ public class RaceExecutor {
 								Set<String> keys = sorted.keySet();
 								Object[] pls = keys.toArray();
 								for (int i = 0; i < pls.length; i++) {
-									Player p = MarioKart.plugin.getServer().getPlayer(
-											(String) pls[i]);
-									if (p.equals(player)) {
+									if (pls[i].equals(player.getName())) {
+										Player p = MarioKart.plugin.getServer().getPlayer(
+												(String) pls[i]);
 										if (p != null) {
 											String msg = "";
 											if (!timed) {
@@ -224,10 +224,16 @@ public class RaceExecutor {
 													pos = pos + "th";
 												}
 												msg = msg.replaceAll("%position%", "" + pos);
-												MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
+												final MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
 														player, (i + 1), pos, game.getTrack().getRewardConfig());
-												MarioKart.plugin.getServer().getPluginManager()
+												Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+													@Override
+													public void run() {
+														MarioKart.plugin.getServer().getPluginManager()
 														.callEvent(evt);
+														return;
+													}}, 2l);
 											} else {
 												//Time trial
 												double tim = (game.endTimeMS - game.startTimeMS) / 10;
@@ -281,10 +287,17 @@ public class RaceExecutor {
 											msg = msg.replaceAll("%position%", "" + pos);
 										} catch (Exception e) {
 										}
-										MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
+										final MarioKartRaceFinishEvent evt = new MarioKartRaceFinishEvent(
 												player, position, pos, game.getTrack().getRewardConfig());
-										MarioKart.plugin.getServer().getPluginManager()
+										Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+											@Override
+											public void run() {
+												MarioKart.plugin.getServer().getPluginManager()
 												.callEvent(evt);
+												return;
+											}}, 2l);
+										
 									} else {
 										// Time trial
 										double tim = (game.endTimeMS - game.startTimeMS) / 10;
