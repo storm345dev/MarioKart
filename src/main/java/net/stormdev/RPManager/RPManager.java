@@ -2,6 +2,7 @@ package net.stormdev.RPManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -59,5 +60,32 @@ public class RPManager {
 		MarioKart.logger.info("Resolved ResourcePack URL to: "+downloadURL);
 		
 		return downloadURL;
+	}
+	
+	public static void main(String args[]){
+		if(args.length < 1){
+			System.out.println("Need an arg...");
+			return;
+		}
+		
+		String url = args[0];
+		
+		String rURL;
+		try {
+			//Follow the server's redirect until we reach the .zip file
+			URLConnection c = new URL(url).openConnection();
+			c.connect();
+			InputStream is = c.getInputStream();
+			rURL = c.getURL().toExternalForm();
+			is.close();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		System.out.println("Resolved ResourcePack URL to: "+rURL);
 	}
 }
