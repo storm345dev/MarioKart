@@ -24,6 +24,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -178,6 +180,15 @@ public class ServerListener implements Listener {
 		}
 		if(fsm != null && fsm.voter != null){
 			fsm.voter.removePlayerFromBoard(player);
+		}
+	}
+	
+	@EventHandler
+	void prePlayerJoin(AsyncPlayerPreLoginEvent event){
+		if(!fsm.getStage().getAllowJoin()){
+			String reason = "Unable to join server at this time! ("+fsm.getStage().name()+")";
+			event.disallow(Result.KICK_OTHER, reason);
+			return;
 		}
 	}
 	
