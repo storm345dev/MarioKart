@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,6 +32,7 @@ public class IconMenu implements Listener {
 	private ItemStack[] optionIcons;
 	private Boolean enabled = true;
 	private String metaData;
+	private boolean destroyOnExit = false;
 
 	public IconMenu(String name, int size, OptionClickEventHandler handler,
 			Plugin plugin) {
@@ -42,6 +44,12 @@ public class IconMenu implements Listener {
 		this.optionIcons = new ItemStack[size];
 		this.metaData = "menu." + UUID.randomUUID().toString();
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	}
+	
+	public IconMenu(String name, int size, OptionClickEventHandler handler,
+			Plugin plugin, boolean destroyOnExit) {
+		this(name, size, handler, plugin);
+		this.destroyOnExit = destroyOnExit;
 	}
 
 	public IconMenu setOption(int position, ItemStack icon, String name,
@@ -77,6 +85,16 @@ public class IconMenu implements Listener {
 		optionIcons = null;
 		enabled = false;
 		metaData = null;
+	}
+	
+	@EventHandler
+	void onClose(InventoryCloseEvent event){
+		if(event.getPlayer().hasMetadata("metaData")){
+			event.getPlayer().removeMetadata(metaData, plugin);
+			if(destroyOnExit){
+				destroy();
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
