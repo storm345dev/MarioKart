@@ -608,7 +608,13 @@ public class RaceEventsListener implements Listener {
 		if(commandRewards){
 			String cmd = rewardCommand;
 			cmd = cmd.replaceAll(Pattern.quote("<name>"), Matcher.quoteReplacement(player.getName()));
-			cmd = cmd.replaceAll(Pattern.quote("<amount>"), Matcher.quoteReplacement(reward+""));
+			if(reward % 1 == 0){ //Whole number
+				cmd = cmd.replaceAll(Pattern.quote("<amount>"), Matcher.quoteReplacement(((int)reward)+""));
+			}
+			else {
+				cmd = cmd.replaceAll(Pattern.quote("<amount>"), Matcher.quoteReplacement(reward+""));
+			}
+			
 			cmd = cmd.replaceAll(Pattern.quote("<position>"), Matcher.quoteReplacement(pos+""));
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 			if(MarioKart.config.getBoolean("general.race.rewards.command.say")){
