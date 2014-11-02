@@ -58,7 +58,7 @@ public class FullServerManager {
 	}
 	
 	public String getMOTD(){
-		return stage.getMOTD();
+		return getStage().getMOTD();
 	}
 	
 	public void changeServerStage(ServerStage now){
