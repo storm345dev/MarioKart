@@ -50,6 +50,10 @@ public class FullServerManager {
 	}
 	
 	public ServerStage getStage(){
+		if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().length < 1){
+			changeServerStage(ServerStage.RESTARTING);
+			changeServerStage(ServerStage.WAITING);
+		}
 		return stage;
 	}
 	
