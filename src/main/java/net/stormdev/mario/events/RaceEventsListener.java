@@ -460,40 +460,47 @@ public class RaceEventsListener implements Listener {
 		if (plugin.raceMethods.inAGame(player, true) == null) {
 			return;
 		}
-		final Race race = plugin.raceMethods.inAGame(player, false);
-		User u = race.updateUser(player);
-		int checkpoint = u.getCheckpoint();
-		//race.updateUser(u);
-		Location loc = race.getTrack().getCheckpoint(checkpoint)
-				.getLocation(plugin.getServer()).clone().add(0, 2, 0);
-		Chunk chunk = loc.getChunk();
-		if (!chunk.isLoaded()) {
-			chunk.load(true);
-		}
-		if (player.getLocation().getChunk() != chunk) {
-			Location l = new Location(chunk.getWorld(), chunk.getX(), 90,
-					chunk.getZ());
-			l.getChunk(); // Load the chunk
-			player.teleport(l);
-		}
-		Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
-				EntityType.MINECART);
-		cart.setMetadata("kart.racing", new StatValue(null, MarioKart.plugin));
-		cart.setPassenger(player);
-		if(fairCars){
-			uCarsAPI.getAPI().setUseRaceControls(cart.getUniqueId(), plugin);
-		}
-		player.setMetadata("car.stayIn", new StatValue(null, plugin));
-		plugin.hotBarManager.updateHotBar(player);
-		player.updateInventory();
-		player.setScoreboard(race.board);
-		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+		Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
 
 			@Override
 			public void run() {
-				MarioKart.plugin.raceScheduler.updateRace(race);
+				final Race race = plugin.raceMethods.inAGame(player, false);
+				User u = race.updateUser(player);
+				int checkpoint = u.getCheckpoint();
+				//race.updateUser(u);
+				Location loc = race.getTrack().getCheckpoint(checkpoint)
+						.getLocation(plugin.getServer()).clone().add(0, 2, 0);
+				player.teleport(loc.clone().add(0, 2, 0));
+				Chunk chunk = loc.getChunk();
+				if (!chunk.isLoaded()) {
+					chunk.load(true);
+				}
+				if (player.getLocation().getChunk() != chunk) {
+					Location l = new Location(chunk.getWorld(), chunk.getX(), 90,
+							chunk.getZ());
+					l.getChunk(); // Load the chunk
+					player.teleport(l);
+				}
+				Minecart cart = (Minecart) loc.getWorld().spawnEntity(loc,
+						EntityType.MINECART);
+				cart.setMetadata("kart.racing", new StatValue(null, MarioKart.plugin));
+				cart.setPassenger(player);
+				if(fairCars){
+					uCarsAPI.getAPI().setUseRaceControls(cart.getUniqueId(), plugin);
+				}
+				player.setMetadata("car.stayIn", new StatValue(null, plugin));
+				plugin.hotBarManager.updateHotBar(player);
+				player.updateInventory();
+				player.setScoreboard(race.board);
+				Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						MarioKart.plugin.raceScheduler.updateRace(race);
+						return;
+					}});
 				return;
-			}});
+			}}, 2l);
 		
 		return;
 	}

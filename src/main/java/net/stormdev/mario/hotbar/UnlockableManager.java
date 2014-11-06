@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.stormdev.SQL.MySQL;
-import net.stormdev.SQL.SQLManager;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.uuidapi.PlayerIDFinder;
 
@@ -28,6 +26,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.stormdev.gbapi.storm.SQL.MySQL;
+import org.stormdev.gbapi.storm.SQL.SQLManager;
 
 import com.useful.ucarsCommon.StatValue;
 
