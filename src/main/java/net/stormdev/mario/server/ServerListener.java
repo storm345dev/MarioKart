@@ -1,5 +1,10 @@
 package net.stormdev.mario.server;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -166,7 +171,17 @@ public class ServerListener implements Listener {
 	
 	@EventHandler
 	void onPing(ServerListPingEvent event){
-		event.setMotd(fsm.getMOTD());
+		Future<String> f = Bukkit.getScheduler().callSyncMethod(MarioKart.plugin, new Callable<String>(){
+
+			@Override
+			public String call() throws Exception {
+				return fsm.getMOTD();
+			}});
+		try {
+			event.setMotd(f.get(10, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			event.setMotd("TIMEOUT");
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
