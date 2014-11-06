@@ -50,10 +50,17 @@ public class FullServerManager {
 	}
 	
 	public ServerStage getStage(){
-		if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().length < 1){
-			changeServerStage(ServerStage.RESTARTING);
-			changeServerStage(ServerStage.WAITING);
-		}
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().length < 1){
+					changeServerStage(ServerStage.RESTARTING);
+					changeServerStage(ServerStage.WAITING);
+				}
+				return;
+			}}, 2l);
+		
 		return stage;
 	}
 	

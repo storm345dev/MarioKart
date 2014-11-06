@@ -171,17 +171,7 @@ public class ServerListener implements Listener {
 	
 	@EventHandler
 	void onPing(ServerListPingEvent event){
-		Future<String> f = Bukkit.getScheduler().callSyncMethod(MarioKart.plugin, new Callable<String>(){
-
-			@Override
-			public String call() throws Exception {
-				return fsm.getMOTD();
-			}});
-		try {
-			event.setMotd(f.get(10, TimeUnit.SECONDS));
-		} catch (Exception e) {
-			event.setMotd("TIMEOUT");
-		}
+		event.setMotd(fsm.getMOTD());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
