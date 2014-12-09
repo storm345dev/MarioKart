@@ -408,7 +408,7 @@ public class RaceScheduler {
 		for (int i = 0; i < count; i++) {
 			int max = users.size();
 			if (max>0) {
-				Player p = null;
+			    Player p = null;
 				int randomNumber = MarioKart.plugin.random.nextInt(max);
 				User user = users.get(randomNumber);
 				try {
@@ -430,15 +430,25 @@ public class RaceScheduler {
 						c.load(true);
 					}
 					p.teleport(loc.add(0, 2, 0));
-					Minecart car = (Minecart) loc.getWorld().spawnEntity(
+					final Minecart car = (Minecart) loc.getWorld().spawnEntity(
 							loc.add(0, 0.2, 0), EntityType.MINECART);
 					car.setMetadata("car.frozen", new StatValue(null,
 							MarioKart.plugin));
 					car.setMetadata("kart.racing", new StatValue(null,
 							MarioKart.plugin));
-					car.setPassenger(p);
-					p.setMetadata("car.stayIn",
-							new StatValue(null, MarioKart.plugin));
+					
+					final Player pl = p;
+					
+					Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+						@Override
+						public void run() {
+							car.setPassenger(pl);
+							pl.setMetadata("car.stayIn",
+									new StatValue(null, MarioKart.plugin));
+							return;
+						}}, 2l);
+					
 					cars.add(car);
 					if(fairCars){
 						uCarsAPI.getAPI().setUseRaceControls(car.getUniqueId(), MarioKart.plugin);

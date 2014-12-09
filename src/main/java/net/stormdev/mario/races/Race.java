@@ -521,7 +521,20 @@ public class Race {
 				}, this.scorerate, this.scorerate);
 		try {
 			this.startTimeMS = System.currentTimeMillis();
-			RaceExecutor.onRaceStart(this);
+			Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					try {
+						RaceExecutor.onRaceStart(Race.this);
+					} catch (Exception e) {
+						e.printStackTrace();
+						MarioKart.logger.log("Error starting race!", Level.SEVERE);
+						end();
+					}
+					return;
+				}});
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			MarioKart.logger.log("Error starting race!", Level.SEVERE);

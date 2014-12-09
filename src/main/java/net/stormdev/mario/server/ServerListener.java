@@ -1,10 +1,5 @@
 package net.stormdev.mario.server;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -202,7 +198,7 @@ public class ServerListener implements Listener {
 	void playerJoin(PlayerJoinEvent event){
 		event.setJoinMessage(null);
 		final Player player = event.getPlayer();
-		player.setHealth(player.getMaxHealth());
+		player.setHealth(((Damageable)player).getMaxHealth());
 		player.setFoodLevel(20);
 		player.getInventory().clear();
 		

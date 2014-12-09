@@ -7,6 +7,7 @@ import net.stormdev.mario.mariokart.MarioKart;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class LocationStrings {
 	public static String getLocationString(Location loc){
@@ -30,8 +31,15 @@ public class LocationStrings {
 			double x = Double.parseDouble(coords[0]);
 			double y = Double.parseDouble(coords[1]);
 			double z = Double.parseDouble(coords[2]);
+			World w = Bukkit.getServer().getWorld(wName);
 			
-			loc = new Location(Bukkit.getServer().getWorld(wName), x, y, z);
+			if(w == null){
+				MarioKart.logger.info("Could not find world '"+wName+"' for location '"+str+"'! Using the default world instead!");
+				w = Bukkit.getServer().getWorlds().get(0);
+				MarioKart.logger.info("Using world '"+w.getName()+"'");
+			}
+			
+			loc = new Location(w, x, y, z);
 			
 			if(locSects.length > 2){
 				String[] dir = locSects[2].split(Pattern.quote(","));

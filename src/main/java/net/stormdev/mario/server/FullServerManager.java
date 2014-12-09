@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,7 +32,7 @@ public class FullServerManager {
 	private RaceType mode;
 	private RaceTrack track;
 	private volatile Race race;
-	private SpectatorMode spectators = null;
+	public SpectatorMode spectators = null;
 	private boolean starting = false;
 	
 	public static final ItemStack item;
@@ -145,6 +146,9 @@ public class FullServerManager {
 		MarioKart.logger.info("Using "+BUNGEE_LOBBY_ID+" as the game lobby!");
 		Bukkit.getPluginManager().registerEvents(new ServerListener(), MarioKart.plugin);
 		lobbyLoc = LocationStrings.getLocation(MarioKart.config.getString("general.server.gamelobby"));
+		if(lobbyLoc == null || lobbyLoc.getWorld() == null){
+			MarioKart.logger.info("INVALID Lobby location: "+MarioKart.config.getString("general.server.gamelobby"));
+		}
 		spectators = new SpectatorMode();
 		Bukkit.getScheduler().runTaskTimerAsynchronously(MarioKart.plugin, new Runnable(){
 
@@ -214,7 +218,7 @@ public class FullServerManager {
 	}
 	
 	public void sendToLobby(Player player){
-		player.setHealth(player.getMaxHealth());
+		player.setHealth(((Damageable)player).getMaxHealth());
 		player.setFoodLevel(20);
 		player.getInventory().clear();
 		PlayerServerSender.sendToServer(player, BUNGEE_LOBBY_ID);

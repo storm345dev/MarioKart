@@ -10,9 +10,12 @@ import net.stormdev.mario.players.User;
 import net.stormdev.mario.queues.RaceQueue;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceType;
+import net.stormdev.mario.server.FullServerManager;
+import net.stormdev.mario.server.SpectatorMode;
 import net.stormdev.mario.shop.Shop;
 import net.stormdev.mario.tracks.RaceTrack;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -89,7 +92,24 @@ public class RaceCommandExecutor implements CommandExecutor {
 				sender.sendMessage(MarioKart.colors.getInfo() + Trackname);
 			}
 			return true;
-		} else if (command.equalsIgnoreCase("join")) {
+		}
+		else if(command.equalsIgnoreCase("quit")){ //Quit to lobby
+			Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					player.getInventory().clear();
+					if(FullServerManager.get().spectators != null && FullServerManager.get().spectators.isSpectating(player)){
+						FullServerManager.get().spectators.stopSpectating(player);
+					}
+					player.teleport(FullServerManager.get().lobbyLoc); //For when they next login
+					player.sendMessage(ChatColor.GRAY+"Teleporting...");
+					FullServerManager.get().sendToLobby(player);
+					return;
+				}});
+			return true;
+		}
+		else if (command.equalsIgnoreCase("join")) {
 			if(MarioKart.fullServer){
 				return true;
 			}

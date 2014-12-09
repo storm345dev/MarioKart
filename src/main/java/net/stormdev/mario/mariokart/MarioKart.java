@@ -318,7 +318,7 @@ public class MarioKart extends JavaPlugin {
 		this.raceScheduler.endAll();
 		raceQueues.clear();
 		
-		Player[] players = getServer().getOnlinePlayers().clone();
+		Player[] players = getServer().getOnlinePlayers();
 		for (Player player : players) {
 			if (player.hasMetadata("car.stayIn")) {
 				player.removeMetadata("car.stayIn", plugin);

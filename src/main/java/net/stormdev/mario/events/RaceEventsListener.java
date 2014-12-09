@@ -12,7 +12,6 @@ import net.stormdev.mario.races.MarioKartRaceFinishEvent;
 import net.stormdev.mario.races.Race;
 import net.stormdev.mario.races.RaceExecutor;
 import net.stormdev.mario.rewards.RewardConfiguration;
-import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.sound.MarioKartSound;
 
 import org.bukkit.Bukkit;
@@ -21,6 +20,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -255,6 +255,7 @@ public class RaceEventsListener implements Listener {
 		if (!ucars.listener.isACar(car)) {
 			return;
 		}
+		//System.out.println("Cancelling car exit...");
 		event.setCancelled(true);
 	}
 	
@@ -357,7 +358,7 @@ public class RaceEventsListener implements Listener {
 					PotionEffectType.FIRE_RESISTANCE, 2, 100));
 			double health = 5;
 			try {
-				health = player.getHealth();
+				health = (double) ((Damageable)player).getHealth();
 			} catch (Exception e) {
 				health = Double.MAX_VALUE;
 			}

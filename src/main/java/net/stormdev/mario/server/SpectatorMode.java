@@ -46,7 +46,7 @@ public class SpectatorMode implements Listener {
 		}
 		player.setMetadata(META, new MetaValue(true, MarioKart.plugin));
 		player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
-		player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"Info: "+ChatColor.GOLD+"You are now spectating, to go back to the lobby at anytime; use the item on your hotbar.");
+		player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"Info: "+ChatColor.GOLD+"You are now spectating, to go back to the lobby at anytime; do '/race quit'.");
 		player.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
 		player.closeInventory();
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
@@ -57,7 +57,7 @@ public class SpectatorMode implements Listener {
 
 			@Override
 			public void run() {
-				player.setGameMode(GameMode.CREATIVE);
+				player.setGameMode(GameMode.SPECTATOR);
 				spectateInv(player);
 				return;
 			}}, 12l);
@@ -94,19 +94,25 @@ public class SpectatorMode implements Listener {
 	}
 	
 	public void stopSpectating(final Player player){
-		player.getInventory().clear();
-		player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		show(player);
-		player.removeMetadata(META, MarioKart.plugin);
-		player.setAllowFlight(false);
-		player.setGameMode(GameMode.SURVIVAL);
-		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+		Bukkit.getScheduler().runTask(MarioKart.plugin, new Runnable(){
 
 			@Override
 			public void run() {
-				player.teleport(FullServerManager.get().lobbyLoc);
+				player.getInventory().clear();
+				player.removePotionEffect(PotionEffectType.INVISIBILITY);
+				show(player);
+				player.removeMetadata(META, MarioKart.plugin);
+				player.setAllowFlight(false);
+				player.setGameMode(GameMode.SURVIVAL);
+				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						player.teleport(FullServerManager.get().lobbyLoc);
+						return;
+					}}, 5l);
 				return;
-			}}, 5l);
+			}});
 	}
 	
 	public boolean isSpectating(Player player){
@@ -115,7 +121,7 @@ public class SpectatorMode implements Listener {
 	
 	@SuppressWarnings("deprecation")
 	private void spectateInv(final Player player){
-		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+		/*Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
 			@Override
 			public void run() {
@@ -127,7 +133,7 @@ public class SpectatorMode implements Listener {
 				inv.setItem(0, item.clone());
 				player.updateInventory();
 				return;
-			}}, 5l);
+			}}, 5l);*/
 	}
 	
 	@EventHandler
@@ -137,7 +143,7 @@ public class SpectatorMode implements Listener {
 		}
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	void useExit(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -152,16 +158,16 @@ public class SpectatorMode implements Listener {
 		player.teleport(FullServerManager.get().lobbyLoc); //For when they next login
 		player.sendMessage(ChatColor.GRAY+"Teleporting...");
 		FullServerManager.get().sendToLobby(player);
-	}
+	}*/
 	
-	@EventHandler
+	/*@EventHandler
 	void dropItem(PlayerDropItemEvent event){
 		if(isSpectating(event.getPlayer())){
 			event.setCancelled(true);
 		}
-	}
+	}*/
 	
-	@EventHandler
+	/*@EventHandler
 	void invClick(InventoryClickEvent event){
 		Entity e = event.getWhoClicked();
 		if(!(e instanceof Player)){
@@ -172,5 +178,5 @@ public class SpectatorMode implements Listener {
 		if(isSpectating(player)){
 			event.setCancelled(true);
 		}
-	}
+	}*/
 }
