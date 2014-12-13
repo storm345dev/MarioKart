@@ -1,4 +1,4 @@
-package org.stormdev.gbapi.storm.SQL;
+package org.stormdev.stormapi.SQL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
