@@ -26,8 +26,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.stormdev.stormapi.SQL.MySQL;
-import org.stormdev.stormapi.SQL.SQLManager;
+import org.stormdev.mkstormapi.SQL.MySQL;
+import org.stormdev.mkstormapi.SQL.SQLManager;
 
 import com.useful.ucarsCommon.StatValue;
 
