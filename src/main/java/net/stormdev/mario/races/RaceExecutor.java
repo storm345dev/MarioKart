@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.players.PlayerQuitException;
 import net.stormdev.mario.players.User;
+import net.stormdev.mario.server.FullServerManager;
 import net.stormdev.mario.sound.MarioKartSound;
 import net.stormdev.mario.utils.DoubleValueComparator;
 import net.stormdev.mario.utils.ObjectWrapper;
@@ -25,7 +26,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.useful.ucars.SmoothMeta;
@@ -53,7 +53,7 @@ public class RaceExecutor {
 
 	public static void finishRace(final Race game, final User user, final Boolean gameEnded){
 		//Call finishRaceSync, syncrhonously
-		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new BukkitRunnable(){
+		MarioKart.plugin.getServer().getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
 
 			@Override
 			public void run() {
@@ -308,6 +308,15 @@ public class RaceExecutor {
 										MarioKart.plugin.musicManager.playCustomSound(player, MarioKartSound.RACE_WIN);
 										MarioKart.plugin.raceTimes.addRaceTime(game.getTrack()
 												.getTrackName(), player.getName(), t);
+										if(MarioKart.fullServer){
+											Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+												@Override
+												public void run() {
+													FullServerManager.get().restart();
+													return;
+												}}, 2l);
+										}
 									}
 									player.sendMessage(MarioKart.colors.getSuccess() + msg);
 								}

@@ -308,26 +308,7 @@ public class ServerListener implements Listener {
 	
 	@EventHandler
 	public void raceEnding(MarioKartRaceEndEvent event){
-		//Reset game
-		fsm.changeServerStage(ServerStage.RESTARTING);
-		//wait...
-		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
-
-			@Override
-			public void run() {
-				Player[] online = Bukkit.getOnlinePlayers();
-				for(Player p:online){
-					fsm.sendToLobby(p);
-				}
-				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
-
-					@Override
-					public void run() {
-						fsm.changeServerStage(ServerStage.WAITING);
-						return;
-					}}, 10*20l);
-				return;
-			}}, 10*20l);
+		fsm.restart();
 	}
 	
 	@EventHandler

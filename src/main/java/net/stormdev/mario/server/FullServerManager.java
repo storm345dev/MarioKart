@@ -56,8 +56,7 @@ public class FullServerManager {
 			@Override
 			public void run() {
 				if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().length < 1){
-					changeServerStage(ServerStage.RESTARTING);
-					changeServerStage(ServerStage.WAITING);
+					restart();
 				}
 				return;
 			}}, 2l);
@@ -160,25 +159,7 @@ public class FullServerManager {
 
 						@Override
 						public void run() {
-							Player[] online = Bukkit.getOnlinePlayers();
-							for(Player p:online){
-								sendToLobby(p);
-							}
-							Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
-
-								@Override
-								public void run() {
-									if(MarioKart.fullServerRestart){
-										Bukkit.getServer().shutdown();
-										System.exit(0);
-										return;
-									}
-									else {
-										System.gc();
-										changeServerStage(ServerStage.WAITING);
-									}
-									return;
-								}}, 3*20l);
+							restart();
 							return;
 						}}, 10*20l);
 				}
@@ -230,6 +211,39 @@ public class FullServerManager {
 		player.setFoodLevel(20);
 		player.getInventory().clear();
 		PlayerServerSender.sendToServer(player, BUNGEE_LOBBY_ID);
+	}
+	
+	public void restart(){
+		//Reset game
+		changeServerStage(ServerStage.RESTARTING);
+		//wait...
+		Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				Player[] online = Bukkit.getOnlinePlayers();
+				for(Player p:online){
+					sendToLobby(p);
+				}
+				Bukkit.getScheduler().runTaskLater(MarioKart.plugin, new Runnable(){
+
+					@Override
+					public void run() {
+						if(MarioKart.fullServerRestart){
+							Bukkit.getServer().shutdown();
+							System.exit(0);
+							return;
+						}
+						else {
+							System.gc();
+							if(stage.equals(ServerStage.RESTARTING)){
+								changeServerStage(ServerStage.WAITING);
+							}
+						}
+						return;
+					}}, 10*20l);
+				return;
+			}}, 10*20l);
 	}
 	
 	public void trackSelected(final String trackName){
@@ -291,7 +305,7 @@ public class FullServerManager {
 				
 				Player[] players = Bukkit.getOnlinePlayers();
 				if(players.length < 1 || track == null || track.getTrackName() == null || mode == null){
-					changeServerStage(ServerStage.WAITING); //Reset the server, nobody is on anymore
+					restart();
 					return;
 				}
 				race = new Race(track,
