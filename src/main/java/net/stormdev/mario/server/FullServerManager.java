@@ -174,6 +174,7 @@ public class FullServerManager {
 										return;
 									}
 									else {
+										System.gc();
 										changeServerStage(ServerStage.WAITING);
 									}
 									return;
