@@ -107,6 +107,7 @@ public class MarioKart extends JavaPlugin {
 
 	public static Boolean vault = false;
 	public static EconProvider economy = null;
+	public static boolean fullServerRestart = false;
 
 	private void setupCmds(){
 		adminCommandExecutor = new AdminCommandExecutor(this);
@@ -175,6 +176,8 @@ public class MarioKart extends JavaPlugin {
 		// Setup the config
 		PluginConfigurator.load(config); //Loads and converts configs
 		saveConfig();
+		
+		MarioKart.fullServerRestart = config.getBoolean("general.server.restartStopsServer");
 		
 		uCarsAPI.getAPI().hookPlugin(this);
 		ucars = com.useful.ucars.ucars.plugin; //Hook it

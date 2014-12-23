@@ -168,7 +168,14 @@ public class FullServerManager {
 
 								@Override
 								public void run() {
-									changeServerStage(ServerStage.WAITING);
+									if(MarioKart.fullServerRestart){
+										Bukkit.getServer().shutdown();
+										System.exit(0);
+										return;
+									}
+									else {
+										changeServerStage(ServerStage.WAITING);
+									}
 									return;
 								}}, 10*20l);
 							return;

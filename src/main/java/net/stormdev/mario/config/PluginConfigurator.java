@@ -37,6 +37,9 @@ public class PluginConfigurator {
 		if(!config.contains("general.server.control")){
 			config.set("general.server.control", false);
 		}
+		if(!config.contains("general.server.restartStopsServer")){
+			config.set("general.server.restartStopsServer", false);
+		}
 		if(!config.contains("general.server.bungeelobby")){
 			config.set("general.server.bungeelobby", "lobby");
 		}
