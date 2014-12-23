@@ -177,7 +177,7 @@ public class FullServerManager {
 										changeServerStage(ServerStage.WAITING);
 									}
 									return;
-								}}, 10*20l);
+								}}, 3*20l);
 							return;
 						}}, 10*20l);
 				}
