@@ -358,6 +358,7 @@ public class UnlockableManager implements Listener {
 	}
 	
 	public void load(final String playerId){
+                if(!sql){return;}
 		Bukkit.getScheduler().runTaskAsynchronously(MarioKart.plugin, new Runnable(){
 
 			@Override
