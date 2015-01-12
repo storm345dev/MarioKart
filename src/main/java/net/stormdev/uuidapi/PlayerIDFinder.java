@@ -46,7 +46,7 @@ public class PlayerIDFinder {
 		}
 		MojangID mid = getMojangID(player.getName());
 		player.setMetadata("uuid", new SimpleMeta(mid, Bukkit.getPluginManager().getPlugins()[0])); //Replace plugin with yours to use CORRECTLY, but it doesn't matter much
-		try {
+		/*try {
 			UUID id = getAsUUID(mid.getID());
 			PlayerReflect.setPlayerUUID(player, id);
 			if(player.getUniqueId().toString().equals(id.toString())){
@@ -59,7 +59,7 @@ public class PlayerIDFinder {
 		} catch (Exception e) {
 			e.printStackTrace();
 			//Oh well
-		}
+		}*/
 		return mid;
 	}
 	
@@ -367,7 +367,7 @@ class SimpleMeta implements MetadataValue {
 	}
 }
 
-class PlayerReflect {
+/*class PlayerReflect {
 	public static void setPlayerUUID(Player player, UUID id){
 		String NMSversion = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage()
 				.getName().replace(".", ",").split(",")[3];
@@ -395,7 +395,7 @@ class PlayerReflect {
 		}
 	}
 	
-	/*
+	
 	public static void putBlockInCar(Minecart car, int id, int data){
 		Boolean useFallingBlock = false;
 		// net.minecraft.server.v1_7_R1.EntityMinecartAbstract;
@@ -431,6 +431,6 @@ class PlayerReflect {
 		}
 		return;
 	}
-	*/
-}
+	
+}*/
 
