@@ -50,13 +50,13 @@ public class PluginConfigurator {
 			config.set("general.logger.colour", true);
 		}
 		if (!config.contains("general.raceLimit")) {
-			config.set("general.raceLimit", 10);
+			config.set("general.raceLimit", 3);
 		}
 		if (!config.contains("general.raceTickrate")) {
-			config.set("general.raceTickrate", 4l);
+			config.set("general.raceTickrate", 10l);
 		}
 		if (!config.contains("general.checkpointRadius")) {
-			config.set("general.checkpointRadius", 10.0);
+			config.set("general.checkpointRadius", 15.0);
 		}
 		if (!config.contains("general.raceGracePeriod")) {
 			config.set("general.raceGracePeriod", 10.0);
