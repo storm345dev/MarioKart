@@ -30,7 +30,7 @@ public class v1_8 extends FakeDragon {
 	private static final String BOSS_TEXT_META = "bossTextMeta";
 
 	public static void setDragon(Player player, FakeDragon dragon){
-		BarAPI.players.put(player.getUniqueId(), dragon);
+		BarAPI1_8.players.put(player.getUniqueId(), dragon);
 		if(player.hasMetadata(DRAGON_META)){
 			clearDragon(player);
 		}
@@ -80,9 +80,9 @@ public class v1_8 extends FakeDragon {
 						continue; //Don't do anything
 					}
 						
-					if(BarAPI.players.containsKey(player.getUniqueId())){
+					if(BarAPI1_8.players.containsKey(player.getUniqueId())){
 						try {
-							FakeDragon dragon = (FakeDragon) BarAPI.players.get(player.getUniqueId());
+							FakeDragon dragon = (FakeDragon) BarAPI1_8.players.get(player.getUniqueId());
 							String msg = dragon.name;
 							Subtitle.sendSubtitle(player, msg);
 						} catch (Exception e) {

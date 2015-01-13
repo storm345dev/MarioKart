@@ -39,7 +39,7 @@ public class BossBar {
 
 				@Override
 				public void run() {
-					net.stormdev.barapi_1_8.BarAPI.setMessage(player, message);
+					net.stormdev.barapi_1_8.BarAPI1_8.setMessage(player, message);
 					return;
 				}});
 			return;
@@ -60,7 +60,7 @@ public class BossBar {
 
 				@Override
 				public void run() {
-					net.stormdev.barapi_1_8.BarAPI.setMessage(player, message, percent);
+					net.stormdev.barapi_1_8.BarAPI1_8.setMessage(player, message, percent);
 					return;
 				}});
 			return;
@@ -81,7 +81,7 @@ public class BossBar {
 
 				@Override
 				public void run() {
-					net.stormdev.barapi_1_8.BarAPI.setMessage(player, message, seconds);
+					net.stormdev.barapi_1_8.BarAPI1_8.setMessage(player, message, seconds);
 					return;
 				}});
 			return;
@@ -97,7 +97,7 @@ public class BossBar {
 	}
 	
 	public static boolean hasBar(Player player){
-		if(a()){return net.stormdev.barapi_1_8.BarAPI.hasBar(player);};
+		if(a()){return net.stormdev.barapi_1_8.BarAPI1_8.hasBar(player);};
 		return BarAPI.hasBar(player);
 	}
 	
@@ -107,7 +107,7 @@ public class BossBar {
 
 				@Override
 				public void run() {
-					net.stormdev.barapi_1_8.BarAPI.removeBar(player);
+					net.stormdev.barapi_1_8.BarAPI1_8.removeBar(player);
 					return;
 				}});
 			return;
@@ -129,7 +129,7 @@ public class BossBar {
 
 				@Override
 				public void run() {
-					net.stormdev.barapi_1_8.BarAPI.setHealth(player, percent);
+					net.stormdev.barapi_1_8.BarAPI1_8.setHealth(player, percent);
 					return;
 				}});
 			return;

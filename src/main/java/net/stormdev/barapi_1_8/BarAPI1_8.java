@@ -24,14 +24,14 @@ import org.stormdev.util.Versioning;
  * @author James Mortemore
  */
 
-public class BarAPI implements Listener {
+public class BarAPI1_8 implements Listener {
 	public static HashMap<UUID, FakeDragon> players = new HashMap<UUID, FakeDragon>();
 	private static HashMap<UUID, Integer> timers = new HashMap<UUID, Integer>();
 
-	public static BarAPI instance;
+	public static BarAPI1_8 instance;
 	
 	public static void onEnable() {
-		instance = new BarAPI();
+		instance = new BarAPI1_8();
 		Bukkit.getPluginManager().registerEvents(instance, MarioKart.plugin);
 		v1_8.start1_8PacketHandling();
 	}
@@ -126,7 +126,7 @@ public class BarAPI implements Listener {
 	 *            The message shown.<br>
 	 *            Due to limitations in Minecraft this message cannot be longer than 64 characters.<br>
 	 *            It will be cut to that size automatically.
-	 * @see BarAPI#setMessage(player, message)
+	 * @see BarAPI1_8#setMessage(player, message)
 	 */
 	public static void setMessage(String message) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -171,7 +171,7 @@ public class BarAPI implements Listener {
 	 *            This value must be between 0F (inclusive) and 100F (inclusive).
 	 * @throws IllegalArgumentException
 	 *             If the percentage is not within valid bounds.
-	 * @see BarAPI#setMessage(player, message, percent)
+	 * @see BarAPI1_8#setMessage(player, message, percent)
 	 */
 	public static void setMessage(String message, float percent) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -225,7 +225,7 @@ public class BarAPI implements Listener {
 	 *            Supports values above 1 (inclusive).
 	 * @throws IllegalArgumentException
 	 *             If seconds is zero or below.
-	 * @see BarAPI#setMessage(player, message, seconds)
+	 * @see BarAPI1_8#setMessage(player, message, seconds)
 	 */
 	public static void setMessage(String message, int seconds) {
 		for (Player player : Bukkit.getOnlinePlayers()) {

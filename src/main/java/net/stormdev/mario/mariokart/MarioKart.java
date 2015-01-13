@@ -307,7 +307,7 @@ public class MarioKart extends JavaPlugin {
 			
 		}
 		
-		net.stormdev.barapi_1_8.BarAPI.onEnable();
+		net.stormdev.barapi_1_8.BarAPI1_8.onEnable();
 		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
@@ -343,7 +343,7 @@ public class MarioKart extends JavaPlugin {
 		
 		this.upgradeManager.unloadSQL();
 		
-		net.stormdev.barapi_1_8.BarAPI.onDisable();
+		net.stormdev.barapi_1_8.BarAPI1_8.onDisable();
 		
 		logger.info("MarioKart has been disabled!");
 		System.gc();
