@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.stormdev.util.Versioning;
 
 /**
  * Allows plugins to safely set a health bar message.
@@ -80,7 +79,7 @@ public class BarAPI1_8 implements Listener {
 	}
 
 	private void handleTeleport(final Player player, final Location loc) {
-		if(Versioning.is1_8(player)){
+		if(/*Versioning.is1_8(player)*/ true){
 			return;
 		}
 		
@@ -306,7 +305,7 @@ public class BarAPI1_8 implements Listener {
 		if (!hasBar(player))
 			return;
 
-		if(!Versioning.is1_8(player)){
+		if(/*!Versioning.is1_8(player)*/false){
 			Util.sendPacket(player, getDragon(player, "").getDestroyPacket());
 		}
 
@@ -387,7 +386,7 @@ public class BarAPI1_8 implements Listener {
 	}
 
 	private static void sendDragon(FakeDragon dragon, Player player) {
-		if(!Versioning.is1_8(player)){
+		if(/*!Versioning.is1_8(player)*/false){
 		//if(Boolean.valueOf(true)){
 			Util.sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
 			Util.sendPacket(player, dragon.getTeleportPacket(player.getLocation().add(0, -300, 0)));
@@ -407,7 +406,7 @@ public class BarAPI1_8 implements Listener {
 
 	private static FakeDragon addDragon(Player player, String message) {
 		FakeDragon dragon = Util.newDragon(message, player.getLocation().add(0, -300, 0));
-		if(!Versioning.is1_8(player)){
+		if(/*!Versioning.is1_8(player)*/false){
 			Util.sendPacket(player, dragon.getSpawnPacket());
 		}
 
@@ -419,7 +418,7 @@ public class BarAPI1_8 implements Listener {
 	private static FakeDragon addDragon(Player player, Location loc, String message) {
 		FakeDragon dragon = Util.newDragon(message, loc.add(0, -300, 0));
 
-		if(!Versioning.is1_8(player)){
+		if(/*!Versioning.is1_8(player)*/false){
 			Util.sendPacket(player, dragon.getSpawnPacket());
 		}
 

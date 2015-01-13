@@ -10,9 +10,6 @@ import net.stormdev.mario.mariokart.MarioKart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.stormdev.util.MetadataValue;
-import org.stormdev.util.Subtitle;
-import org.stormdev.util.Versioning;
 
 /**
 * This is the FakeDragon class for BarAPI.
@@ -76,7 +73,7 @@ public class v1_8 extends FakeDragon {
 			public void run() {
 				
 				for(Player player: new ArrayList<Player>(Bukkit.getOnlinePlayers())){
-					if(!Versioning.is1_8(player)){
+					if(/*!Versioning.is1_8(player)*/false){
 						continue; //Don't do anything
 					}
 						
