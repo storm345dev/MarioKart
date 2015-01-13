@@ -2,6 +2,7 @@ package net.stormdev.mario.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import net.stormdev.mario.mariokart.MarioKart;
@@ -55,7 +56,7 @@ public class FullServerManager {
 
 			@Override
 			public void run() {
-				if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().length < 1){
+				if(stage.equals(ServerStage.PLAYING) && Bukkit.getOnlinePlayers().size() < 1){
 					restart();
 				}
 				return;
@@ -87,7 +88,7 @@ public class FullServerManager {
 			break;
 		case STARTING: {
 			voter = null;
-			Player[] online = Bukkit.getOnlinePlayers();
+			Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 			for(Player player:online){
 				player.getInventory().clear();
 			}
@@ -98,7 +99,7 @@ public class FullServerManager {
 				voter = new VoteHandler();
 			}
 			spectators.endSpectating();
-			Player[] online = Bukkit.getOnlinePlayers();
+			Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 			for(Player player:online){
 				BossBar.removeBar(player);
 				player.getInventory().clear();
@@ -112,7 +113,7 @@ public class FullServerManager {
 		}
 		break;
 		case BUILDING: {
-			Player[] online = Bukkit.getOnlinePlayers();
+			Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 			for(Player player:online){
 				if(!player.hasPermission(BUILD_PERM)){
 					player.kickPlayer("Server now closed, sorry!");
@@ -189,7 +190,7 @@ public class FullServerManager {
 
 						@Override
 						public void run() {
-							Player[] online = Bukkit.getOnlinePlayers();
+							Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 							for(Player player:online){
 								BossBar.setMessage(player, tip, 16);
 							}
@@ -221,7 +222,7 @@ public class FullServerManager {
 
 			@Override
 			public void run() {
-				Player[] online = Bukkit.getOnlinePlayers();
+				Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 				for(Player p:online){
 					sendToLobby(p);
 				}
@@ -257,7 +258,7 @@ public class FullServerManager {
 		changeServerStage(ServerStage.STARTING);
 		voter = null; //Stop voting stuff working
 		
-		int online = Bukkit.getOnlinePlayers().length;
+		int online = Bukkit.getOnlinePlayers().size();
 		if(online < 2){
 			mode = RaceType.TIME_TRIAL;
 		}
@@ -279,7 +280,7 @@ public class FullServerManager {
 		Bukkit.broadcastMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"Please wait "+ChatColor.GOLD+"10s"+ChatColor.DARK_RED+" for the game to start!");
 		
 		
-		Player[] o = Bukkit.getOnlinePlayers();
+		Collection<? extends Player> o = Bukkit.getOnlinePlayers();
 		for(Player player:o){
 			BossBar.removeBar(player);
 		}
@@ -288,7 +289,7 @@ public class FullServerManager {
 
 			@Override
 			public void run() {
-				Player[] o = Bukkit.getOnlinePlayers();
+				Collection<? extends Player> o = Bukkit.getOnlinePlayers();
 				for(Player player:o){
 					BossBar.setMessage(player, ChatColor.RED+"Starting...", 9);
 				}
@@ -303,14 +304,14 @@ public class FullServerManager {
 				//Start the game!
 				changeServerStage(ServerStage.PLAYING);
 				
-				Player[] players = Bukkit.getOnlinePlayers();
-				if(players.length < 1 || track == null || track.getTrackName() == null || mode == null){
+				Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+				if(players.size() < 1 || track == null || track.getTrackName() == null || mode == null){
 					restart();
 					return;
 				}
 				race = new Race(track,
 						track.getTrackName(), mode);
-				List<Player> q = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+				List<Player> q = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 				for (Player p : q) {
 					if (p != null && p.isOnline()) {
 						if(race.getUsers().size() < race.getTrack().getMaxPlayers()){

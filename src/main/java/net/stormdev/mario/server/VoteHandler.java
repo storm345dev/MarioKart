@@ -1,6 +1,7 @@
 package net.stormdev.mario.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class VoteHandler {
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 		calculateMapList();
 		
-		Player[] online = Bukkit.getOnlinePlayers();
+		Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 		for(Player p:online){
 			addPlayerToBoard(p);
 			p.sendMessage(ChatColor.BOLD+""+ChatColor.DARK_RED+"------------------------------");
@@ -156,7 +157,7 @@ public class VoteHandler {
 	
 	public int getTotalTime(){
 		int fullS = VOTE_TIME;
-		int online = Bukkit.getOnlinePlayers().length;
+		int online = Bukkit.getOnlinePlayers().size();
 		if(online < 2){
 			fullS = VOTE_TIME;
 		}
@@ -180,7 +181,7 @@ public class VoteHandler {
 	
 	public int getVoteTimeRemaining(){
 		int fullS = getTotalTime();
-		if(Bukkit.getOnlinePlayers().length < 1){
+		if(Bukkit.getOnlinePlayers().size() < 1){
 			startTime = System.currentTimeMillis();
 			return fullS;
 		}
@@ -198,7 +199,7 @@ public class VoteHandler {
 			return;
 		}
 		closed = true;
-		Player[] online = Bukkit.getOnlinePlayers();
+		Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 		for(Player p:online){
 			removePlayerFromBoard(p);
 		}

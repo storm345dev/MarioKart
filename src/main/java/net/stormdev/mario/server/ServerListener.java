@@ -1,5 +1,6 @@
 package net.stormdev.mario.server;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class ServerListener implements Listener {
 				if(fsm.getStage().equals(ServerStage.BUILDING)){
 					return;
 				}
-				Player[] online = Bukkit.getOnlinePlayers();
+				Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 				for(Player player:online){
 					if(!player.hasMetadata(MOVE_META)){
 						player.setMetadata(MOVE_META, new MetaValue(System.currentTimeMillis(), MarioKart.plugin));

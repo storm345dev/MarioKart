@@ -307,6 +307,8 @@ public class MarioKart extends JavaPlugin {
 			
 		}
 		
+		net.stormdev.barapi_1_8.BarAPI.onEnable();
+		
 		System.gc();
 		logger.info("MarioKart v" + plugin.getDescription().getVersion()
 				+ " has been enabled!");
@@ -321,7 +323,7 @@ public class MarioKart extends JavaPlugin {
 		this.raceScheduler.endAll();
 		raceQueues.clear();
 		
-		Player[] players = getServer().getOnlinePlayers();
+		Player[] players = getServer().getOnlinePlayers().toArray(new Player[]{});
 		for (Player player : players) {
 			if (player.hasMetadata("car.stayIn")) {
 				player.removeMetadata("car.stayIn", plugin);
@@ -340,6 +342,8 @@ public class MarioKart extends JavaPlugin {
 		}
 		
 		this.upgradeManager.unloadSQL();
+		
+		net.stormdev.barapi_1_8.BarAPI.onDisable();
 		
 		logger.info("MarioKart has been disabled!");
 		System.gc();

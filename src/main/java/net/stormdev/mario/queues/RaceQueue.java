@@ -24,7 +24,7 @@ public class RaceQueue {
 		this.track = track;
 		if(type == RaceType.AUTO){
 			if((MarioKart.plugin.random.nextBoolean() && MarioKart.plugin.random.nextBoolean())
-					|| Bukkit.getOnlinePlayers().length < MarioKart.config.getInt("race.que.minPlayers")){
+					|| Bukkit.getOnlinePlayers().size() < MarioKart.config.getInt("race.que.minPlayers")){
 				type = RaceType.TIME_TRIAL;
 			}
 			else{

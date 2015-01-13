@@ -1,6 +1,7 @@
 package net.stormdev.mario.server;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import net.stormdev.mario.mariokart.MarioKart;
 import net.stormdev.mario.utils.MetaValue;
@@ -85,7 +86,7 @@ public class SpectatorMode implements Listener {
 	}
 	
 	public void endSpectating(){
-		Player[] players = Bukkit.getOnlinePlayers();
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		for(Player player:players){
 			if(isSpectating(player)){
 				stopSpectating(player);
