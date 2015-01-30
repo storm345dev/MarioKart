@@ -53,6 +53,9 @@ public class ServerEventsListener implements Listener {
 	void villagerDamage(EntityDamageEvent event){
 		if(event.getEntity().getType().equals(EntityType.VILLAGER)){
 			Villager villager = (Villager) event.getEntity();
+                        if(villager == null || villager.getCustomName() == null){
+                                return;
+                        }
 			if(!ChatColor.stripColor(villager.getCustomName()).equals("Race Shop")){
 				return;
 			}
