@@ -122,7 +122,9 @@ public class RaceCommandExecutor implements CommandExecutor {
 			if (args.length < 2) {
 				trackName = "auto";
 			}
-			trackName = args[1];
+                        else {
+			        trackName = args[1];
+                        }
 			RaceType type = RaceType.RACE;
 			// /race join test cup
 			if (args.length > 2) {
