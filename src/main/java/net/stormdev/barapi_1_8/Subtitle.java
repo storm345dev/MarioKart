@@ -11,7 +11,7 @@ public class Subtitle {
 		try {
 			Class<?> IChatBaseComponent = Util.getCraftClass("IChatBaseComponent");
 			Class<?> PacketPlayOutChat = Util.getCraftClass("PacketPlayOutChat");
-			Class<?> ChatSerializer = Util.getCraftClass("ChatSerializer");
+			Class<?> ChatSerializer = Util.getCraftClass("IChatBaseComponent$ChatSerializer");
 			Method aChatSerializer = ChatSerializer.getDeclaredMethod("a", String.class);
 			
 			Object o = aChatSerializer.invoke(null, new Gson().toJson(message));
