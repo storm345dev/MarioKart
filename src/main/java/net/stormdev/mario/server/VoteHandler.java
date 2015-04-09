@@ -256,7 +256,7 @@ public class VoteHandler {
 	}
 	
 	public String getHelpString(){
-		return ChatColor.BOLD+""+ChatColor.GOLD+"Votes are open! Do \"/vote <TrackName>\" to vote to race on your favourite track!";
+		return ChatColor.BOLD+""+ChatColor.GOLD+"Votes are open! Do \"/mvote <TrackName>\" to vote to race on your favourite track!";
 	}
 	
 	public String getAvailTracksString(){
