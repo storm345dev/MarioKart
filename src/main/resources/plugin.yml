@@ -24,6 +24,7 @@ commands:
         permission-message: You don't have access to this command
         default: true
    vote:
+        aliases: [mvote]
         description: Vote for a track
         usage: /<command> <TrackName>
    forcestart:
