@@ -27,7 +27,7 @@ public class RaceMethods {
 			@Override
 			public void run() {
 				loc.getWorld().playSound(loc, Sound.EXPLODE, 3f, 1f);
-				loc.getWorld().createExplosion(loc, 0);
+				//loc.getWorld().createExplosion(loc, 0);
 				loc.getWorld().playEffect(loc, Effect.SMOKE, 3);
 				ParticleEffects.sendToLocation(ParticleEffects.EXPLODE, loc, 0, 0, 0, 1, 5);
 				ParticleEffects.sendToLocation(ParticleEffects.HUGE_EXPLODE, loc, 0, 0, 0, 1, 5);
