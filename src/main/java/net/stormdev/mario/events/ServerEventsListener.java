@@ -42,7 +42,12 @@ public class ServerEventsListener implements Listener {
 			return;
 		}
 		Villager vil = (Villager) interact;
-		if(!ChatColor.stripColor(vil.getCustomName()).equals("Race Shop")){
+		try {
+			if(!ChatColor.stripColor(vil.getCustomName()).equals("Race Shop")){
+				return;
+			}
+		} catch (Exception e) {
+			//No custom name
 			return;
 		}
 		event.setCancelled(true);
